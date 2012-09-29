@@ -19,7 +19,7 @@ function(Zeega, Player) {
 			
 			//works
 			var project = new Player();
-			project.on('all', function(e){console.log('e:',e)});
+			project.on('all', function(e){console.log('e:',e);});
 			project.load({url: 'http://alpha.zeega.org/api/projects/1666'});
 			console.log('project', project);
 		}
