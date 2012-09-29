@@ -180,8 +180,10 @@ function(Zeega, Frame)
 	*/
 	var parseProject = function( player )
 	{
-		var frameCollection = new Frame.Collection( player.get('frames') );
-		frameCollection.load( player.get('sequences'), player.get('layers') );
+		var frames = new Frame.Collection( player.get('frames') );
+		frames.load( player.get('sequences'), player.get('layers') );
+		player.frames = frames;
+		
 		player.initialized = true;
 		player.trigger('data_loaded');
 		if( player.get('autoplay') ) player.play();
