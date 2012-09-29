@@ -1,6 +1,9 @@
-define([ "zeega" ],
+define([
+	"zeega",
+	"player/frame"
+],
 
-function(Zeega)
+function(Zeega, Frame)
 {
 	/*
 		Player.Model
@@ -18,14 +21,16 @@ function(Zeega)
 
 	Player = Backbone.Model.extend({
 
-		ready : false,
-		initialized : false,
+		ready : false,			// the player is parsed and in the dom. can call play play. layers have not been preloaded yet
+		complete : false,		// have all layers been preloaded
+		initialized : false,	// has the project data been loaded and parsed
 		status : 'waiting',
 
 		// default settings -  can be overridden by project data
 		defaults : {
 			autoplay : true,
 			chromeless : false,
+			delay : 0,						// ms after initial all loaded to play project
 			fade_overlays : true,
 			fullscreenEnable : true,
 			keyboard : true,
@@ -66,7 +71,6 @@ function(Zeega)
 				if( obj && obj.data && _.isObject( obj.data ) )
 				{
 					// the project should be valid json
-					this.initialized = true;
 					this.set(obj); // overwrite project settings and add data
 					parseProject( this );
 				}
@@ -74,7 +78,6 @@ function(Zeega)
 				{
 					// try to load project from url
 					var _this = this;
-					this.initialized = true;
 					this.url = obj.url;
 					this.fetch({silent: true})
 						.success(function(){ parseProject( _this ); })
@@ -171,11 +174,15 @@ function(Zeega)
 	});
 
 	/*
-		parses the project. but not exposed to the rest of the world
+		parse the project and trigger data_loaded when finished
+
+		private
 	*/
 	var parseProject = function( player )
 	{
-
+		var frameCollection = new Frame.Collection( player.get('frames') );
+		frameCollection.load( player.get('sequences'), player.get('layers') );
+		player.initialized = true;
 		player.trigger('data_loaded');
 		if( player.get('autoplay') ) player.play();
 	};

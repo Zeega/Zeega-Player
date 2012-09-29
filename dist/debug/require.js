@@ -16165,9 +16165,168 @@ function($, _, Backbone) {
 
 });
 
-define('player/player',[ "zeega" ],
+define('player/layer',[ "zeega" ],
 
 function(Zeega)
+{
+	var Layer = Zeega.module();
+
+	var LayerModel = Backbone.Model.extend({
+
+		ready : false,
+		status : 'waiting',
+		
+		defaults : {
+
+		},
+
+		initialize : function()
+		{
+			// init link layer type inside here
+		}
+	});
+
+	Layer.Collection = Backbone.Collection.extend({
+
+		model : LayerModel,
+
+		initialize : function()
+		{
+			
+		}
+	});
+
+	return Layer;
+});
+define('player/frame',[
+	"zeega",
+	"player/layer"
+],
+
+function(Zeega, Layer)
+{
+	var Frame = Zeega.module();
+
+	var FrameModel = Backbone.Model.extend({
+
+		ready : false,
+		status : 'waiting',
+		hasPlayed : false,
+
+		defaults : {
+			attr : { advance : 0 },
+			common_layers : {},	// ids of frames and their common layers for loading
+			layers : [],		// ids of layers contained on frame
+			link_to : [],		// ids of frames this frame can lead to
+			link_from : [],		// ids of frames this frame can be accessed from
+			next : null,		// id of the next frame
+			prev : null			// id of the previous frame
+		},
+
+		// for convenience
+		getNext : function(){ return this.get('next'); },
+		getPrev : function(){ return this.get('prev'); },
+
+		// sets the sequence adjacencies as a string
+		setConnections : function()
+		{
+			if( !_.isNull(this.get('prev')) && !_.isNull(this.get('next')) ) this.set('connections','lr');
+			else if( !_.isNull(this.get('prev')) && _.isNull(this.get('next')) ) this.set('connections','l');
+			else if( _.isNull(this.get('prev')) && !_.isNull(this.get('next')) ) this.set('connections','r');
+			else this.set('connections','none');
+		}
+
+	});
+
+	Frame.Collection = Backbone.Collection.extend({
+		model : FrameModel,
+
+		load : function( sequences,layers )
+		{
+			var _this = this;
+			// create a layer collection. this does not need to be saved anywhere
+			var layerCollection = new Layer.Collection(layers);
+
+			this.each(function(frame){
+
+				var linkedArray = [];
+				// make a layer collection inside the frame
+				frame.layers = new Layer.Collection();
+				// add each layer to the collection
+				_.each( frame.get('layers'), function(layerID){
+					frame.layers.add( layerCollection.get(layerID) );
+				});
+
+				// make connections by sequence>frame order
+				_.each( sequences, function(sequence){
+					if( sequence.frames.length > 1 )
+					{
+						var index = _.indexOf( sequence.frames, frame.id );
+						if( index > -1 )
+						{
+							var prev = sequence.frames[index-1] || null;
+							var next = sequence.frames[index+1] || null;
+
+							frame.set({
+								prev : prev,
+								next : next
+							});
+							frame.setConnections();
+						}
+					}
+				});
+
+				// make connections by link layers
+				// get all a frame's link layers
+				var linkLayers = frame.layers.where({type:'Link'});
+				var linkTo = [];
+				var linkFrom = [];
+				_.each( linkLayers, function(layer){
+					// links that originate from this frame
+					if( layer.get('attr').from_frame == frame.id )
+						linkTo.push( layer.get('attr').to_frame );
+					else
+					{
+						// links that originate on other frames
+						// remove layer model from collection because it shouldn't be rendered
+						frame.layers.remove( layer );
+						linkFrom.push( layer.get('attr').from_frame );
+					}
+				});
+				frame.set({
+					link_to : linkTo,
+					link_from : linkFrom
+				});
+				
+			});
+			
+			// another for loop that has to happen after all link layers are settled
+			this.each(function(frame){
+				// set common layers object
+				// {
+				//		123 : [a,b,c],
+				//		234 : [c,d,e]
+				// }
+				var commonLayers = {};
+				var allConnected = _.uniq( _.compact( _.union( frame.get('prev'), frame.get('next'), frame.get('link_to'), frame.get('link_from') ) ) );
+				_.each( allConnected, function(frameID){
+					commonLayers[frameID] = _.intersection( frame.layers.pluck('id'), _this.get(frameID).layers.pluck('id') );
+				});
+				frame.set({ common_layers: commonLayers });
+			});
+		}
+	});
+
+	
+
+	return Frame;
+});
+define('player/player',[
+	"zeega",
+	"player/frame"
+],
+
+function(Zeega, Frame)
 {
 	/*
 		Player.Model
@@ -16185,14 +16344,16 @@ function(Zeega)
 
 	Player = Backbone.Model.extend({
 
-		ready : false,
-		initialized : false,
+		ready : false,			// the player is parsed and in the dom. can call play play. layers have not been preloaded yet
+		complete : false,		// have all layers been preloaded
+		initialized : false,	// has the project data been loaded and parsed
 		status : 'waiting',
 
 		// default settings -  can be overridden by project data
 		defaults : {
 			autoplay : true,
 			chromeless : false,
+			delay : 0,						// ms after initial all loaded to play project
 			fade_overlays : true,
 			fullscreenEnable : true,
 			keyboard : true,
@@ -16233,7 +16394,6 @@ function(Zeega)
 				if( obj && obj.data && _.isObject( obj.data ) )
 				{
 					// the project should be valid json
-					this.initialized = true;
 					this.set(obj); // overwrite project settings and add data
 					parseProject( this );
 				}
@@ -16241,7 +16401,6 @@ function(Zeega)
 				{
 					// try to load project from url
 					var _this = this;
-					this.initialized = true;
 					this.url = obj.url;
 					this.fetch({silent: true})
 						.success(function(){ parseProject( _this ); })
@@ -16338,11 +16497,15 @@ function(Zeega)
 	});
 
 	/*
-		parses the project. but not exposed to the rest of the world
+		parse the project and trigger data_loaded when finished
+
+		private
 	*/
 	var parseProject = function( player )
 	{
-
+		var frameCollection = new Frame.Collection( player.get('frames') );
+		frameCollection.load( player.get('sequences'), player.get('layers') );
+		player.initialized = true;
 		player.trigger('data_loaded');
 		if( player.get('autoplay') ) player.play();
 	};
@@ -16372,7 +16535,7 @@ function(Zeega, Player) {
 			//works
 			var project = new Player();
 			project.on('all', function(e){console.log('e:',e);});
-			project.load({url: 'http://alpha.zeega.org/api/projects/1666'});
+			project.load({url: 'http://alpha.zeega.org/api/projects/1841'});
 			console.log('project', project);
 		}
 	});
