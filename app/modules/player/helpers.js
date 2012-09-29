@@ -7,7 +7,7 @@ function(Zeega)
 
 	Helpers.getHost = function()
 	{
-			return  window.location.protocol + "//" + window.location.host;        
+		return  window.location.protocol + "//" + window.location.host;        
 	};
 
 	Helpers.getBaseURL = function()
@@ -107,6 +107,5 @@ function(Zeega)
 // function addGlobal(layerId,event,elementId)
 // {
 //		if(!LayerGlobals[layerId])LayerGlobals[layerId]={};
-//		
-eval('LayerGlobals[layerId].'+event+'= function(data){$("#'+elementId+'").trigger("'+event+'",data);}');
+//		eval('LayerGlobals[layerId].'+event+'= function(data){$("#'+elementId+'").trigger("'+event+'",data);}');
 // }

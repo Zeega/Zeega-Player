@@ -38,7 +38,7 @@ function(Zeega)
 				citations_layer : true,
 				citations_frame : true,
 				citations_project : true,
-				social : true,
+				social : true
 			},
 			start_frame : null,
 			viewport_fit : true,
@@ -103,7 +103,7 @@ function(Zeega)
 		play : function()
 		{
 			if( !this.ready ) this.render();
-			else if( this.status = 'paused' )
+			else if( this.status == 'paused' )
 			{
 
 				this.trigger('play');
@@ -113,7 +113,7 @@ function(Zeega)
 		// if the player is playing, pause the project
 		pause : function()
 		{
-			if( this.status = 'playing' )
+			if( this.status == 'playing' )
 			{
 
 				this.trigger('pause');
@@ -159,7 +159,7 @@ function(Zeega)
 		getProjectTree : function()
 		{
 			return false;
-		}
+		},
 
 		// completely obliterate the player. triggers event
 		destroy : function()
@@ -175,9 +175,7 @@ function(Zeega)
 	var parseProject = function( model )
 	{
 
-	}
-
-
+	};
 
 
 	return Player;
