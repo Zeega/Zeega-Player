@@ -2,8 +2,6 @@ define([ "zeega" ],
 
 function(Zeega)
 {
-	var Player = Zeega.module();
-
 	/*
 		Player.Model
 
@@ -18,7 +16,7 @@ function(Zeega)
 		# is the only external contact point
 	*/
 
-	Player.Model = Backbone.Model.extend({
+	Player = Backbone.Model.extend({
 
 		ready : false,
 		initialized : false,
@@ -26,7 +24,7 @@ function(Zeega)
 
 		// default settings -  can be overridden by project data
 		defaults : {
-			autoplay : false,
+			autoplay : true,
 			chromeless : false,
 			fade_overlays : true,
 			fullscreenEnable : true,
@@ -75,16 +73,19 @@ function(Zeega)
 				else if( obj && obj.url && _.isString( obj.url ) )
 				{
 					// try to load project from url
+					var _this = this;
 					this.initialized = true;
 					this.url = obj.url;
-					this.fetch().success(function(){ parseProject( this ); });
+					this.fetch({silent: true})
+						.success(function(){ parseProject( _this ); })
+						.error(function(){ _this.onError('3 - fetch error. bad url?'); });
 				}
-				else this.onLoadError('1 - invalid or missing data');
+				else this.onError('1 - invalid or missing data');
 			}
-			else this.onLoadError('2 - already loaded');
+			else this.onError('2 - already loaded');
 		},
 
-		onLoadError : function(str)
+		onError : function(str)
 		{
 			this.trigger('error', str);
 			alert('Error code: ' + str );
@@ -172,9 +173,11 @@ function(Zeega)
 	/*
 		parses the project. but not exposed to the rest of the world
 	*/
-	var parseProject = function( model )
+	var parseProject = function( player )
 	{
 
+		player.trigger('data_loaded');
+		if( player.get('autoplay') ) player.play();
 	};
 
 
