@@ -24,7 +24,9 @@ function(Zeega, Frame)
 		ready : false,			// the player is parsed and in the dom. can call play play. layers have not been preloaded yet
 		complete : false,		// have all layers been preloaded
 		initialized : false,	// has the project data been loaded and parsed
-		status : 'waiting',
+		status : 'paused',
+
+		currentFrame : null,
 
 		// default settings -  can be overridden by project data
 		defaults : {
@@ -91,12 +93,6 @@ function(Zeega, Frame)
 			else this.onError('2 - already loaded');
 		},
 
-		onError : function(str)
-		{
-			this.trigger('error', str);
-			alert('Error code: ' + str );
-		},
-
 		// renders the player to the dom // this could be a _.once
 		render : function()
 		{
@@ -120,6 +116,7 @@ function(Zeega, Frame)
 			this.ready = true;
 			this.initEvents(); // this should be elsewhere. in an onReady fxn?
 			this.trigger('ready');
+			if(this.get('autoplay') ) this.play();
 		},
 
 		initEvents : function()
@@ -134,10 +131,10 @@ function(Zeega, Frame)
 							if(_this.get('escapable')) _this.destroy();
 							break;
 						case 37: // left arrow
-							_this.prev();
+							_this.cuePrev();
 							break;
 						case 39: // right arrow
-							_this.next();
+							_this.cueNext();
 							break;
 						case 32: // spacebar
 							_this.playPause();
@@ -154,8 +151,21 @@ function(Zeega, Frame)
 			if( !this.ready ) this.render();
 			else if( this.status == 'paused' )
 			{
-
 				this.trigger('play');
+				// if there is no info on where the player is or where to start go to first frame in project
+				if( _.isNull(this.currentFrame) && _.isNull( this.get('start_frame') ) )
+				{
+					this.cueFrame( this.get('sequences')[0].frames[0] );
+				}
+				else if( _.isNull(this.currentFrame) && !_.isNull( this.get('start_frame') ) && this.layers.get( this.get('start_frame') ) )
+				{
+					this.cueFrame( this.get('start_frame') );
+				}
+				else if( !_.isNull(this.currentFrame) )
+				{
+					// unpause the player
+				}
+				else this.onError('3 - could not play');
 			}
 		},
 
@@ -174,24 +184,51 @@ function(Zeega, Frame)
 			console.log('play pause');
 		},
 
-		// goes to previous frame in sequence and returns the id or returns false if at beginning
-		next : function()
+		// goes to the next frame after n ms // alias: next
+		cueNext : function(ms)
 		{
-			console.log('next');
-			return false;
+			if( this.currentFrame.get('next') )
+			{
+				var _this = this;
+				var time = ms || 0;
+				if( time !== 0 ) _.delay(function(){ _this.goToFrame( this.currentFrame.get('next') ); }, time);
+				else this.goToFrame( this.currentFrame.get('next') );
+			}
+			else return false;
 		},
 
-		// goes to next frame in sequence and returns the id or returns false if at end
-		prev : function()
+		// goes to the prev frame after n ms // alias: prev
+		cuePrev : function(ms)
 		{
-			console.log('prev');
-			return false;
+			if( this.currentFrame.get('prev') )
+			{
+				var _this = this;
+				var time = ms || 0;
+				if( time !== 0 ) _.delay(function(){ _this.goToFrame( this.currentFrame.get('prev') ); }, time);
+				else this.goToFrame( this.currentFrame.get('prev') );
+			}
+			else return false;
 		},
 
-		// skip to a specific frame in the project. returns false if no such frame exists
-		goTo : function( id )
+		// goes to specified frame after n ms
+		cueFrame : function( id, ms)
 		{
-			return false;
+			if( !_.isUndefined(id) && !_.isUndefined( this.frames.get(id) ) )
+			{
+				var _this = this;
+				var time = ms || 0;
+				if( time !== 0 ) _.delay(function(){ _this.goToFrame(id); }, time);
+				else this.goToFrame(id);
+			}
+		},
+
+		goToFrame :function(id)
+		{
+			console.log('gotoframe', id);
+			// unrender current frame
+			// swap out current frame with new one
+			this.currentFrame = this.frames.get( id );
+			// render current frame // should trigger a frame rendered event when successfull
 		},
 
 		// returns project metadata
@@ -221,6 +258,12 @@ function(Zeega, Frame)
 				_this.frames.each(function(frame){ frame.destroy(); });
 				_this.trigger('player_destroyed');
 			});
+		},
+
+		onError : function(str)
+		{
+			this.trigger('error', str);
+			alert('Error code: ' + str );
 		}
 
 	});
