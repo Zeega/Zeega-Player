@@ -1,10 +1,17 @@
-/* Add Stylus stylesheets here, alll files ending in .styl will be compiled!
- * For example: @import "main.styl";
- *
- * Note: All stylesheets are relative to `assets/css`.
- *
- */ 
-
-
-
-/* Put development-only CSS below this line. */
+.ZEEGA-player {
+  background-color: #000000;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  display: none;
+}
+.ZEEGA-player .ZEEGA-player-window,
+.ZEEGA-player .ZEEGA-player-overlay {
+  margin: 0 auto;
+  position: relative;
+}
+.ZEEGA-player .ZEEGA-player-window {
+  background: red;
+}

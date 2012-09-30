@@ -31,10 +31,13 @@ function(Zeega, Frame)
 			autoplay : true,
 			chromeless : false,
 			delay : 0,						// ms after initial all loaded to play project
+			escapable : true,				// can the project be escaped through user input (esc or close buttons)
 			fade_overlays : true,
+			fadeIn : 500,					// ms the player takes to fade in
+			fadeOut : 500,					// ms the player takes to fade out on destroy
 			fullscreenEnable : true,
 			keyboard : true,
-			mode :'standalone',
+			mode :'standalone',				// standalone, editor? do I need this?
 			overlays : {
 				arrows : true,
 				branding : true,
@@ -44,8 +47,8 @@ function(Zeega, Frame)
 				social : true
 			},
 			start_frame : null,
-			viewport_fit : true,
-			viewport_ratio : 4/3
+			window_fit : true,
+			window_ratio : 4/3
 		},
 
 		// initialize the zeega player:
@@ -97,9 +100,51 @@ function(Zeega, Frame)
 		// renders the player to the dom // this could be a _.once
 		render : function()
 		{
+			var _this = this;
+			this.Layout = new PlayerLayout({
+				model: this,
+				attributes: {
+					id : 'ZEEGA-player-'+ this.id,
+					'data-projectID' : this.id
+				}
+			});
+			$('body').append(this.Layout.el);
+			this.Layout.render();
+			this.Layout.$el.fadeIn(this.get('fadeIn'),function(){
+				_this.onRendered();
+			});		
+		},
 
+		onRendered : function()
+		{
 			this.ready = true;
+			this.initEvents(); // this should be elsewhere. in an onReady fxn?
 			this.trigger('ready');
+		},
+
+		initEvents : function()
+		{
+			var _this = this;
+			if( this.get('keyboard') )
+			{
+				$(window).keyup(function(e){
+					switch( e.which )
+					{
+						case 27: // esc
+							if(_this.get('escapable')) _this.destroy();
+							break;
+						case 37: // left arrow
+							_this.prev();
+							break;
+						case 39: // right arrow
+							_this.next();
+							break;
+						case 32: // spacebar
+							_this.playPause();
+							break;
+					}
+				});
+			}
 		},
 
 		// if the player is paused, then play the project
@@ -126,18 +171,20 @@ function(Zeega, Frame)
 
 		playPause : function()
 		{
-
+			console.log('play pause');
 		},
 
 		// goes to previous frame in sequence and returns the id or returns false if at beginning
 		next : function()
 		{
+			console.log('next');
 			return false;
 		},
 
 		// goes to next frame in sequence and returns the id or returns false if at end
 		prev : function()
 		{
+			console.log('prev');
 			return false;
 		},
 
@@ -168,7 +215,12 @@ function(Zeega, Frame)
 		// completely obliterate the player. triggers event
 		destroy : function()
 		{
-			this.trigger('player_destroyed');
+			var _this = this;
+			this.Layout.$el.fadeOut( this.get('fadeOut'), function(){
+				// destroy all layers before calling player_destroyed
+				_this.frames.each(function(frame){ frame.destroy(); });
+				_this.trigger('player_destroyed');
+			});
 		}
 
 	});
@@ -183,11 +235,59 @@ function(Zeega, Frame)
 		var frames = new Frame.Collection( player.get('frames') );
 		frames.load( player.get('sequences'), player.get('layers') );
 		player.frames = frames;
-		
+
 		player.initialized = true;
 		player.trigger('data_loaded');
 		if( player.get('autoplay') ) player.play();
 	};
+
+	var PlayerLayout = Backbone.Layout.extend({
+		template : 'player-layout',
+		className : 'ZEEGA-player',
+
+		initialize : function()
+		{
+			var _this = this;
+			// debounce the resize function so it doesn't bog down the browser
+			var lazyResize = _.debounce(function(){ _this.resizeWindow(); }, 300);
+			$(window).resize(lazyResize);
+		},
+
+		afterRender : function()
+		{
+			// correctly size the player window
+			this.$('.ZEEGA-player-window').css( this.getWindowSize() );
+		},
+
+		resizeWindow : function()
+		{			
+			// animate the window size in place
+			var css = this.getWindowSize();
+			this.$('.ZEEGA-player-window').animate( css );
+			this.model.trigger('window_resized', css );
+		},
+
+		// calculate and return the correct window size for the player window
+		// uses the player's window_ratio attribute
+		getWindowSize : function()
+		{
+			var css = {};
+			var winWidth = window.innerWidth;
+			var winHeight = window.innerHeight;
+			var winRatio = winWidth / winHeight;
+			if( winRatio > this.model.get('window_ratio') )
+			{
+				css.width = winHeight * this.model.get('window_ratio') +'px';
+				css.height = winHeight +'px';
+			}
+			else
+			{
+				css.width = winWidth + 'px';
+				css.height = winWidth / this.model.get('window_ratio') +'px';
+			}
+			return css;
+		}
+	});
 
 
 	return Player;

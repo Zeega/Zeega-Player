@@ -10,17 +10,17 @@ function(Zeega, Layer)
 	var FrameModel = Backbone.Model.extend({
 
 		ready : false,
-		status : 'waiting',
+		status : 'waiting', // waiting, loading, ready, destroyed
 		hasPlayed : false,
 
 		defaults : {
 			attr : { advance : 0 },
-			common_layers : {},	// ids of frames and their common layers for loading
-			layers : [],		// ids of layers contained on frame
-			link_to : [],		// ids of frames this frame can lead to
-			link_from : [],		// ids of frames this frame can be accessed from
-			next : null,		// id of the next frame
-			prev : null			// id of the previous frame
+			common_layers : {},			// ids of frames and their common layers for loading
+			layers : [],				// ids of layers contained on frame
+			link_to : [],				// ids of frames this frame can lead to
+			link_from : [],				// ids of frames this frame can be accessed from
+			next : null,				// id of the next frame
+			prev : null					// id of the previous frame
 		},
 
 		// for convenience
@@ -34,6 +34,17 @@ function(Zeega, Layer)
 			else if( !_.isNull(this.get('prev')) && _.isNull(this.get('next')) ) this.set('connections','l');
 			else if( _.isNull(this.get('prev')) && !_.isNull(this.get('next')) ) this.set('connections','r');
 			else this.set('connections','none');
+		},
+
+		// manages the removal of all child layers
+		destroy : function()
+		{
+			// do not attempt to destroy if the layer is waiting or destroyed
+			if( this.status != 'waiting' && this.status != 'destroyed' )
+			{
+				this.layers.each(function(layer){ layer.destroy(); });
+				this.status = 'destroyed';
+			}
 		}
 
 	});

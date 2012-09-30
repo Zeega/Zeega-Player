@@ -7,7 +7,7 @@ function(Zeega)
 	var LayerModel = Backbone.Model.extend({
 
 		ready : false,
-		status : 'waiting',
+		status : 'waiting', // waiting, loading, ready, destroyed
 		
 		defaults : {
 
@@ -16,6 +16,17 @@ function(Zeega)
 		initialize : function()
 		{
 			// init link layer type inside here
+		},
+
+		// removes the layer. destroys players, removes from dom, etc
+		destroy : function()
+		{
+			// do not attempt to destroy if the layer is waiting or destroyed
+			if( this.status != 'waiting' && this.status != 'destroyed' )
+			{
+				console.log('layer destroyed', this.id, this, this.status);
+				this.status = 'destroyed';
+			}
 		}
 	});
 
