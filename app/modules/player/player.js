@@ -184,30 +184,16 @@ function(Zeega, Frame)
 			console.log('play pause');
 		},
 
-		// goes to the next frame after n ms // alias: next
+		// goes to the next frame after n ms
 		cueNext : function(ms)
 		{
-			if( this.currentFrame.get('next') )
-			{
-				var _this = this;
-				var time = ms || 0;
-				if( time !== 0 ) _.delay(function(){ _this.goToFrame( this.currentFrame.get('next') ); }, time);
-				else this.goToFrame( this.currentFrame.get('next') );
-			}
-			else return false;
+			this.cueFrame( this.currentFrame.get('next'), ms );
 		},
 
-		// goes to the prev frame after n ms // alias: prev
+		// goes to the prev frame after n ms
 		cuePrev : function(ms)
 		{
-			if( this.currentFrame.get('prev') )
-			{
-				var _this = this;
-				var time = ms || 0;
-				if( time !== 0 ) _.delay(function(){ _this.goToFrame( this.currentFrame.get('prev') ); }, time);
-				else this.goToFrame( this.currentFrame.get('prev') );
-			}
-			else return false;
+			this.cueFrame( this.currentFrame.get('prev'), ms );
 		},
 
 		// goes to specified frame after n ms
