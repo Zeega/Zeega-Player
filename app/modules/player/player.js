@@ -29,7 +29,7 @@ function(Zeega, Frame)
 		// default settings -  can be overridden by project data
 		defaults : {
 			autoplay : true,
-			chromeless : false,
+			chromeless : true,
 			delay : 0,						// ms after initial all loaded to play project
 			escapable : true,				// can the project be escaped through user input (esc or close buttons)
 			fade_overlays : true,
@@ -252,6 +252,8 @@ function(Zeega, Frame)
 			var lazyResize = _.debounce(function(){ _this.resizeWindow(); }, 300);
 			$(window).resize(lazyResize);
 		},
+
+		serialize : function(){ return this.model.toJSON(); },
 
 		afterRender : function()
 		{

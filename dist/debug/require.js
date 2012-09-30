@@ -338,7 +338,9 @@ var requirejs, require, define;
 }());
 ;this['JST'] = this['JST'] || {};
 
-;
+this['JST']['app/templates/layouts/player-layout.html'] = function(data) { return function (obj,_) {
+var __p=[],print=function(){__p.push.apply(__p,arguments);};with(obj||{}){__p.push('<div class=\'ZEEGA-player-overlay\'></div>\n<div class=\'ZEEGA-player-window\'></div>');}return __p.join('');
+}(data, _)};;
 /*!
  * jQuery JavaScript Library v1.8.0
  * http://jquery.com/
@@ -15270,7 +15272,7 @@ define("backbone", ["lodash","jquery"], (function (global) {
 }(this)));
 
 /*!
- * backbone.layoutmanager.js v0.6.5
+ * backbone.layoutmanager.js v0.6.6
  * Copyright 2012, Tim Branyen (@tbranyen)
  * backbone.layoutmanager.js may be freely distributed under the MIT license.
  */
@@ -15388,13 +15390,16 @@ var LayoutManager = Backbone.View.extend({
       }
     }
 
+    // If the View has not been properly set up, throw an Error message
+    // indicating that the View needs `manage: true` set.
+    if (!view.__manager__) {
+      throw new Error("manage property not set.  " +
+        "http://tbranyen.github.com/backbone.layoutmanager/#usage/struc" +
+        "turing-a-view");
+    }
+
     // Instance overrides take precedence, fallback to prototype options.
     options = view._options();
-
-    // Set up the View, if it's not already managed.
-    if (!view.__manager__) {
-      LayoutManager.setupView(view, options);
-    }
 
     // Custom template render function.
     view.render = function(done) {
@@ -15436,7 +15441,7 @@ var LayoutManager = Backbone.View.extend({
       }
 
       // Remove subViews without the `keep` flag set to `true`.
-      view._removeView();
+      view._removeViews();
 
       // Call the original render method.
       LayoutManager.prototype.render.call(view).then(renderCallback);
@@ -15506,24 +15511,26 @@ var LayoutManager = Backbone.View.extend({
   // This function returns a promise that can be chained to determine
   // once all subviews and main view have been rendered into the view.el.
   render: function(done) {
+    var promise;
     var root = this;
     var options = this._options();
     var viewDeferred = options.deferred();
+    var manager = this.__manager__;
 
     // Ensure duplicate renders don't override.
-    if (this.__manager__.renderDeferred) {
+    if (manager.renderDeferred) {
       // Set the most recent done callback.
-      this.__manager__.callback = done;
+      manager.callback = done;
 
       // Return the deferred.
-      return this.__manager__.renderDeferred;
+      return manager.renderDeferred;
     }
+
+    // Disable the ability for any new sub-views to be added.
+    manager.renderDeferred = viewDeferred;
     
     // Wait until this View has rendered before dealing with nested Views.
     this._render(LayoutManager._viewRender).fetch.then(function() {
-      // Disable the ability for any new sub-views to be added.
-      root.__manager__.renderDeferred = viewDeferred;
-
       // Create a list of promises to wait on until rendering is done. Since
       // this method will run on all children as well, its sufficient for a
       // full hierarchical. 
@@ -15575,7 +15582,7 @@ var LayoutManager = Backbone.View.extend({
 
     // Return a promise that resolves once all immediate subViews have
     // rendered.
-    return viewDeferred.then(function() {
+    promise = viewDeferred.then(function() {
       // Only call the done function if a callback was provided.
       if (_.isFunction(done)) {
         done.call(root, root.el);
@@ -15601,11 +15608,15 @@ var LayoutManager = Backbone.View.extend({
       // Remove the rendered deferred.
       delete root.__manager__.renderDeferred;
     });
+
+    // Proxy the View's properties to this promise for chaining purposes.
+    return _.defaults(promise, root);
   },
 
   // Ensure the cleanup function is called whenever remove is called.
   remove: function() {
-    LayoutManager.cleanViews(this);
+    // Force remove itself from it's parent.
+    LayoutManager._removeView(this, true);
 
     // Call the original remove function.
     return this._remove.apply(this, arguments);
@@ -15788,6 +15799,9 @@ var LayoutManager = Backbone.View.extend({
       _options: LayoutManager.prototype._options,
 
       // Add the ability to remove all Views.
+      _removeViews: LayoutManager._removeViews,
+
+      // Add the ability to remove itself.
       _removeView: LayoutManager._removeView
     });
 
@@ -15826,7 +15840,7 @@ var LayoutManager = Backbone.View.extend({
       var afterRender = this._options().afterRender;
 
       // Ensure all subViews are properly scrubbed.
-      this._removeView();
+      this._removeViews();
 
       // If a beforeRender function is defined, call it.
       if (_.isFunction(beforeRender)) {
@@ -15869,9 +15883,10 @@ var LayoutManager = Backbone.View.extend({
         var findRootParent = function(view) {
           var manager = view.__manager__;
 
-          // If a parent exists, recurse.
-          if (manager.parent && !manager.hasRendered) {
-            return findRootParent(manager.parent);
+          // If a parent exists and the parent has not rendered, return that
+          // parent.
+          if (manager.parent && !manager.parent.__manager__.hasRendered) {
+            return manager.parent;
           }
 
           // This is the most root parent.
@@ -15885,11 +15900,13 @@ var LayoutManager = Backbone.View.extend({
 
         // If this view has already rendered, simply call the callback.
         if (parent.__manager__.hasRendered) {
-          return options.when([manager.viewDeferred, parent.__manager__.viewDeferred]).then(function() {
+          return options.when([manager.viewDeferred,
+            parent.__manager__.viewDeferred]).then(function() {
             done.call(view);
           });
         }
 
+        // Find the parent highest in the chain that has not yet rendered.
         parent = findRootParent(view);
 
         // Once the parent has finished rendering, trickle down and
@@ -15934,38 +15951,49 @@ var LayoutManager = Backbone.View.extend({
   },
 
   // Remove all subViews.
-  _removeView: function(root) {
+  _removeViews: function(root) {
     // Allow removeView to be called on instances.
     root = root || this;
 
     // Iterate over all of the view's subViews.
     root.getViews().each(function(view) {
-      // Shorthand the manager for easier access.
-      var manager = view.__manager__;
-      // Test for keep.
-      var keep = _.isBoolean(view.keep) ? view.keep : view.options.keep;
-
-      // Only remove views that do not have `keep` attribute set.
-      if (!keep && manager.append === true && manager.hasRendered) {
-        // Remove the View completely.
-        view.remove();
-
-        // If this is an array of items remove items that are not marked to
-        // keep.
-        if (_.isArray(manager.parent.views[manager.selector])) {
-          // Remove directly from the Array reference.
-          return manager.parent.getView(function(view, i) {
-            // If the selectors match, splice off this View.
-            if (view.__manager__.selector === manager.selector) {
-              manager.parent.views[manager.selector].splice(i, 1);
-            }
-          });
-        }
-
-        // Otherwise delete the parent selector.
-        delete manager.parent[manager.selector];
-      }
+      LayoutManager._removeView(view, true);
     });
+  },
+
+  // Remove a single subView.
+  _removeView: function(view, force) {
+    // Shorthand the manager for easier access.
+    var manager = view.__manager__;
+    // Test for keep.
+    var keep = _.isBoolean(view.keep) ? view.keep : view.options.keep;
+    // Only allow force if View contains a parent.
+    force = force && manager.parent;
+
+    // Ensure that cleanup is called correctly when `_removeView` is triggered.
+    LayoutManager.cleanViews(view);
+
+    // Only remove views that do not have `keep` attribute set, unless the
+    // force flag is set.
+    if (!keep && (manager.append === true || force) && manager.hasRendered) {
+      // Remove the View completely.
+      view.$el.remove();
+
+      // If this is an array of items remove items that are not marked to
+      // keep.
+      if (_.isArray(manager.parent.views[manager.selector])) {
+        // Remove directly from the Array reference.
+        return manager.parent.getView(function(view, i) {
+          // If the managers match, splice off this View.
+          if (view.__manager__ === manager) {
+            manager.parent.views[manager.selector].splice(i, 1);
+          }
+        });
+      }
+
+      // Otherwise delete the parent selector.
+      delete manager.parent.views[manager.selector];
+    }
   }
 });
 
@@ -16066,7 +16094,6 @@ LayoutManager.prototype.options = {
 keys = _.keys(LayoutManager.prototype.options);
 
 })(this);
-
 define("plugins/backbone.layoutmanager", function(){});
 
 define('zeega',[
@@ -16174,7 +16201,7 @@ function(Zeega)
 	var LayerModel = Backbone.Model.extend({
 
 		ready : false,
-		status : 'waiting',
+		status : 'waiting', // waiting, loading, ready, destroyed
 		
 		defaults : {
 
@@ -16183,6 +16210,17 @@ function(Zeega)
 		initialize : function()
 		{
 			// init link layer type inside here
+		},
+
+		// removes the layer. destroys players, removes from dom, etc
+		destroy : function()
+		{
+			// do not attempt to destroy if the layer is waiting or destroyed
+			if( this.status != 'waiting' && this.status != 'destroyed' )
+			{
+				console.log('layer destroyed', this.id, this, this.status);
+				this.status = 'destroyed';
+			}
 		}
 	});
 
@@ -16210,17 +16248,17 @@ function(Zeega, Layer)
 	var FrameModel = Backbone.Model.extend({
 
 		ready : false,
-		status : 'waiting',
+		status : 'waiting', // waiting, loading, ready, destroyed
 		hasPlayed : false,
 
 		defaults : {
 			attr : { advance : 0 },
-			common_layers : {},	// ids of frames and their common layers for loading
-			layers : [],		// ids of layers contained on frame
-			link_to : [],		// ids of frames this frame can lead to
-			link_from : [],		// ids of frames this frame can be accessed from
-			next : null,		// id of the next frame
-			prev : null			// id of the previous frame
+			common_layers : {},			// ids of frames and their common layers for loading
+			layers : [],				// ids of layers contained on frame
+			link_to : [],				// ids of frames this frame can lead to
+			link_from : [],				// ids of frames this frame can be accessed from
+			next : null,				// id of the next frame
+			prev : null					// id of the previous frame
 		},
 
 		// for convenience
@@ -16234,6 +16272,17 @@ function(Zeega, Layer)
 			else if( !_.isNull(this.get('prev')) && _.isNull(this.get('next')) ) this.set('connections','l');
 			else if( _.isNull(this.get('prev')) && !_.isNull(this.get('next')) ) this.set('connections','r');
 			else this.set('connections','none');
+		},
+
+		// manages the removal of all child layers
+		destroy : function()
+		{
+			// do not attempt to destroy if the layer is waiting or destroyed
+			if( this.status != 'waiting' && this.status != 'destroyed' )
+			{
+				this.layers.each(function(layer){ layer.destroy(); });
+				this.status = 'destroyed';
+			}
 		}
 
 	});
@@ -16354,10 +16403,13 @@ function(Zeega, Frame)
 			autoplay : true,
 			chromeless : false,
 			delay : 0,						// ms after initial all loaded to play project
+			escapable : true,				// can the project be escaped through user input (esc or close buttons)
 			fade_overlays : true,
+			fadeIn : 500,					// ms the player takes to fade in
+			fadeOut : 500,					// ms the player takes to fade out on destroy
 			fullscreenEnable : true,
 			keyboard : true,
-			mode :'standalone',
+			mode :'standalone',				// standalone, editor? do I need this?
 			overlays : {
 				arrows : true,
 				branding : true,
@@ -16367,8 +16419,8 @@ function(Zeega, Frame)
 				social : true
 			},
 			start_frame : null,
-			viewport_fit : true,
-			viewport_ratio : 4/3
+			window_fit : true,
+			window_ratio : 4/3
 		},
 
 		// initialize the zeega player:
@@ -16420,9 +16472,51 @@ function(Zeega, Frame)
 		// renders the player to the dom // this could be a _.once
 		render : function()
 		{
+			var _this = this;
+			this.Layout = new PlayerLayout({
+				model: this,
+				attributes: {
+					id : 'ZEEGA-player-'+ this.id,
+					'data-projectID' : this.id
+				}
+			});
+			$('body').append(this.Layout.el);
+			this.Layout.render();
+			this.Layout.$el.fadeIn(this.get('fadeIn'),function(){
+				_this.onRendered();
+			});		
+		},
 
+		onRendered : function()
+		{
 			this.ready = true;
+			this.initEvents(); // this should be elsewhere. in an onReady fxn?
 			this.trigger('ready');
+		},
+
+		initEvents : function()
+		{
+			var _this = this;
+			if( this.get('keyboard') )
+			{
+				$(window).keyup(function(e){
+					switch( e.which )
+					{
+						case 27: // esc
+							if(_this.get('escapable')) _this.destroy();
+							break;
+						case 37: // left arrow
+							_this.prev();
+							break;
+						case 39: // right arrow
+							_this.next();
+							break;
+						case 32: // spacebar
+							_this.playPause();
+							break;
+					}
+				});
+			}
 		},
 
 		// if the player is paused, then play the project
@@ -16449,18 +16543,20 @@ function(Zeega, Frame)
 
 		playPause : function()
 		{
-
+			console.log('play pause');
 		},
 
 		// goes to previous frame in sequence and returns the id or returns false if at beginning
 		next : function()
 		{
+			console.log('next');
 			return false;
 		},
 
 		// goes to next frame in sequence and returns the id or returns false if at end
 		prev : function()
 		{
+			console.log('prev');
 			return false;
 		},
 
@@ -16491,7 +16587,12 @@ function(Zeega, Frame)
 		// completely obliterate the player. triggers event
 		destroy : function()
 		{
-			this.trigger('player_destroyed');
+			var _this = this;
+			this.Layout.$el.fadeOut( this.get('fadeOut'), function(){
+				// destroy all layers before calling player_destroyed
+				_this.frames.each(function(frame){ frame.destroy(); });
+				_this.trigger('player_destroyed');
+			});
 		}
 
 	});
@@ -16506,11 +16607,59 @@ function(Zeega, Frame)
 		var frames = new Frame.Collection( player.get('frames') );
 		frames.load( player.get('sequences'), player.get('layers') );
 		player.frames = frames;
-		
+
 		player.initialized = true;
 		player.trigger('data_loaded');
 		if( player.get('autoplay') ) player.play();
 	};
+
+	var PlayerLayout = Backbone.Layout.extend({
+		template : 'player-layout',
+		className : 'ZEEGA-player',
+
+		initialize : function()
+		{
+			var _this = this;
+			// debounce the resize function so it doesn't bog down the browser
+			var lazyResize = _.debounce(function(){ _this.resizeWindow(); }, 300);
+			$(window).resize(lazyResize);
+		},
+
+		afterRender : function()
+		{
+			// correctly size the player window
+			this.$('.ZEEGA-player-window').css( this.getWindowSize() );
+		},
+
+		resizeWindow : function()
+		{			
+			// animate the window size in place
+			var css = this.getWindowSize();
+			this.$('.ZEEGA-player-window').animate( css );
+			this.model.trigger('window_resized', css );
+		},
+
+		// calculate and return the correct window size for the player window
+		// uses the player's window_ratio attribute
+		getWindowSize : function()
+		{
+			var css = {};
+			var winWidth = window.innerWidth;
+			var winHeight = window.innerHeight;
+			var winRatio = winWidth / winHeight;
+			if( winRatio > this.model.get('window_ratio') )
+			{
+				css.width = winHeight * this.model.get('window_ratio') +'px';
+				css.height = winHeight +'px';
+			}
+			else
+			{
+				css.width = winWidth + 'px';
+				css.height = winWidth / this.model.get('window_ratio') +'px';
+			}
+			return css;
+		}
+	});
 
 
 	return Player;
