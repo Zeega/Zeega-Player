@@ -47,7 +47,7 @@ function(Zeega, Frame)
 				social : true
 			},
 			start_frame : null,
-			window_fit : true,
+			window_fit : false,
 			window_ratio : 4/3
 		},
 
@@ -241,6 +241,14 @@ function(Zeega, Frame)
 		if( player.get('autoplay') ) player.play();
 	};
 
+	/*
+		the player layout
+
+		# contains resize logic
+		# renders the window target for frames/layers
+
+		private
+	*/
 	var PlayerLayout = Backbone.Layout.extend({
 		template : 'player-layout',
 		className : 'ZEEGA-player',
@@ -277,15 +285,32 @@ function(Zeega, Frame)
 			var winWidth = window.innerWidth;
 			var winHeight = window.innerHeight;
 			var winRatio = winWidth / winHeight;
-			if( winRatio > this.model.get('window_ratio') )
+
+			if(this.model.get('window_fit'))
 			{
-				css.width = winHeight * this.model.get('window_ratio') +'px';
-				css.height = winHeight +'px';
+				if( winRatio > this.model.get('window_ratio') )
+				{
+					css.width = winWidth + 'px';
+					css.height = winWidth / this.model.get('window_ratio') +'px';
+				}
+				else
+				{
+					css.width = winHeight * this.model.get('window_ratio') +'px';
+					css.height = winHeight +'px';
+				}
 			}
 			else
 			{
-				css.width = winWidth + 'px';
-				css.height = winWidth / this.model.get('window_ratio') +'px';
+				if( winRatio > this.model.get('window_ratio') )
+				{
+					css.width = winHeight * this.model.get('window_ratio') +'px';
+					css.height = winHeight +'px';
+				}
+				else
+				{
+					css.width = winWidth + 'px';
+					css.height = winWidth / this.model.get('window_ratio') +'px';
+				}
 			}
 			return css;
 		}

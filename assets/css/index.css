@@ -2,6 +2,7 @@
   background-color: #000000;
   height: 100%;
   left: 0;
+  overflow: hidden;
   position: absolute;
   top: 0;
   width: 100%;
@@ -14,4 +15,5 @@
 }
 .ZEEGA-player .ZEEGA-player-window {
   background: red;
+  overflow: hidden;
 }
