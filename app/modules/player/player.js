@@ -1,11 +1,3 @@
-/**
-Provides more functionality for the widget module..
-
-@module widget
-@submodule widget-foo
-@main widget
-**/
-
 define([
 	"zeega",
 	"player/frame"
