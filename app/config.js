@@ -16,7 +16,8 @@ require.config({
 		backbone: "../assets/js/libs/backbone",
 
 		player: "../app/modules/player",
-		zeega_plugins: "../app/modules/plugins"
+		zeega_plugins: "../app/modules/plugins",
+		zeega_layers: "../app/modules/plugins/layers"
 	},
 
 	shim: {

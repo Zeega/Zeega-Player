@@ -1,6 +1,6 @@
 define([
 	"zeega",
-	"zeega_plugins/_plugins"
+	"zeega_layers/_all"
 ],
 
 function(Zeega, Plugin)
