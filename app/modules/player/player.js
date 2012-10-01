@@ -1,3 +1,11 @@
+/**
+Provides more functionality for the widget module..
+
+@module widget
+@submodule widget-foo
+@main widget
+**/
+
 define([
 	"zeega",
 	"player/frame"
@@ -5,18 +13,33 @@ define([
 
 function(Zeega, Frame)
 {
-	/*
-		Player.Model
 
-		# can accept:
-			- valid ZEEGA data (json)
-			- valid url returning valid ZEEGA data
+	/**
+	Player
 
-		# exposes the player API (play, pause, stop, destroy, getCitations, etc) // to be documented further
-		
-		# broadcasts events (ready, play, pause, stop, timeupdate, frameadvance, etc) // to be documented further
+	can accept:
+	
+	- valid ZEEGA data (json)
+	
+	- valid url returning valid ZEEGA data
+	
+	exposes the player API (play, pause, stop, destroy, getCitations, etc) // to be documented further
+	
+	broadcasts events (ready, play, pause, stop, timeupdate, frameadvance, etc) // to be documented further
+	
+	is the only external contact point
 
-		# is the only external contact point
+		// initialize player
+		var player = new Player.Model({ url: "<valid url>"} });
+		// or
+		var player = new Player.Model({ data: {<valid data>} });
+		// or
+		var player  = new Player.Model();
+		player.on('all', fxn); // log all events
+		player.load({data: {<valid data>}})
+
+	@class Player
+	@constructor
 	*/
 
 	Player = Backbone.Model.extend({
@@ -30,43 +53,202 @@ function(Zeega, Frame)
 
 		// default settings -  can be overridden by project data
 		defaults : {
+			/**
+			Sets the player to play when data is successfully parsed and rendered to the dom
+
+			@property autoplay 
+			@type Boolean
+			@default true
+			**/
 			autoplay : true,
+			/**
+			Creates a player with no visual controls. Useful if wrapping the player in custom UI
+
+			@property chromeless 
+			@type Boolean
+			@default true
+			**/
 			chromeless : true,
-			delay : 0,						// ms after initial all loaded to play project
-			escapable : true,				// can the project be escaped through user input (esc or close buttons)
+			/**
+			Time to wait after player is ready before playing project
+
+			overrides any overlay attributes
+
+			@property delay
+			@type Integer
+			@default 0
+			**/
+			delay : 0,
+			/**
+			Sets if the project be escaped through user input (esc or close buttons)
+
+			@property escapable
+			@type Boolean
+			@default true
+			**/
+			escapable : true,
+			/**
+			If there are overlays, do they fade out?
+
+			@property fade_overlays
+			@type Boolean
+			@default true
+			**/
 			fade_overlays : true,
-			fadeIn : 500,					// ms the player takes to fade in
-			fadeOut : 500,					// ms the player takes to fade out on destroy
+			/**
+			ms the player takes to fade in
+
+			@property fadeIn
+			@type Integer
+			@default 500
+			**/
+			fadeIn : 500,
+			/**
+			ms the player takes to fade out
+
+			@property fadeOut
+			@type Integer
+			@default 500
+			**/
+			fadeOut : 500,
+			/**
+			Sets if the player be set to fullscreen
+
+			@property fullscreenEnable
+			@type Boolean
+			@default true
+			**/
 			fullscreenEnable : true,
+			/**
+			Turns the keyboard controls on or off
+
+			@property keyboard
+			@type Boolean
+			@default true
+			**/
 			keyboard : true,
-			mode :'standalone',				// standalone, editor? do I need this?
+			/**
+			Sets the player mode
+
+			@property mode
+			@type String
+			@default 'standalone'
+			@deprecated
+			**/
+			mode :'standalone',
+			/**
+			Sets the individual properties of overlays
+
+			@property overlays
+			@type Object
+			@default mixed
+			**/
 			overlays : {
+				/**
+				Turn on/off arrows
+
+				@property overlays.arrows
+				@type Boolean
+				@default true
+				**/
 				arrows : true,
+				/**
+				Turn on/off Zeega branding
+
+				@property overlays.branding
+				@type Boolean
+				@default true
+				**/
 				branding : true,
+				/**
+				Turn on/off Zeega layer level citations
+
+				@property overlays.citations_layers
+				@type Boolean
+				@default true
+				**/
 				citations_layer : true,
+				/**
+				Turn on/off frame level citations
+
+				@property overlays.citations_frame
+				@type Boolean
+				@default true
+				**/
 				citations_frame : true,
+				/**
+				Turn on/off frame project level citations
+
+				@property overlays.citations_project
+				@type Boolean
+				@default true
+				**/
 				citations_project : true,
+				/**
+				Turn on/off social share icons
+
+				@property overlays.social
+				@type Boolean
+				@default true
+				**/
 				social : true
 			},
+			/**
+			The frame id to start the player
+
+			@property start_frame
+			@type Integer
+			@default null
+			**/
 			start_frame : null,
+			/**
+			Defines whether or not the player is fullscreen or scales to fit the browser.
+
+			@property window_fit
+			@type Boolean
+			@default false
+			**/
 			window_fit : false,
+			/**
+			Defines aspect ratio of the Zeega project
+
+			@property window_ratio
+			@type Float
+			@default 4/3
+			**/
 			window_ratio : 4/3
 		},
 
-		// initialize the zeega player:
-		// var player = new Player.Model({ url: "<valid url>"} });
-		// var player = new Player.Model({ data: {<valid data>} });
-		//
-		// or
-		//
-		// var player  = new Player.Model();
-		// player.on('all', fxn); // log all events
-		// player.load({data: {<valid data>}})
-		
+
+		/**
+		* initialize the zeega player:
+		*
+		* can be initialized like so:
+		*
+		* var player = new Player.Model({ url: "<valid url>"} });
+		* var player = new Player.Model({ data: {<valid data>} });
+		*
+		* or
+		*
+		* var player  = new Player.Model();
+		* player.on('all', fxn); // log all events
+		* player.load({data: {<valid data>}})
+		*/
+
 		initialize : function( obj )
 		{
 			if( !_.isUndefined(obj) ) this.load(obj); // allow for load later
 		},
+
+		/**
+		* load 
+		* loads the project with data or supplied url
+		*
+		* @method load
+		* @param {Object} setup Setup object
+		* @param {String} [setup.url] A complete url pointing to a valid Zeega project data file.
+		* @param {Object} [setup.data]A valid Zeega project data object.
+		*/
 
 		load : function( obj )
 		{
@@ -146,6 +328,15 @@ function(Zeega, Frame)
 
 		// if the player is paused, then play the project
 		// if the player is not rendered, then render it first
+		/**
+		* play 
+		* plays the project
+		* -if the player is paused, then play the project
+		* -if the player is not rendered, then render it first
+		*
+		* @method play
+		*/
+
 		play : function()
 		{
 			if( !this.ready ) this.render();
@@ -248,6 +439,12 @@ function(Zeega, Frame)
 			});
 		},
 
+		/**
+		Fired when an error occurs...
+
+		@event onError 
+		@param {String} str A description of the error
+		**/
 		onError : function(str)
 		{
 			this.trigger('error', str);

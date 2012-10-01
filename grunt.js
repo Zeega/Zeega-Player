@@ -223,6 +223,19 @@ module.exports = function(grunt) {
 					"app/templates/plugins/": "app/modules/plugins/**/*.html",
 				}
 			}
+		},
+
+		yuidoc: {
+			compile: {
+				"name": "Zeega Player",
+				"description": "Core code for the Zeega Player",
+				"version": "0.9.0",
+				"url": "http://www.zeega.org",
+				options: {
+					paths: "app/modules/player/",
+					outdir: "docs/"
+				}
+			}
 		}
 
 
