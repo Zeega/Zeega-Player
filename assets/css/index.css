@@ -13,7 +13,11 @@
   margin: 0 auto;
   position: relative;
 }
-.ZEEGA-player .ZEEGA-player-window {
-  background: red;
+.ZEEGA-player-window {
   overflow: hidden;
+}
+.ZEEGA-player-window > .visual-element {
+  position: absolute;
+  top: 0;
+  left: 0;
 }

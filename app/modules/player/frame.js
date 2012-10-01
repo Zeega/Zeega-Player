@@ -36,9 +36,28 @@ function(Zeega, Layer)
 			else this.set('connections','none');
 		},
 
-		render : function()
+		// render from frame.
+		render : function( oldID )
 		{
-			this.layers.each(function(layer){ layer.render(); });
+			// only render non-common layers. allows for persistent layers
+			var commonLayers = this.get('common_layers')[oldID] || [];
+			this.layers.each(function(layer){
+				if( !_.include(commonLayers, layer.id) )
+				{
+					console.log('render:',layer.id, layer.get('type'));	layer.render();
+				}
+			});
+		},
+
+		unrender : function( newID )
+		{
+			var commonLayers = this.get('common_layers')[newID] || [];
+			this.layers.each(function(layer){
+				if( !_.include(commonLayers, layer.id) )
+				{
+					console.log('render:',layer.id, layer.get('type'));	layer.remove();
+				}
+			});
 		},
 
 		// manages the removal of all child layers

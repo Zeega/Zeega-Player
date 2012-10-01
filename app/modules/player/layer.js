@@ -31,8 +31,19 @@ function(Zeega, Plugin)
 		{
 			if( this.layerClass )
 			{
-				this.visualElement = new this.layerClass.Visual({model:this});
+				this.visualElement = new this.layerClass.Visual({model:this, attributes:{
+					id : 'visual-element-' + this.id,
+					'data-layer_id' : this.id
+				}});
 				this.visualElement.render();
+			}
+		},
+
+		remove : function()
+		{
+			if( this.layerClass )
+			{
+				this.visualElement.remove();
 			}
 		},
 

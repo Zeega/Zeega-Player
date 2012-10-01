@@ -258,6 +258,7 @@ function(Zeega, Frame)
 					// try to load project from url
 					var _this = this;
 					this.url = obj.url;
+					this.set(obj); // overwrite project settings and add data
 					this.fetch({silent: true})
 						.success(function(){ parseProject( _this ); })
 						.error(function(){ _this.onError('3 - fetch error. bad url?'); });
@@ -282,7 +283,7 @@ function(Zeega, Frame)
 			this.Layout.render();
 			this.Layout.$el.fadeIn(this.get('fadeIn'),function(){
 				_this.onRendered();
-			});		
+			});
 		},
 
 		onRendered : function()
@@ -340,7 +341,7 @@ function(Zeega, Frame)
 				{
 					this.cueFrame( this.get('sequences')[0].frames[0] );
 				}
-				else if( _.isNull(this.currentFrame) && !_.isNull( this.get('start_frame') ) && this.layers.get( this.get('start_frame') ) )
+				else if( _.isNull(this.currentFrame) && !_.isNull( this.get('start_frame') ) && this.frames.get( this.get('start_frame') ) )
 				{
 					this.cueFrame( this.get('start_frame') );
 				}
@@ -395,11 +396,18 @@ function(Zeega, Frame)
 		goToFrame :function(id)
 		{
 			console.log('gotoframe', id);
+			var oldID;
+			if(this.currentFrame)
+			{
+				this.currentFrame.unrender( id );
+				oldID = this.currentFrame.id;
+			}
 			// unrender current frame
 			// swap out current frame with new one
 			this.currentFrame = this.frames.get( id );
 			// render current frame // should trigger a frame rendered event when successful
-			this.currentFrame.render();
+			this.currentFrame.render( oldID );
+			Zeega.router.navigate('/frame/'+ id);
 		},
 
 		// returns project metadata
@@ -455,7 +463,6 @@ function(Zeega, Frame)
 		var frames = new Frame.Collection( player.get('frames') );
 		frames.load( player.get('sequences'), player.get('layers') );
 		player.frames = frames;
-
 		player.initialized = true;
 		player.trigger('data_loaded');
 		if( player.get('autoplay') ) player.play();
