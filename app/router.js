@@ -31,7 +31,7 @@ function(Zeega, Player) {
 			project.on('all', function(e){console.log('e:',e);});
 			project.load({
 				url: 'http://alpha.zeega.org/api/projects/1841',
-				start_frame : parseInt(frameID)
+				start_frame : parseInt(frameID,10)
 			});
 			console.log('project', project, 'go to frame', frameID);
 		}
