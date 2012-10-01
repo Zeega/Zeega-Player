@@ -36,6 +36,11 @@ function(Zeega, Layer)
 			else this.set('connections','none');
 		},
 
+		render : function()
+		{
+			this.layers.each(function(layer){ layer.render(); });
+		},
+
 		// manages the removal of all child layers
 		destroy : function()
 		{

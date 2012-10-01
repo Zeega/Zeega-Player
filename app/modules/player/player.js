@@ -215,7 +215,8 @@ function(Zeega, Frame)
 			// unrender current frame
 			// swap out current frame with new one
 			this.currentFrame = this.frames.get( id );
-			// render current frame // should trigger a frame rendered event when successfull
+			// render current frame // should trigger a frame rendered event when successful
+			this.currentFrame.render();
 		},
 
 		// returns project metadata

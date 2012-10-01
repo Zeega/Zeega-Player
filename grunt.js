@@ -7,7 +7,7 @@ module.exports = function(grunt) {
 
 		// The clean task ensures all files are removed from the dist/ directory so
 		// that no files linger from previous builds.
-		clean: ["dist/"],
+		clean: ["dist/", "app/templates/plugins/"],
 
 		// The lint task will run the build configuration and the application
 		// JavaScript through JSHint and report any errors.  You can change the
@@ -15,7 +15,7 @@ module.exports = function(grunt) {
 		// https://github.com/cowboy/grunt/blob/master/docs/task_lint.md
 		lint: {
 			files: [
-				"build/config.js", "app/**/*.js"
+				"build/config.js", "app/**/*.js", "app/modules/plugins/*.js"
 			]
 		},
 
@@ -216,6 +216,15 @@ module.exports = function(grunt) {
 			}
 		},
 
+		copy: {
+			dist: {
+				files: {
+					// copy plugin template html files into the template folder
+					"app/templates/plugins/": "app/modules/plugins/**/*.html",
+				}
+			}
+		}
+
 
 
 	});
@@ -225,7 +234,7 @@ module.exports = function(grunt) {
 	// dist/debug/templates.js, compile all the application code into
 	// dist/debug/require.js, and then concatenate the require/define shim
 	// almond.js and dist/debug/templates.js into the require.js file.
-	grunt.registerTask("debug", "clean lint jst requirejs concat stylus:compile");
+	grunt.registerTask("debug", "clean copy lint jst requirejs concat stylus:compile");
 
 	// The release task will run the debug tasks and then minify the
 	// dist/debug/require.js file and CSS files.
