@@ -208,6 +208,7 @@ function(Zeega, Frame)
 			}
 		},
 
+		// should this live in the cueFrame method so it's not exposed?
 		goToFrame :function(id)
 		{
 			console.log('gotoframe', id);
