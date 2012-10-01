@@ -1,0 +1,3 @@
+[submodule "assets/js/libs/popcorn"]
+	path = assets/js/libs/popcorn
+	url = git@github.com:Zeega/popcorn-flash.git
