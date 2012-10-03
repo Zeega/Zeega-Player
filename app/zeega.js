@@ -1,14 +1,8 @@
 define([
-	// Libraries.
-	"jquery",
-	"lodash",
-	"backbone",
-
-	// Plugins.
 	"plugins/backbone.layoutmanager"
 ],
 
-function($, _, Backbone) {
+function() {
 
 	// Provide a global location to place configuration settings and module
 	// creation.

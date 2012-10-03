@@ -39,11 +39,50 @@ function(Zeega, Layer)
 		// render from frame.
 		render : function( oldID )
 		{
+			// if frame is completely loaded, then just render it
+			// else try preloading the layers
+			var _this = this;
 			// only render non-common layers. allows for persistent layers
 			var commonLayers = this.get('common_layers')[oldID] || [];
-			this.layers.each(function(layer){
-				if( !_.include(commonLayers, layer.id) ) layer.render();
-			});
+
+			if( _this.status == 'ready' )
+			{
+				this.layers.each(function(layer){
+					if( !_.include(commonLayers, layer.id) ) layer.render(); // player_onPlay()
+				});
+			}
+			else
+			{
+				// if layer is already loading, ignore it
+				// if layer is waiting, the preload it
+				this.layers.each(function(layer){
+					if( layer.status == 'waiting' && !_.include(commonLayers, layer.id) )
+					{
+						layer.on('ready', _this.onLayerReady, _this);
+						layer.render(); // player_onPreload()
+					}
+				});
+			}
+				
+		},
+
+		onLayerReady : function( layer )
+		{
+			var states = getLayerStates();
+			if( states.ready.length == this.layers.length ) this.ready = true;
+
+			var statuses = this.layers.map(function(layer){ return layer.status;	});
+			//var include
+		},
+
+		getLayerStates : function()
+		{
+			var states = {};
+			states.ready = _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'ready'; });
+			states.waiting = _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'waiting'; });
+			states.loading = _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'loading'; });
+			states.destroyed = _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'destroyed'; });
+			return states;
 		},
 
 		unrender : function( newID )

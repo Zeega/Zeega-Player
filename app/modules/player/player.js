@@ -543,6 +543,9 @@ function(Zeega, Frame)
 		}
 	});
 
+	Zeega.player = Player;
+	window.Zeega = window.Zeega || Zeega;
+	$(window).trigger('zeega_ready');
 
 	return Player;
 });

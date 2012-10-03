@@ -65,7 +65,7 @@ module.exports = function(grunt) {
 					"dist/debug/require.js"
 				],
 
-				dest: "dist/debug/require.js",
+				dest: "dist/debug/zeega.js",
 
 				separator: ";"
 			}
@@ -116,7 +116,7 @@ module.exports = function(grunt) {
 
 		// Takes the built require.js file and minifies it for filesize benefits.
 		min: {
-			"dist/release/require.js": [
+			"dist/release/zeega.js": [
 				"dist/debug/require.js"
 			]
 		},
