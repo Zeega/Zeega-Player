@@ -4,7 +4,7 @@
 
 ##Dependencies
 
-* jquery or zepto
+* jquery
 * underscore or lodash
 * backbone
 

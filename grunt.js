@@ -76,8 +76,8 @@ module.exports = function(grunt) {
 		// also minifies all the CSS as well.  This is named index.css, because we
 		// only want to load one stylesheet in index.html.
 		mincss: {
-			"dist/release/index.css": [
-				"dist/debug/index.css"
+			"dist/release/zeega.css": [
+				"dist/debug/zeega.css"
 			]
 		},
 
@@ -211,7 +211,7 @@ module.exports = function(grunt) {
 		less: {
 			main: {
 				files: {
-					'assets/css/index.css' : 'assets/css/less/player.less'
+					'assets/css/zeega.css' : 'assets/css/less/*.less'
 				}
 			}
 		},
@@ -221,6 +221,7 @@ module.exports = function(grunt) {
 				files: {
 					// copy plugin template html files into the template folder
 					"app/templates/plugins/": "app/modules/plugins/**/*.html",
+					"dist/debug/": "assets/css/zeega.css",
 				}
 			}
 		},
@@ -247,7 +248,7 @@ module.exports = function(grunt) {
 	// dist/debug/templates.js, compile all the application code into
 	// dist/debug/require.js, and then concatenate the require/define shim
 	// almond.js and dist/debug/templates.js into the require.js file.
-	grunt.registerTask("debug", "clean copy lint jst requirejs concat stylus:compile");
+	grunt.registerTask("debug", "clean less copy lint jst requirejs concat");
 
 	// The release task will run the debug tasks and then minify the
 	// dist/debug/require.js file and CSS files.
