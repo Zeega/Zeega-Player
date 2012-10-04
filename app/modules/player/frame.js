@@ -42,15 +42,16 @@ function(Zeega, Layer)
 		preload : function()
 		{
 			var _this = this;
-			// if layer is already loading, ignore it
-			// if layer is waiting, the preload it
-			this.layers.each(function(layer){
-				if( layer.status == 'waiting' )
-				{
-					layer.on('ready', _this.onLayerReady, _this);
-					layer.render();
-				}
-			});
+			if(this.status != 'ready')
+			{
+				this.layers.each(function(layer){
+					if( layer.status == 'waiting' )
+					{
+						layer.on('ready', _this.onLayerReady, _this);
+						layer.render();
+					}
+				});
+			}
 		},
 
 		// render from frame.
@@ -67,12 +68,10 @@ function(Zeega, Layer)
 				this.layers.each(function(layer){
 					if( !_.include(commonLayers, layer.id) ) layer.render();
 				});
-				this.preload();
 			}
 			else
 			{
 				this.renderOnReady = oldID;
-				this.preload();
 			}	
 		},
 
@@ -87,6 +86,7 @@ function(Zeega, Layer)
 
 		onFrameReady : function()
 		{
+			console.log('frame ready: ',this.id)
 			this.ready = true;
 			this.status = 'ready';
 			if( !_.isNull(this.renderOnReady) )
@@ -143,7 +143,7 @@ function(Zeega, Layer)
 	Frame.Collection = Backbone.Collection.extend({
 		model : FrameModel,
 
-		load : function( sequences,layers )
+		load : function( sequences,layers, preload_ahead )
 		{
 			var _this = this;
 			// create a layer collection. this does not need to be saved anywhere
@@ -216,7 +216,29 @@ function(Zeega, Layer)
 				});
 				frame.set({ common_layers: commonLayers });
 			});
+
+			// figure out the frames that should preload when this frame is rendered
+			var preloadAhead = preload_ahead || 0;
+			if(preloadAhead)
+			{
+
+				this.each(function(frame){
+
+					var framesToPreload = [frame.id];
+					var targetArray = [frame.id];
+					for( var i = 0 ; i < preloadAhead ; i++)
+					{
+						_.each( targetArray, function(frameID){
+							targetArray = _.compact([ frame.get('prev'), frame.get('next') ]);
+							framesToPreload = _.union( framesToPreload, targetArray, frame.get('link_to'), frame.get('link_from'));
+						});
+					}
+					frame.set('preload_frames', framesToPreload );
+				});
+
+			}
 		}
+
 	});
 
 	

@@ -185,9 +185,19 @@ function(Zeega, Frame)
 				**/
 				social : true
 			},
+
+			/**
+			The number of frames to attempt preload on
+			
+			@property preload_ahead
+			@type Integer
+			@default 2
+			**/
+			preload_ahead : 2,
+			
 			/**
 			The frame id to start the player
-
+			
 			@property start_frame
 			@type Integer
 			@default null
@@ -395,7 +405,7 @@ function(Zeega, Frame)
 		// should this live in the cueFrame method so it's not exposed?
 		goToFrame :function(id)
 		{
-			console.log('gotoframe', id);
+			this.preloadFramesFrom( id );
 			var oldID;
 			if(this.currentFrame)
 			{
@@ -405,9 +415,18 @@ function(Zeega, Frame)
 			// unrender current frame
 			// swap out current frame with new one
 			this.currentFrame = this.frames.get( id );
-			console.log('ZEEGA', this, this.currentFrame)
 			// render current frame // should trigger a frame rendered event when successful
 			this.currentFrame.render( oldID );
+		},
+
+		preloadFramesFrom : function( id )
+		{
+			var _this = this;
+			var frame = this.frames.get( id );
+			_.each( frame.get('preload_frames'), function(frameID){
+				_this.frames.get(frameID).preload();
+			});
+			
 		},
 
 		// returns project metadata
@@ -461,7 +480,7 @@ function(Zeega, Frame)
 	var parseProject = function( player )
 	{
 		var frames = new Frame.Collection( player.get('frames') );
-		frames.load( player.get('sequences'), player.get('layers') );
+		frames.load( player.get('sequences'), player.get('layers'), player.get('preload_ahead') );
 		player.frames = frames;
 		player.initialized = true;
 		player.trigger('data_loaded');
