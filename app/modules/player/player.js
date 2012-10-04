@@ -399,12 +399,13 @@ function(Zeega, Frame)
 			var oldID;
 			if(this.currentFrame)
 			{
-				this.currentFrame.unrender( id );
+				this.currentFrame.exit( id );
 				oldID = this.currentFrame.id;
 			}
 			// unrender current frame
 			// swap out current frame with new one
 			this.currentFrame = this.frames.get( id );
+			console.log('ZEEGA', this, this.currentFrame)
 			// render current frame // should trigger a frame rendered event when successful
 			this.currentFrame.render( oldID );
 		},

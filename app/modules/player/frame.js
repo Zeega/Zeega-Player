@@ -13,12 +13,15 @@ function(Zeega, Layer)
 		status : 'waiting', // waiting, loading, ready, destroyed
 		hasPlayed : false,
 
+		renderOnReady : null,
+
 		defaults : {
 			attr : { advance : 0 },
 			common_layers : {},			// ids of frames and their common layers for loading
 			layers : [],				// ids of layers contained on frame
 			link_to : [],				// ids of frames this frame can lead to
 			link_from : [],				// ids of frames this frame can be accessed from
+			preload_frames : [],
 			next : null,				// id of the next frame
 			prev : null					// id of the previous frame
 		},
@@ -36,43 +39,61 @@ function(Zeega, Layer)
 			else this.set('connections','none');
 		},
 
+		preload : function()
+		{
+			var _this = this;
+			// if layer is already loading, ignore it
+			// if layer is waiting, the preload it
+			this.layers.each(function(layer){
+				if( layer.status == 'waiting' )
+				{
+					layer.on('ready', _this.onLayerReady, _this);
+					layer.render();
+				}
+			});
+		},
+
 		// render from frame.
 		render : function( oldID )
 		{
 			// if frame is completely loaded, then just render it
 			// else try preloading the layers
 			var _this = this;
-			// only render non-common layers. allows for persistent layers
-			var commonLayers = this.get('common_layers')[oldID] || [];
-
 			if( _this.status == 'ready' )
 			{
+				// only render non-common layers. allows for persistent layers
+				var commonLayers = this.get('common_layers')[oldID] || [];
+				// if the frame is 'ready', then just render the layers
 				this.layers.each(function(layer){
-					if( !_.include(commonLayers, layer.id) ) layer.render(); // player_onPlay()
+					if( !_.include(commonLayers, layer.id) ) layer.render();
 				});
+				this.preload();
 			}
 			else
 			{
-				// if layer is already loading, ignore it
-				// if layer is waiting, the preload it
-				this.layers.each(function(layer){
-					if( layer.status == 'waiting' && !_.include(commonLayers, layer.id) )
-					{
-						layer.on('ready', _this.onLayerReady, _this);
-						layer.render(); // player_onPreload()
-					}
-				});
-			}
-				
+				this.renderOnReady = oldID;
+				this.preload();
+			}	
 		},
 
 		onLayerReady : function( layer )
 		{
-			var states = getLayerStates();
-			if( states.ready.length == this.layers.length ) this.ready = true;
+			if( this.isFrameReady() ) this.onFrameReady();
 
+			// trigger events on layer readiness
 			var statuses = this.layers.map(function(layer){ return layer.status;	});
 			//var include
+		},
+
+		onFrameReady : function()
+		{
+			this.ready = true;
+			this.status = 'ready';
+			if( !_.isNull(this.renderOnReady) )
+			{
+				this.render( this.renderOnReady );
+				this.renderOnReady = null;
+			}
 		},
 
 		getLayerStates : function()
@@ -82,15 +103,28 @@ function(Zeega, Layer)
 			states.waiting = _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'waiting'; });
 			states.loading = _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'loading'; });
 			states.destroyed = _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'destroyed'; });
+			states.error = _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'error'; });
 			return states;
+		},
+
+		isFrameReady : function()
+		{
+			var states = this.getLayerStates();
+			if( states.ready.length + states.error.length  == this.layers.length ) return true;
+			return false;
+		},
+
+		exit : function( newID )
+		{
+			var commonLayers = this.get('common_layers')[newID] || [];
+			this.layers.each(function(layer){
+				if( !_.include(commonLayers, layer.id) ) layer.exit();
+			});
 		},
 
 		unrender : function( newID )
 		{
-			var commonLayers = this.get('common_layers')[newID] || [];
-			this.layers.each(function(layer){
-				if( !_.include(commonLayers, layer.id) ) layer.remove();
-			});
+			// not sure I need this
 		},
 
 		// manages the removal of all child layers
@@ -168,7 +202,7 @@ function(Zeega, Layer)
 				
 			});
 			
-			// another for loop that has to happen after all link layers are settled
+			// another for loop that has to happen after all link layers are populated
 			this.each(function(frame){
 				// set common layers object
 				// {

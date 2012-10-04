@@ -1237,39 +1237,8 @@ function() {
 		// Create a custom object with a nested Views object.
 		module: function(additionalProps) {
 			return _.extend({ Views: {} }, additionalProps);
-		},
-
-		// Helper for using layouts.
-		useLayout: function(name, options) {
-			// If already using this Layout, then don't re-inject into the DOM.
-			if (this.layout && this.layout.options.template === name) {
-				return this.layout;
-			}
-
-			// If a layout already exists, remove it from the DOM.
-			if (this.layout) {
-				this.layout.remove();
-			}
-
-			// Create a new Layout with options.
-			var layout = new Backbone.Layout(_.extend({
-				template: name,
-				className: "layout " + name,
-				id: "layout"
-			}, options));
-
-			// Insert into the DOM.
-			$("#main").empty().append(layout.el);
-
-			// Render the layout.
-			layout.render();
-
-			// Cache the refererence.
-			this.layout = layout;
-
-			// Return the reference, for chainability.
-			return layout;
 		}
+
 	}, Backbone.Events);
 
 });
@@ -1752,7 +1721,7 @@ function(Zeega, Layer)
 
 	return Frame;
 });
-define('player/player',[
+define('modules/player/player',[
 	"zeega",
 	"player/frame"
 ],
@@ -2161,7 +2130,6 @@ function(Zeega, Frame)
 			this.currentFrame = this.frames.get( id );
 			// render current frame // should trigger a frame rendered event when successful
 			this.currentFrame.render( oldID );
-			Zeega.router.navigate('/frame/'+ id);
 		},
 
 		// returns project metadata
@@ -2303,98 +2271,11 @@ function(Zeega, Frame)
 
 	return Player;
 });
-define('router',[
-	// Application.
-	"zeega",
-	"player/player"
-],
-
-function(Zeega, Player) {
-
-	// Defining the Zeegalication router, you can attach sub routers here.
-	var Router = Backbone.Router.extend({
-		routes: {
-			"": "index",
-			"frame/:frameID" : 'goToFrame'
-		},
-
-		index: function()
-		{
-			//works
-			//var project = new Player({url: 'http://alpha.zeega.org/api/projects/1666' });
-			
-			//works
-			var project = new Player();
-			project.on('all', function(e){console.log('e:',e);});
-			project.load({url: 'http://alpha.zeega.org/api/projects/1841'});
-			console.log('project', project);
-		},
-
-		goToFrame : function( frameID )
-		{
-			var project = new Player();
-			project.on('all', function(e){console.log('e:',e);});
-			project.load({
-				url: 'http://alpha.zeega.org/api/projects/1841',
-				start_frame : parseInt(frameID,10)
-			});
-			console.log('project', project, 'go to frame', frameID);
-		}
-	});
-
-	return Router;
-
-});
-
-require([
-  // Application.
-  "zeega",
-
-  // Main Router.
-  "router"
-],
-
-function(Zeega, Router) {
-
-  // Define your master router on the Zeegalication namespace and trigger all
-  // navigation from this instance.
-  Zeega.router = new Router();
-
-  // Trigger the initial route and enable HTML5 History API support, set the
-  // root folder to '/' by default.  Change in Zeega.js.
-  Backbone.history.start({ pushState: true, root: Zeega.root });
-
-  // All navigation that is relative should be passed through the navigate
-  // method, to be processed by the router. If the link has a `data-bypass`
-  // attribute, bypass the delegation completely.
-  $(document).on("click", "a:not([data-bypass])", function(evt) {
-    // Get the absolute anchor href.
-    var href = { prop: $(this).prop("href"), attr: $(this).attr("href") };
-    // Get the absolute root.
-    var root = location.protocol + "//" + location.host + Zeega.root;
-
-    // Ensure the root is part of the anchor href, meaning it's relative.
-    if (href.prop && href.prop.slice(0, root.length) === root) {
-      // Stop the default event to ensure the link will not cause a page
-      // refresh.
-      evt.preventDefault();
-
-      // `Backbone.history.navigate` is sufficient for all Routers and will
-      // trigger the correct events. The Router's internal `navigate` method
-      // calls this anyways.  The fragment is sliced from the root.
-      Backbone.history.navigate(href.attr, true);
-    }
-  });
-
-});
-
-define("main", function(){});
-
 // Set the require.js configuration for your application.
 require.config({
 
 	// Initialize the application with the main application file.
-	deps: ["main"],
+	deps: [ "modules/player/player" ],
 
 	paths: {
 		// JavaScript folders.

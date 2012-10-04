@@ -5,14 +5,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta name="viewport" content="width=device-width,initial-scale=1">
 
-	<title>Backbone Boilerplate</title>
-
-	<!-- Application root. -->
-	<base href="/">
-
-
-
-	
+	<title>Zeega Player Test Page</title>
 
 	<!-- Application styles. -->
 	<link rel="stylesheet" href="assets/css/index.css">
@@ -24,27 +17,20 @@
 	
 
 	<script src="assets/js/libs/jquery.js"></script>
+	
+	<script>
+	$(window).bind('zeega_ready', function(){
+		var project = new Zeega.player();
+		project.on('all', function(e){console.log('e:',e);});
+		project.load({url: 'http://alpha.zeega.org/api/projects/1841'});
+		console.log('project', project);
+	});
+	</script>
+
 	<script src="assets/js/libs/lodash.js"></script>
 	<script src="assets/js/libs/backbone.js"></script>
 	<!-- Application source. -->
 	<script data-main="app/config" src="assets/js/libs/require.js"></script>
 
-	<script>
-	console.log('script');
-
-	$(window).ready(function(){
-		console.log('jquery ready')
-
-		$(window).bind('zeega_ready', function(){
-			console.log('zeega_ready')
-			var project = new Zeega.player();
-			project.on('all', function(e){console.log('e:',e);});
-			project.load({url: 'http://alpha.zeega.org/api/projects/1841'});
-			console.log('project', project);
-		});
-	});
-
-	
-	</script>
 </body>
 </html>

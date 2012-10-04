@@ -81,6 +81,7 @@ module.exports = function(grunt) {
 			]
 		},
 
+/*
 		// The stylus task is used to compile Stylus stylesheets into a single
 		// CSS file for debug and release deployments.  
 		stylus: {
@@ -113,6 +114,7 @@ module.exports = function(grunt) {
 				}
 			}
 		},
+*/
 
 		// Takes the built require.js file and minifies it for filesize benefits.
 		min: {
