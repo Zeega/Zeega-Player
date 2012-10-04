@@ -21,7 +21,7 @@ function(Zeega, Plugin)
 			// init link layer type inside here
 			if( Plugin[this.get('type')] )
 			{
-				this.layerClass = new Plugin[this.get('type')];
+				this.layerClass = new Plugin[this.get('type')]();
 				var def = _.defaults( this.toJSON(), this.layerClass.defaults );
 				this.set(def);
 
@@ -58,7 +58,7 @@ function(Zeega, Plugin)
 			}
 			else
 			{
-				console.log('***	The layer '+ this.get('type') +' is missing. :(');
+				console.log('***	The layer '+ this.get('type') +' is missing. ): ', this.id);
 			}
 		},
 

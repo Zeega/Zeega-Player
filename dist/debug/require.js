@@ -937,6 +937,7 @@ function(){
 		beforeRender : function()
 		{
 			$('.ZEEGA-player-window').append( this.el );
+			this.moveOffStage();
 			this.applySize();
 		},
 
@@ -951,12 +952,21 @@ function(){
 		init : function(){},
 		render : function(){},
 
-		verifyReady : function(){ this.model.trigger('ready',this.model.id); },
+		// default verify fxn. return ready immediately
+		verifyReady : function(){ this.model.trigger('visual_ready',this.model.id); },
 
-		player_onPreload : function(){ this.verifyReady(); },
+		player_onPreload : function()
+		{
+			this.render();
+			this.verifyReady();
+		},
 		player_onPlay : function(){},
 		player_onPause : function(){},
-		player_onExit : function(){},
+		player_onExit : function()
+		{
+			this.pause();
+			this.moveOffStage();
+		},
 		player_onUnrender : function(){},
 		player_onRenderError : function(){},
 
@@ -965,10 +975,26 @@ function(){
 		editor_onControlsOpen : function(){},
 		editor_onControlsClosed : function(){},
 
+		moveOffStage : function()
+		{
+			this.$el.css({
+				top: '-1000%',
+				left: '-1000%'
+			});
+		},
+
+		moveOnStage : function()
+		{
+			this.$el.css({
+				top: this.getAttr('top') +'%',
+				left: this.getAttr('left') +'%'
+			});
+		},
 
 		play : function()
 		{
 			this.isPlaying = true;
+			this.moveOnStage();
 			this.player_onPlay();
 		},
 
@@ -980,7 +1006,6 @@ function(){
 
 		playPause : function()
 		{
-			console.log('play pause layer', this);
 			if( this.isPlaying !== false )
 			{
 				this.isPlaying = false;
@@ -1002,9 +1027,18 @@ function(){
 
 });
 
+(function(c,n){var k="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";c.fn.imagesLoaded=function(l){function m(){var b=c(h),a=c(g);d&&(g.length?d.reject(e,b,a):d.resolve(e));c.isFunction(l)&&l.call(f,e,b,a)}function i(b,a){b.src===k||-1!==c.inArray(b,j)||(j.push(b),a?g.push(b):h.push(b),c.data(b,"imagesLoaded",{isBroken:a,src:b.src}),o&&d.notifyWith(c(b),[a,e,c(h),c(g)]),e.length===j.length&&(setTimeout(m),e.unbind(".imagesLoaded")))}var f=this,d=c.isFunction(c.Deferred)?c.Deferred():
+0,o=c.isFunction(d.notify),e=f.find("img").add(f.filter("img")),j=[],h=[],g=[];e.length?e.bind("load.imagesLoaded error.imagesLoaded",function(b){i(b.target,"error"===b.type)}).each(function(b,a){var e=a.src,d=c.data(a,"imagesLoaded");if(d&&d.src===e)i(a,d.isBroken);else if(a.complete&&a.naturalWidth!==n)i(a,0===a.naturalWidth||0===a.naturalHeight);else if(a.readyState||a.complete)a.src=k,a.src=e}):m();return d?d.promise(f):f}})(jQuery);
+
+define("plugins/jquery.imagesloaded.min", function(){});
+
 define('zeega_layers/image/image',[
-  "zeega",
-  'zeega_layers/_layer/_layer'
+	"zeega",
+	'zeega_layers/_layer/_layer',
+
+	//plugins
+	'plugins/jquery.imagesloaded.min'
+
 ],
 
 function(Zeega, _Layer){
@@ -1067,8 +1101,8 @@ function(Zeega, _Layer){
 		{
 			var _this = this;
 			var img = this.$el.imagesLoaded();
-			img.done(function(){ _this.model.trigger('ready',_this.model.id); });
-			img.fail(function(){ _this.model.trigger('error',_this.model.id); });
+			img.done(function(){ _this.model.trigger('visual_ready',_this.model.id); });
+			img.fail(function(){ _this.model.trigger('visual_error',_this.model.id); });
 		}
 		
 	});
@@ -1109,7 +1143,7 @@ function(Zeega, Plugin)
 	var LayerModel = Backbone.Model.extend({
 
 		ready : false,
-		status : 'waiting', // waiting, loading, ready, destroyed
+		status : 'waiting', // waiting, loading, ready, destroyed, error
 		
 		defaults : {
 
@@ -1120,21 +1154,66 @@ function(Zeega, Plugin)
 			// init link layer type inside here
 			if( Plugin[this.get('type')] )
 			{
-				this.layerClass = Plugin[this.get('type')];
+				this.layerClass = new Plugin[this.get('type')]();
 				var def = _.defaults( this.toJSON(), this.layerClass.defaults );
 				this.set(def);
+
+				// create and store the layerClass
+				this.visualElement = new Plugin[this.get('type')].Visual({model:this, attributes:{
+					id : 'visual-element-' + this.id,
+					'data-layer_id' : this.id
+				}});
+				// listen to visual element events
+				this.on('visual_ready', this.onVisualReady, this);
+				this.on('visual_error', this.onVisualError, this);
+			}
+			else
+			{
+				this.ready = true;
+				this.status = 'error';
 			}
 		},
 
 		render : function()
 		{
+			// make sure the layer class is loaded or fail gracefully
+			if( this.visualElement )
+			{
+				// if the layer is ready, then just show it
+				if( this.status == 'waiting')
+				{
+					this.visualElement.player_onPreload();
+				}
+				else if( this.status == 'ready' )
+				{
+					this.visualElement.play();
+				}
+			}
+			else
+			{
+				console.log('***	The layer '+ this.get('type') +' is missing. :(');
+			}
+		},
+
+		onVisualReady : function()
+		{
+			this.ready = true;
+			this.status = 'ready';
+			this.trigger('ready', this);
+		},
+
+		onVisualError : function()
+		{
+			this.ready = true;
+			this.status = 'error';
+			this.trigger('error');
+		},
+
+		exit : function()
+		{
 			if( this.layerClass )
 			{
-				this.visualElement = new this.layerClass.Visual({model:this, attributes:{
-					id : 'visual-element-' + this.id,
-					'data-layer_id' : this.id
-				}});
-				this.visualElement.render();
+				this.visualElement.player_onExit();
 			}
 		},
 
@@ -1152,7 +1231,6 @@ function(Zeega, Plugin)
 			// do not attempt to destroy if the layer is waiting or destroyed
 			if( this.status != 'waiting' && this.status != 'destroyed' )
 			{
-				console.log('layer destroyed', this.id, this, this.status);
 				this.status = 'destroyed';
 			}
 		}
@@ -1185,12 +1263,15 @@ function(Zeega, Layer)
 		status : 'waiting', // waiting, loading, ready, destroyed
 		hasPlayed : false,
 
+		renderOnReady : null,
+
 		defaults : {
 			attr : { advance : 0 },
 			common_layers : {},			// ids of frames and their common layers for loading
 			layers : [],				// ids of layers contained on frame
 			link_to : [],				// ids of frames this frame can lead to
 			link_from : [],				// ids of frames this frame can be accessed from
+			preload_frames : [],
 			next : null,				// id of the next frame
 			prev : null					// id of the previous frame
 		},
@@ -1208,43 +1289,61 @@ function(Zeega, Layer)
 			else this.set('connections','none');
 		},
 
+		preload : function()
+		{
+			var _this = this;
+			if(this.status != 'ready')
+			{
+				this.layers.each(function(layer){
+					if( layer.status == 'waiting' )
+					{
+						layer.on('ready', _this.onLayerReady, _this);
+						layer.render();
+					}
+				});
+			}
+		},
+
 		// render from frame.
 		render : function( oldID )
 		{
 			// if frame is completely loaded, then just render it
 			// else try preloading the layers
 			var _this = this;
-			// only render non-common layers. allows for persistent layers
-			var commonLayers = this.get('common_layers')[oldID] || [];
-
 			if( _this.status == 'ready' )
 			{
+				// only render non-common layers. allows for persistent layers
+				var commonLayers = this.get('common_layers')[oldID] || [];
+				// if the frame is 'ready', then just render the layers
 				this.layers.each(function(layer){
-					if( !_.include(commonLayers, layer.id) ) layer.render(); // player_onPlay()
+					if( !_.include(commonLayers, layer.id) ) layer.render();
 				});
 			}
 			else
 			{
-				// if layer is already loading, ignore it
-				// if layer is waiting, the preload it
-				this.layers.each(function(layer){
-					if( layer.status == 'waiting' && !_.include(commonLayers, layer.id) )
-					{
-						layer.on('ready', _this.onLayerReady, _this);
-						layer.render(); // player_onPreload()
-					}
-				});
-			}
-				
+				this.renderOnReady = oldID;
+			}	
 		},
 
 		onLayerReady : function( layer )
 		{
-			var states = getLayerStates();
-			if( states.ready.length == this.layers.length ) this.ready = true;
+			if( this.isFrameReady() ) this.onFrameReady();
 
+			// trigger events on layer readiness
 			var statuses = this.layers.map(function(layer){ return layer.status;	});
 			//var include
+		},
+
+		onFrameReady : function()
+		{
+			console.log('frame ready: ',this.id)
+			this.ready = true;
+			this.status = 'ready';
+			if( !_.isNull(this.renderOnReady) )
+			{
+				this.render( this.renderOnReady );
+				this.renderOnReady = null;
+			}
 		},
 
 		getLayerStates : function()
@@ -1254,15 +1353,28 @@ function(Zeega, Layer)
 			states.waiting = _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'waiting'; });
 			states.loading = _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'loading'; });
 			states.destroyed = _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'destroyed'; });
+			states.error = _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'error'; });
 			return states;
+		},
+
+		isFrameReady : function()
+		{
+			var states = this.getLayerStates();
+			if( states.ready.length + states.error.length  == this.layers.length ) return true;
+			return false;
+		},
+
+		exit : function( newID )
+		{
+			var commonLayers = this.get('common_layers')[newID] || [];
+			this.layers.each(function(layer){
+				if( !_.include(commonLayers, layer.id) ) layer.exit();
+			});
 		},
 
 		unrender : function( newID )
 		{
-			var commonLayers = this.get('common_layers')[newID] || [];
-			this.layers.each(function(layer){
-				if( !_.include(commonLayers, layer.id) ) layer.remove();
-			});
+			// not sure I need this
 		},
 
 		// manages the removal of all child layers
@@ -1281,7 +1393,7 @@ function(Zeega, Layer)
 	Frame.Collection = Backbone.Collection.extend({
 		model : FrameModel,
 
-		load : function( sequences,layers )
+		load : function( sequences,layers, preload_ahead )
 		{
 			var _this = this;
 			// create a layer collection. this does not need to be saved anywhere
@@ -1340,7 +1452,7 @@ function(Zeega, Layer)
 				
 			});
 			
-			// another for loop that has to happen after all link layers are settled
+			// another for loop that has to happen after all link layers are populated
 			this.each(function(frame){
 				// set common layers object
 				// {
@@ -1354,7 +1466,29 @@ function(Zeega, Layer)
 				});
 				frame.set({ common_layers: commonLayers });
 			});
+
+			// figure out the frames that should preload when this frame is rendered
+			var preloadAhead = preload_ahead || 0;
+			if(preloadAhead)
+			{
+
+				this.each(function(frame){
+
+					var framesToPreload = [frame.id];
+					var targetArray = [frame.id];
+					for( var i = 0 ; i < preloadAhead ; i++)
+					{
+						_.each( targetArray, function(frameID){
+							targetArray = _.compact([ frame.get('prev'), frame.get('next') ]);
+							framesToPreload = _.union( framesToPreload, targetArray, frame.get('link_to'), frame.get('link_from'));
+						});
+					}
+					frame.set('preload_frames', framesToPreload );
+				});
+
+			}
 		}
+
 	});
 
 	
@@ -1548,9 +1682,19 @@ function(Zeega, Frame)
 				**/
 				social : true
 			},
+
+			/**
+			The number of frames to attempt preload on
+			
+			@property preload_ahead
+			@type Integer
+			@default 2
+			**/
+			preload_ahead : 2,
+			
 			/**
 			The frame id to start the player
-
+			
 			@property start_frame
 			@type Integer
 			@default null
@@ -1758,11 +1902,11 @@ function(Zeega, Frame)
 		// should this live in the cueFrame method so it's not exposed?
 		goToFrame :function(id)
 		{
-			console.log('gotoframe', id);
+			this.preloadFramesFrom( id );
 			var oldID;
 			if(this.currentFrame)
 			{
-				this.currentFrame.unrender( id );
+				this.currentFrame.exit( id );
 				oldID = this.currentFrame.id;
 			}
 			// unrender current frame
@@ -1770,6 +1914,16 @@ function(Zeega, Frame)
 			this.currentFrame = this.frames.get( id );
 			// render current frame // should trigger a frame rendered event when successful
 			this.currentFrame.render( oldID );
+		},
+
+		preloadFramesFrom : function( id )
+		{
+			var _this = this;
+			var frame = this.frames.get( id );
+			_.each( frame.get('preload_frames'), function(frameID){
+				_this.frames.get(frameID).preload();
+			});
+			
 		},
 
 		// returns project metadata
@@ -1823,7 +1977,7 @@ function(Zeega, Frame)
 	var parseProject = function( player )
 	{
 		var frames = new Frame.Collection( player.get('frames') );
-		frames.load( player.get('sequences'), player.get('layers') );
+		frames.load( player.get('sequences'), player.get('layers'), player.get('preload_ahead') );
 		player.frames = frames;
 		player.initialized = true;
 		player.trigger('data_loaded');

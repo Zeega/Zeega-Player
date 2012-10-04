@@ -21,7 +21,7 @@
 	<script>
 	$(window).bind('zeega_ready', function(){
 		var project = new Zeega.player();
-		project.on('all', function(e){console.log('e:',e);});
+		project.on('all', function(e, obj){console.log('e:',e,obj);});
 		project.load({url: 'http://alpha.zeega.org/api/projects/1841'});
 		console.log('project', project);
 	});

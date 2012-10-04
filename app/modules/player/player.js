@@ -262,6 +262,7 @@ function(Zeega, Frame)
 					// the project should be valid json
 					this.set(obj); // overwrite project settings and add data
 					parseProject( this );
+					this.listen();
 				}
 				else if( obj && obj.url && _.isString( obj.url ) )
 				{
@@ -270,12 +271,23 @@ function(Zeega, Frame)
 					this.url = obj.url;
 					this.set(obj); // overwrite project settings and add data
 					this.fetch({silent: true})
-						.success(function(){ parseProject( _this ); })
+						.success(function(){
+							parseProject( _this );
+							_this.listen();
+						})
 						.error(function(){ _this.onError('3 - fetch error. bad url?'); });
 				}
 				else this.onError('1 - invalid or missing data');
 			}
 			else this.onError('2 - already loaded');
+		},
+
+		listen : function()
+		{
+			var _this = this;
+			this.frames.on('all',function(e,obj){
+				_this.trigger(e,obj);
+			});
 		},
 
 		// renders the player to the dom // this could be a _.once

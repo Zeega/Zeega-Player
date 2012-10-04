@@ -68,6 +68,7 @@ function(Zeega, Layer)
 				this.layers.each(function(layer){
 					if( !_.include(commonLayers, layer.id) ) layer.render();
 				});
+				this.trigger('frame_rendered', { frame: this.toJSON(),layers: this.layers.toJSON() });
 			}
 			else
 			{
@@ -77,6 +78,9 @@ function(Zeega, Layer)
 
 		onLayerReady : function( layer )
 		{
+			this.trigger('layer_ready',layer.toJSON() );
+			this.trigger('frame_progress', this.getLayerStates() );
+
 			if( this.isFrameReady() ) this.onFrameReady();
 
 			// trigger events on layer readiness
@@ -86,9 +90,9 @@ function(Zeega, Layer)
 
 		onFrameReady : function()
 		{
-			console.log('frame ready: ',this.id)
 			this.ready = true;
 			this.status = 'ready';
+			this.trigger('frame_ready',{ frame: this.toJSON(),layers: this.layers.toJSON() });
 			if( !_.isNull(this.renderOnReady) )
 			{
 				this.render( this.renderOnReady );
@@ -99,11 +103,11 @@ function(Zeega, Layer)
 		getLayerStates : function()
 		{
 			var states = {};
-			states.ready = _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'ready'; });
-			states.waiting = _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'waiting'; });
-			states.loading = _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'loading'; });
-			states.destroyed = _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'destroyed'; });
-			states.error = _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'error'; });
+			states.ready =		_.map( _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'ready'; }), function(layer){ return layer.attributes; });
+			states.waiting =	_.map( _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'waiting'; }), function(layer){ return layer.attributes; });
+			states.loading =	_.map( _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'loading'; }), function(layer){ return layer.attributes; });
+			states.destroyed =	_.map( _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'destroyed'; }), function(layer){ return layer.attributes; });
+			states.error =		_.map( _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'error'; }), function(layer){ return layer.attributes; });
 			return states;
 		},
 
@@ -226,13 +230,17 @@ function(Zeega, Layer)
 
 					var framesToPreload = [frame.id];
 					var targetArray = [frame.id];
-					for( var i = 0 ; i < preloadAhead ; i++)
+
+					var loop = function()
 					{
 						_.each( targetArray, function(frameID){
 							targetArray = _.compact([ frame.get('prev'), frame.get('next') ]);
 							framesToPreload = _.union( framesToPreload, targetArray, frame.get('link_to'), frame.get('link_from'));
 						});
-					}
+					};
+
+					for( var i = 0 ; i < preloadAhead ; i++) loop();
+
 					frame.set('preload_frames', framesToPreload );
 				});
 
