@@ -220,8 +220,10 @@ module.exports = function(grunt) {
 			dist: {
 				files: {
 					// copy plugin template html files into the template folder
+					// to : from
 					"app/templates/plugins/": "app/modules/plugins/**/*.html",
 					"dist/debug/": "assets/css/zeega.css",
+					"dist/release/img/" : "assets/img/*"
 				}
 			}
 		},
