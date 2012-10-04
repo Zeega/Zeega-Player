@@ -407,7 +407,6 @@ function(Zeega, Frame)
 			this.currentFrame = this.frames.get( id );
 			// render current frame // should trigger a frame rendered event when successful
 			this.currentFrame.render( oldID );
-			Zeega.router.navigate('/frame/'+ id);
 		},
 
 		// returns project metadata
