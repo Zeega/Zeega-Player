@@ -203,6 +203,11 @@ function(Zeega, Layer)
 					link_to : linkTo,
 					link_from : linkFrom
 				});
+
+				// listen for layer events and propagate through the frame to the player
+				frame.layers.on('all',function(e,obj){
+					_this.trigger(e,obj);
+				});
 				
 			});
 			
@@ -246,6 +251,8 @@ function(Zeega, Layer)
 
 			}
 		}
+
+		
 
 	});
 

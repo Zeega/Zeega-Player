@@ -19,3 +19,9 @@
 	cd [path of submodule]
 	git commit -am 'message'
 	git push origin master
+
+### when you update an html template file in the layers
+
+	bbb copy
+	or
+	bbb release

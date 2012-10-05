@@ -358,6 +358,18 @@ __p+='<img src="'+
 '" width=\'100%\' />';
 }
 return __p;
+};
+
+this['JST']['app/templates/plugins/link.html'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<a href=\'#\' style=\'position:absolute;width:100%;height:100%\'>\n\t';
+ if( mode == 'editor' && !_.isNull( attr.to_frame ) ) { 
+;__p+='\n\t\t<i class="icon-share go-to-sequence"></i>\n\t';
+ } 
+;__p+='\n</a>';
+}
+return __p;
 };;
 /*!
  * backbone.layoutmanager.js v0.6.6
@@ -1256,8 +1268,13 @@ function(){
 		controls : [],
 
 		defaults : {
-			hasControls : true,
-			defaultControls : true,
+			citataion: true,
+			default_controls : true,
+			draggable : true,
+			has_controls : true,
+			linkable : true,
+			mode : 'player',
+			resizable : false,
 			showCitation : true
 		},
 		defaultAttributes : {},
@@ -1286,7 +1303,6 @@ function(){
 	_Layer.Visual = Backbone.LayoutView.extend({
 		
 		className : 'visual-element',
-		draggable : true,
 		template : '',
 
 		initialize : function()
@@ -1294,8 +1310,11 @@ function(){
 			this.init();
 		},
 
+		beforePlayerRender : function(){},
 		beforeRender : function()
 		{
+			this.className = this._className +' '+ this.className;
+			this.beforePlayerRender();
 			$('.ZEEGA-player-window').append( this.el );
 			this.moveOffStage();
 			this.applySize();
@@ -1398,7 +1417,6 @@ define('zeega_layers/image/image',[
 
 	//plugins
 	'plugins/jquery.imagesloaded.min'
-
 ],
 
 function(Zeega, _Layer){
@@ -1417,10 +1435,7 @@ function(Zeega, _Layer){
 			'height' : 100,
 			'width' : 100,
 			'opacity':1,
-			'aspect':1.33,
-			'citation':true,
-			
-			'linkable' : true
+			'aspect':1.33
 		},
 
 		controls : [
@@ -1471,6 +1486,130 @@ function(Zeega, _Layer){
 
 });
 
+define('zeega_layers/link/link',[
+	"zeega",
+	'zeega_layers/_layer/_layer'
+],
+
+function(Zeega, _Layer){
+
+	var Layer = Zeega.module();
+
+	Layer.Link = _Layer.extend({
+
+		layerType : 'Link',
+
+		defaultAttributes : {
+			'title' : 'Link Layer',
+			'from_sequence' : null,
+			'to_frame' : null,
+			'from_frame' : null,
+			'left' : 25,
+			'top' : 25,
+			'height' : 50,
+			'width' : 50,
+			'opacity' : 1,
+			'opacity_hover' : 1,
+			'blink_on_start' : true,
+			'glow_on_hover' : true,
+
+			'citation':false,
+			'linkable' : false,
+			'default_controls' : false
+		}
+		
+	});
+	
+	Layer.Link.Visual = _Layer.Visual.extend({
+		
+		template : 'plugins/link',
+
+		serialize : function(){ return this.model.toJSON(); },
+		
+		beforePlayerRender : function()
+		{
+			var _this = this;
+			var style = {
+				'overflow' : 'visible',
+				'z-index' : 100,
+				'border' : 'none',
+				'border-radius' : '0',
+				'height' : this.getAttr('height') +'%',
+				
+				background: 'red',
+				opacity: 0.1
+			};
+/*
+			this.$el.removeClass('link-arrow-right link-arrow-down link-arrow-up link-arrow-left');
+
+			if( this.preview ) this.delegateEvents({'click':'goClick'});
+
+			if(this.model.get('attr').link_type == 'arrow_left')
+				this.$el.html( this.getTemplate() ).css( style ).addClass('link-arrow-left');
+			else if(this.model.get('attr').link_type == 'arrow_right')
+				this.$el.html( this.getTemplate() ).css( style ).addClass('link-arrow-right');
+			else if(this.model.get('attr').link_type == 'arrow_up')
+				this.$el.html( this.getTemplate() ).css( style ).addClass('link-arrow-up');
+
+			if( this.model.get('attr').glow_on_hover ) this.$el.addClass('linked-layer-glow');
+
+			if( this.getAttr('mode') == 'editor' )
+			{
+				_.extend( style, {
+					'border' : '2px dashed orangered',
+					'border-radius' : '6px'
+				});
+			}
+*/
+			this.$el.css(style);
+		},
+		
+		events : {
+			'click a' : 'goClick',
+			'mouseover' : 'onMouseOver',
+			'mouseout' : 'onMouseOut'
+		},
+
+		onMouseOver : function()
+		{
+			//console.log('link on mouseover');
+			//this.$el.stop().fadeTo( 500, this.model.get('attr').opacity_hover );
+		},
+
+		onMouseOut : function()
+		{
+			//console.log('link on mouseover');
+			//this.$el.stop().fadeTo( 500, this.model.get('attr').opacity );
+		},
+		
+		goClick : function()
+		{
+			this.model.trigger('cue_frame', this.getAttr('to_frame') );
+			return false;
+		}
+		
+		/*
+		player_onPlay : function()
+		{
+			this.render();
+			this.delegateEvents({
+				'click':'goClick',
+				'mouseover' : 'onMouseOver',
+				'mouseout' : 'onMouseOut'
+			});
+			var _this = this;
+			this.$el.animate({opacity:1},1000,function(){
+				_this.$el.animate({opacity:0},1000);
+			});
+		}
+		*/
+		
+		
+	});
+	
+	return Layer;
+
+});
 /*
 
 plugin/layer manifest file
@@ -1480,14 +1619,17 @@ this should be auto generated probably!!
 */
 
 define('zeega_layers/_all',[
-	'zeega_layers/image/image'
+	'zeega_layers/image/image',
+	'zeega_layers/link/link'
+
 ],
 	function(
-		image
+		image,
+		link
 	)
 	{
 		var Plugins = {};
-		_.extend( Plugins, image ); // extend the plugin object with all the layers
+		_.extend( Plugins, image, link ); // extend the plugin object with all the layers
 		return Plugins;
 	}
 );
@@ -1506,7 +1648,7 @@ function(Zeega, Plugin)
 		status : 'waiting', // waiting, loading, ready, destroyed, error
 		
 		defaults : {
-
+			mode: 'player'
 		},
 
 		initialize : function()
@@ -1551,7 +1693,7 @@ function(Zeega, Plugin)
 			}
 			else
 			{
-				console.log('***	The layer '+ this.get('type') +' is missing. :(');
+				console.log('***	The layer '+ this.get('type') +' is missing. ): ', this.id);
 			}
 		},
 
@@ -1678,6 +1820,7 @@ function(Zeega, Layer)
 				this.layers.each(function(layer){
 					if( !_.include(commonLayers, layer.id) ) layer.render();
 				});
+				this.trigger('frame_rendered', { frame: this.toJSON(),layers: this.layers.toJSON() });
 			}
 			else
 			{
@@ -1687,6 +1830,9 @@ function(Zeega, Layer)
 
 		onLayerReady : function( layer )
 		{
+			this.trigger('layer_ready',layer.toJSON() );
+			this.trigger('frame_progress', this.getLayerStates() );
+
 			if( this.isFrameReady() ) this.onFrameReady();
 
 			// trigger events on layer readiness
@@ -1696,9 +1842,9 @@ function(Zeega, Layer)
 
 		onFrameReady : function()
 		{
-			console.log('frame ready: ',this.id)
 			this.ready = true;
 			this.status = 'ready';
+			this.trigger('frame_ready',{ frame: this.toJSON(),layers: this.layers.toJSON() });
 			if( !_.isNull(this.renderOnReady) )
 			{
 				this.render( this.renderOnReady );
@@ -1709,11 +1855,11 @@ function(Zeega, Layer)
 		getLayerStates : function()
 		{
 			var states = {};
-			states.ready = _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'ready'; });
-			states.waiting = _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'waiting'; });
-			states.loading = _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'loading'; });
-			states.destroyed = _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'destroyed'; });
-			states.error = _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'error'; });
+			states.ready =		_.map( _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'ready'; }), function(layer){ return layer.attributes; });
+			states.waiting =	_.map( _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'waiting'; }), function(layer){ return layer.attributes; });
+			states.loading =	_.map( _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'loading'; }), function(layer){ return layer.attributes; });
+			states.destroyed =	_.map( _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'destroyed'; }), function(layer){ return layer.attributes; });
+			states.error =		_.map( _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'error'; }), function(layer){ return layer.attributes; });
 			return states;
 		},
 
@@ -1809,6 +1955,11 @@ function(Zeega, Layer)
 					link_to : linkTo,
 					link_from : linkFrom
 				});
+
+				// listen for layer events and propagate through the frame to the player
+				frame.layers.on('all',function(e,obj){
+					_this.trigger(e,obj);
+				});
 				
 			});
 			
@@ -1836,18 +1987,24 @@ function(Zeega, Layer)
 
 					var framesToPreload = [frame.id];
 					var targetArray = [frame.id];
-					for( var i = 0 ; i < preloadAhead ; i++)
+
+					var loop = function()
 					{
 						_.each( targetArray, function(frameID){
 							targetArray = _.compact([ frame.get('prev'), frame.get('next') ]);
 							framesToPreload = _.union( framesToPreload, targetArray, frame.get('link_to'), frame.get('link_from'));
 						});
-					}
+					};
+
+					for( var i = 0 ; i < preloadAhead ; i++) loop();
+
 					frame.set('preload_frames', framesToPreload );
 				});
 
 			}
 		}
+
+		
 
 	});
 
@@ -2119,6 +2276,7 @@ function(Zeega, Frame)
 					// the project should be valid json
 					this.set(obj); // overwrite project settings and add data
 					parseProject( this );
+					this.listen();
 				}
 				else if( obj && obj.url && _.isString( obj.url ) )
 				{
@@ -2127,12 +2285,25 @@ function(Zeega, Frame)
 					this.url = obj.url;
 					this.set(obj); // overwrite project settings and add data
 					this.fetch({silent: true})
-						.success(function(){ parseProject( _this ); })
+						.success(function(){
+							parseProject( _this );
+							_this.listen();
+						})
 						.error(function(){ _this.onError('3 - fetch error. bad url?'); });
 				}
 				else this.onError('1 - invalid or missing data');
 			}
 			else this.onError('2 - already loaded');
+		},
+
+		listen : function()
+		{
+			var _this = this;
+			this.frames.on('all',function(e,obj){
+				_this.trigger(e,obj);
+			});
+
+			this.on('cue_frame', this.cueFrame, this);
 		},
 
 		// renders the player to the dom // this could be a _.once

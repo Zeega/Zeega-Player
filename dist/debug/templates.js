@@ -21,3 +21,15 @@ __p+='<img src="'+
 }
 return __p;
 };
+
+this['JST']['app/templates/plugins/link.html'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<a href=\'#\' style=\'position:absolute;width:100%;height:100%\'>\n\t';
+ if( mode == 'editor' && !_.isNull( attr.to_frame ) ) { 
+;__p+='\n\t\t<i class="icon-share go-to-sequence"></i>\n\t';
+ } 
+;__p+='\n</a>';
+}
+return __p;
+};

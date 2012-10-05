@@ -288,6 +288,8 @@ function(Zeega, Frame)
 			this.frames.on('all',function(e,obj){
 				_this.trigger(e,obj);
 			});
+
+			this.on('cue_frame', this.cueFrame, this);
 		},
 
 		// renders the player to the dom // this could be a _.once

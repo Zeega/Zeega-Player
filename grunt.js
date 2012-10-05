@@ -226,7 +226,8 @@ module.exports = function(grunt) {
 					"app/templates/plugins/": "app/modules/plugins/**/*.html",
 					"dist/debug/": "assets/css/zeega.css",
 					"dist/release/img/" : "assets/img/*"
-				}
+				},
+				options : { flatten: true }
 			}
 		},
 

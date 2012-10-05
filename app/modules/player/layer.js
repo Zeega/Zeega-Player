@@ -13,7 +13,7 @@ function(Zeega, Plugin)
 		status : 'waiting', // waiting, loading, ready, destroyed, error
 		
 		defaults : {
-
+			mode: 'player'
 		},
 
 		initialize : function()
