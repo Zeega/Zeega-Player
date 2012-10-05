@@ -47,10 +47,6 @@
 
             <ul id="api-modules" class="apis modules">
             
-                <li><a href="..&#x2F;modules/widget.html">widget</a></li>
-            
-                <li><a href="..&#x2F;modules/widget-foo.html">widget-foo</a></li>
-            
             </ul>
         </div>
     </div>
@@ -90,14 +86,6 @@
 
 <div class="file">
     <pre class="code prettyprint linenums">
-&#x2F;**
-Provides more functionality for the widget module..
-
-@module widget
-@submodule widget-foo
-@main widget
-**&#x2F;
-
 define([
 	&quot;zeega&quot;,
 	&quot;player&#x2F;frame&quot;
@@ -285,9 +273,19 @@ function(Zeega, Frame)
 				**&#x2F;
 				social : true
 			},
+
+			&#x2F;**
+			The number of frames to attempt preload on
+			
+			@property preload_ahead
+			@type Integer
+			@default 2
+			**&#x2F;
+			preload_ahead : 2,
+			
 			&#x2F;**
 			The frame id to start the player
-
+			
 			@property start_frame
 			@type Integer
 			@default null
@@ -352,19 +350,34 @@ function(Zeega, Frame)
 					&#x2F;&#x2F; the project should be valid json
 					this.set(obj); &#x2F;&#x2F; overwrite project settings and add data
 					parseProject( this );
+					this.listen();
 				}
 				else if( obj &amp;&amp; obj.url &amp;&amp; _.isString( obj.url ) )
 				{
 					&#x2F;&#x2F; try to load project from url
 					var _this = this;
 					this.url = obj.url;
+					this.set(obj); &#x2F;&#x2F; overwrite project settings and add data
 					this.fetch({silent: true})
-						.success(function(){ parseProject( _this ); })
+						.success(function(){
+							parseProject( _this );
+							_this.listen();
+						})
 						.error(function(){ _this.onError(&#x27;3 - fetch error. bad url?&#x27;); });
 				}
 				else this.onError(&#x27;1 - invalid or missing data&#x27;);
 			}
 			else this.onError(&#x27;2 - already loaded&#x27;);
+		},
+
+		listen : function()
+		{
+			var _this = this;
+			this.frames.on(&#x27;all&#x27;,function(e,obj){
+				_this.trigger(e,obj);
+			});
+
+			this.on(&#x27;cue_frame&#x27;, this.cueFrame, this);
 		},
 
 		&#x2F;&#x2F; renders the player to the dom &#x2F;&#x2F; this could be a _.once
@@ -382,7 +395,7 @@ function(Zeega, Frame)
 			this.Layout.render();
 			this.Layout.$el.fadeIn(this.get(&#x27;fadeIn&#x27;),function(){
 				_this.onRendered();
-			});		
+			});
 		},
 
 		onRendered : function()
@@ -440,7 +453,7 @@ function(Zeega, Frame)
 				{
 					this.cueFrame( this.get(&#x27;sequences&#x27;)[0].frames[0] );
 				}
-				else if( _.isNull(this.currentFrame) &amp;&amp; !_.isNull( this.get(&#x27;start_frame&#x27;) ) &amp;&amp; this.layers.get( this.get(&#x27;start_frame&#x27;) ) )
+				else if( _.isNull(this.currentFrame) &amp;&amp; !_.isNull( this.get(&#x27;start_frame&#x27;) ) &amp;&amp; this.frames.get( this.get(&#x27;start_frame&#x27;) ) )
 				{
 					this.cueFrame( this.get(&#x27;start_frame&#x27;) );
 				}
@@ -494,12 +507,28 @@ function(Zeega, Frame)
 		&#x2F;&#x2F; should this live in the cueFrame method so it&#x27;s not exposed?
 		goToFrame :function(id)
 		{
-			console.log(&#x27;gotoframe&#x27;, id);
+			this.preloadFramesFrom( id );
+			var oldID;
+			if(this.currentFrame)
+			{
+				this.currentFrame.exit( id );
+				oldID = this.currentFrame.id;
+			}
 			&#x2F;&#x2F; unrender current frame
 			&#x2F;&#x2F; swap out current frame with new one
 			this.currentFrame = this.frames.get( id );
 			&#x2F;&#x2F; render current frame &#x2F;&#x2F; should trigger a frame rendered event when successful
-			this.currentFrame.render();
+			this.currentFrame.render( oldID );
+		},
+
+		preloadFramesFrom : function( id )
+		{
+			var _this = this;
+			var frame = this.frames.get( id );
+			_.each( frame.get(&#x27;preload_frames&#x27;), function(frameID){
+				_this.frames.get(frameID).preload();
+			});
+			
 		},
 
 		&#x2F;&#x2F; returns project metadata
@@ -553,9 +582,8 @@ function(Zeega, Frame)
 	var parseProject = function( player )
 	{
 		var frames = new Frame.Collection( player.get(&#x27;frames&#x27;) );
-		frames.load( player.get(&#x27;sequences&#x27;), player.get(&#x27;layers&#x27;) );
+		frames.load( player.get(&#x27;sequences&#x27;), player.get(&#x27;layers&#x27;), player.get(&#x27;preload_ahead&#x27;) );
 		player.frames = frames;
-
 		player.initialized = true;
 		player.trigger(&#x27;data_loaded&#x27;);
 		if( player.get(&#x27;autoplay&#x27;) ) player.play();
@@ -636,6 +664,9 @@ function(Zeega, Frame)
 		}
 	});
 
+	Zeega.player = Player;
+	window.Zeega = window.Zeega || Zeega;
+	$(window).trigger(&#x27;zeega_ready&#x27;);
 
 	return Player;
 });
