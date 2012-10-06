@@ -528,7 +528,9 @@ function(Zeega, Frame)
 			var _this = this;
 			// debounce the resize function so it doesn't bog down the browser
 			var lazyResize = _.debounce(function(){ _this.resizeWindow(); }, 300);
-			$(window).resize(lazyResize);
+			// attempt to detect if the parent container is being resized
+			if(this.model.get('div_id')) $('#'+ this.model.get('div_id') ).resize(lazyResize); // < ——— not sure if this works
+			else $(window).resize(lazyResize);
 		},
 
 		serialize : function(){ return this.model.toJSON(); },
@@ -552,8 +554,8 @@ function(Zeega, Frame)
 		getWindowSize : function()
 		{
 			var css = {};
-			var winWidth = window.innerWidth;
-			var winHeight = window.innerHeight;
+			var winWidth =  this.model.get('div_id') ? $('#'+ this.model.get('div_id')).width() : window.innerWidth;
+			var winHeight = this.model.get('div_id') ? $('#'+ this.model.get('div_id')).height() : window.innerHeight;
 			var winRatio = winWidth / winHeight;
 
 			if(this.model.get('window_fit'))
