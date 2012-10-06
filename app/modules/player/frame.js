@@ -148,6 +148,8 @@ function(Zeega, Layer)
 	Frame.Collection = Backbone.Collection.extend({
 		model : FrameModel,
 
+		// logic that populates the frame with information about it's connections, state, and position within the project
+
 		load : function( sequences,layers, preload_ahead )
 		{
 			var _this = this;
