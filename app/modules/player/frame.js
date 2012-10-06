@@ -13,6 +13,7 @@ function(Zeega, Layer)
 		status : 'waiting', // waiting, loading, ready, destroyed
 		hasPlayed : false,
 
+		// frame render as soon as it's loaded. used primarily for the initial frame
 		renderOnReady : null,
 
 		defaults : {
