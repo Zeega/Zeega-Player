@@ -204,6 +204,14 @@ function(Zeega, Frame)
 			**/
 			start_frame : null,
 			/**
+			The id of the target div to draw the player into
+			
+			@property div
+			@type String
+			@default null
+			**/
+			div_id : null,
+			/**
 			Defines whether or not the player is fullscreen or scales to fit the browser.
 
 			@property window_fit
@@ -303,7 +311,9 @@ function(Zeega, Frame)
 					'data-projectID' : this.id
 				}
 			});
-			$('body').append(this.Layout.el);
+			// draw the player in to the target div if defined. or append to the body
+			if( this.get('div_id') ) $('#'+ this.get('div_id')).html(this.Layout.el);
+			else $('body').append(this.Layout.el);
 			this.Layout.render();
 			this.Layout.$el.fadeIn(this.get('fadeIn'),function(){
 				_this.onRendered();
