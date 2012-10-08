@@ -312,7 +312,10 @@ function(Zeega, Frame)
 				}
 			});
 			// draw the player in to the target div if defined. or append to the body
-			if( this.get('div_id') ) $('#'+ this.get('div_id')).html(this.Layout.el);
+			if( this.get('div_id') )
+			{
+				$('#'+ this.get('div_id')).css('position','relative').html(this.Layout.el);
+			}
 			else $('body').append(this.Layout.el);
 			this.Layout.render();
 			this.Layout.$el.fadeIn(this.get('fadeIn'),function(){

@@ -1393,6 +1393,7 @@ function(Zeega, Layer)
 		status : 'waiting', // waiting, loading, ready, destroyed
 		hasPlayed : false,
 
+		// frame render as soon as it's loaded. used primarily for the initial frame
 		renderOnReady : null,
 
 		defaults : {
@@ -1527,6 +1528,7 @@ function(Zeega, Layer)
 	Frame.Collection = Backbone.Collection.extend({
 		model : FrameModel,
 
+		// logic that populates the frame with information about it's connections, state, and position within the project
 		load : function( sequences,layers, preload_ahead )
 		{
 			var _this = this;
@@ -1846,6 +1848,14 @@ function(Zeega, Frame)
 			**/
 			start_frame : null,
 			/**
+			The id of the target div to draw the player into
+			
+			@property div
+			@type String
+			@default null
+			**/
+			div_id : null,
+			/**
 			Defines whether or not the player is fullscreen or scales to fit the browser.
 
 			@property window_fit
@@ -1945,7 +1955,9 @@ function(Zeega, Frame)
 					'data-projectID' : this.id
 				}
 			});
-			$('body').append(this.Layout.el);
+			// draw the player in to the target div if defined. or append to the body
+			if( this.get('div_id') ) $('#'+ this.get('div_id')).html(this.Layout.el);
+			else $('body').append(this.Layout.el);
 			this.Layout.render();
 			this.Layout.$el.fadeIn(this.get('fadeIn'),function(){
 				_this.onRendered();
@@ -2160,7 +2172,9 @@ function(Zeega, Frame)
 			var _this = this;
 			// debounce the resize function so it doesn't bog down the browser
 			var lazyResize = _.debounce(function(){ _this.resizeWindow(); }, 300);
-			$(window).resize(lazyResize);
+			// attempt to detect if the parent container is being resized
+			if(this.model.get('div_id')) $('#'+ this.model.get('div_id') ).resize(lazyResize); // < ——— not sure if this works
+			else $(window).resize(lazyResize);
 		},
 
 		serialize : function(){ return this.model.toJSON(); },
@@ -2184,8 +2198,8 @@ function(Zeega, Frame)
 		getWindowSize : function()
 		{
 			var css = {};
-			var winWidth = window.innerWidth;
-			var winHeight = window.innerHeight;
+			var winWidth =  this.model.get('div_id') ? $('#'+ this.model.get('div_id')).width() : window.innerWidth;
+			var winHeight = this.model.get('div_id') ? $('#'+ this.model.get('div_id')).height() : window.innerHeight;
 			var winRatio = winWidth / winHeight;
 
 			if(this.model.get('window_fit'))
