@@ -252,11 +252,11 @@ function(Zeega, Frame)
 
 		/**
 		* load 
-		* loads the project with data or supplied url
+		* loads the project with data or supplied project_url
 		*
 		* @method load
 		* @param {Object} setup Setup object
-		* @param {String} [setup.url] A complete url pointing to a valid Zeega project data file.
+		* @param {String} [setup.project_url] A complete project_url pointing to a valid Zeega project data file.
 		* @param {Object} [setup.data]A valid Zeega project data object.
 		*/
 
@@ -265,6 +265,7 @@ function(Zeega, Frame)
 			// this if may be able to be replaced by a _.once(**)
 			if( !this.initialized )
 			{
+				var _this = this;
 				if( obj && obj.data && _.isObject( obj.data ) )
 				{
 					// the project should be valid json
@@ -272,18 +273,29 @@ function(Zeega, Frame)
 					parseProject( this );
 					this.listen();
 				}
-				else if( obj && obj.url && _.isString( obj.url ) )
+				else if( obj && obj.project_url && _.isString( obj.project_url ) )
 				{
-					// try to load project from url
-					var _this = this;
-					this.url = obj.url;
+					// try to load project from project_url
+					this.url = obj.project_url;
 					this.set(obj); // overwrite project settings and add data
 					this.fetch({silent: true})
 						.success(function(){
 							parseProject( _this );
 							_this.listen();
 						})
-						.error(function(){ _this.onError('3 - fetch error. bad url?'); });
+						.error(function(){ _this.onError('3 - fetch error. bad project_url?'); });
+				}
+				else if( obj && obj.collection_url && _.isString( obj.collection_url ) )
+				{
+					// try to load project from collection_url
+					this.url = obj.collection_url;
+					this.set(obj); // overwrite project settings and add data
+					this.fetch({silent: true})
+						.success(function(){
+							parseCollection( _this );
+							_this.listen();
+						})
+						.error(function(){ _this.onError('3 - fetch error. bad collection_url?'); });
 				}
 				else this.onError('1 - invalid or missing data');
 			}
@@ -508,10 +520,71 @@ function(Zeega, Frame)
 	{
 		var frames = new Frame.Collection( player.get('frames') );
 		frames.load( player.get('sequences'), player.get('layers'), player.get('preload_ahead') );
+			
+		console.log('parse project', player, frames);
+		
 		player.frames = frames;
 		player.initialized = true;
 		player.trigger('data_loaded');
 		if( player.get('autoplay') ) player.play();
+	};
+
+	var parseCollection = function( player )
+	{
+		player.set({
+			layers : generateLayerArrayFromItems(player.get('items')),
+			sequences : generateSequenceFromItems( player.get('items'))
+		});
+
+		var frames = new Frame.Collection( generateFrameArrayFromItems( player.get('items') ) );
+		console.log('parse collection', player, frames );
+
+		frames.load( player.get('sequences'), player.get('layers'), player.get('preload_ahead') );
+		player.frames = frames;
+		player.initialized = true;
+		player.trigger('data_loaded');
+		if( player.get('autoplay') ) player.play();
+	};
+
+	/*
+		functions for converting a collection to a project
+	*/
+
+	var generateFrameArrayFromItems = function(itemsArray)
+	{
+		return _.map( itemsArray, function(item){
+			return {
+				id : item.id,
+				layers : [item.id],
+				attr : { advance : 0 }
+			};
+		});
+	};
+
+	var generateSequenceFromItems = function(itemsArray)
+	{
+		return [{
+			id : 0, // id is irrelevant
+			frames : _.pluck(itemsArray,'id'),
+			persistent_layers : [],
+			title : ''
+		}];
+	};
+
+	var generateLayerArrayFromItems = function(itemsArray)
+	{
+		var layerDefaults = {
+			width:100,
+			top:0,
+			left:0
+		};
+		return _.map( itemsArray, function(item){
+			return {
+				attr: _.defaults(item,layerDefaults),
+				type : item.layer_type,
+				id : item.id
+			};
+		});
 	};
 
 	/*
