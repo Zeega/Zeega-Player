@@ -61,6 +61,16 @@ function(Zeega, Frame)
 			@default true
 			**/
 			chromeless : true,
+
+			/**
+			Sets the collection project playback
+
+			@property collection_mode 
+			@type String
+			@default 'standard'
+			**/
+			collection_mode : 'standard',
+
 			/**
 			Time to wait after player is ready before playing project
 
@@ -269,7 +279,7 @@ function(Zeega, Frame)
 				if( obj && obj.data && _.isObject( obj.data ) )
 				{
 					// the project should be valid json
-					this.set(obj); // overwrite project settings and add data
+					this.set(obj,{silent:true}); // overwrite project settings and add data
 					parseProject( this );
 					this.listen();
 				}
@@ -277,7 +287,7 @@ function(Zeega, Frame)
 				{
 					// try to load project from project_url
 					this.url = obj.project_url;
-					this.set(obj); // overwrite project settings and add data
+					this.set(obj,{silent:true}); // overwrite project settings and add data
 					this.fetch({silent: true})
 						.success(function(){
 							parseProject( _this );
@@ -289,7 +299,7 @@ function(Zeega, Frame)
 				{
 					// try to load project from collection_url
 					this.url = obj.collection_url;
-					this.set(obj); // overwrite project settings and add data
+					this.set(obj,{silent:true}); // overwrite project settings and add data
 					this.fetch({silent: true})
 						.success(function(){
 							parseCollection( _this );
@@ -531,6 +541,12 @@ function(Zeega, Frame)
 
 	var parseCollection = function( player )
 	{
+		if( player.get('collection_mode') == 'slideshow' ) parseSlideshowCollection( player );
+		else parseStandardCollection( player );
+	};
+
+	var parseStandardCollection = function( player )
+	{
 		player.set({
 			layers : generateLayerArrayFromItems(player.get('items')),
 			sequences : generateSequenceFromItems( player.get('items'))
@@ -544,6 +560,72 @@ function(Zeega, Frame)
 		player.initialized = true;
 		player.trigger('data_loaded');
 		if( player.get('autoplay') ) player.play();
+	};
+
+	var parseSlideshowCollection = function( player )
+	{
+		// sort out all image layers from time based layers'
+		var frames;
+		var imageLayers = [];
+		var timebasedLayers = [];
+		_.each( player.get('items'), function(item){
+			if(item.layer_type == 'Image') imageLayers.push(item);
+			else if( item.layer_type == 'Audio' || item.layer_type == 'Video' ) timeBasedLayers.push(item);
+		});
+
+		var slideshowLayer = generateSlideshowLayer( imageLayers );
+		// if there are no timebased layers, then make one frame with one slideshow layer in it
+		if( timebasedLayers.length === 0 )
+		{
+			player.set({
+				layers : [slideshowLayer],
+				sequences : generateSequenceFromItems( [slideshowLayer] )
+			},{silent:true});
+			frames = new Frame.Collection( generateSingleFrame() );
+
+		}
+		else
+		{
+			// image layers go into a new slideshow layer which is persistent over the route
+
+		}
+		console.log('parse slideshow collection', player, slideshowLayer);
+
+		frames.load( player.get('sequences'), player.get('layers'), player.get('preload_ahead') );
+		player.frames = frames;
+		player.initialized = true;
+		player.trigger('data_loaded');
+		if( player.get('autoplay') ) player.play();
+	};
+
+	var generateSlideshowLayer = function( imageLayerArray )
+	{
+		var layerDefaults = {
+			width:100,
+			top:0,
+			left:0
+		};
+		var slides = _.map( imageLayerArray, function(item){
+			return {
+				attr: item,
+				type : item.layer_type,
+				id : item.id
+			};
+		});
+		return {
+			attr : _.defaults( {slides:slides}, layerDefaults),
+			type : 'SlideShow',
+			id : 0
+		};
+	};
+
+	var generateSingleFrame = function()
+	{
+		return {
+			id : 0,
+			layers : [0],
+			attr : {advance:0}
+		};
 	};
 
 	/*
