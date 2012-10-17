@@ -517,6 +517,17 @@ function(Zeega, Frame)
 		{
 			this.trigger('error', str);
 			alert('Error code: ' + str );
+		},
+
+		parse : function(res)
+		{
+			// parses zeega collections pulled from the library api
+			if( res.items && res.items[0].child_items)
+			{
+				res = res.items[0];
+				res.items = res.child_items;
+			}
+			return res;
 		}
 
 	});
@@ -601,6 +612,7 @@ function(Zeega, Frame)
 	var generateSlideshowLayer = function( imageLayerArray )
 	{
 		var layerDefaults = {
+			keyboard : true,
 			width:100,
 			top:0,
 			left:0
