@@ -38,6 +38,7 @@ function(Zeega, Plugin)
 			{
 				this.ready = true;
 				this.status = 'error';
+				console.log('could not find valid layer type: ',this.get('type'));
 			}
 		},
 
