@@ -1,5 +1,5 @@
 define([
-
+	'libs/modernizr',
 	'libs/popcorn/popcorn-flash'
 ],
 
@@ -87,7 +87,8 @@ function(){
 				switch( this.format )
 				{
 					case 'html5':
-						if (BrowserDetect.browser == 'Firefox') this.useFlash();
+						if( this.model.get('type') == 'Audio' && Modernizr.audio.mp3 === '') this.useFlash();
+						else if( this.model.get('type') == 'Video' && Modernizr.audio.h264 === '') this.useFlash();
 						else this.useHTML5();
 						break;
 					case 'flashvideo':
@@ -133,6 +134,7 @@ function(){
 		
 		useHTML5 : function()
 		{
+			console.log('media use html5')
 			var _this = this;
 			var target = '#media-player-html5-'+ this.model.id;
 			
@@ -182,6 +184,8 @@ function(){
 		},
 		useFlash : function()
 		{
+						console.log('media use flash')
+
 			var _this = this;
 			var target = '#media-player-'+ this.model.id;
 			var src = this.model.get('attr').uri;
