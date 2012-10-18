@@ -21,7 +21,7 @@
 	<script>
 	$(window).bind('zeega_ready', function(){
 		var project = new Zeega.player();
-		project.on('all', function(e, obj){console.log('e:',e,obj);});
+		project.on('all', function(e, obj){ if(e!='media_timeupdate') console.log('e:',e,obj);});
 		project.load({
 			//div_id : 'main',
 			project_url: 'http://alpha.zeega.org/api/projects/2247',

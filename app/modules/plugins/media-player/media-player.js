@@ -22,9 +22,9 @@ function(){
 			autoplay : false,
 			cue_in : 0,
 			cue_out : null,
-			volume : .5,
+			volume : 0.5,
 			fade_in :0,
-			fade_out : 0,
+			fade_out : 0
 		},
 		
 		initialize : function(options)
@@ -64,12 +64,8 @@ function(){
 		{
 			this.$el.css({ 'width':'100%', 'height':'100%'}); // move this to the CSS !!!  .media-player-container{ height, width}
 			// choose which template to use
-			var format = this.templates[this.format] ? this.format : 'default';
-			console.log('template', _.template( this.templates[format](), this.settings ))
+			var format = this.templates[this.format] ? this.format : 'defaulttemplate';
 			this.$el.html( _.template( this.templates[format](), this.settings ));
-			
-			
-			
 			
 			//attach controls. is this the right place?
 			this.controls = new Player.Views.Player.Controls[this.settings.control_mode]({
@@ -78,8 +74,8 @@ function(){
 			});
 			//draw the controls
 			if( _.isNull(this.settings.controls_target) ) this.$el.append( this.controls.render().el );
-			else $( this.settings.controls_target ).html( this.controls.render().el )
-			console.log('## controls', this.settings.controls_target, this, this.controls, this.controls.el)
+			else $( this.settings.controls_target ).html( this.controls.render().el );
+
 			return this;
 		},
 		
@@ -88,7 +84,6 @@ function(){
 			if( !this.isVideoLoaded)
 			{
 				var _this = this;
-				console.log('format',this.format)
 				switch( this.format )
 				{
 					case 'html5':
@@ -111,7 +106,6 @@ function(){
 				this.initPopcornEvents();
 
 				this.isVideoLoaded = true;
-				this.$el.spin('tiny');
 			}
 		},
 		
@@ -123,9 +117,9 @@ function(){
 				this.popcorn.listen('canplay',function(){
 					_this.private_onCanPlay();
 					_this.onCanplay();
-				})
+				});
 				
-				this.popcorn.listen('timeupdate',function(){ _this.private_onTimeUpdate() })
+				this.popcorn.listen('timeupdate',function(){ _this.private_onTimeUpdate(); });
 			}
 		},
 		
@@ -139,7 +133,6 @@ function(){
 		
 		useHTML5 : function()
 		{
-			console.log('add html5 popcorn, target', this, '#media-player-html5-'+ this.model.id, $('#media-player-html5-'+ this.model.id) )
 			var _this = this;
 			var target = '#media-player-html5-'+ this.model.id;
 			
@@ -149,9 +142,9 @@ function(){
 		
 			this.popcorn.listen( 'canplay', function(){
 			
-				_this.$el.spin(false);
-				if( _this.settings.fade_in == 0 ) _this.setVolume( _this.settings.volume );
-				if( _this.settings.cue_in != 0 )
+				//_this.$el.spin(false);
+				if( _this.settings.fade_in === 0 ) _this.setVolume( _this.settings.volume );
+				if( _this.settings.cue_in !== 0 )
 				{
 					this.listen('seeked',function(){
 						_this.model.can_play = true;
@@ -168,8 +161,6 @@ function(){
 		},
 		useYoutube : function()
 		{
-			console.log('add YOUTUBE to this shizzzz', this.model)
-			
 			var _this = this;
 			var target = '#media-player-'+ this.model.id;
 			var src = this.model.get('attr').attribution_uri;
@@ -181,16 +172,19 @@ function(){
 			this.setVolume(0);
 
 			this.popcorn.listen('canplaythrough',function(){
-				_this.$el.spin(false);
-				
+				console.log('youtube can play through');
 				_this.model.can_play = true;
 				
+				console.log('trigger ready', _this, _this.model);
 				_this.popcorn.play();
+				console.log('trigger ready', _this, _this.model);
 				_this.popcorn.pause();
 
+				console.log('trigger ready', _this, _this.model);
 				_this.model.trigger('visual_ready', _this.model.id ) ;
 				
-				if(_this.model.get('attr').fade_in==0) _this.volume(_this.model.get('attr').volume);
+				if(_this.model.get('attr').fade_in === 0) _this.volume(_this.model.get('attr').volume);
+				_this.popcorn.pause();
 			});
 			
 		},
@@ -203,12 +197,12 @@ function(){
 			this.popcorn = Popcorn.flashvideo( target, src, {volume:_this.settings.volume, cue_in:_this.settings.cue_in} );
 			
 			this.popcorn.listen('loadeddata',function(){
-				_this.$el.spin(false);
+				//_this.$el.spin(false);
 				
 				_this.model.can_play = true;
 				_this.model.trigger('visual_ready', _this.model.id ) ;
 				
-				if(_this.model.get('attr').fade_in==0) _this.volume(_this.model.get('attr').volume);
+				if(_this.model.get('attr').fade_in === 0) _this.volume(_this.model.get('attr').volume);
 			});
 		},
 
@@ -237,34 +231,33 @@ function(){
 		{
 			// constrain volume to 0 < v < 1
 			var volume = vol < 0 ? 0 : vol;
-			var volume = vol > 1 ? 1 : vol;
+			volume = vol > 1 ? 1 : vol;
 			if( _.isNumber(vol) ) this.popcorn.volume( volume );
 		},
-		getVolume : function(){ return this.popcorn.volume() },
+		getVolume : function(){ return this.popcorn.volume(); },
 
-		setCurrentTime : function(t){ if( _.isNumber(t) )  this.popcorn.currentTime(t) },
-		getCurrentTime : function(){ return this.popcorn.currentTime() },
+		setCurrentTime : function(t){ if( _.isNumber(t) )  this.popcorn.currentTime(t); },
+		getCurrentTime : function(){ return this.popcorn.currentTime(); },
 
 		private_onTimeUpdate : function()
 		{
 			// pause if player gets to the cue out point
 			
-			if(this.settings.cue_out == 0) this.settings.cue_out = this.getDuration();
+			if(this.settings.cue_out === 0) this.settings.cue_out = this.getDuration();
 			
 			if( !_.isNull(this.settings.cue_out) && this.popcorn.currentTime() >= this.settings.cue_out )
 			{
 				this.pause();
-				this.popcorn.currentTime( this.settings.cue_in )
+				this.popcorn.currentTime( this.settings.cue_in );
 			}
 		},
 
-		getDuration: function(){ return this.popcorn.duration() },
+		getDuration: function(){ return this.popcorn.duration(); },
 
-		play : function(){ console.log('##		play'); if( this.popcorn && this.popcorn.paused() ) this.popcorn.play() },
-		pause : function(){ if( this.popcorn && !this.popcorn.paused() ) this.popcorn.pause() },
+		play : function(){ if( this.popcorn && this.popcorn.paused() ) this.popcorn.play(); },
+		pause : function(){ if( this.popcorn && !this.popcorn.paused() ) this.popcorn.pause(); },
 		playPause : function()
 		{
-			console.log('##		playpause')
 			if(this.popcorn)
 			{
 				if(this.popcorn.paused()) this.popcorn.play();
@@ -276,7 +269,6 @@ function(){
 		{
 			if(this.popcorn)
 			{
-				console.log('##		destroy',this.popcorn, this.el)
 				this.popcorn.pause();
 				
 				Popcorn.destroy( this.popcorn );
@@ -288,8 +280,9 @@ function(){
 		{
 			//separated to make it easier to isolate and update this list
 			var format = '';
-			if( url.match(/http:\/\/(?:youtu\.be\/|(?:[a-z]{2,3}\.)?youtube\.com\/watch(?:\?|#\!)v=)([\w-]{11}).*/gi) ) format = 'youtube'
-			else if ( url.match(/^http:\/\/(?:www\.)?vimeo.com\/(.*)/) ) format = 'vimeo'
+			if( url.match(/http:\/\/(?:youtu\.be\/|(?:[a-z]{2,3}\.)?youtube\.com\/watch(?:\?|#\!)v=)([\w-]{11}).*/gi) ) format = 'youtube';
+//			if( url.match(/http:\/\/(?:youtu\.be\/|(?:[a-z]{2,3}\.)?youtube\.com\/watch(?:\?|#\!)v=)([\w\-]{11}).*/gi) ) format = 'youtube'; // linted?
+			else if ( url.match(/^http:\/\/(?:www\.)?vimeo.com\/(.*)/) ) format = 'vimeo';
 			else format = 'html5';
 			//Force flash for html5 in Firefox browser
 			if( navigator.userAgent.split(' ')[navigator.userAgent.split(' ').length-1].split('/')[0] == 'Firefox' && format=='html5' ) format='flashvideo';
@@ -313,7 +306,7 @@ function(){
 				return html;
 			},
 
-			default : function()
+			defaulttemplate : function()
 			{
 				html =
 				"<div id='media-player-<%= id %>' class='media-container' style='width:100%;height:100%;'></div>";
@@ -322,7 +315,7 @@ function(){
 			
 		}
 		
-	})
+	});
 	
 	
 	/*****************************
@@ -339,14 +332,13 @@ function(){
 		
 		initialize : function()
 		{
-			console.log('controls init',this)
-			if(this.options.detached_controls) this.$el.addClass('playback-layer-controls')
+			if(this.options.detached_controls) this.$el.addClass('playback-layer-controls');
 			if(this.model.get('uri')) this.item_mode = true;
 			this.init();
 		},
 		
 		init : function(){}
-	})
+	});
 	
 	Player.Views.Player.Controls.simple = Player.Views.Player.Controls.none.extend({
 		
@@ -361,11 +353,11 @@ function(){
 		initPopcornEvents : function()
 		{
 			var _this = this;
-			this.popcorn.listen('canplay',function(){ _this.onCanPlay() });
-			this.popcorn.listen('canplaythrough',function(){ _this.onCanPlay() });
-			this.popcorn.listen('ended',function(){ _this.onEnded() });
-			this.popcorn.listen('playing',function(){ _this.onPlaying() });
-			this.popcorn.listen('pause',function(){ _this.onPause() });
+			this.popcorn.listen('canplay',function(){ _this.onCanPlay(); });
+			this.popcorn.listen('canplaythrough',function(){ _this.onCanPlay(); });
+			this.popcorn.listen('ended',function(){ _this.onEnded(); });
+			this.popcorn.listen('playing',function(){ _this.onPlaying(); });
+			this.popcorn.listen('pause',function(){ _this.onPause(); });
 		},
 		
 		render : function()
@@ -377,7 +369,7 @@ function(){
 		events : {
 			'click' : 'playPause',
 			'mouseover' : 'onMouseover',
-			'mouseout' : 'onMouseout',
+			'mouseout' : 'onMouseout'
 		},
 		
 		onCanPlay : function()
@@ -388,9 +380,8 @@ function(){
 		
 		updateCues : function()
 		{
-			console.log('update cues',this, this.item_mode, this.model.get('cue_in') )
-			this.cueIn = this.item_mode == true ? this.model.get('cue_in') : this.model.get('attr').cue_in;
-			this.cueOut = (this.item_mode == true ? this.model.get('cue_out') : this.model.get('attr').cue_out) || this.duration;
+			this.cueIn = this.item_mode === true ? this.model.get('cue_in') : this.model.get('attr').cue_in;
+			this.cueOut = (this.item_mode === true ? this.model.get('cue_out') : this.model.get('attr').cue_out) || this.duration;
 		},
 		
 		playPause : function()
@@ -417,7 +408,7 @@ function(){
 		onPlaying : function()
 		{
 			// fade out after play
-			if( this.model.get('control_fade') ){ this.setFadeTimeout() };
+			if( this.model.get('control_fade') ) this.setFadeTimeout();
 			this.updatePlayPauseIcon();
 			this.updatePlayPauseIcon();
 		},
@@ -448,11 +439,11 @@ function(){
 		
 		fadeOutControls : function()
 		{
-			if(this.$el.find('.player-control-inner').is(':visible') && !this.popcorn.paused()) this.$el.find('.player-control-inner').fadeOut('slow')
+			if(this.$el.find('.player-control-inner').is(':visible') && !this.popcorn.paused()) this.$el.find('.player-control-inner').fadeOut('slow');
 		},
 		fadeInControls : function()
 		{
-			if(this.$el.find('.player-control-inner').is(':hidden')) this.$el.find('.player-control-inner').fadeIn('fast')
+			if(this.$el.find('.player-control-inner').is(':hidden')) this.$el.find('.player-control-inner').fadeIn('fast');
 		},
 		
 		onPause : function()
@@ -476,7 +467,7 @@ function(){
 			
 			return html;
 		}
-	})
+	});
 	
 	Player.Views.Player.Controls.standard = Player.Views.Player.Controls.simple.extend({
 		
@@ -493,18 +484,18 @@ function(){
 		initPopcornEvents : function()
 		{
 			var _this = this;
-			this.popcorn.listen('canplay',function(){ _this.onCanPlay() });
-			this.popcorn.listen('ended',function(){ _this.onEnded() });
-			this.popcorn.listen('timeupdate',function(){ _this.updateElapsed() });
-			this.popcorn.listen('playing',function(){ _this.onPlaying() });
-			this.popcorn.listen('pause',function(){ _this.onPause() });
+			this.popcorn.listen('canplay',function(){ _this.onCanPlay(); });
+			this.popcorn.listen('ended',function(){ _this.onEnded(); });
+			this.popcorn.listen('timeupdate',function(){ _this.updateElapsed(); });
+			this.popcorn.listen('playing',function(){ _this.onPlaying(); });
+			this.popcorn.listen('pause',function(){ _this.onPause(); });
 			//this.popcorn.listen('progress',function(){ console.log( 'buffered',_this.popcorn.buffered(), _this.popcorn.buffered().end(0) ) })
 		},
 		
 		events : {
 			'click .pause-play' : 'playPause',
 			'mouseover' : 'onMouseover',
-			'mouseout' : 'onMouseout',
+			'mouseout' : 'onMouseout'
 		},
 		
 		onCanPlay : function()
@@ -524,9 +515,9 @@ function(){
 				min: 0,
 				max : this.duration,
 				
-				slide : function(e,ui){ _this.scrub( ui.value ) },
-				stop : function(e,ui){ _this.seek(ui.value) }
-			})
+				slide : function(e,ui){ _this.scrub( ui.value ); },
+				stop : function(e,ui){ _this.seek(ui.value); }
+			});
 		},
 		
 		updateDuration : function()
@@ -536,7 +527,7 @@ function(){
 		},
 		updateElapsed : function()
 		{
-			console.log('update elapsed', this.popcorn.currentTime())
+			console.log('update elapsed', this.popcorn.currentTime());
 			var elapsed = this.popcorn.currentTime();
 			this.$el.find('.media-time-elapsed').html( convertTime( elapsed ) );
 			this.$el.find('.media-scrubber').slider('value', elapsed);
@@ -550,7 +541,7 @@ function(){
 		},
 		seek : function( time )
 		{
-			console.log('## seek to: ',time, this.cueIn,this.cueOut)
+			console.log('## seek to: ',time, this.cueIn,this.cueOut);
 			var wasPlaying = !this.popcorn.paused();
 			if(wasPlaying) this.popcorn.pause();
 
@@ -569,7 +560,7 @@ function(){
 				this.$el.find('.media-scrubber').slider('value',time);
 			}
 			
-			console.log('## seek to: ',time, 'was playing?',!this.popcorn.paused())
+			console.log('## seek to: ',time, 'was playing?',!this.popcorn.paused());
 
 			this.popcorn.currentTime(time);
 			if(wasPlaying) this.popcorn.play();
@@ -588,7 +579,7 @@ function(){
 			
 			return html;
 		}
-	})
+	});
 	
 	Player.Views.Player.Controls.editor = Player.Views.Player.Controls.standard.extend({
 		
@@ -597,12 +588,12 @@ function(){
 		initPopcornEvents : function()
 		{
 			var _this = this;
-			this.popcorn.listen('canplay',function(){ _this.onCanPlay() });
-			this.popcorn.listen('canplaythrough',function(){ _this.onCanPlay() });
-			this.popcorn.listen('ended',function(){ _this.onEnded() });
-			this.popcorn.listen('timeupdate',function(){ _this.updateElapsed() });
-			this.popcorn.listen('playing',function(){ _this.onPlaying() });
-			this.popcorn.listen('pause',function(){ _this.onPause() });
+			this.popcorn.listen('canplay',function(){ _this.onCanPlay(); });
+			this.popcorn.listen('canplaythrough',function(){ _this.onCanPlay(); });
+			this.popcorn.listen('ended',function(){ _this.onEnded(); });
+			this.popcorn.listen('timeupdate',function(){ _this.updateElapsed(); });
+			this.popcorn.listen('playing',function(){ _this.onPlaying(); });
+			this.popcorn.listen('pause',function(){ _this.onPause(); });
 			//this.popcorn.listen('progress',function(){ console.log( 'buffered',_this.popcorn.buffered(), _this.popcorn.buffered().end(0) ) })
 		},
 		
@@ -610,7 +601,7 @@ function(){
 			'click .pause-play' : 'playPause',
 			'mouseover' : 'onMouseover',
 			'mouseout' : 'onMouseout',
-			'mousedown .progress-outer' : 'scrub',
+			'mousedown .progress-outer' : 'scrub'
 		},
 		
 		onCanPlay : function()
@@ -651,70 +642,67 @@ function(){
 				min:0,
 				max:_this.duration,
 				values : [ _this.cueIn , _this.cueOut ],
-				slide : function(e,ui){ _this.onCropSlide(e,ui) },
-				stop : function(e,ui){ _this.onCropStop(e,ui) }
-			})
+				slide : function(e,ui){ _this.onCropSlide(e,ui); },
+				stop : function(e,ui){ _this.onCropStop(e,ui); }
+			});
 			
 			this.$el.find('.crop-time-left .time').unbind('keypress').keypress(function(e){
 				if((e.which >= 48 && e.which <= 58) || e.which == 13)
 				{
-					switch(e.which)
+					if( e.which == 13 )
 					{
-						case 13:
-							var sec = _this.convertToSeconds($(this).text());
-							console.log('seconds', sec)
-							if(sec === false)
-							{
-								$(this).text( convertTime(_this.model.get('cue_in')) )
-							
-							}
-							else
-							{
+						var sec = _this.convertToSeconds($(this).text());
+						console.log('seconds', sec);
+						if(sec === false)
+						{
+							$(this).text( convertTime(_this.model.get('cue_in')) );
+						
+						}
+						else
+						{
 
-								sec = sec < 0 ? 0 : sec;
-								sec = sec > _this.model.get('cue_out') ? _this.model.get('cue_out') : sec;
-								$(this).text( convertTime(sec) )
-								_this.$el.find('.crop-slider').slider('values',0, sec );
-								_this.cueIn =sec;
-								_this.model.update({ 'cue_in' : sec })
-								_this.seek( sec );
-							}
-							this.blur();
-							return false;
-							break;
+							sec = sec < 0 ? 0 : sec;
+							sec = sec > _this.model.get('cue_out') ? _this.model.get('cue_out') : sec;
+							$(this).text( convertTime(sec) );
+							_this.$el.find('.crop-slider').slider('values',0, sec );
+							_this.cueIn =sec;
+							_this.model.update({ 'cue_in' : sec });
+							_this.seek( sec );
+						}
+						this.blur();
+						return false;
 					}
 				}
 				else return false;
-			})
+			});
 			this.$el.find('.crop-time-right .time').unbind('keypress').keypress(function(e){
 				if((e.which >= 48 && e.which <= 58) || e.which == 13)
 				{
-					switch(e.which)
+					if( e.which == 13 )
 					{
-						case 13:
-							var sec = _this.convertToSeconds( $(this).text() );
+						var sec = _this.convertToSeconds( $(this).text() );
+					
+						if(sec === false)
+						{
+							$(this).text( convertTime(_this.model.get('cue_out')) );
+						}
+						else
+						{
+							sec = sec > _this.duration ? _this.duration : sec;
+							sec = sec < _this.model.get('cue_in') ? _this.model.get('cue_in') : sec;
+							$(this).text( convertTime(sec) );
+							_this.$el.find('.crop-slider').slider('values',1, sec );
+							_this.cueOut = sec;
+							_this.seek( Math.max(sec-5,_this.cueIn) );
+							_this.model.update({ 'cue_out' : sec });
+						}
+						this.blur();
+						return false;
 						
-							if(sec === false)
-							{
-								$(this).text( convertTime(_this.model.get('cue_out')) )
-							}
-							else
-							{
-								sec = sec > _this.duration ? _this.duration : sec;
-								sec = sec < _this.model.get('cue_in') ? _this.model.get('cue_in') : sec;
-								$(this).text( convertTime(sec) )
-								_this.$el.find('.crop-slider').slider('values',1, sec );
-								_this.cueOut = sec;
-								_this.seek( Math.max(sec-5,_this.cueIn) );
-								_this.model.update({ 'cue_out' : sec });
-							}
-							this.blur();
-							return false;
-							break;
 					}
 				}
 				else return false;
-			})
+			});
 
 			//Temp fix, this should be removed
 			$('.time').mousedown(function(){$(this).focus();});
@@ -734,7 +722,7 @@ function(){
 				}
 				else
 				{
-					var num = parseInt(number);
+					var num = parseInt(number,10);
 					if( !_.isNumber(num) )
 					{
 						flag = true;
@@ -746,7 +734,7 @@ function(){
 						else sec += num;
 					}
 				}
-			})
+			});
 			if( flag ) return false;
 			else return sec;
 		},
@@ -767,7 +755,7 @@ function(){
 				this.model.update({
 					'cue_in' : ui.values[0],
 					'cue_out' : ui.values[1]
-				})
+				});
 			}
 
 			this.popcorn.pause();
@@ -795,7 +783,7 @@ function(){
 			
 			return html;
 		}
-	})
+	});
 
 
 	return Player;

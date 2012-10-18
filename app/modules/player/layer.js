@@ -21,6 +21,7 @@ function(Zeega, Plugin)
 			// init link layer type inside here
 			if( Plugin[this.get('type')] )
 			{
+				console.log('layer init', this);
 				this.layerClass = new Plugin[this.get('type')]();
 				var def = _.defaults( this.toJSON(), this.layerClass.defaults );
 				this.set(def);
