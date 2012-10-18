@@ -165,22 +165,14 @@ function(){
 			var target = '#media-player-'+ this.model.id;
 			var src = this.model.get('attr').attribution_uri;
 			
-			//this.pop = Popcorn.youtube('#zvideo-'+ this.id, this.get('url'),{volume:this.get('volume'), cue_in:this.get('cue_in')} );
-			
 			this.popcorn = Popcorn.youtube( target, src, {volume:_this.settings.volume * 100, cue_in:_this.settings.cue_in} );
 			this.addPopcornToControls();
 			this.setVolume(0);
 
 			this.popcorn.listen('canplaythrough',function(){
-				console.log('youtube can play through');
 				_this.model.can_play = true;
-				
-				console.log('trigger ready', _this, _this.model);
 				_this.popcorn.play();
-				console.log('trigger ready', _this, _this.model);
 				_this.popcorn.pause();
-
-				console.log('trigger ready', _this, _this.model);
 				_this.model.trigger('visual_ready', _this.model.id ) ;
 				
 				if(_this.model.get('attr').fade_in === 0) _this.volume(_this.model.get('attr').volume);
@@ -489,7 +481,6 @@ function(){
 			this.popcorn.listen('timeupdate',function(){ _this.updateElapsed(); });
 			this.popcorn.listen('playing',function(){ _this.onPlaying(); });
 			this.popcorn.listen('pause',function(){ _this.onPause(); });
-			//this.popcorn.listen('progress',function(){ console.log( 'buffered',_this.popcorn.buffered(), _this.popcorn.buffered().end(0) ) })
 		},
 		
 		events : {
@@ -527,7 +518,6 @@ function(){
 		},
 		updateElapsed : function()
 		{
-			console.log('update elapsed', this.popcorn.currentTime());
 			var elapsed = this.popcorn.currentTime();
 			this.$el.find('.media-time-elapsed').html( convertTime( elapsed ) );
 			this.$el.find('.media-scrubber').slider('value', elapsed);
@@ -541,7 +531,6 @@ function(){
 		},
 		seek : function( time )
 		{
-			console.log('## seek to: ',time, this.cueIn,this.cueOut);
 			var wasPlaying = !this.popcorn.paused();
 			if(wasPlaying) this.popcorn.pause();
 
@@ -560,8 +549,6 @@ function(){
 				this.$el.find('.media-scrubber').slider('value',time);
 			}
 			
-			console.log('## seek to: ',time, 'was playing?',!this.popcorn.paused());
-
 			this.popcorn.currentTime(time);
 			if(wasPlaying) this.popcorn.play();
 		},
@@ -594,7 +581,6 @@ function(){
 			this.popcorn.listen('timeupdate',function(){ _this.updateElapsed(); });
 			this.popcorn.listen('playing',function(){ _this.onPlaying(); });
 			this.popcorn.listen('pause',function(){ _this.onPause(); });
-			//this.popcorn.listen('progress',function(){ console.log( 'buffered',_this.popcorn.buffered(), _this.popcorn.buffered().end(0) ) })
 		},
 		
 		events : {
@@ -652,7 +638,6 @@ function(){
 					if( e.which == 13 )
 					{
 						var sec = _this.convertToSeconds($(this).text());
-						console.log('seconds', sec);
 						if(sec === false)
 						{
 							$(this).text( convertTime(_this.model.get('cue_in')) );
