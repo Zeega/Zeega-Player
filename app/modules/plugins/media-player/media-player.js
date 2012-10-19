@@ -134,7 +134,6 @@ function(){
 		
 		useHTML5 : function()
 		{
-			console.log('media use html5')
 			var _this = this;
 			var target = '#media-player-html5-'+ this.model.id;
 			
@@ -184,8 +183,6 @@ function(){
 		},
 		useFlash : function()
 		{
-						console.log('media use flash')
-
 			var _this = this;
 			var target = '#media-player-'+ this.model.id;
 			var src = this.model.get('attr').uri;
@@ -276,8 +273,8 @@ function(){
 		{
 			//separated to make it easier to isolate and update this list
 			var format = '';
-			if( url.match(/http:\/\/(?:youtu\.be\/|(?:[a-z]{2,3}\.)?youtube\.com\/watch(?:\?|#\!)v=)([\w-]{11}).*/gi) ) format = 'youtube';
-//			if( url.match(/http:\/\/(?:youtu\.be\/|(?:[a-z]{2,3}\.)?youtube\.com\/watch(?:\?|#\!)v=)([\w\-]{11}).*/gi) ) format = 'youtube'; // linted?
+//			if( url.match(/http:\/\/(?:youtu\.be\/|(?:[a-z]{2,3}\.)?youtube\.com\/watch(?:\?|#\!)v=)([\w-]{11}).*/gi) ) format = 'youtube';
+			if( url.match(/http:\/\/(?:youtu\.be\/|(?:[a-z]{2,3}\.)?youtube\.com\/watch(?:\?|#\!)v=)([\w\-]{11}).*/gi) ) format = 'youtube'; // linted?
 			else if ( url.match(/^http:\/\/(?:www\.)?vimeo.com\/(.*)/) ) format = 'vimeo';
 			else format = 'html5';
 			//Force flash for html5 in Firefox browser
