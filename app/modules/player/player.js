@@ -307,7 +307,7 @@ function(Zeega, Frame)
 						})
 						.error(function(){ _this.onError('3 - fetch error. bad collection_url?'); });
 				}
-				else this.onError('1 - invalid or missing data');
+				else this.onError('1 - invalid or missing data. could be setting up player. nonfatal.');
 			}
 			else this.onError('2 - already loaded');
 		},
@@ -516,7 +516,7 @@ function(Zeega, Frame)
 		onError : function(str)
 		{
 			this.trigger('error', str);
-			alert('Error code: ' + str );
+			console.log('Error code: ' + str );
 		},
 
 		parse : function(res)
@@ -580,9 +580,11 @@ function(Zeega, Frame)
 		var imageLayers = [];
 		var timebasedLayers = [];
 		_.each( player.get('items'), function(item){
+			console.log('parse layers', item, item.layer_type);
 			if(item.layer_type == 'Image') imageLayers.push(item);
-			else if( item.layer_type == 'Audio' || item.layer_type == 'Video' ) timeBasedLayers.push(item);
+			else if( item.layer_type == 'Audio' || item.media_type == 'Video' ) timebasedLayers.push(item);
 		});
+		console.log('tblayer', timebasedLayers);
 
 		var slideshowLayer = generateSlideshowLayer( imageLayers );
 		// if there are no timebased layers, then make one frame with one slideshow layer in it
@@ -598,10 +600,12 @@ function(Zeega, Frame)
 		else
 		{
 			// image layers go into a new slideshow layer which is persistent over the route
-
+			player.set({
+				layers : generateLayerArrayFromItems(timebasedLayers).concat([slideshowLayer]),
+				sequences : generateSequenceFromItems( timebasedLayers, [slideshowLayer.id] )
+			},{silent:true});
+			frames = new Frame.Collection( generateFrameArrayFromItems( timebasedLayers, [slideshowLayer.id] ));
 		}
-		console.log('parse slideshow collection', player, slideshowLayer);
-
 		frames.load( player.get('sequences'), player.get('layers'), player.get('preload_ahead') );
 		player.frames = frames;
 		player.initialized = true;
@@ -612,7 +616,7 @@ function(Zeega, Frame)
 	var generateSlideshowLayer = function( imageLayerArray )
 	{
 		var layerDefaults = {
-			keyboard : true,
+			keyboard : false,
 			width:100,
 			top:0,
 			left:0
@@ -627,7 +631,7 @@ function(Zeega, Frame)
 		return {
 			attr : _.defaults( {slides:slides}, layerDefaults),
 			type : 'SlideShow',
-			id : 0
+			id : 1
 		};
 	};
 
@@ -644,23 +648,23 @@ function(Zeega, Frame)
 		functions for converting a collection to a project
 	*/
 
-	var generateFrameArrayFromItems = function(itemsArray)
+	var generateFrameArrayFromItems = function(itemsArray, persistentLayers)
 	{
 		return _.map( itemsArray, function(item){
 			return {
 				id : item.id,
-				layers : [item.id],
+				layers : [item.id].concat(persistentLayers),
 				attr : { advance : 0 }
 			};
 		});
 	};
 
-	var generateSequenceFromItems = function(itemsArray)
+	var generateSequenceFromItems = function(itemsArray, persistentLayers)
 	{
 		return [{
-			id : 0, // id is irrelevant
+			id : 1, // id is irrelevant
 			frames : _.pluck(itemsArray,'id'),
-			persistent_layers : [],
+			persistent_layers : _.compact(persistentLayers),
 			title : ''
 		}];
 	};

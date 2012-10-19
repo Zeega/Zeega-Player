@@ -74,7 +74,10 @@ function(Zeega, Layer)
 			else
 			{
 				this.renderOnReady = oldID;
-			}	
+			}
+			this.layers.each(function(layer, i){
+				layer.updateZIndex( _this.layers.length - i );
+			});
 		},
 
 		onLayerReady : function( layer )

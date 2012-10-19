@@ -20,7 +20,7 @@
 	
 	<script>
 	$(window).bind('zeega_ready', function(){
-		var project = new Zeega.player();
+		var project = new Zeega.player({window_fit:true});
 		project.on('all', function(e, obj){ if(e!='media_timeupdate') console.log('e:',e,obj);});
 		project.load({
 			//div_id : 'main',

@@ -78,6 +78,11 @@ function(Zeega, Plugin)
 			this.trigger('error');
 		},
 
+		updateZIndex : function(z)
+		{
+			this.visualElement.updateZIndex(z);
+		},
+
 		exit : function()
 		{
 			if( this.layerClass )
