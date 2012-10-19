@@ -1,6 +1,6 @@
 define([
 	"zeega",
-	"player/layer"
+	"zeega_dir/player/layer"
 ],
 
 function(Zeega, Layer)
@@ -211,7 +211,8 @@ function(Zeega, Layer)
 
 				// listen for layer events and propagate through the frame to the player
 				frame.layers.on('all',function(e,obj){
-					_this.trigger(e,obj);
+					var emit = _.extend({},obj,{frame:frame.id});
+					_this.trigger(e, emit);
 				});
 				
 			});

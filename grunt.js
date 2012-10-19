@@ -7,7 +7,7 @@ module.exports = function(grunt) {
 
 		// The clean task ensures all files are removed from the dist/ directory so
 		// that no files linger from previous builds.
-		clean: ["dist/", "app/templates/plugins/"],
+		clean: ["dist/", "app/templates/plugins/", 'docs'],
 
 		// The lint task will run the build configuration and the application
 		// JavaScript through JSHint and report any errors.  You can change the
@@ -15,7 +15,10 @@ module.exports = function(grunt) {
 		// https://github.com/cowboy/grunt/blob/master/docs/task_lint.md
 		lint: {
 			files: [
-				"build/config.js", "app/**/*.js", "app/modules/plugins/*.js"
+				"build/config.js",
+				"app/**/*.js",
+				"app/modules/plugins/*.js"
+//				"assets/js/libs/popcorn/popcorn-flash.js"
 			]
 		},
 
@@ -58,17 +61,11 @@ module.exports = function(grunt) {
 		// dist/debug/require.js, because we want to only load one script file in
 		// index.html.
 		concat: {
-			dist: {
-				src: [
-					"assets/js/libs/almond.js",
-					"dist/debug/templates.js",
-					"dist/debug/require.js"
-				],
-
-				dest: "dist/debug/zeega.js",
-
-				separator: ";"
-			}
+			"dist/debug/zeega.js": [
+				"assets/js/libs/almond.js",
+				"dist/debug/templates.js",
+				"dist/debug/zeega.js"
+      ]
 		},
 
 		// This task uses the MinCSS Node.js project to take all your CSS files in
@@ -119,7 +116,7 @@ module.exports = function(grunt) {
 		// Takes the built require.js file and minifies it for filesize benefits.
 		min: {
 			"dist/release/zeega.js": [
-				"dist/debug/require.js"
+				"dist/debug/zeega.js"
 			]
 		},
 
@@ -157,15 +154,14 @@ module.exports = function(grunt) {
 			release: {
 				// This makes it easier for deploying, by defaulting to any IP.
 				//host: "0.0.0.0",
-
 				// Ensure the favicon is mapped correctly.
 				files: { "favicon.ico": "favicon.ico" },
 
 				// Map `server:release` to `release` folders.
 				folders: {
-					"app": "dist/release",
-					"assets/js/libs": "dist/release",
-					"assets/css": "dist/release"
+					// "app": "dist/release",
+					// "assets/js/libs": "dist/release/libs",
+					// "assets/css": "dist/release"
 				}
 			}
 		},
@@ -177,13 +173,16 @@ module.exports = function(grunt) {
 			mainConfigFile: "app/config.js",
 
 			// Output file.
-			out: "dist/debug/require.js",
+			out: "dist/debug/zeega.js",
 
 			// Root application module.
 			name: "config",
 
+			//stubModules: ["plugins/backbone.layoutmanager"],
+//			namespace : 'Zeega',
+
 			// Do not wrap everything in an IIFE.
-			wrap: false
+			wrap: true,
 		},
 
 		// The headless QUnit testing environment is provided for "free" by Grunt.
@@ -224,10 +223,15 @@ module.exports = function(grunt) {
 					// copy plugin template html files into the template folder
 					// to : from
 					"app/templates/plugins/": "app/modules/plugins/**/*.html",
-					"dist/debug/": "assets/css/zeega.css",
 					"assets/img/layers" : "app/modules/plugins/layers/**/img/*",
 					"dist/release/img/" : "assets/img/*",
-					"assets/css/less/layers" : "app/modules/plugins/layers/**/*.less"
+					"assets/css/less/layers" : "app/modules/plugins/layers/**/*.less",
+
+					"dist/debug/libs" : ["assets/js/libs/backbone.js","assets/js/libs/lodash.js"],
+					"dist/release/libs" : ["assets/js/libs/backbone.js","assets/js/libs/lodash.js"],
+
+					"dist/debug" : "assets/css/zeega.css",
+					"dist/release" : "assets/css/zeega.css"
 				},
 				options : { flatten: true }
 			}
@@ -250,7 +254,7 @@ module.exports = function(grunt) {
 
 	});
 
-	grunt.registerTask('comp', 'copy less')
+	grunt.registerTask('comp', 'copy less');
 	// The debug task will remove all contents inside the dist/ folder, lint
 	// all your code, precompile all the underscore templates into
 	// dist/debug/templates.js, compile all the application code into
@@ -260,6 +264,6 @@ module.exports = function(grunt) {
 
 	// The release task will run the debug tasks and then minify the
 	// dist/debug/require.js file and CSS files.
-	grunt.registerTask("release", "debug min mincss");
+	grunt.registerTask("release", "debug min mincss yuidoc");
 
 };

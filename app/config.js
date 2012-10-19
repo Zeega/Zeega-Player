@@ -2,7 +2,7 @@
 require.config({
 
 	// Initialize the application with the main application file.
-	deps: [ "modules/player/player" ],
+	deps: [ "main" ],
 
 	paths: {
 		// JavaScript folders.
@@ -10,9 +10,9 @@ require.config({
 		plugins: "../assets/js/plugins",
 		vendor: "../assets/vendor",
 
-		player: "../app/modules/player",
-		zeega_plugins: "../app/modules/plugins",
-		zeega_layers: "../app/modules/plugins/layers"
+		//player: "../app/modules/player",
+		zeega_dir: "../app/modules"
+		//zeega_layers: "../app/modules/plugins/layers"
 	}
 
 });

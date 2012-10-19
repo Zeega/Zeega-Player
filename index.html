@@ -16,6 +16,9 @@
 	<div id="main" style='height:400px;width:600px'></div>
 	
 
+
+<!-- dev env -->
+	
 	<script src="assets/js/libs/jquery.js"></script>
 	
 	<script>
@@ -36,8 +39,35 @@
 
 	<script src="assets/js/libs/lodash.js"></script>
 	<script src="assets/js/libs/backbone.js"></script>
-	<!-- Application source. -->
 	<script data-main="app/config" src="assets/js/libs/require.js"></script>
+
+<!-- release env -->
+<!-- 
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+	
+	<script>
+		console.log('beginz');
+	$(window).bind('zeega_ready', function(){
+		console.log('inside');
+		var project = new Zeega.player({window_fit:true});
+		project.on('all', function(e, obj){ if(e!='media_timeupdate') console.log('e:',e,obj);});
+		project.load({
+			div_id : 'main',
+			//project_url: 'http://alpha.zeega.org/api/projects/2259',
+
+			collection_url: 'http://alpha.zeega.org/api/items/49217',
+			//collection_url: 'http://planettakeout.org/zeegaapi/items/46075/items?page=1',
+			collection_mode: 'slideshow' // standard, slideshow
+		});
+		console.log('project', project);
+	});
+	</script>
+
+	<script src="assets/js/libs/lodash.js"></script>
+	<script src="assets/js/libs/backbone.js"></script>
+	<script data-main="app/config" src="dist/release/zeega.js"></script>
+ -->
+
 
 </body>
 </html>

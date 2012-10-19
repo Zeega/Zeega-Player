@@ -88,12 +88,12 @@
     <pre class="code prettyprint linenums">
 define([
 	&quot;zeega&quot;,
-	&quot;player&#x2F;frame&quot;
+	&quot;zeega_dir&#x2F;player&#x2F;frame&quot;
 ],
 
 function(Zeega, Frame)
 {
-
+	console.log(&#x27;inside you&#x27;);
 	&#x2F;**
 	Player
 
@@ -149,6 +149,16 @@ function(Zeega, Frame)
 			@default true
 			**&#x2F;
 			chromeless : true,
+
+			&#x2F;**
+			Sets the collection project playback
+
+			@property collection_mode 
+			@type String
+			@default &#x27;standard&#x27;
+			**&#x2F;
+			collection_mode : &#x27;standard&#x27;,
+
 			&#x2F;**
 			Time to wait after player is ready before playing project
 
@@ -292,6 +302,14 @@ function(Zeega, Frame)
 			**&#x2F;
 			start_frame : null,
 			&#x2F;**
+			The id of the target div to draw the player into
+			
+			@property div
+			@type String
+			@default null
+			**&#x2F;
+			div_id : null,
+			&#x2F;**
 			Defines whether or not the player is fullscreen or scales to fit the browser.
 
 			@property window_fit
@@ -332,11 +350,11 @@ function(Zeega, Frame)
 
 		&#x2F;**
 		* load 
-		* loads the project with data or supplied url
+		* loads the project with data or supplied project_url
 		*
 		* @method load
 		* @param {Object} setup Setup object
-		* @param {String} [setup.url] A complete url pointing to a valid Zeega project data file.
+		* @param {String} [setup.project_url] A complete project_url pointing to a valid Zeega project data file.
 		* @param {Object} [setup.data]A valid Zeega project data object.
 		*&#x2F;
 
@@ -345,27 +363,39 @@ function(Zeega, Frame)
 			&#x2F;&#x2F; this if may be able to be replaced by a _.once(**)
 			if( !this.initialized )
 			{
+				var _this = this;
 				if( obj &amp;&amp; obj.data &amp;&amp; _.isObject( obj.data ) )
 				{
 					&#x2F;&#x2F; the project should be valid json
-					this.set(obj); &#x2F;&#x2F; overwrite project settings and add data
+					this.set(obj,{silent:true}); &#x2F;&#x2F; overwrite project settings and add data
 					parseProject( this );
 					this.listen();
 				}
-				else if( obj &amp;&amp; obj.url &amp;&amp; _.isString( obj.url ) )
+				else if( obj &amp;&amp; obj.project_url &amp;&amp; _.isString( obj.project_url ) )
 				{
-					&#x2F;&#x2F; try to load project from url
-					var _this = this;
-					this.url = obj.url;
-					this.set(obj); &#x2F;&#x2F; overwrite project settings and add data
+					&#x2F;&#x2F; try to load project from project_url
+					this.url = obj.project_url;
+					this.set(obj,{silent:true}); &#x2F;&#x2F; overwrite project settings and add data
 					this.fetch({silent: true})
 						.success(function(){
 							parseProject( _this );
 							_this.listen();
 						})
-						.error(function(){ _this.onError(&#x27;3 - fetch error. bad url?&#x27;); });
+						.error(function(){ _this.onError(&#x27;3 - fetch error. bad project_url?&#x27;); });
 				}
-				else this.onError(&#x27;1 - invalid or missing data&#x27;);
+				else if( obj &amp;&amp; obj.collection_url &amp;&amp; _.isString( obj.collection_url ) )
+				{
+					&#x2F;&#x2F; try to load project from collection_url
+					this.url = obj.collection_url;
+					this.set(obj,{silent:true}); &#x2F;&#x2F; overwrite project settings and add data
+					this.fetch({silent: true})
+						.success(function(){
+							parseCollection( _this );
+							_this.listen();
+						})
+						.error(function(){ _this.onError(&#x27;3 - fetch error. bad collection_url?&#x27;); });
+				}
+				else this.onError(&#x27;1 - invalid or missing data. could be setting up player. nonfatal.&#x27;);
 			}
 			else this.onError(&#x27;2 - already loaded&#x27;);
 		},
@@ -391,7 +421,12 @@ function(Zeega, Frame)
 					&#x27;data-projectID&#x27; : this.id
 				}
 			});
-			$(&#x27;body&#x27;).append(this.Layout.el);
+			&#x2F;&#x2F; draw the player in to the target div if defined. or append to the body
+			if( this.get(&#x27;div_id&#x27;) )
+			{
+				$(&#x27;#&#x27;+ this.get(&#x27;div_id&#x27;)).css(&#x27;position&#x27;,&#x27;relative&#x27;).html(this.Layout.el);
+			}
+			else $(&#x27;body&#x27;).append(this.Layout.el);
 			this.Layout.render();
 			this.Layout.$el.fadeIn(this.get(&#x27;fadeIn&#x27;),function(){
 				_this.onRendered();
@@ -569,7 +604,18 @@ function(Zeega, Frame)
 		onError : function(str)
 		{
 			this.trigger(&#x27;error&#x27;, str);
-			alert(&#x27;Error code: &#x27; + str );
+			console.log(&#x27;Error code: &#x27; + str );
+		},
+
+		parse : function(res)
+		{
+			&#x2F;&#x2F; parses zeega collections pulled from the library api
+			if( res.items &amp;&amp; res.items[0].child_items)
+			{
+				res = res.items[0];
+				res.items = res.child_items;
+			}
+			return res;
 		}
 
 	});
@@ -583,10 +629,148 @@ function(Zeega, Frame)
 	{
 		var frames = new Frame.Collection( player.get(&#x27;frames&#x27;) );
 		frames.load( player.get(&#x27;sequences&#x27;), player.get(&#x27;layers&#x27;), player.get(&#x27;preload_ahead&#x27;) );
+			
+		console.log(&#x27;parse project&#x27;, player, frames);
+		
 		player.frames = frames;
 		player.initialized = true;
 		player.trigger(&#x27;data_loaded&#x27;);
 		if( player.get(&#x27;autoplay&#x27;) ) player.play();
+	};
+
+	var parseCollection = function( player )
+	{
+		if( player.get(&#x27;collection_mode&#x27;) == &#x27;slideshow&#x27; ) parseSlideshowCollection( player );
+		else parseStandardCollection( player );
+	};
+
+	var parseStandardCollection = function( player )
+	{
+		player.set({
+			layers : generateLayerArrayFromItems(player.get(&#x27;items&#x27;)),
+			sequences : generateSequenceFromItems( player.get(&#x27;items&#x27;))
+		});
+
+		var frames = new Frame.Collection( generateFrameArrayFromItems( player.get(&#x27;items&#x27;) ) );
+		console.log(&#x27;parse collection&#x27;, player, frames );
+
+		frames.load( player.get(&#x27;sequences&#x27;), player.get(&#x27;layers&#x27;), player.get(&#x27;preload_ahead&#x27;) );
+		player.frames = frames;
+		player.initialized = true;
+		player.trigger(&#x27;data_loaded&#x27;);
+		if( player.get(&#x27;autoplay&#x27;) ) player.play();
+	};
+
+	var parseSlideshowCollection = function( player )
+	{
+		&#x2F;&#x2F; sort out all image layers from time based layers&#x27;
+		var frames;
+		var imageLayers = [];
+		var timebasedLayers = [];
+		_.each( player.get(&#x27;items&#x27;), function(item){
+			console.log(&#x27;parse layers&#x27;, item, item.layer_type);
+			if(item.layer_type == &#x27;Image&#x27;) imageLayers.push(item);
+			else if( item.layer_type == &#x27;Audio&#x27; || item.media_type == &#x27;Video&#x27; ) timebasedLayers.push(item);
+		});
+		console.log(&#x27;tblayer&#x27;, timebasedLayers);
+
+		var slideshowLayer = generateSlideshowLayer( imageLayers );
+		&#x2F;&#x2F; if there are no timebased layers, then make one frame with one slideshow layer in it
+		if( timebasedLayers.length === 0 )
+		{
+			player.set({
+				layers : [slideshowLayer],
+				sequences : generateSequenceFromItems( [slideshowLayer] )
+			},{silent:true});
+			frames = new Frame.Collection( generateSingleFrame() );
+
+		}
+		else
+		{
+			&#x2F;&#x2F; image layers go into a new slideshow layer which is persistent over the route
+			player.set({
+				layers : generateLayerArrayFromItems(timebasedLayers).concat([slideshowLayer]),
+				sequences : generateSequenceFromItems( timebasedLayers, [slideshowLayer.id] )
+			},{silent:true});
+			frames = new Frame.Collection( generateFrameArrayFromItems( timebasedLayers, [slideshowLayer.id] ));
+		}
+		frames.load( player.get(&#x27;sequences&#x27;), player.get(&#x27;layers&#x27;), player.get(&#x27;preload_ahead&#x27;) );
+		player.frames = frames;
+		player.initialized = true;
+		player.trigger(&#x27;data_loaded&#x27;);
+		if( player.get(&#x27;autoplay&#x27;) ) player.play();
+	};
+
+	var generateSlideshowLayer = function( imageLayerArray )
+	{
+		var layerDefaults = {
+			keyboard : false,
+			width:100,
+			top:0,
+			left:0
+		};
+		var slides = _.map( imageLayerArray, function(item){
+			return {
+				attr: item,
+				type : item.layer_type,
+				id : item.id
+			};
+		});
+		return {
+			attr : _.defaults( {slides:slides}, layerDefaults),
+			type : &#x27;SlideShow&#x27;,
+			id : 1
+		};
+	};
+
+	var generateSingleFrame = function()
+	{
+		return {
+			id : 0,
+			layers : [0],
+			attr : {advance:0}
+		};
+	};
+
+	&#x2F;*
+		functions for converting a collection to a project
+	*&#x2F;
+
+	var generateFrameArrayFromItems = function(itemsArray, persistentLayers)
+	{
+		return _.map( itemsArray, function(item){
+			return {
+				id : item.id,
+				layers : [item.id].concat(persistentLayers),
+				attr : { advance : 0 }
+			};
+		});
+	};
+
+	var generateSequenceFromItems = function(itemsArray, persistentLayers)
+	{
+		return [{
+			id : 1, &#x2F;&#x2F; id is irrelevant
+			frames : _.pluck(itemsArray,&#x27;id&#x27;),
+			persistent_layers : _.compact(persistentLayers),
+			title : &#x27;&#x27;
+		}];
+	};
+
+	var generateLayerArrayFromItems = function(itemsArray)
+	{
+		var layerDefaults = {
+			width:100,
+			top:0,
+			left:0
+		};
+		return _.map( itemsArray, function(item){
+			return {
+				attr: _.defaults(item,layerDefaults),
+				type : item.layer_type,
+				id : item.id
+			};
+		});
 	};
 
 	&#x2F;*
@@ -606,7 +790,9 @@ function(Zeega, Frame)
 			var _this = this;
 			&#x2F;&#x2F; debounce the resize function so it doesn&#x27;t bog down the browser
 			var lazyResize = _.debounce(function(){ _this.resizeWindow(); }, 300);
-			$(window).resize(lazyResize);
+			&#x2F;&#x2F; attempt to detect if the parent container is being resized
+			if(this.model.get(&#x27;div_id&#x27;)) $(&#x27;#&#x27;+ this.model.get(&#x27;div_id&#x27;) ).resize(lazyResize); &#x2F;&#x2F; &lt; ——— not sure if this works
+			else $(window).resize(lazyResize);
 		},
 
 		serialize : function(){ return this.model.toJSON(); },
@@ -630,8 +816,8 @@ function(Zeega, Frame)
 		getWindowSize : function()
 		{
 			var css = {};
-			var winWidth = window.innerWidth;
-			var winHeight = window.innerHeight;
+			var winWidth =  this.model.get(&#x27;div_id&#x27;) ? $(&#x27;#&#x27;+ this.model.get(&#x27;div_id&#x27;)).width() : window.innerWidth;
+			var winHeight = this.model.get(&#x27;div_id&#x27;) ? $(&#x27;#&#x27;+ this.model.get(&#x27;div_id&#x27;)).height() : window.innerHeight;
 			var winRatio = winWidth &#x2F; winHeight;
 
 			if(this.model.get(&#x27;window_fit&#x27;))
@@ -664,8 +850,12 @@ function(Zeega, Frame)
 		}
 	});
 
+
+		&#x2F;&#x2F; Localize or create a new JavaScript Template object.
+
 	Zeega.player = Player;
-	window.Zeega = window.Zeega || Zeega;
+	window.Zeega = Zeega || {};
+
 	$(window).trigger(&#x27;zeega_ready&#x27;);
 
 	return Player;

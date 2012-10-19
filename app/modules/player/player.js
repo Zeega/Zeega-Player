@@ -1,11 +1,10 @@
 define([
 	"zeega",
-	"player/frame"
+	"zeega_dir/player/frame"
 ],
 
 function(Zeega, Frame)
 {
-
 	/**
 	Player
 
@@ -584,7 +583,6 @@ function(Zeega, Frame)
 			if(item.layer_type == 'Image') imageLayers.push(item);
 			else if( item.layer_type == 'Audio' || item.media_type == 'Video' ) timebasedLayers.push(item);
 		});
-		console.log('tblayer', timebasedLayers);
 
 		var slideshowLayer = generateSlideshowLayer( imageLayers );
 		// if there are no timebased layers, then make one frame with one slideshow layer in it
@@ -762,9 +760,10 @@ function(Zeega, Frame)
 		}
 	});
 
-	Zeega.player = Player;
-	window.Zeega = window.Zeega || Zeega;
-	$(window).trigger('zeega_ready');
 
-	return Player;
+		// Localize or create a new JavaScript Template object.
+
+	Zeega.player = Player;
+
+	return Zeega;
 });
