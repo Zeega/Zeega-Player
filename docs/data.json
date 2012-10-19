@@ -38,7 +38,7 @@
             "plugin_for": [],
             "extension_for": [],
             "file": "app/modules/player/player.js",
-            "line": 9,
+            "line": 8,
             "description": "Player\n\ncan accept:\n\n- valid ZEEGA data (json)\n\n- valid url returning valid ZEEGA data\n\nexposes the player API (play, pause, stop, destroy, getCitations, etc) // to be documented further\n\nbroadcasts events (ready, play, pause, stop, timeupdate, frameadvance, etc) // to be documented further\n\nis the only external contact point\n\n\t// initialize player\n\tvar player = new Player.Model({ url: \"<valid url>\"} });\n\t// or\n\tvar player = new Player.Model({ data: {<valid data>} });\n\t// or\n\tvar player  = new Player.Model();\n\tplayer.on('all', fxn); // log all events\n\tplayer.load({data: {<valid data>}})",
             "is_constructor": 1
         }
@@ -51,7 +51,7 @@
         },
         {
             "file": "app/modules/player/player.js",
-            "line": 48,
+            "line": 47,
             "description": "Sets the player to play when data is successfully parsed and rendered to the dom",
             "itemtype": "property",
             "name": "autoplay",
@@ -61,7 +61,7 @@
         },
         {
             "file": "app/modules/player/player.js",
-            "line": 56,
+            "line": 55,
             "description": "Creates a player with no visual controls. Useful if wrapping the player in custom UI",
             "itemtype": "property",
             "name": "chromeless",
@@ -71,7 +71,7 @@
         },
         {
             "file": "app/modules/player/player.js",
-            "line": 65,
+            "line": 64,
             "description": "Sets the collection project playback",
             "itemtype": "property",
             "name": "collection_mode",
@@ -81,7 +81,7 @@
         },
         {
             "file": "app/modules/player/player.js",
-            "line": 74,
+            "line": 73,
             "description": "Time to wait after player is ready before playing project\n\noverrides any overlay attributes",
             "itemtype": "property",
             "name": "delay",
@@ -91,7 +91,7 @@
         },
         {
             "file": "app/modules/player/player.js",
-            "line": 84,
+            "line": 83,
             "description": "Sets if the project be escaped through user input (esc or close buttons)",
             "itemtype": "property",
             "name": "escapable",
@@ -101,7 +101,7 @@
         },
         {
             "file": "app/modules/player/player.js",
-            "line": 92,
+            "line": 91,
             "description": "If there are overlays, do they fade out?",
             "itemtype": "property",
             "name": "fade_overlays",
@@ -111,7 +111,7 @@
         },
         {
             "file": "app/modules/player/player.js",
-            "line": 100,
+            "line": 99,
             "description": "ms the player takes to fade in",
             "itemtype": "property",
             "name": "fadeIn",
@@ -121,7 +121,7 @@
         },
         {
             "file": "app/modules/player/player.js",
-            "line": 108,
+            "line": 107,
             "description": "ms the player takes to fade out",
             "itemtype": "property",
             "name": "fadeOut",
@@ -131,7 +131,7 @@
         },
         {
             "file": "app/modules/player/player.js",
-            "line": 116,
+            "line": 115,
             "description": "Sets if the player be set to fullscreen",
             "itemtype": "property",
             "name": "fullscreenEnable",
@@ -141,7 +141,7 @@
         },
         {
             "file": "app/modules/player/player.js",
-            "line": 124,
+            "line": 123,
             "description": "Turns the keyboard controls on or off",
             "itemtype": "property",
             "name": "keyboard",
@@ -151,7 +151,7 @@
         },
         {
             "file": "app/modules/player/player.js",
-            "line": 132,
+            "line": 131,
             "description": "Sets the player mode",
             "itemtype": "property",
             "name": "mode",
@@ -162,7 +162,7 @@
         },
         {
             "file": "app/modules/player/player.js",
-            "line": 141,
+            "line": 140,
             "description": "Sets the individual properties of overlays",
             "itemtype": "property",
             "name": "overlays",
@@ -172,7 +172,7 @@
         },
         {
             "file": "app/modules/player/player.js",
-            "line": 149,
+            "line": 148,
             "description": "Turn on/off arrows",
             "itemtype": "property",
             "name": "overlays.arrows",
@@ -182,7 +182,7 @@
         },
         {
             "file": "app/modules/player/player.js",
-            "line": 157,
+            "line": 156,
             "description": "Turn on/off Zeega branding",
             "itemtype": "property",
             "name": "overlays.branding",
@@ -192,7 +192,7 @@
         },
         {
             "file": "app/modules/player/player.js",
-            "line": 165,
+            "line": 164,
             "description": "Turn on/off Zeega layer level citations",
             "itemtype": "property",
             "name": "overlays.citations_layers",
@@ -202,7 +202,7 @@
         },
         {
             "file": "app/modules/player/player.js",
-            "line": 173,
+            "line": 172,
             "description": "Turn on/off frame level citations",
             "itemtype": "property",
             "name": "overlays.citations_frame",
@@ -212,7 +212,7 @@
         },
         {
             "file": "app/modules/player/player.js",
-            "line": 181,
+            "line": 180,
             "description": "Turn on/off frame project level citations",
             "itemtype": "property",
             "name": "overlays.citations_project",
@@ -222,7 +222,7 @@
         },
         {
             "file": "app/modules/player/player.js",
-            "line": 189,
+            "line": 188,
             "description": "Turn on/off social share icons",
             "itemtype": "property",
             "name": "overlays.social",
@@ -232,7 +232,7 @@
         },
         {
             "file": "app/modules/player/player.js",
-            "line": 199,
+            "line": 198,
             "description": "The number of frames to attempt preload on",
             "itemtype": "property",
             "name": "preload_ahead",
@@ -242,7 +242,7 @@
         },
         {
             "file": "app/modules/player/player.js",
-            "line": 208,
+            "line": 207,
             "description": "The frame id to start the player",
             "itemtype": "property",
             "name": "start_frame",
@@ -252,7 +252,7 @@
         },
         {
             "file": "app/modules/player/player.js",
-            "line": 216,
+            "line": 215,
             "description": "The id of the target div to draw the player into",
             "itemtype": "property",
             "name": "div",
@@ -262,7 +262,7 @@
         },
         {
             "file": "app/modules/player/player.js",
-            "line": 224,
+            "line": 223,
             "description": "Defines whether or not the player is fullscreen or scales to fit the browser.",
             "itemtype": "property",
             "name": "window_fit",
@@ -272,7 +272,7 @@
         },
         {
             "file": "app/modules/player/player.js",
-            "line": 232,
+            "line": 231,
             "description": "Defines aspect ratio of the Zeega project",
             "itemtype": "property",
             "name": "window_ratio",
@@ -282,13 +282,13 @@
         },
         {
             "file": "app/modules/player/player.js",
-            "line": 243,
+            "line": 242,
             "description": "initialize the zeega player:\n\ncan be initialized like so:\n\nvar player = new Player.Model({ url: \"<valid url>\"} });\nvar player = new Player.Model({ data: {<valid data>} });\n\nor\n\nvar player  = new Player.Model();\nplayer.on('all', fxn); // log all events\nplayer.load({data: {<valid data>}})",
             "class": "Player"
         },
         {
             "file": "app/modules/player/player.js",
-            "line": 263,
+            "line": 262,
             "description": "load \nloads the project with data or supplied project_url",
             "itemtype": "method",
             "name": "load",
@@ -317,7 +317,7 @@
         },
         {
             "file": "app/modules/player/player.js",
-            "line": 383,
+            "line": 382,
             "description": "play \nplays the project\n-if the player is paused, then play the project\n-if the player is not rendered, then render it first",
             "itemtype": "method",
             "name": "play",
@@ -325,7 +325,7 @@
         },
         {
             "file": "app/modules/player/player.js",
-            "line": 510,
+            "line": 509,
             "description": "Fired when an error occurs...",
             "itemtype": "event",
             "name": "onError",

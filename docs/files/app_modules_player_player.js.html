@@ -93,7 +93,6 @@ define([
 
 function(Zeega, Frame)
 {
-	console.log(&#x27;inside you&#x27;);
 	&#x2F;**
 	Player
 
@@ -672,7 +671,6 @@ function(Zeega, Frame)
 			if(item.layer_type == &#x27;Image&#x27;) imageLayers.push(item);
 			else if( item.layer_type == &#x27;Audio&#x27; || item.media_type == &#x27;Video&#x27; ) timebasedLayers.push(item);
 		});
-		console.log(&#x27;tblayer&#x27;, timebasedLayers);
 
 		var slideshowLayer = generateSlideshowLayer( imageLayers );
 		&#x2F;&#x2F; if there are no timebased layers, then make one frame with one slideshow layer in it
@@ -854,11 +852,8 @@ function(Zeega, Frame)
 		&#x2F;&#x2F; Localize or create a new JavaScript Template object.
 
 	Zeega.player = Player;
-	window.Zeega = Zeega || {};
 
-	$(window).trigger(&#x27;zeega_ready&#x27;);
-
-	return Player;
+	return Zeega;
 });
     </pre>
 </div>

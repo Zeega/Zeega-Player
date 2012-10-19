@@ -1239,7 +1239,6 @@ define('zeega',[
 ],
 
 function() {
-	console.log('inside zeega.js');
 	// Provide a global location to place configuration settings and module
 	// creation.
 	var app = {
@@ -1250,6 +1249,7 @@ function() {
 	// Localize or create a new JavaScript Template object.
 	var JST = window.JST = window.JST || {};
 
+	console.log('---[player] config backbonelayout');
 	// Configure LayoutManager with Backbone Boilerplate defaults.
 	Backbone.LayoutManager.configure({
 		// Allow LayoutManager to augment Backbone.View.prototype.
@@ -13450,7 +13450,6 @@ function(Zeega, _Layer, MediaPlayer){
 			//	media_target : '#layer-visual-'+this.id,
 			//	controls_target : '#media-controls-'+this.id
 			//})
-			console.log('init media player', MediaPlayer);
 		},
 
 		onPlay : function()
@@ -13478,7 +13477,6 @@ function(Zeega, _Layer, MediaPlayer){
 					control_mode : 'none',
 					media_target : '#layer-visual-'+ this.id
 				});
-				console.log('media player', this.mediaPlayer);
 				this.mediaPlayer.render();
 				this.$el.append( this.mediaPlayer.el );
 				this.mediaPlayer.placePlayer();
@@ -13536,67 +13534,6 @@ function(Zeega, _Layer, MediaPlayer){
 	return Layer;
 
 });
-
-/*
-
-(function(Layer){
-
-
-	Layer.Views.Visual.Video = Layer.Views.Visual.extend({
-		
-		onLayerExit : function()
-		{
-			console.log('@@@		on layer exit')
-			if( this.model.player_loaded ) this.model.player.destroy();
-			this.model.player_loaded = false;
-			
-			//must call this if you extend onLayerExit
-			this.model.trigger('editor_readyToRemove')
-		},
-		
-		onControlsOpen : function()
-		{
-			console.log('video controls open : visual')
-			var _this = this;
-			if( !this.model.player_loaded )
-			{
-				this.model.initPlayer();
-				this.$el.html(this.model.player.render().el);
-				this.model.player.placePlayer();
-				console.log('on controls open',this, this.model.player)
-				
-				this.model.player_loaded = true;
-			}
-			else
-			{
-				this.model.player.pause();
-			}
-			
-		
-			//replace with the actual video object
-		},
-		
-		onControlsClosed : function()
-		{
-			this.model.player.pause();
-		},
-		
-		onUnrender : function()
-		{
-			
-			this.model.player.pause();
-			this.model.destroy();	
-		}
-		
-	});
-
-})(zeega.module("layer"));
-
-*/
-
-
-
-;
 define('zeega_dir/plugins/layers/audio/audio',[
 	'zeega',
 	'zeega_dir/plugins/layers/_layer/_layer',
@@ -13688,7 +13625,6 @@ function(Zeega, Plugin)
 			// init link layer type inside here
 			if( Plugin[this.get('type')] )
 			{
-				console.log('layer init', this);
 				this.layerClass = new Plugin[this.get('type')]();
 				var def = _.defaults( this.toJSON(), this.layerClass.defaults );
 				this.set(def);
@@ -14002,7 +13938,8 @@ function(Zeega, Layer)
 
 				// listen for layer events and propagate through the frame to the player
 				frame.layers.on('all',function(e,obj){
-					_this.trigger(e,obj);
+					var emit = _.extend({},obj,{frame:frame.id});
+					_this.trigger(e, emit);
 				});
 				
 			});
@@ -14063,7 +14000,6 @@ define('modules/player/player',[
 
 function(Zeega, Frame)
 {
-	console.log('inside you');
 	/**
 	Player
 
@@ -14642,7 +14578,6 @@ function(Zeega, Frame)
 			if(item.layer_type == 'Image') imageLayers.push(item);
 			else if( item.layer_type == 'Audio' || item.media_type == 'Video' ) timebasedLayers.push(item);
 		});
-		console.log('tblayer', timebasedLayers);
 
 		var slideshowLayer = generateSlideshowLayer( imageLayers );
 		// if there are no timebased layers, then make one frame with one slideshow layer in it
@@ -14824,20 +14759,16 @@ function(Zeega, Frame)
 		// Localize or create a new JavaScript Template object.
 
 	Zeega.player = Player;
-	window.Zeega = Zeega || {};
 
-	$(window).trigger('zeega_ready');
-
-	return Player;
+	return Zeega;
 });
 require([
   // Application.
   "modules/player/player"
 ],
-
-function(Zeega) {
-  console.log('inside Zeega');
-
+function(Zeega){
+  window.Zeega = Zeega || {};
+  $(window).trigger('zeega_ready');
 });
 
 define("main", function(){});
