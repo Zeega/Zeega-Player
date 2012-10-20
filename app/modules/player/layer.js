@@ -7,7 +7,7 @@ function(Zeega, Plugin)
 {
 	var Layer = Zeega.module();
 
-	var LayerModel = Backbone.Model.extend({
+	var LayerModel = Zeega.Backbone.Model.extend({
 
 		ready : false,
 		status : 'waiting', // waiting, loading, ready, destroyed, error
@@ -109,7 +109,7 @@ function(Zeega, Plugin)
 		}
 	});
 
-	Layer.Collection = Backbone.Collection.extend({
+	Layer.Collection = Zeega.Backbone.Collection.extend({
 
 		model : LayerModel,
 

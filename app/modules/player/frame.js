@@ -7,7 +7,7 @@ function(Zeega, Layer)
 {
 	var Frame = Zeega.module();
 
-	var FrameModel = Backbone.Model.extend({
+	var FrameModel = Zeega.Backbone.Model.extend({
 
 		ready : false,
 		status : 'waiting', // waiting, loading, ready, destroyed
@@ -148,7 +148,7 @@ function(Zeega, Layer)
 
 	});
 
-	Frame.Collection = Backbone.Collection.extend({
+	Frame.Collection = Zeega.Backbone.Collection.extend({
 		model : FrameModel,
 
 		// logic that populates the frame with information about it's connections, state, and position within the project

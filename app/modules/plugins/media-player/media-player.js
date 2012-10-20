@@ -1,14 +1,15 @@
 define([
+	'zeega',
 	'libs/modernizr',
 	'libs/popcorn/popcorn-flash'
 ],
 
-function(){
+function(Zeega){
 
 
 	var Player = {Views:{}};
 
-	Player.Views.Player = Backbone.View.extend({
+	Player.Views.Player = Zeega.Backbone.View.extend({
 		
 		className : 'media-player-container',
 		
@@ -319,7 +320,7 @@ function(){
 	
 	Player.Views.Player.Controls = Player.Views.Player.Controls || {};
 	
-	Player.Views.Player.Controls.none = Backbone.View.extend({
+	Player.Views.Player.Controls.none = Zeega.Backbone.View.extend({
 		className : 'controls playback-controls controls-none',
 		item_mode : false,
 		

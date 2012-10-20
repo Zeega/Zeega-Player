@@ -33,7 +33,7 @@ function(Zeega, Frame)
 	@constructor
 	*/
 
-	Player = Backbone.Model.extend({
+	Player = Zeega.Backbone.Model.extend({
 
 		ready : false,			// the player is parsed and in the dom. can call play play. layers have not been preloaded yet
 		complete : false,		// have all layers been preloaded
@@ -691,7 +691,7 @@ function(Zeega, Frame)
 
 		private
 	*/
-	var PlayerLayout = Backbone.Layout.extend({
+	var PlayerLayout = Zeega.Backbone.Layout.extend({
 		template : 'player-layout',
 		className : 'ZEEGA-player',
 

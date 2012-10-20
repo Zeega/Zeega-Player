@@ -13,9 +13,12 @@ function() {
 	// Localize or create a new JavaScript Template object.
 	var JST = window.JST = window.JST || {};
 
-	console.log('---[player] config backbonelayout');
+	console.log('---[player] config backbonelayout', Backbone);
+
+	var zeegaBackbone = Backbone.noConflict();
+
 	// Configure LayoutManager with Backbone Boilerplate defaults.
-	Backbone.LayoutManager.configure({
+	zeegaBackbone.LayoutManager.configure({
 		// Allow LayoutManager to augment Backbone.View.prototype.
 		manage: false,
 
@@ -51,8 +54,10 @@ function() {
 		// Create a custom object with a nested Views object.
 		module: function(additionalProps) {
 			return _.extend({ Views: {} }, additionalProps);
-		}
+		},
 
-	}, Backbone.Events);
+		Backbone : zeegaBackbone
+
+	}, zeegaBackbone.Events);
 
 });
