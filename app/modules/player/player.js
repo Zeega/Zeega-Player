@@ -579,7 +579,6 @@ function(Zeega, Frame)
 		var imageLayers = [];
 		var timebasedLayers = [];
 		_.each( player.get('items'), function(item){
-			console.log('parse layers', item, item.layer_type);
 			if(item.layer_type == 'Image') imageLayers.push(item);
 			else if( item.layer_type == 'Audio' || item.media_type == 'Video' ) timebasedLayers.push(item);
 		});

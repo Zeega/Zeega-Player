@@ -1,8 +1,9 @@
 define([
+	'backbone',
 	"plugins/backbone.layoutmanager"
 ],
 
-function() {
+function(Backbone) {
 	// Provide a global location to place configuration settings and module
 	// creation.
 	var app = {
@@ -12,8 +13,6 @@ function() {
 
 	// Localize or create a new JavaScript Template object.
 	var JST = window.JST = window.JST || {};
-
-	console.log('---[player] config backbonelayout', Backbone);
 
 	var zeegaBackbone = Backbone.noConflict();
 

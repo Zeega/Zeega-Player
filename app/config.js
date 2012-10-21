@@ -9,10 +9,23 @@ require.config({
 		libs: "../assets/js/libs",
 		plugins: "../assets/js/plugins",
 		vendor: "../assets/vendor",
+		zeega_dir: "../app/modules",
+		
+		// Libraries.
+		//jquery: "../assets/js/libs/jquery",
+		lodash: "../assets/js/libs/lodash",
+		backbone: "../assets/js/libs/backbone"
 
-		//player: "../app/modules/player",
-		zeega_dir: "../app/modules"
-		//zeega_layers: "../app/modules/plugins/layers"
+	},
+	shim: {
+		// Backbone library depends on lodash and jQuery.
+		backbone: {
+			deps: ["lodash"],
+			exports: "Backbone"
+		},
+
+		// Backbone.LayoutManager depends on Backbone.
+		"plugins/backbone.layoutmanager": ["backbone"]
 	}
 
 });

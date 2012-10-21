@@ -121,7 +121,7 @@ function(Zeega, Frame)
 	@constructor
 	*&#x2F;
 
-	Player = Backbone.Model.extend({
+	Player = Zeega.Backbone.Model.extend({
 
 		ready : false,			&#x2F;&#x2F; the player is parsed and in the dom. can call play play. layers have not been preloaded yet
 		complete : false,		&#x2F;&#x2F; have all layers been preloaded
@@ -667,7 +667,6 @@ function(Zeega, Frame)
 		var imageLayers = [];
 		var timebasedLayers = [];
 		_.each( player.get(&#x27;items&#x27;), function(item){
-			console.log(&#x27;parse layers&#x27;, item, item.layer_type);
 			if(item.layer_type == &#x27;Image&#x27;) imageLayers.push(item);
 			else if( item.layer_type == &#x27;Audio&#x27; || item.media_type == &#x27;Video&#x27; ) timebasedLayers.push(item);
 		});
@@ -779,7 +778,7 @@ function(Zeega, Frame)
 
 		private
 	*&#x2F;
-	var PlayerLayout = Backbone.Layout.extend({
+	var PlayerLayout = Zeega.Backbone.Layout.extend({
 		template : &#x27;player-layout&#x27;,
 		className : &#x27;ZEEGA-player&#x27;,
 
