@@ -779,6 +779,29 @@ function(Zeega, Frame)
 		private
 	*&#x2F;
 	var PlayerLayout = Zeega.Backbone.Layout.extend({
+
+
+		fetch: function(path) {
+			&#x2F;&#x2F; Initialize done for use in async-mode
+			var done;
+
+			&#x2F;&#x2F; Concatenate the file extension.
+			path = &#x27;app&#x2F;templates&#x2F;layouts&#x2F;&#x27;+ path + &quot;.html&quot;;
+
+			&#x2F;&#x2F; If cached, use the compiled template.
+			if (JST[path]) {
+				return JST[path];
+			} else {
+				&#x2F;&#x2F; Put fetch into &#x60;async-mode&#x60;.
+				done = this.async();
+
+				&#x2F;&#x2F; Seek out the template asynchronously.
+				return $.ajax({ url: Zeega.root + path }).then(function(contents) {
+					done(JST[path] = _.template(contents));
+				});
+			}
+		},
+
 		template : &#x27;player-layout&#x27;,
 		className : &#x27;ZEEGA-player&#x27;,
 

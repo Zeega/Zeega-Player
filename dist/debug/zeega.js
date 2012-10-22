@@ -6953,39 +6953,7 @@ function(Backbone) {
 	var JST = window.JST = window.JST || {};
 
 	var zeegaBackbone = Backbone.noConflict();
-
-	// Configure LayoutManager with Backbone Boilerplate defaults.
-	zeegaBackbone.LayoutManager.configure({
-		// Allow LayoutManager to augment Backbone.View.prototype.
-		manage: false,
-
-		paths: {
-			layout: "app/templates/layouts/",
-			template: "app/templates/"
-		},
-
-		fetch: function(path) {
-			// Initialize done for use in async-mode
-			var done;
-
-			// Concatenate the file extension.
-			path = path + ".html";
-
-			// If cached, use the compiled template.
-			if (JST[path]) {
-				return JST[path];
-			} else {
-				// Put fetch into `async-mode`.
-				done = this.async();
-
-				// Seek out the template asynchronously.
-				return $.ajax({ url: app.root + path }).then(function(contents) {
-					done(JST[path] = _.template(contents));
-				});
-			}
-		}
-	});
-
+	
 	// Mix Backbone.Events, modules, and layout management into the app object.
 	return _.extend(app, {
 		// Create a custom object with a nested Views object.
@@ -7046,6 +7014,28 @@ function(Zeega){
 
 	_Layer.Visual = Zeega.Backbone.LayoutView.extend({
 		
+		fetch: function(path) {
+			// Initialize done for use in async-mode
+			var done;
+
+			// Concatenate the file extension.
+			path = 'app/templates/'+ path + ".html";
+			console.log('fetch layer path', path);
+
+			// If cached, use the compiled template.
+			if (JST[path]) {
+				return JST[path];
+			} else {
+				// Put fetch into `async-mode`.
+				done = this.async();
+
+				// Seek out the template asynchronously.
+				return $.ajax({ url: Zeega.root + path }).then(function(contents) {
+					done(JST[path] = _.template(contents));
+				});
+			}
+		},
+
 		className : 'visual-element',
 		template : '',
 
@@ -7053,7 +7043,9 @@ function(Zeega){
 
 		initialize : function()
 		{
+			
 			this.init();
+
 		},
 
 		beforePlayerRender : function(){},
@@ -20393,6 +20385,29 @@ function(Zeega, Frame)
 		private
 	*/
 	var PlayerLayout = Zeega.Backbone.Layout.extend({
+
+
+		fetch: function(path) {
+			// Initialize done for use in async-mode
+			var done;
+
+			// Concatenate the file extension.
+			path = 'app/templates/layouts/'+ path + ".html";
+
+			// If cached, use the compiled template.
+			if (JST[path]) {
+				return JST[path];
+			} else {
+				// Put fetch into `async-mode`.
+				done = this.async();
+
+				// Seek out the template asynchronously.
+				return $.ajax({ url: Zeega.root + path }).then(function(contents) {
+					done(JST[path] = _.template(contents));
+				});
+			}
+		},
+
 		template : 'player-layout',
 		className : 'ZEEGA-player',
 
