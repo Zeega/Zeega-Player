@@ -692,7 +692,6 @@ function(Zeega, Frame)
 	*/
 	var PlayerLayout = Zeega.Backbone.Layout.extend({
 
-
 		fetch: function(path) {
 			// Initialize done for use in async-mode
 			var done;

@@ -179,7 +179,7 @@ module.exports = function(grunt) {
 			name: "config",
 
 			//stubModules: ["plugins/backbone.layoutmanager"],
-//			namespace : 'Zeega',
+			namespace : 'Zeega',
 
 			// Do not wrap everything in an IIFE.
 			wrap: true,

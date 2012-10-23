@@ -4643,7 +4643,7 @@ return __p;
 
   // expose Lo-Dash
   // some AMD build optimizers, like r.js, check for specific condition patterns like the following:
-  if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) {
+  if (typeof Zeega.define === 'function' && typeof Zeega.define.amd === 'object' && Zeega.define.amd) {
     // Expose Lo-Dash to the global object even when an AMD loader is present in
     // case Lo-Dash was injected by a third-party script and not intended to be
     // loaded as a module. The global assignment can be reverted in the Lo-Dash
@@ -4652,7 +4652,7 @@ return __p;
 
     // define as an anonymous module so, through path mapping, it can be
     // referenced as the "underscore" module
-    define('lodash',[],function() {
+    Zeega.define('lodash',[],function() {
       return lodash;
     });
   }
@@ -4711,7 +4711,7 @@ return __p;
 
   // Require Underscore, if we're on the server, and it's not already present.
   var _ = root._;
-  if (!_ && (typeof require !== 'undefined')) _ = require('underscore');
+  if (!_ && (typeof require !== 'undefined')) _ = Zeega.require('underscore');
 
   // For Backbone's purposes, jQuery, Zepto, or Ender owns the `$` variable.
   var $ = root.jQuery || root.Zepto || root.ender;
@@ -6105,7 +6105,7 @@ return __p;
 
 }).call(this);
 
-define("backbone", ["lodash"], (function (global) {
+Zeega.define("backbone", ["lodash"], (function (global) {
     return function () {
         return global.Backbone;
     }
@@ -6934,9 +6934,9 @@ LayoutManager.prototype.options = {
 keys = _.keys(LayoutManager.prototype.options);
 
 })(this);
-define("plugins/backbone.layoutmanager", function(){});
+Zeega.define("plugins/backbone.layoutmanager", function(){});
 
-define('zeega',[
+Zeega.define('zeega',[
 	'backbone',
 	"plugins/backbone.layoutmanager"
 ],
@@ -6967,7 +6967,7 @@ function(Backbone) {
 
 });
 
-define('zeega_dir/plugins/layers/_layer/_layer',[
+Zeega.define('zeega_dir/plugins/layers/_layer/_layer',[
 	"zeega"
 ],
 
@@ -7185,9 +7185,9 @@ function(Zeega){
 (function(c,n){var k="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";c.fn.imagesLoaded=function(l){function m(){var b=c(h),a=c(g);d&&(g.length?d.reject(e,b,a):d.resolve(e));c.isFunction(l)&&l.call(f,e,b,a)}function i(b,a){b.src===k||-1!==c.inArray(b,j)||(j.push(b),a?g.push(b):h.push(b),c.data(b,"imagesLoaded",{isBroken:a,src:b.src}),o&&d.notifyWith(c(b),[a,e,c(h),c(g)]),e.length===j.length&&(setTimeout(m),e.unbind(".imagesLoaded")))}var f=this,d=c.isFunction(c.Deferred)?c.Deferred():
 0,o=c.isFunction(d.notify),e=f.find("img").add(f.filter("img")),j=[],h=[],g=[];e.length?e.bind("load.imagesLoaded error.imagesLoaded",function(b){i(b.target,"error"===b.type)}).each(function(b,a){var e=a.src,d=c.data(a,"imagesLoaded");if(d&&d.src===e)i(a,d.isBroken);else if(a.complete&&a.naturalWidth!==n)i(a,0===a.naturalWidth||0===a.naturalHeight);else if(a.readyState||a.complete)a.src=k,a.src=e}):m();return d?d.promise(f):f}})(jQuery);
 
-define("plugins/jquery.imagesloaded.min", function(){});
+Zeega.define("plugins/jquery.imagesloaded.min", function(){});
 
-define('zeega_dir/plugins/layers/image/image',[
+Zeega.define('zeega_dir/plugins/layers/image/image',[
 	"zeega",
 	'zeega_dir/plugins/layers/_layer/_layer',
 
@@ -7262,7 +7262,7 @@ function(Zeega, _Layer){
 
 });
 
-define('zeega_dir/plugins/layers/link/link',[
+Zeega.define('zeega_dir/plugins/layers/link/link',[
 	"zeega",
 	'zeega_dir/plugins/layers/_layer/_layer'
 ],
@@ -7386,7 +7386,7 @@ function(Zeega, _Layer){
 	return Layer;
 
 });
-define('zeega_dir/plugins/layers/slideshow/slideshow',[
+Zeega.define('zeega_dir/plugins/layers/slideshow/slideshow',[
 	"zeega",
 	'zeega_dir/plugins/layers/_layer/_layer'
 ],
@@ -8175,7 +8175,7 @@ window.Modernizr = (function( window, document, undefined ) {
 
 })(this, this.document);
 ;
-define("libs/modernizr", function(){});
+Zeega.define("libs/modernizr", function(){});
 
 /*
  * popcorn.js version 1.1.2
@@ -18321,9 +18321,9 @@ Popcorn.player( "flashvideo", {
   });
 })( Popcorn );
 
-define("libs/popcorn/popcorn-flash", function(){});
+Zeega.define("libs/popcorn/popcorn-flash", function(){});
 
-define('zeega_dir/plugins/media-player/media-player',[
+Zeega.define('zeega_dir/plugins/media-player/media-player',[
 	'zeega',
 	'libs/modernizr',
 	'libs/popcorn/popcorn-flash'
@@ -19102,7 +19102,7 @@ function(Zeega){
 
 });
 
-define('zeega_dir/plugins/layers/video/video',[
+Zeega.define('zeega_dir/plugins/layers/video/video',[
 	"zeega",
 	'zeega_dir/plugins/layers/_layer/_layer',
 
@@ -19233,7 +19233,7 @@ function(Zeega, _Layer, MediaPlayer){
 	return Layer;
 
 });
-define('zeega_dir/plugins/layers/audio/audio',[
+Zeega.define('zeega_dir/plugins/layers/audio/audio',[
 	'zeega',
 	'zeega_dir/plugins/layers/_layer/_layer',
 	'zeega_dir/plugins/layers/video/video'
@@ -19281,7 +19281,7 @@ this should be auto generated probably!!
 
 */
 
-define('zeega_dir/plugins/layers/_all',[
+Zeega.define('zeega_dir/plugins/layers/_all',[
 	'zeega_dir/plugins/layers/image/image',
 	'zeega_dir/plugins/layers/link/link',
 	'zeega_dir/plugins/layers/slideshow/slideshow',
@@ -19301,7 +19301,7 @@ define('zeega_dir/plugins/layers/_all',[
 		return Plugins;
 	}
 );
-define('zeega_dir/player/layer',[
+Zeega.define('zeega_dir/player/layer',[
 	"zeega",
 	"zeega_dir/plugins/layers/_all"
 ],
@@ -19424,7 +19424,7 @@ function(Zeega, Plugin)
 
 	return Layer;
 });
-define('zeega_dir/player/frame',[
+Zeega.define('zeega_dir/player/frame',[
 	"zeega",
 	"zeega_dir/player/layer"
 ],
@@ -19692,7 +19692,7 @@ function(Zeega, Layer)
 
 	return Frame;
 });
-define('modules/player/player',[
+Zeega.define('modules/player/player',[
 	"zeega",
 	"zeega_dir/player/frame"
 ],
@@ -20386,7 +20386,6 @@ function(Zeega, Frame)
 	*/
 	var PlayerLayout = Zeega.Backbone.Layout.extend({
 
-
 		fetch: function(path) {
 			// Initialize done for use in async-mode
 			var done;
@@ -20483,7 +20482,7 @@ function(Zeega, Frame)
 
 	return Zeega;
 });
-require([
+Zeega.require([
   // Application.
   "modules/player/player"
 ],
@@ -20492,10 +20491,10 @@ function(Zeega){
   $(window).trigger('zeega_ready');
 });
 
-define("main", function(){});
+Zeega.define("main", function(){});
 
 // Set the require.js configuration for your application.
-require.config({
+Zeega.require.config({
 
 	// Initialize the application with the main application file.
 	deps: [ "main" ],
@@ -20526,5 +20525,5 @@ require.config({
 
 });
 
-define("config", function(){});
+Zeega.define("config", function(){});
 }());
