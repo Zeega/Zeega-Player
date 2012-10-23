@@ -1,3 +1,84 @@
+/*
+
+copyright 2012
+
+ZEEGA LICENSE INFO HERE
+
+*/
+this['JST'] = this['JST'] || {};
+
+this['JST']['app/templates/layouts/player-layout.html'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='';
+ if( !chromeless ) { 
+;__p+='\n\t<div class=\'ZEEGA-player-overlay\'></div>\n';
+ } 
+;__p+='\n<div class=\'ZEEGA-player-window\'></div>';
+}
+return __p;
+};
+
+this['JST']['app/templates/plugins/audio.html'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='';
+}
+return __p;
+};
+
+this['JST']['app/templates/plugins/image.html'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<img src="'+
+( attr.uri )+
+'" width=\'100%\' />';
+}
+return __p;
+};
+
+this['JST']['app/templates/plugins/link.html'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<a href=\'#\' style=\'position:absolute;width:100%;height:100%\'>\n\t';
+ if( mode == 'editor' && !_.isNull( attr.to_frame ) ) { 
+;__p+='\n\t\t<i class="icon-share go-to-sequence"></i>\n\t';
+ } 
+;__p+='\n</a>';
+}
+return __p;
+};
+
+this['JST']['app/templates/plugins/slideshow.html'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<a href=\'#\' class=\'slideshow-arrow slideshow-left-arrow disabled\'><img src=\'../assets/img/layers/slideshow-arrow.png\'/></a>\n<a href=\'#\' class=\'slideshow-arrow slideshow-right-arrow\'><img src=\'../assets/img/layers/slideshow-arrow.png\'/></a>\n<div class=\'slideshow-container\' style=\'width:'+
+( (attr.slides.length *100) +'%' )+
+'\'>\n\t';
+ _.each( attr.slides, function(slide,i){ 
+;__p+='\n\t\t<div class=\'slideshow-slide slideshow-slide-'+
+( i )+
+'\' style=\'width:'+
+( (100 / attr.slides.length) +'%' )+
+';background:url('+
+( slide.attr.uri )+
+') no-repeat center center;-webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover;\'></div>\n\t';
+ }) 
+;__p+='\n</div>';
+}
+return __p;
+};
+
+this['JST']['app/templates/plugins/video.html'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='';
+}
+return __p;
+};
+(function () {
+var zeega;(function () { if (typeof zeega === 'undefined') {
+zeega = {};
 /**
  * almond 0.1.3 Copyright (c) 2011, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -287,7 +368,7 @@ var requirejs, require, define;
             }
         }
 
-        //Support require(['a'])
+        //Support zeega.require(['a'])
         callback = callback || function () {};
 
         //If relName is a function, it is an errback handler,
@@ -337,78 +418,11 @@ var requirejs, require, define;
     };
 }());
 
-this['JST'] = this['JST'] || {};
-
-this['JST']['app/templates/layouts/player-layout.html'] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='';
- if( !chromeless ) { 
-;__p+='\n\t<div class=\'ZEEGA-player-overlay\'></div>\n';
- } 
-;__p+='\n<div class=\'ZEEGA-player-window\'></div>';
+zeega.requirejs = requirejs;zeega.require = require;zeega.define = define;
 }
-return __p;
-};
+}());
+zeega.define("../assets/js/libs/almond", function(){});
 
-this['JST']['app/templates/plugins/audio.html'] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='';
-}
-return __p;
-};
-
-this['JST']['app/templates/plugins/image.html'] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='<img src="'+
-( attr.uri )+
-'" width=\'100%\' />';
-}
-return __p;
-};
-
-this['JST']['app/templates/plugins/link.html'] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='<a href=\'#\' style=\'position:absolute;width:100%;height:100%\'>\n\t';
- if( mode == 'editor' && !_.isNull( attr.to_frame ) ) { 
-;__p+='\n\t\t<i class="icon-share go-to-sequence"></i>\n\t';
- } 
-;__p+='\n</a>';
-}
-return __p;
-};
-
-this['JST']['app/templates/plugins/slideshow.html'] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='<a href=\'#\' class=\'slideshow-arrow slideshow-left-arrow disabled\'><img src=\'../assets/img/layers/slideshow-arrow.png\'/></a>\n<a href=\'#\' class=\'slideshow-arrow slideshow-right-arrow\'><img src=\'../assets/img/layers/slideshow-arrow.png\'/></a>\n<div class=\'slideshow-container\' style=\'width:'+
-( (attr.slides.length *100) +'%' )+
-'\'>\n\t';
- _.each( attr.slides, function(slide,i){ 
-;__p+='\n\t\t<div class=\'slideshow-slide slideshow-slide-'+
-( i )+
-'\' style=\'width:'+
-( (100 / attr.slides.length) +'%' )+
-';background:url('+
-( slide.attr.uri )+
-') no-repeat center center;-webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover;\'></div>\n\t';
- }) 
-;__p+='\n</div>';
-}
-return __p;
-};
-
-this['JST']['app/templates/plugins/video.html'] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='';
-}
-return __p;
-};
-(function () {
 /*!
  * Lo-Dash v0.5.2 <http://lodash.com>
  * Copyright 2012 John-David Dalton <http://allyoucanleet.com/>
@@ -4643,7 +4657,7 @@ return __p;
 
   // expose Lo-Dash
   // some AMD build optimizers, like r.js, check for specific condition patterns like the following:
-  if (typeof Zeega.define === 'function' && typeof Zeega.define.amd === 'object' && Zeega.define.amd) {
+  if (typeof zeega.define === 'function' && typeof zeega.define.amd === 'object' && zeega.define.amd) {
     // Expose Lo-Dash to the global object even when an AMD loader is present in
     // case Lo-Dash was injected by a third-party script and not intended to be
     // loaded as a module. The global assignment can be reverted in the Lo-Dash
@@ -4652,7 +4666,7 @@ return __p;
 
     // define as an anonymous module so, through path mapping, it can be
     // referenced as the "underscore" module
-    Zeega.define('lodash',[],function() {
+    zeega.define('lodash',[],function() {
       return lodash;
     });
   }
@@ -4711,7 +4725,7 @@ return __p;
 
   // Require Underscore, if we're on the server, and it's not already present.
   var _ = root._;
-  if (!_ && (typeof require !== 'undefined')) _ = Zeega.require('underscore');
+  if (!_ && (typeof require !== 'undefined')) _ = zeega.require('underscore');
 
   // For Backbone's purposes, jQuery, Zepto, or Ender owns the `$` variable.
   var $ = root.jQuery || root.Zepto || root.ender;
@@ -6105,7 +6119,7 @@ return __p;
 
 }).call(this);
 
-Zeega.define("backbone", ["lodash"], (function (global) {
+zeega.define("backbone", ["lodash"], (function (global) {
     return function () {
         return global.Backbone;
     }
@@ -6934,9 +6948,9 @@ LayoutManager.prototype.options = {
 keys = _.keys(LayoutManager.prototype.options);
 
 })(this);
-Zeega.define("plugins/backbone.layoutmanager", function(){});
+zeega.define("plugins/backbone.layoutmanager", function(){});
 
-Zeega.define('zeega',[
+zeega.define('zeega',[
 	'backbone',
 	"plugins/backbone.layoutmanager"
 ],
@@ -6967,7 +6981,7 @@ function(Backbone) {
 
 });
 
-Zeega.define('zeega_dir/plugins/layers/_layer/_layer',[
+zeega.define('zeega_dir/plugins/layers/_layer/_layer',[
 	"zeega"
 ],
 
@@ -7185,9 +7199,9 @@ function(Zeega){
 (function(c,n){var k="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";c.fn.imagesLoaded=function(l){function m(){var b=c(h),a=c(g);d&&(g.length?d.reject(e,b,a):d.resolve(e));c.isFunction(l)&&l.call(f,e,b,a)}function i(b,a){b.src===k||-1!==c.inArray(b,j)||(j.push(b),a?g.push(b):h.push(b),c.data(b,"imagesLoaded",{isBroken:a,src:b.src}),o&&d.notifyWith(c(b),[a,e,c(h),c(g)]),e.length===j.length&&(setTimeout(m),e.unbind(".imagesLoaded")))}var f=this,d=c.isFunction(c.Deferred)?c.Deferred():
 0,o=c.isFunction(d.notify),e=f.find("img").add(f.filter("img")),j=[],h=[],g=[];e.length?e.bind("load.imagesLoaded error.imagesLoaded",function(b){i(b.target,"error"===b.type)}).each(function(b,a){var e=a.src,d=c.data(a,"imagesLoaded");if(d&&d.src===e)i(a,d.isBroken);else if(a.complete&&a.naturalWidth!==n)i(a,0===a.naturalWidth||0===a.naturalHeight);else if(a.readyState||a.complete)a.src=k,a.src=e}):m();return d?d.promise(f):f}})(jQuery);
 
-Zeega.define("plugins/jquery.imagesloaded.min", function(){});
+zeega.define("plugins/jquery.imagesloaded.min", function(){});
 
-Zeega.define('zeega_dir/plugins/layers/image/image',[
+zeega.define('zeega_dir/plugins/layers/image/image',[
 	"zeega",
 	'zeega_dir/plugins/layers/_layer/_layer',
 
@@ -7262,7 +7276,7 @@ function(Zeega, _Layer){
 
 });
 
-Zeega.define('zeega_dir/plugins/layers/link/link',[
+zeega.define('zeega_dir/plugins/layers/link/link',[
 	"zeega",
 	'zeega_dir/plugins/layers/_layer/_layer'
 ],
@@ -7386,7 +7400,7 @@ function(Zeega, _Layer){
 	return Layer;
 
 });
-Zeega.define('zeega_dir/plugins/layers/slideshow/slideshow',[
+zeega.define('zeega_dir/plugins/layers/slideshow/slideshow',[
 	"zeega",
 	'zeega_dir/plugins/layers/_layer/_layer'
 ],
@@ -8175,7 +8189,7 @@ window.Modernizr = (function( window, document, undefined ) {
 
 })(this, this.document);
 ;
-Zeega.define("libs/modernizr", function(){});
+zeega.define("libs/modernizr", function(){});
 
 /*
  * popcorn.js version 1.1.2
@@ -18321,9 +18335,9 @@ Popcorn.player( "flashvideo", {
   });
 })( Popcorn );
 
-Zeega.define("libs/popcorn/popcorn-flash", function(){});
+zeega.define("libs/popcorn/popcorn-flash", function(){});
 
-Zeega.define('zeega_dir/plugins/media-player/media-player',[
+zeega.define('zeega_dir/plugins/media-player/media-player',[
 	'zeega',
 	'libs/modernizr',
 	'libs/popcorn/popcorn-flash'
@@ -19102,7 +19116,7 @@ function(Zeega){
 
 });
 
-Zeega.define('zeega_dir/plugins/layers/video/video',[
+zeega.define('zeega_dir/plugins/layers/video/video',[
 	"zeega",
 	'zeega_dir/plugins/layers/_layer/_layer',
 
@@ -19233,7 +19247,7 @@ function(Zeega, _Layer, MediaPlayer){
 	return Layer;
 
 });
-Zeega.define('zeega_dir/plugins/layers/audio/audio',[
+zeega.define('zeega_dir/plugins/layers/audio/audio',[
 	'zeega',
 	'zeega_dir/plugins/layers/_layer/_layer',
 	'zeega_dir/plugins/layers/video/video'
@@ -19281,7 +19295,7 @@ this should be auto generated probably!!
 
 */
 
-Zeega.define('zeega_dir/plugins/layers/_all',[
+zeega.define('zeega_dir/plugins/layers/_all',[
 	'zeega_dir/plugins/layers/image/image',
 	'zeega_dir/plugins/layers/link/link',
 	'zeega_dir/plugins/layers/slideshow/slideshow',
@@ -19301,7 +19315,7 @@ Zeega.define('zeega_dir/plugins/layers/_all',[
 		return Plugins;
 	}
 );
-Zeega.define('zeega_dir/player/layer',[
+zeega.define('zeega_dir/player/layer',[
 	"zeega",
 	"zeega_dir/plugins/layers/_all"
 ],
@@ -19424,7 +19438,7 @@ function(Zeega, Plugin)
 
 	return Layer;
 });
-Zeega.define('zeega_dir/player/frame',[
+zeega.define('zeega_dir/player/frame',[
 	"zeega",
 	"zeega_dir/player/layer"
 ],
@@ -19692,7 +19706,7 @@ function(Zeega, Layer)
 
 	return Frame;
 });
-Zeega.define('modules/player/player',[
+zeega.define('modules/player/player',[
 	"zeega",
 	"zeega_dir/player/frame"
 ],
@@ -20482,7 +20496,7 @@ function(Zeega, Frame)
 
 	return Zeega;
 });
-Zeega.require([
+zeega.require([
   // Application.
   "modules/player/player"
 ],
@@ -20491,39 +20505,5 @@ function(Zeega){
   $(window).trigger('zeega_ready');
 });
 
-Zeega.define("main", function(){});
-
-// Set the require.js configuration for your application.
-Zeega.require.config({
-
-	// Initialize the application with the main application file.
-	deps: [ "main" ],
-
-	paths: {
-		// JavaScript folders.
-		libs: "../assets/js/libs",
-		plugins: "../assets/js/plugins",
-		vendor: "../assets/vendor",
-		zeega_dir: "../app/modules",
-		
-		// Libraries.
-		//jquery: "../assets/js/libs/jquery",
-		lodash: "../assets/js/libs/lodash",
-		backbone: "../assets/js/libs/backbone"
-
-	},
-	shim: {
-		// Backbone library depends on lodash and jQuery.
-		backbone: {
-			deps: ["lodash"],
-			exports: "Backbone"
-		},
-
-		// Backbone.LayoutManager depends on Backbone.
-		"plugins/backbone.layoutmanager": ["backbone"]
-	}
-
-});
-
-Zeega.define("config", function(){});
+zeega.define("main", function(){});
 }());

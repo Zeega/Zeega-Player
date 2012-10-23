@@ -56,18 +56,6 @@ module.exports = function(grunt) {
 			"dist/debug/templates.js": ["app/templates/**/*.html"]
 		},
 
-		// The concatenate task is used here to merge the almond require/define
-		// shim and the templates into the application code.  It's named
-		// dist/debug/require.js, because we want to only load one script file in
-		// index.html.
-		concat: {
-			"dist/debug/zeega.js": [
-				"assets/js/libs/almond.js",
-				"dist/debug/templates.js",
-				"dist/debug/zeega.js"
-      ]
-		},
-
 		// This task uses the MinCSS Node.js project to take all your CSS files in
 		// order and concatenate them into a single CSS file named index.css.  It
 		// also minifies all the CSS as well.  This is named index.css, because we
@@ -78,40 +66,6 @@ module.exports = function(grunt) {
 			]
 		},
 
-/*
-		// The stylus task is used to compile Stylus stylesheets into a single
-		// CSS file for debug and release deployments.  
-		stylus: {
-			// Put all your CSS files here, order matters!
-			files: [
-				"assets/vendor/h5bp/css/style.css"
-			],
-
-			// Default task which runs in debug mode, this will build out to the
-			// `dist/debug` directory.
-			compile: {
-				// Used for @imports.
-				options: { paths: ["assets/css"] },
-				
-				files: {
-					"dist/debug/index.css": "<config:stylus.files>"
-				}
-			},
-
-			// This dev task only runs with `watch:stylus` this will *completely*
-			// overwrite the `assets/css/index.css` file referenced in `index.html`.
-			// Use this only when you cannot use the `bbb server` runtime
-			// compilation.
-			dev: {
-				// Used for @imports.
-				options: { paths: ["assets/css"] },
-				
-				files: {
-					"assets/css/index.css": "<config:stylus.files>"
-				}
-			}
-		},
-*/
 
 		// Takes the built require.js file and minifies it for filesize benefits.
 		min: {
@@ -166,23 +120,27 @@ module.exports = function(grunt) {
 			}
 		},
 
+		// The concatenate task is used here to merge the almond require/define
+		// shim and the templates into the application code.  It's named
+		// dist/debug/require.js, because we want to only load one script file in
+		// index.html.
+		concat: {
+			"dist/debug/zeega.js": [
+				"app/readme.js",
+				"dist/debug/templates.js",
+				"dist/debug/zeega.js"
+			]
+		},
+
 		// This task uses James Burke's excellent r.js AMD build tool.  In the
 		// future other builders may be contributed as drop-in alternatives.
 		requirejs: {
-			// Include the main configuration file.
-			mainConfigFile: "app/config.js",
 
-			// Output file.
-			out: "dist/debug/zeega.js",
-
-			// Root application module.
-			name: "config",
-
-			//stubModules: ["plugins/backbone.layoutmanager"],
-			namespace : 'Zeega',
-
-			// Do not wrap everything in an IIFE.
-			wrap: true,
+			name : '../assets/js/libs/almond',
+			namespace: 'zeega',
+			mainConfigFile: "app/player_config.js",
+			out : "dist/debug/zeega.js",
+			wrap: true
 		},
 
 		// The headless QUnit testing environment is provided for "free" by Grunt.
