@@ -4,7 +4,7 @@ define(["lodash"],
 
 function()
 {
-	var type = 'zeega-project'
+	var type = 'zeega-project';
 	var Parser = {};
 	Parser[type] = {};
 

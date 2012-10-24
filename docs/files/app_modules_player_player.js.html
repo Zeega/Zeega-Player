@@ -88,10 +88,13 @@
     <pre class="code prettyprint linenums">
 define([
 	&quot;zeega&quot;,
-	&quot;zeega_dir&#x2F;player&#x2F;frame&quot;
+	&quot;zeega_dir&#x2F;player&#x2F;frame&quot;,
+
+	&#x2F;&#x2F; parsers
+	&quot;zeega_dir&#x2F;parsers&#x2F;_all&quot;
 ],
 
-function(Zeega, Frame)
+function(Zeega, Frame, Parser)
 {
 	&#x2F;**
 	Player
@@ -363,36 +366,41 @@ function(Zeega, Frame)
 			if( !this.initialized )
 			{
 				var _this = this;
+				this.set(obj,{silent:true}); &#x2F;&#x2F; overwrite project settings and add data
+				
 				if( obj &amp;&amp; obj.data &amp;&amp; _.isObject( obj.data ) )
 				{
 					&#x2F;&#x2F; the project should be valid json
-					this.set(obj,{silent:true}); &#x2F;&#x2F; overwrite project settings and add data
 					parseProject( this );
 					this.listen();
 				}
-				else if( obj &amp;&amp; obj.project_url &amp;&amp; _.isString( obj.project_url ) )
+				else if( obj &amp;&amp; obj.url &amp;&amp; _.isString( obj.url ) )
 				{
 					&#x2F;&#x2F; try to load project from project_url
-					this.url = obj.project_url;
-					this.set(obj,{silent:true}); &#x2F;&#x2F; overwrite project settings and add data
+					this.url = obj.url;
 					this.fetch({silent: true})
-						.success(function(){
-							parseProject( _this );
-							_this.listen();
+						.success(function(res){
+							var parsed;
+							&#x2F;&#x2F;determine which parser to use
+							_.each(Parser,function(p){
+								if(p.validate(res))
+								{
+									&#x2F;&#x2F; parse the response
+									parsed = p.parse(res, _this.toJSON() );
+									return false;
+								}
+							});
+
+							if( !_.isUndefined(parsed) )
+							{
+								&#x2F;&#x2F; continue loading the player
+								_this.set( parsed, {silent:false} );
+								parseProject( _this );
+								_this.listen();
+							}
+							else _this.onError(&#x27;4 - no valid parser found&#x27;);
 						})
 						.error(function(){ _this.onError(&#x27;3 - fetch error. bad project_url?&#x27;); });
-				}
-				else if( obj &amp;&amp; obj.collection_url &amp;&amp; _.isString( obj.collection_url ) )
-				{
-					&#x2F;&#x2F; try to load project from collection_url
-					this.url = obj.collection_url;
-					this.set(obj,{silent:true}); &#x2F;&#x2F; overwrite project settings and add data
-					this.fetch({silent: true})
-						.success(function(){
-							parseCollection( _this );
-							_this.listen();
-						})
-						.error(function(){ _this.onError(&#x27;3 - fetch error. bad collection_url?&#x27;); });
 				}
 				else this.onError(&#x27;1 - invalid or missing data. could be setting up player. nonfatal.&#x27;);
 			}
@@ -639,99 +647,6 @@ function(Zeega, Frame)
 		if( player.get(&#x27;autoplay&#x27;) ) player.play();
 	};
 
-	var parseCollection = function( player )
-	{
-		if( player.get(&#x27;collection_mode&#x27;) == &#x27;slideshow&#x27; ) parseSlideshowCollection( player );
-		else parseStandardCollection( player );
-	};
-
-	var parseStandardCollection = function( player )
-	{
-		player.set({
-			layers : generateLayerArrayFromItems(player.get(&#x27;items&#x27;),player.get(&#x27;div_id&#x27;)),
-			sequences : generateSequenceFromItems( player.get(&#x27;items&#x27;))
-		});
-
-		var frames = new Frame.Collection( generateFrameArrayFromItems( player.get(&#x27;items&#x27;) ) );
-		console.log(&#x27;parse collection&#x27;, player, frames );
-
-		frames.load( player.get(&#x27;sequences&#x27;), player.get(&#x27;layers&#x27;), player.get(&#x27;preload_ahead&#x27;) );
-		player.frames = frames;
-		player.initialized = true;
-		player.trigger(&#x27;data_loaded&#x27;);
-		if( player.get(&#x27;autoplay&#x27;) ) player.play();
-	};
-
-	var parseSlideshowCollection = function( player )
-	{
-		&#x2F;&#x2F; sort out all image layers from time based layers&#x27;
-		var frames;
-		var imageLayers = [];
-		var timebasedLayers = [];
-		_.each( player.get(&#x27;items&#x27;), function(item){
-			if(item.layer_type == &#x27;Image&#x27;) imageLayers.push(item);
-			else if( item.layer_type == &#x27;Audio&#x27; || item.media_type == &#x27;Video&#x27; ) timebasedLayers.push(item);
-		});
-
-		var slideshowLayer = generateSlideshowLayer( imageLayers );
-		slideshowLayer.target_div = player.get(&#x27;div_id&#x27;);
-		&#x2F;&#x2F; if there are no timebased layers, then make one frame with one slideshow layer in it
-		if( timebasedLayers.length === 0 )
-		{
-			player.set({
-				layers : [slideshowLayer],
-				sequences : generateSequenceFromItems( [slideshowLayer] )
-			},{silent:true});
-			frames = new Frame.Collection( generateSingleFrame() );
-
-		}
-		else
-		{
-			&#x2F;&#x2F; image layers go into a new slideshow layer which is persistent over the route
-			player.set({
-				layers : generateLayerArrayFromItems(timebasedLayers,player.get(&#x27;div_id&#x27;)).concat([slideshowLayer]),
-				sequences : generateSequenceFromItems( timebasedLayers, [slideshowLayer.id] )
-			},{silent:true});
-			frames = new Frame.Collection( generateFrameArrayFromItems( timebasedLayers, [slideshowLayer.id] ));
-		}
-		frames.load( player.get(&#x27;sequences&#x27;), player.get(&#x27;layers&#x27;), player.get(&#x27;preload_ahead&#x27;) );
-		player.frames = frames;
-		player.initialized = true;
-		player.trigger(&#x27;data_loaded&#x27;);
-		if( player.get(&#x27;autoplay&#x27;) ) player.play();
-	};
-
-	var generateSlideshowLayer = function( imageLayerArray )
-	{
-		var layerDefaults = {
-			keyboard : false,
-			width:100,
-			top:0,
-			left:0
-		};
-		var slides = _.map( imageLayerArray, function(item){
-			return {
-				attr: item,
-				type : item.layer_type,
-				id : item.id
-			};
-		});
-		return {
-			attr : _.defaults( {slides:slides}, layerDefaults),
-			type : &#x27;SlideShow&#x27;,
-			id : 1
-		};
-	};
-
-	var generateSingleFrame = function()
-	{
-		return {
-			id : 0,
-			layers : [0],
-			attr : {advance:0}
-		};
-	};
-
 	var addTargetDivToLayers = function(layerArray, targetDiv)
 	{
 		_.each(layerArray, function(layer){
@@ -739,48 +654,6 @@ function(Zeega, Frame)
 		});
 	};
 
-	&#x2F;*
-		functions for converting a collection to a project
-	*&#x2F;
-
-	var generateFrameArrayFromItems = function(itemsArray, persistentLayers)
-	{
-		return _.map( itemsArray, function(item){
-			return {
-				id : item.id,
-				layers : [item.id].concat(persistentLayers),
-				attr : { advance : 0 }
-			};
-		});
-	};
-
-	var generateSequenceFromItems = function(itemsArray, persistentLayers)
-	{
-		return [{
-			id : 1, &#x2F;&#x2F; id is irrelevant
-			frames : _.pluck(itemsArray,&#x27;id&#x27;),
-			persistent_layers : _.compact(persistentLayers),
-			title : &#x27;&#x27;
-		}];
-	};
-
-	var generateLayerArrayFromItems = function(itemsArray, divID)
-	{
-		var layerDefaults = {
-			width:100,
-			top:0,
-			left:0
-		};
-
-		return _.map( itemsArray, function(item){
-			return {
-				attr: _.defaults(item,layerDefaults),
-				type : item.layer_type,
-				id : item.id,
-				target_div : divID
-			};
-		});
-	};
 
 	&#x2F;*
 		the player layout
@@ -880,9 +753,6 @@ function(Zeega, Frame)
 			return css;
 		}
 	});
-
-
-		&#x2F;&#x2F; Localize or create a new JavaScript Template object.
 
 	Zeega.player = Player;
 

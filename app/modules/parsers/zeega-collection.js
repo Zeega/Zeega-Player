@@ -4,7 +4,7 @@ define(["lodash"],
 
 function()
 {
-	var type = 'zeega-collection'
+	var type = 'zeega-collection';
 	var Parser = {};
 	Parser[type] = {};
 
@@ -41,7 +41,7 @@ function()
 			sequences : [ sequence ],
 			frames : frames,
 			layers : layers
-		})
+		});
 	};
 
 	var parseSlideshowCollection = function( res )
