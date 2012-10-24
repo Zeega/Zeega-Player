@@ -385,6 +385,7 @@ function(Zeega, Frame, Parser)
 							_.each(Parser,function(p){
 								if(p.validate(res))
 								{
+									console.log(&#x27;parsed using: &#x27;+ p.name);
 									&#x2F;&#x2F; parse the response
 									parsed = p.parse(res, _this.toJSON() );
 									return false;

@@ -6,7 +6,7 @@ function()
 {
 	var type = 'zeega-collection';
 	var Parser = {};
-	Parser[type] = {};
+	Parser[type] = { name: type };
 
 	Parser[type].parse = function( res, opts )
 	{
