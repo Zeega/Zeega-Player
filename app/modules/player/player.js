@@ -538,6 +538,8 @@ function(Zeega, Frame)
 	*/
 	var parseProject = function( player )
 	{
+		addTargetDivToLayers(player.get('layers'), player.get('div_id'));
+		
 		var frames = new Frame.Collection( player.get('frames') );
 		frames.load( player.get('sequences'), player.get('layers'), player.get('preload_ahead') );
 			
@@ -558,7 +560,7 @@ function(Zeega, Frame)
 	var parseStandardCollection = function( player )
 	{
 		player.set({
-			layers : generateLayerArrayFromItems(player.get('items')),
+			layers : generateLayerArrayFromItems(player.get('items'),player.get('div_id')),
 			sequences : generateSequenceFromItems( player.get('items'))
 		});
 
@@ -584,6 +586,7 @@ function(Zeega, Frame)
 		});
 
 		var slideshowLayer = generateSlideshowLayer( imageLayers );
+		slideshowLayer.target_div = player.get('div_id');
 		// if there are no timebased layers, then make one frame with one slideshow layer in it
 		if( timebasedLayers.length === 0 )
 		{
@@ -598,7 +601,7 @@ function(Zeega, Frame)
 		{
 			// image layers go into a new slideshow layer which is persistent over the route
 			player.set({
-				layers : generateLayerArrayFromItems(timebasedLayers).concat([slideshowLayer]),
+				layers : generateLayerArrayFromItems(timebasedLayers,player.get('div_id')).concat([slideshowLayer]),
 				sequences : generateSequenceFromItems( timebasedLayers, [slideshowLayer.id] )
 			},{silent:true});
 			frames = new Frame.Collection( generateFrameArrayFromItems( timebasedLayers, [slideshowLayer.id] ));
@@ -641,6 +644,13 @@ function(Zeega, Frame)
 		};
 	};
 
+	var addTargetDivToLayers = function(layerArray, targetDiv)
+	{
+		_.each(layerArray, function(layer){
+			layer.target_div = targetDiv;
+		});
+	};
+
 	/*
 		functions for converting a collection to a project
 	*/
@@ -666,18 +676,20 @@ function(Zeega, Frame)
 		}];
 	};
 
-	var generateLayerArrayFromItems = function(itemsArray)
+	var generateLayerArrayFromItems = function(itemsArray, divID)
 	{
 		var layerDefaults = {
 			width:100,
 			top:0,
 			left:0
 		};
+
 		return _.map( itemsArray, function(item){
 			return {
 				attr: _.defaults(item,layerDefaults),
 				type : item.layer_type,
-				id : item.id
+				id : item.id,
+				target_div : divID
 			};
 		});
 	};

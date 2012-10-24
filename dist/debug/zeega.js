@@ -7067,7 +7067,10 @@ function(Zeega){
 		{
 			this.className = this._className +' '+ this.className;
 			this.beforePlayerRender();
-			$('.ZEEGA-player-window').append( this.el );
+
+			if(this.model.get('target_div') !== '' ) $('#'+ this.model.get('target_div') +' .ZEEGA-player-window').append( this.el );
+			else $('.ZEEGA-player-window').append( this.el );
+			
 			this.$el.addClass('visual-element-'+ this.model.get('type').toLowerCase() );
 			this.moveOffStage();
 			this.applySize();
@@ -19343,10 +19346,13 @@ function(Zeega, Plugin)
 				this.set(def);
 
 				// create and store the layerClass
-				this.visualElement = new Plugin[this.get('type')].Visual({model:this, attributes:{
-					id : 'visual-element-' + this.id,
-					'data-layer_id' : this.id
-				}});
+				this.visualElement = new Plugin[this.get('type')].Visual({
+					model:this,
+					attributes:{
+						id : 'visual-element-' + this.id,
+						'data-layer_id' : this.id
+					}
+				});
 				// listen to visual element events
 				this.on('visual_ready', this.onVisualReady, this);
 				this.on('visual_error', this.onVisualError, this);
@@ -20246,6 +20252,8 @@ function(Zeega, Frame)
 	*/
 	var parseProject = function( player )
 	{
+		addTargetDivToLayers(player.get('layers'), player.get('div_id'));
+		
 		var frames = new Frame.Collection( player.get('frames') );
 		frames.load( player.get('sequences'), player.get('layers'), player.get('preload_ahead') );
 			
@@ -20266,7 +20274,7 @@ function(Zeega, Frame)
 	var parseStandardCollection = function( player )
 	{
 		player.set({
-			layers : generateLayerArrayFromItems(player.get('items')),
+			layers : generateLayerArrayFromItems(player.get('items'),player.get('div_id')),
 			sequences : generateSequenceFromItems( player.get('items'))
 		});
 
@@ -20292,6 +20300,7 @@ function(Zeega, Frame)
 		});
 
 		var slideshowLayer = generateSlideshowLayer( imageLayers );
+		slideshowLayer.target_div = player.get('div_id');
 		// if there are no timebased layers, then make one frame with one slideshow layer in it
 		if( timebasedLayers.length === 0 )
 		{
@@ -20306,7 +20315,7 @@ function(Zeega, Frame)
 		{
 			// image layers go into a new slideshow layer which is persistent over the route
 			player.set({
-				layers : generateLayerArrayFromItems(timebasedLayers).concat([slideshowLayer]),
+				layers : generateLayerArrayFromItems(timebasedLayers,player.get('div_id')).concat([slideshowLayer]),
 				sequences : generateSequenceFromItems( timebasedLayers, [slideshowLayer.id] )
 			},{silent:true});
 			frames = new Frame.Collection( generateFrameArrayFromItems( timebasedLayers, [slideshowLayer.id] ));
@@ -20349,6 +20358,13 @@ function(Zeega, Frame)
 		};
 	};
 
+	var addTargetDivToLayers = function(layerArray, targetDiv)
+	{
+		_.each(layerArray, function(layer){
+			layer.target_div = targetDiv;
+		});
+	};
+
 	/*
 		functions for converting a collection to a project
 	*/
@@ -20374,18 +20390,20 @@ function(Zeega, Frame)
 		}];
 	};
 
-	var generateLayerArrayFromItems = function(itemsArray)
+	var generateLayerArrayFromItems = function(itemsArray, divID)
 	{
 		var layerDefaults = {
 			width:100,
 			top:0,
 			left:0
 		};
+
 		return _.map( itemsArray, function(item){
 			return {
 				attr: _.defaults(item,layerDefaults),
 				type : item.layer_type,
-				id : item.id
+				id : item.id,
+				target_div : divID
 			};
 		});
 	};

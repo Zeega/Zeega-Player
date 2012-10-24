@@ -26,10 +26,13 @@ function(Zeega, Plugin)
 				this.set(def);
 
 				// create and store the layerClass
-				this.visualElement = new Plugin[this.get('type')].Visual({model:this, attributes:{
-					id : 'visual-element-' + this.id,
-					'data-layer_id' : this.id
-				}});
+				this.visualElement = new Plugin[this.get('type')].Visual({
+					model:this,
+					attributes:{
+						id : 'visual-element-' + this.id,
+						'data-layer_id' : this.id
+					}
+				});
 				// listen to visual element events
 				this.on('visual_ready', this.onVisualReady, this);
 				this.on('visual_error', this.onVisualError, this);
