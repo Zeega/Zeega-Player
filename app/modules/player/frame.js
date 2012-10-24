@@ -76,6 +76,7 @@ function(Zeega, Layer)
 				this.renderOnReady = oldID;
 			}
 			this.layers.each(function(layer, i){
+				console.log('update ZZZZZ', _this, layer);
 				layer.updateZIndex( _this.layers.length - i );
 			});
 		},
