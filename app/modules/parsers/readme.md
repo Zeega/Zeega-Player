@@ -15,26 +15,26 @@ each parser module should return valid zeega project data
 
 projects must come in the format:
 
-{
-    [id : Integer,]
-    [title : String]
-    sequences : [{
-        [id : Integer,]
-        [title : String,]
-        persistent_layers : [ [Integer],…,[Integer] ],
-        frames : [ [Integer],…,[Integer] ]
-    }],
-    frames : [
         {
-            id : Integer,
-            attr : { "advance": [Integer] },
-            layers : [ [Integer],…,[Integer] ]
+            [id : Integer,]
+            [title : String]
+            sequences : [{
+                [id : Integer,]
+                [title : String,]
+                persistent_layers : [ [Integer],…,[Integer] ],
+                frames : [ [Integer],…,[Integer] ]
+            }],
+            frames : [
+                {
+                    id : Integer,
+                    attr : { "advance": [Integer] },
+                    layers : [ [Integer],…,[Integer] ]
+                }
+            ],
+            layers : [
+                id : Integer,
+                type : String,
+                [project_id : Integer,]
+                attr : { Mixed }
+            ]
         }
-    ],
-    layers : [
-        id : Integer,
-        type : String,
-        [project_id : Integer,]
-        attr : { Mixed }
-    ]
-}
