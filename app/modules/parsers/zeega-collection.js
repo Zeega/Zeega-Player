@@ -46,25 +46,39 @@ function()
 
 	var parseSlideshowCollection = function( res )
 	{
+		var frames,slideshowLayer;
 		var imageLayers = [];
 		var timebasedLayers = [];
-		_.each( res.items[0].items, function(item){
+		_.each( res.items[0].child_items, function(item){
 			if(item.layer_type == 'Image') imageLayers.push(item);
 			else if( item.layer_type == 'Audio' || item.media_type == 'Video' ) timebasedLayers.push(item);
 		});
 
 		// slideshow layer from image items
-		var slideshowLayer = generateSlideshowLayer( imageLayers );
+		if(imageLayers.length) slideshowLayer = generateSlideshowLayer( imageLayers );
 		// layers from timebased items
 		var layers = generateLayerArrayFromItems( timebasedLayers );
 		if(slideshowLayer) layers.push(slideshowLayer);
-		// frames from timebased items
-		var frames = generateFrameArrayFromItems( timebasedLayers, [slideshowLayer.id] );
+
+		if( timebasedLayers.length )
+		{
+			// frames from timebased items
+			frames = generateFrameArrayFromItems( timebasedLayers, slideshowLayer ? [ slideshowLayer.id ] : [] );
+		}
+		else
+		{
+			// create single frame if no timebased layers exist
+			frames = [{
+				id : 1,
+				layers : [1],
+				attr : { advance : 0 }
+			}];
+		}
 
 		var sequence = {
 			id : 0,
 			title : "collection",
-			persistent_layers : [ slideshowLayer.id ],
+			persistent_layers : slideshowLayer ? [ slideshowLayer.id ] : [],
 			frames : _.pluck( frames, 'id')
 		};
 
@@ -118,6 +132,7 @@ function()
 				id : item.id
 			};
 		});
+
 		return {
 			attr : _.defaults( {slides:slides}, layerDefaults),
 			type : 'SlideShow',
