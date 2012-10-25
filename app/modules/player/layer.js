@@ -85,6 +85,16 @@ function(Zeega, Plugin)
 			this.visualElement.updateZIndex(z);
 		},
 
+		pause : function()
+		{
+			this.visualElement.player_onPause();
+		},
+
+		play : function()
+		{
+			this.visualElement.player_onPlay();
+		},
+
 		exit : function()
 		{
 			if( this.layerClass )
@@ -113,13 +123,7 @@ function(Zeega, Plugin)
 	});
 
 	Layer.Collection = Zeega.Backbone.Collection.extend({
-
-		model : LayerModel,
-
-		initialize : function()
-		{
-			
-		}
+		model : LayerModel
 	});
 
 	return Layer;

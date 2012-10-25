@@ -406,19 +406,23 @@ function(Zeega, Frame, Parser)
 			if( !this.ready ) this.render();
 			else if( this.status == 'paused' )
 			{
+				this.status = 'playing';
 				this.trigger('play');
 				// if there is no info on where the player is or where to start go to first frame in project
 				if( _.isNull(this.currentFrame) && _.isNull( this.get('start_frame') ) )
 				{
 					this.cueFrame( this.get('sequences')[0].frames[0] );
+					this.currentFrame.play();
 				}
 				else if( _.isNull(this.currentFrame) && !_.isNull( this.get('start_frame') ) && this.frames.get( this.get('start_frame') ) )
 				{
 					this.cueFrame( this.get('start_frame') );
+					this.currentFrame.play();
 				}
 				else if( !_.isNull(this.currentFrame) )
 				{
 					// unpause the player
+					this.currentFrame.play();
 				}
 				else this._onError('3 - could not play');
 			}
@@ -429,14 +433,19 @@ function(Zeega, Frame, Parser)
 		{
 			if( this.status == 'playing' )
 			{
-
+				this.status ='paused';
 				this.trigger('pause');
+				// pause each frame - layer
+				this.currentFrame.pause();
+				// pause auto advance
 			}
 		},
 
 		playPause : function()
 		{
-			console.log('play pause');
+			console.log('play pause: ', this.status);
+			if( this.status == 'paused' ) this.play();
+			else this.pause();
 		},
 
 		// goes to the next frame after n ms

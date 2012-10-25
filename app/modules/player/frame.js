@@ -122,6 +122,20 @@ function(Zeega, Layer)
 			return false;
 		},
 
+		pause : function()
+		{
+			this.layers.each(function(layer){
+				layer.pause();
+			});
+		},
+
+		play : function()
+		{
+			this.layers.each(function(layer){
+				layer.play();
+			});
+		},
+
 		exit : function( newID )
 		{
 			var commonLayers = this.get('common_layers')[newID] || [];
