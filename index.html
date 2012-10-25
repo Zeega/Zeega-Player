@@ -13,25 +13,32 @@
 
 <body>
 	<!-- Main container. -->
+	<a href='#' id='playpause'>>></a>
 	<div id="main" style='height:400px;width:600px;float:left'></div>
-
+	<!--
 	<div id="secondary" style='height:400px;width:600px;float:left'></div>
-
+-->
 <!-- dev env -->
 	
 	<script src="assets/js/libs/jquery.js"></script>
 
 	<script>
 	$(window).bind('zeega_ready', function(){
+
 		var project = new Zeega.player({window_fit:true});
 		project.on('all', function(e, obj){ if(e!='media_timeupdate') console.log('1: e:',e,obj);});
 		project.load({
-			//div_id : 'main',
+			div_id : 'main',
+			autoplay : false,
 			url: 'http://alpha.zeega.org/api/projects/2259',
 			//url : 'http://api.flickr.com/services/feeds/photos_public.gne?tags=massascension&format=json&jsoncallback=?',
 			//url: 'http://alpha.zeega.org/api/items/49217',
 			//url: 'http://planettakeout.org/zeegaapi/items/46075/items?page=1', //dynamic
 			collection_mode: 'slideshow' // standard, slideshow
+		});
+
+		$('#playpause').click(function(){
+			project.playPause();
 		});
 
 		// var project2 = new Zeega.player({window_fit:true});
