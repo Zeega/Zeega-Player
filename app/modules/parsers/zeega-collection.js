@@ -11,7 +11,7 @@ function()
 	Parser[type].parse = function( res, opts )
 	{
 		var project = {};
-		if(opts.collection_mode == 'slideshow') project = parseSlideshowCollection( res );
+		if(opts.collection_mode == 'slideshow' && res.items[0].child_items.length > 0 ) project = parseSlideshowCollection( res );
 		else project = parseStandardCollection( res );
 
 		return project;
@@ -19,16 +19,16 @@ function()
 
 	Parser[type].validate = function( res )
 	{
-		if( res.items && res.items[0] && res.items[0].items ) return true;
+		if( res.items && res.items[0] && res.items[0].child_items ) return true;
 		return false;
 	};
 
 	var parseStandardCollection = function( res )
 	{
 		// layers from timebased items
-		var layers = generateLayerArrayFromItems( res.items[0].items );
+		var layers = generateLayerArrayFromItems( res.items[0].child_items );
 		// frames from timebased items
-		var frames = generateFrameArrayFromItems( res.items[0].items );
+		var frames = generateFrameArrayFromItems( res.items[0].child_items );
 
 		var sequence = {
 			id : 0,
