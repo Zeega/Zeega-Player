@@ -7031,18 +7031,14 @@ function(Zeega){
 		fetch: function(path) {
 			// Initialize done for use in async-mode
 			var done;
-
 			// Concatenate the file extension.
 			path = 'app/templates/'+ path + ".html";
-			console.log('fetch layer path', path);
-
 			// If cached, use the compiled template.
 			if (JST[path]) {
 				return JST[path];
 			} else {
 				// Put fetch into `async-mode`.
 				done = this.async();
-
 				// Seek out the template asynchronously.
 				return $.ajax({ url: Zeega.root + path }).then(function(contents) {
 					done(JST[path] = _.template(contents));
@@ -7057,9 +7053,7 @@ function(Zeega){
 
 		initialize : function()
 		{
-			
 			this.init();
-
 		},
 
 		beforePlayerRender : function(){},
@@ -7068,16 +7062,13 @@ function(Zeega){
 			this.className = this._className +' '+ this.className;
 			this.beforePlayerRender();
 
-			console.log(this.model.get('target_div'));
 			if(this.model.get('target_div') !== '' && !_.isNull(this.model.get('target_div')) )
 			{
 				$('#'+ this.model.get('target_div') +' .ZEEGA-player-window').append( this.el );
-				console.log('draw into div', '#'+ this.model.get('target_div') +' .ZEEGA-player-window');
 			}
 			else
 			{
 				$('.ZEEGA-player-window').append( this.el );
-				console.log('draw into window');
 			}
 			this.$el.addClass('visual-element-'+ this.model.get('type').toLowerCase() );
 			this.moveOffStage();
@@ -19413,6 +19404,16 @@ function(Zeega, Plugin)
 			this.visualElement.updateZIndex(z);
 		},
 
+		pause : function()
+		{
+			this.visualElement.player_onPause();
+		},
+
+		play : function()
+		{
+			this.visualElement.player_onPlay();
+		},
+
 		exit : function()
 		{
 			if( this.layerClass )
@@ -19441,13 +19442,7 @@ function(Zeega, Plugin)
 	});
 
 	Layer.Collection = Zeega.Backbone.Collection.extend({
-
-		model : LayerModel,
-
-		initialize : function()
-		{
-			
-		}
+		model : LayerModel
 	});
 
 	return Layer;
@@ -19574,6 +19569,20 @@ function(Zeega, Layer)
 			var states = this.getLayerStates();
 			if( states.ready.length + states.error.length  == this.layers.length ) return true;
 			return false;
+		},
+
+		pause : function()
+		{
+			this.layers.each(function(layer){
+				layer.pause();
+			});
+		},
+
+		play : function()
+		{
+			this.layers.each(function(layer){
+				layer.play();
+			});
 		},
 
 		exit : function( newID )
@@ -20246,6 +20255,8 @@ function(Zeega, Frame, Parser)
 
 		load : function( obj )
 		{
+			this.off('data_loaded', this.start); // cancel previous listeners
+			this.on('data_loaded', this.start, this); // make a new listener
 			// this if may be able to be replaced by a _.once(**)
 			if( !this.initialized )
 			{
@@ -20289,7 +20300,7 @@ function(Zeega, Frame, Parser)
 			if( !_.isUndefined(parsed) )
 			{
 				// continue loading the player
-				_this.set( parsed, {silent:false} );
+				_this.set( parsed, {silent:true} );
 				parseProject( _this );
 				_this._listen();
 			}
@@ -20334,7 +20345,10 @@ function(Zeega, Frame, Parser)
 			this.ready = true;
 			this._initEvents(); // this should be elsewhere. in an onReady fxn?
 			this.trigger('ready');
-			if(this.get('autoplay') ) this.play();
+
+			this.preloadFramesFrom( this.get('start_frame') );
+
+			if( this.get('autoplay') ) this.play();
 		},
 
 		_initEvents : function()
@@ -20362,6 +20376,11 @@ function(Zeega, Frame, Parser)
 			}
 		},
 
+		start : function()
+		{
+			this.render();
+		},
+
 		// if the player is paused, then play the project
 		// if the player is not rendered, then render it first
 		/**
@@ -20375,10 +20394,15 @@ function(Zeega, Frame, Parser)
 
 		play : function()
 		{
-			if( !this.ready ) this.render();
+			if( !this.ready )
+			{
+				console.log('is not ready. render');
+				this.render();
+			}
 			else if( this.status == 'paused' )
 			{
-				this.trigger('play');
+				this.status = 'playing';
+				if( this.currentFrame ) this.currentFrame.play();
 				// if there is no info on where the player is or where to start go to first frame in project
 				if( _.isNull(this.currentFrame) && _.isNull( this.get('start_frame') ) )
 				{
@@ -20393,6 +20417,7 @@ function(Zeega, Frame, Parser)
 					// unpause the player
 				}
 				else this._onError('3 - could not play');
+				this.trigger('play');
 			}
 		},
 
@@ -20401,14 +20426,18 @@ function(Zeega, Frame, Parser)
 		{
 			if( this.status == 'playing' )
 			{
-
+				this.status ='paused';
+				// pause each frame - layer
+				this.currentFrame.pause();
+				// pause auto advance
 				this.trigger('pause');
 			}
 		},
 
 		playPause : function()
 		{
-			console.log('play pause');
+			if( this.status == 'paused' ) this.play();
+			else this.pause();
 		},
 
 		// goes to the next frame after n ms
@@ -20450,6 +20479,8 @@ function(Zeega, Frame, Parser)
 			this.currentFrame = this.frames.get( id );
 			// render current frame // should trigger a frame rendered event when successful
 			this.currentFrame.render( oldID );
+			this.status = 'playing';
+			this.trigger('play');
 		},
 
 		preloadFramesFrom : function( id )
@@ -20459,7 +20490,6 @@ function(Zeega, Frame, Parser)
 			_.each( frame.get('preload_frames'), function(frameID){
 				_this.frames.get(frameID).preload();
 			});
-			
 		},
 
 		// returns project metadata
@@ -20531,9 +20561,15 @@ function(Zeega, Frame, Parser)
 		console.log('parse project', player, frames);
 		
 		player.frames = frames;
+
+		// set start frame
+		if(_.isNull(player.get('start_frame')))
+		{
+			player.set({'start_frame': player.get('sequences')[0].frames[0]},{silent:true});
+		}
+
 		player.initialized = true;
 		player.trigger('data_loaded');
-		if( player.get('autoplay') ) player.play();
 	};
 
 	var addTargetDivToLayers = function(layerArray, targetDiv)
@@ -20597,7 +20633,7 @@ function(Zeega, Frame, Parser)
 		},
 
 		resizeWindow : function()
-		{			
+		{
 			// animate the window size in place
 			var css = this.getWindowSize();
 			this.$('.ZEEGA-player-window').animate( css );

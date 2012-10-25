@@ -362,6 +362,8 @@ function(Zeega, Frame, Parser)
 
 		load : function( obj )
 		{
+			this.off(&#x27;data_loaded&#x27;, this.start); &#x2F;&#x2F; cancel previous listeners
+			this.on(&#x27;data_loaded&#x27;, this.start, this); &#x2F;&#x2F; make a new listener
 			&#x2F;&#x2F; this if may be able to be replaced by a _.once(**)
 			if( !this.initialized )
 			{
@@ -405,7 +407,7 @@ function(Zeega, Frame, Parser)
 			if( !_.isUndefined(parsed) )
 			{
 				&#x2F;&#x2F; continue loading the player
-				_this.set( parsed, {silent:false} );
+				_this.set( parsed, {silent:true} );
 				parseProject( _this );
 				_this._listen();
 			}
@@ -450,7 +452,10 @@ function(Zeega, Frame, Parser)
 			this.ready = true;
 			this._initEvents(); &#x2F;&#x2F; this should be elsewhere. in an onReady fxn?
 			this.trigger(&#x27;ready&#x27;);
-			if(this.get(&#x27;autoplay&#x27;) ) this.play();
+
+			this.preloadFramesFrom( this.get(&#x27;start_frame&#x27;) );
+
+			if( this.get(&#x27;autoplay&#x27;) ) this.play();
 		},
 
 		_initEvents : function()
@@ -478,6 +483,11 @@ function(Zeega, Frame, Parser)
 			}
 		},
 
+		start : function()
+		{
+			this.render();
+		},
+
 		&#x2F;&#x2F; if the player is paused, then play the project
 		&#x2F;&#x2F; if the player is not rendered, then render it first
 		&#x2F;**
@@ -491,10 +501,15 @@ function(Zeega, Frame, Parser)
 
 		play : function()
 		{
-			if( !this.ready ) this.render();
+			if( !this.ready )
+			{
+				console.log(&#x27;is not ready. render&#x27;);
+				this.render();
+			}
 			else if( this.status == &#x27;paused&#x27; )
 			{
-				this.trigger(&#x27;play&#x27;);
+				this.status = &#x27;playing&#x27;;
+				if( this.currentFrame ) this.currentFrame.play();
 				&#x2F;&#x2F; if there is no info on where the player is or where to start go to first frame in project
 				if( _.isNull(this.currentFrame) &amp;&amp; _.isNull( this.get(&#x27;start_frame&#x27;) ) )
 				{
@@ -509,6 +524,7 @@ function(Zeega, Frame, Parser)
 					&#x2F;&#x2F; unpause the player
 				}
 				else this._onError(&#x27;3 - could not play&#x27;);
+				this.trigger(&#x27;play&#x27;);
 			}
 		},
 
@@ -517,14 +533,18 @@ function(Zeega, Frame, Parser)
 		{
 			if( this.status == &#x27;playing&#x27; )
 			{
-
+				this.status =&#x27;paused&#x27;;
+				&#x2F;&#x2F; pause each frame - layer
+				this.currentFrame.pause();
+				&#x2F;&#x2F; pause auto advance
 				this.trigger(&#x27;pause&#x27;);
 			}
 		},
 
 		playPause : function()
 		{
-			console.log(&#x27;play pause&#x27;);
+			if( this.status == &#x27;paused&#x27; ) this.play();
+			else this.pause();
 		},
 
 		&#x2F;&#x2F; goes to the next frame after n ms
@@ -566,6 +586,8 @@ function(Zeega, Frame, Parser)
 			this.currentFrame = this.frames.get( id );
 			&#x2F;&#x2F; render current frame &#x2F;&#x2F; should trigger a frame rendered event when successful
 			this.currentFrame.render( oldID );
+			this.status = &#x27;playing&#x27;;
+			this.trigger(&#x27;play&#x27;);
 		},
 
 		preloadFramesFrom : function( id )
@@ -575,7 +597,6 @@ function(Zeega, Frame, Parser)
 			_.each( frame.get(&#x27;preload_frames&#x27;), function(frameID){
 				_this.frames.get(frameID).preload();
 			});
-			
 		},
 
 		&#x2F;&#x2F; returns project metadata
@@ -647,9 +668,15 @@ function(Zeega, Frame, Parser)
 		console.log(&#x27;parse project&#x27;, player, frames);
 		
 		player.frames = frames;
+
+		&#x2F;&#x2F; set start frame
+		if(_.isNull(player.get(&#x27;start_frame&#x27;)))
+		{
+			player.set({&#x27;start_frame&#x27;: player.get(&#x27;sequences&#x27;)[0].frames[0]},{silent:true});
+		}
+
 		player.initialized = true;
 		player.trigger(&#x27;data_loaded&#x27;);
-		if( player.get(&#x27;autoplay&#x27;) ) player.play();
 	};
 
 	var addTargetDivToLayers = function(layerArray, targetDiv)
@@ -713,7 +740,7 @@ function(Zeega, Frame, Parser)
 		},
 
 		resizeWindow : function()
-		{			
+		{
 			&#x2F;&#x2F; animate the window size in place
 			var css = this.getWindowSize();
 			this.$(&#x27;.ZEEGA-player-window&#x27;).animate( css );

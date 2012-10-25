@@ -317,7 +317,7 @@
         },
         {
             "file": "app/modules/player/player.js",
-            "line": 395,
+            "line": 405,
             "description": "play \nplays the project\n-if the player is paused, then play the project\n-if the player is not rendered, then render it first",
             "itemtype": "method",
             "name": "play",
@@ -325,7 +325,7 @@
         },
         {
             "file": "app/modules/player/player.js",
-            "line": 522,
+            "line": 543,
             "description": "Fired when an error occurs...",
             "itemtype": "event",
             "name": "onError",
