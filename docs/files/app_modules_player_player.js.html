@@ -370,9 +370,7 @@ function(Zeega, Frame, Parser)
 				
 				if( obj &amp;&amp; obj.data &amp;&amp; _.isObject( obj.data ) )
 				{
-					&#x2F;&#x2F; the project should be valid json
-					parseProject( this );
-					this.listen();
+					this._dataDetect(obj.data);
 				}
 				else if( obj &amp;&amp; obj.url &amp;&amp; _.isString( obj.url ) )
 				{
@@ -380,35 +378,41 @@ function(Zeega, Frame, Parser)
 					this.url = obj.url;
 					this.fetch({silent: true})
 						.success(function(res){
-							var parsed;
-							&#x2F;&#x2F;determine which parser to use
-							_.each(Parser,function(p){
-								if(p.validate(res))
-								{
-									console.log(&#x27;parsed using: &#x27;+ p.name);
-									&#x2F;&#x2F; parse the response
-									parsed = p.parse(res, _this.toJSON() );
-									return false;
-								}
-							});
-
-							if( !_.isUndefined(parsed) )
-							{
-								&#x2F;&#x2F; continue loading the player
-								_this.set( parsed, {silent:false} );
-								parseProject( _this );
-								_this.listen();
-							}
-							else _this.onError(&#x27;4 - no valid parser found&#x27;);
+							_this._dataDetect(res);
 						})
-						.error(function(){ _this.onError(&#x27;3 - fetch error. bad project_url?&#x27;); });
+						.error(function(){ _this._onError(&#x27;3 - fetch error. bad project_url?&#x27;); });
 				}
-				else this.onError(&#x27;1 - invalid or missing data. could be setting up player. nonfatal.&#x27;);
+				else this._onError(&#x27;1 - invalid or missing data. could be setting up player. nonfatal.&#x27;);
 			}
-			else this.onError(&#x27;2 - already loaded&#x27;);
+			else this._onError(&#x27;2 - already loaded&#x27;);
 		},
 
-		listen : function()
+		_dataDetect : function(res)
+		{
+			var _this = this;
+			var parsed;
+			&#x2F;&#x2F;determine which parser to use
+			_.each(Parser,function(p){
+				if(p.validate(res))
+				{
+					console.log(&#x27;parsed using: &#x27;+ p.name);
+					&#x2F;&#x2F; parse the response
+					parsed = p.parse(res, _this.toJSON() );
+					return false;
+				}
+			});
+
+			if( !_.isUndefined(parsed) )
+			{
+				&#x2F;&#x2F; continue loading the player
+				_this.set( parsed, {silent:false} );
+				parseProject( _this );
+				_this._listen();
+			}
+			else _this._onError(&#x27;4 - no valid parser found&#x27;);
+		},
+
+		_listen : function()
 		{
 			var _this = this;
 			this.frames.on(&#x27;all&#x27;,function(e,obj){
@@ -444,12 +448,12 @@ function(Zeega, Frame, Parser)
 		onRendered : function()
 		{
 			this.ready = true;
-			this.initEvents(); &#x2F;&#x2F; this should be elsewhere. in an onReady fxn?
+			this._initEvents(); &#x2F;&#x2F; this should be elsewhere. in an onReady fxn?
 			this.trigger(&#x27;ready&#x27;);
 			if(this.get(&#x27;autoplay&#x27;) ) this.play();
 		},
 
-		initEvents : function()
+		_initEvents : function()
 		{
 			var _this = this;
 			if( this.get(&#x27;keyboard&#x27;) )
@@ -504,7 +508,7 @@ function(Zeega, Frame, Parser)
 				{
 					&#x2F;&#x2F; unpause the player
 				}
-				else this.onError(&#x27;3 - could not play&#x27;);
+				else this._onError(&#x27;3 - could not play&#x27;);
 			}
 		},
 
@@ -606,10 +610,10 @@ function(Zeega, Frame, Parser)
 		&#x2F;**
 		Fired when an error occurs...
 
-		@event onError 
+		@event onError
 		@param {String} str A description of the error
 		**&#x2F;
-		onError : function(str)
+		_onError : function(str)
 		{
 			this.trigger(&#x27;error&#x27;, str);
 			console.log(&#x27;Error code: &#x27; + str );

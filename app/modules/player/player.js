@@ -282,9 +282,7 @@ function(Zeega, Frame, Parser)
 				
 				if( obj && obj.data && _.isObject( obj.data ) )
 				{
-					// the project should be valid json
-					parseProject( this );
-					this.listen();
+					this._dataDetect(obj.data);
 				}
 				else if( obj && obj.url && _.isString( obj.url ) )
 				{
@@ -292,35 +290,41 @@ function(Zeega, Frame, Parser)
 					this.url = obj.url;
 					this.fetch({silent: true})
 						.success(function(res){
-							var parsed;
-							//determine which parser to use
-							_.each(Parser,function(p){
-								if(p.validate(res))
-								{
-									console.log('parsed using: '+ p.name);
-									// parse the response
-									parsed = p.parse(res, _this.toJSON() );
-									return false;
-								}
-							});
-
-							if( !_.isUndefined(parsed) )
-							{
-								// continue loading the player
-								_this.set( parsed, {silent:false} );
-								parseProject( _this );
-								_this.listen();
-							}
-							else _this.onError('4 - no valid parser found');
+							_this._dataDetect(res);
 						})
-						.error(function(){ _this.onError('3 - fetch error. bad project_url?'); });
+						.error(function(){ _this._onError('3 - fetch error. bad project_url?'); });
 				}
-				else this.onError('1 - invalid or missing data. could be setting up player. nonfatal.');
+				else this._onError('1 - invalid or missing data. could be setting up player. nonfatal.');
 			}
-			else this.onError('2 - already loaded');
+			else this._onError('2 - already loaded');
 		},
 
-		listen : function()
+		_dataDetect : function(res)
+		{
+			var _this = this;
+			var parsed;
+			//determine which parser to use
+			_.each(Parser,function(p){
+				if(p.validate(res))
+				{
+					console.log('parsed using: '+ p.name);
+					// parse the response
+					parsed = p.parse(res, _this.toJSON() );
+					return false;
+				}
+			});
+
+			if( !_.isUndefined(parsed) )
+			{
+				// continue loading the player
+				_this.set( parsed, {silent:false} );
+				parseProject( _this );
+				_this._listen();
+			}
+			else _this._onError('4 - no valid parser found');
+		},
+
+		_listen : function()
 		{
 			var _this = this;
 			this.frames.on('all',function(e,obj){
@@ -356,12 +360,12 @@ function(Zeega, Frame, Parser)
 		onRendered : function()
 		{
 			this.ready = true;
-			this.initEvents(); // this should be elsewhere. in an onReady fxn?
+			this._initEvents(); // this should be elsewhere. in an onReady fxn?
 			this.trigger('ready');
 			if(this.get('autoplay') ) this.play();
 		},
 
-		initEvents : function()
+		_initEvents : function()
 		{
 			var _this = this;
 			if( this.get('keyboard') )
@@ -416,7 +420,7 @@ function(Zeega, Frame, Parser)
 				{
 					// unpause the player
 				}
-				else this.onError('3 - could not play');
+				else this._onError('3 - could not play');
 			}
 		},
 
@@ -518,10 +522,10 @@ function(Zeega, Frame, Parser)
 		/**
 		Fired when an error occurs...
 
-		@event onError 
+		@event onError
 		@param {String} str A description of the error
 		**/
-		onError : function(str)
+		_onError : function(str)
 		{
 			this.trigger('error', str);
 			console.log('Error code: ' + str );
