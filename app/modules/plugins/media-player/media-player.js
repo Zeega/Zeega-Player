@@ -176,7 +176,6 @@ function(Zeega){
 				_this.popcorn.play();
 				_this.popcorn.pause();
 				_this.model.trigger('visual_ready', _this.model.id ) ;
-				
 				if(_this.model.get('attr').fade_in === 0) _this.volume(_this.model.get('attr').volume);
 				_this.popcorn.pause();
 			});

@@ -53,6 +53,7 @@ function(Zeega, Plugin)
 				// if the layer is ready, then just show it
 				if( this.status == 'waiting')
 				{
+					this.status = 'loading';
 					this.visualElement.player_onPreload();
 				}
 				else if( this.status == 'ready' )

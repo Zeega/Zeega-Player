@@ -18517,7 +18517,6 @@ function(Zeega){
 				_this.popcorn.play();
 				_this.popcorn.pause();
 				_this.model.trigger('visual_ready', _this.model.id ) ;
-				
 				if(_this.model.get('attr').fade_in === 0) _this.volume(_this.model.get('attr').volume);
 				_this.popcorn.pause();
 			});
@@ -19190,7 +19189,7 @@ function(Zeega, _Layer, MediaPlayer){
 				this.mediaPlayer = new MediaPlayer.Views.Player({
 					model:this.model,
 					control_mode : 'none',
-					media_target : '#layer-visual-'+ this.id
+					media_target : '#visual-element-'+ this.id
 				});
 				this.$el.append( this.mediaPlayer.el );
 				this.mediaPlayer.render();
@@ -19372,6 +19371,7 @@ function(Zeega, Plugin)
 				// if the layer is ready, then just show it
 				if( this.status == 'waiting')
 				{
+					this.status = 'loading';
 					this.visualElement.player_onPreload();
 				}
 				else if( this.status == 'ready' )
