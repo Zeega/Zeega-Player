@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>app&#x2F;modules&#x2F;player&#x2F;player.js - Zeega Player</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.7.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.7.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            
+                <h1><img src="..&#x2F;assets/css/logo.png" title="Zeega Player"></h1>
+            
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: 0.9.0</em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+    <h2 class="off-left">APIs</h2>
+    <div id="api-tabview" class="tabview">
+        <ul class="tabs">
+            <li><a href="#api-classes">Classes</a></li>
+            <li><a href="#api-modules">Modules</a></li>
+        </ul>
+
+        <div id="api-tabview-filter">
+            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+        </div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            
+                <li><a href="..&#x2F;classes/Player.html">Player</a></li>
+            
+            </ul>
+
+            <ul id="api-modules" class="apis modules">
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+        Show:
+        <label for="api-show-inherited">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </div>
+
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <h1 class="file-heading">File: app&#x2F;modules&#x2F;player&#x2F;player.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+define([
+	&quot;zeega&quot;,
+	&quot;zeega_dir&#x2F;player&#x2F;frame&quot;,
+
+	&#x2F;&#x2F; parsers
+	&quot;zeega_dir&#x2F;parsers&#x2F;_all&quot;
+],
+
+function(Zeega, Frame, Parser)
+{
+	&#x2F;**
+	Player
+
+	can accept:
+	
+	- valid ZEEGA data (json)
+	
+	- valid url returning valid ZEEGA data
+	
+	exposes the player API (play, pause, stop, destroy, getCitations, etc) &#x2F;&#x2F; to be documented further
+	
+	broadcasts events (ready, play, pause, stop, timeupdate, frameadvance, etc) &#x2F;&#x2F; to be documented further
+	
+	is the only external contact point
+
+		&#x2F;&#x2F; initialize player
+		var player = new Player.Model({ url: &quot;&lt;valid url&gt;&quot;} });
+		&#x2F;&#x2F; or
+		var player = new Player.Model({ data: {&lt;valid data&gt;} });
+		&#x2F;&#x2F; or
+		var player  = new Player.Model();
+		player.on(&#x27;all&#x27;, fxn); &#x2F;&#x2F; log all events
+		player.load({data: {&lt;valid data&gt;}})
+
+	@class Player
+	@constructor
+	*&#x2F;
+
+	Player = Zeega.Backbone.Model.extend({
+
+		ready : false,			&#x2F;&#x2F; the player is parsed and in the dom. can call play play. layers have not been preloaded yet
+		complete : false,		&#x2F;&#x2F; have all layers been preloaded
+		initialized : false,	&#x2F;&#x2F; has the project data been loaded and parsed
+		status : &#x27;paused&#x27;,
+
+		currentFrame : null,
+
+		&#x2F;&#x2F; default settings -  can be overridden by project data
+		defaults : {
+			&#x2F;**
+			Sets the player to play when data is successfully parsed and rendered to the dom
+
+			@property autoplay 
+			@type Boolean
+			@default true
+			**&#x2F;
+			autoplay : true,
+			&#x2F;**
+			Creates a player with no visual controls. Useful if wrapping the player in custom UI
+
+			@property chromeless 
+			@type Boolean
+			@default true
+			**&#x2F;
+			chromeless : true,
+
+			&#x2F;**
+			Sets the collection project playback
+
+			@property collection_mode 
+			@type String
+			@default &#x27;standard&#x27;
+			**&#x2F;
+			collection_mode : &#x27;standard&#x27;,
+
+			&#x2F;**
+			Time to wait after player is ready before playing project
+
+			overrides any overlay attributes
+
+			@property delay
+			@type Integer
+			@default 0
+			**&#x2F;
+			delay : 0,
+			&#x2F;**
+			Sets if the project be escaped through user input (esc or close buttons)
+
+			@property escapable
+			@type Boolean
+			@default true
+			**&#x2F;
+			escapable : true,
+			&#x2F;**
+			If there are overlays, do they fade out?
+
+			@property fade_overlays
+			@type Boolean
+			@default true
+			**&#x2F;
+			fade_overlays : true,
+			&#x2F;**
+			ms the player takes to fade in
+
+			@property fadeIn
+			@type Integer
+			@default 500
+			**&#x2F;
+			fadeIn : 500,
+			&#x2F;**
+			ms the player takes to fade out
+
+			@property fadeOut
+			@type Integer
+			@default 500
+			**&#x2F;
+			fadeOut : 500,
+			&#x2F;**
+			Sets if the player be set to fullscreen
+
+			@property fullscreenEnable
+			@type Boolean
+			@default true
+			**&#x2F;
+			fullscreenEnable : true,
+			&#x2F;**
+			Turns the keyboard controls on or off
+
+			@property keyboard
+			@type Boolean
+			@default true
+			**&#x2F;
+			keyboard : true,
+			&#x2F;**
+			Sets the player mode
+
+			@property mode
+			@type String
+			@default &#x27;standalone&#x27;
+			@deprecated
+			**&#x2F;
+			mode :&#x27;standalone&#x27;,
+			&#x2F;**
+			Sets the individual properties of overlays
+
+			@property overlays
+			@type Object
+			@default mixed
+			**&#x2F;
+			overlays : {
+				&#x2F;**
+				Turn on&#x2F;off arrows
+
+				@property overlays.arrows
+				@type Boolean
+				@default true
+				**&#x2F;
+				arrows : true,
+				&#x2F;**
+				Turn on&#x2F;off Zeega branding
+
+				@property overlays.branding
+				@type Boolean
+				@default true
+				**&#x2F;
+				branding : true,
+				&#x2F;**
+				Turn on&#x2F;off Zeega layer level citations
+
+				@property overlays.citations_layers
+				@type Boolean
+				@default true
+				**&#x2F;
+				citations_layer : true,
+				&#x2F;**
+				Turn on&#x2F;off frame level citations
+
+				@property overlays.citations_frame
+				@type Boolean
+				@default true
+				**&#x2F;
+				citations_frame : true,
+				&#x2F;**
+				Turn on&#x2F;off frame project level citations
+
+				@property overlays.citations_project
+				@type Boolean
+				@default true
+				**&#x2F;
+				citations_project : true,
+				&#x2F;**
+				Turn on&#x2F;off social share icons
+
+				@property overlays.social
+				@type Boolean
+				@default true
+				**&#x2F;
+				social : true
+			},
+
+			&#x2F;**
+			The number of frames to attempt preload on
+			
+			@property preload_ahead
+			@type Integer
+			@default 2
+			**&#x2F;
+			preload_ahead : 2,
+			
+			&#x2F;**
+			The frame id to start the player
+			
+			@property start_frame
+			@type Integer
+			@default null
+			**&#x2F;
+			start_frame : null,
+			&#x2F;**
+			The id of the target div to draw the player into
+			
+			@property div
+			@type String
+			@default null
+			**&#x2F;
+			div_id : null,
+			&#x2F;**
+			Defines whether or not the player is fullscreen or scales to fit the browser.
+
+			@property window_fit
+			@type Boolean
+			@default false
+			**&#x2F;
+			window_fit : false,
+			&#x2F;**
+			Defines aspect ratio of the Zeega project
+
+			@property window_ratio
+			@type Float
+			@default 4&#x2F;3
+			**&#x2F;
+			window_ratio : 4&#x2F;3
+		},
+
+
+		&#x2F;**
+		* initialize the zeega player:
+		*
+		* can be initialized like so:
+		*
+		* var player = new Player.Model({ url: &quot;&lt;valid url&gt;&quot;} });
+		* var player = new Player.Model({ data: {&lt;valid data&gt;} });
+		*
+		* or
+		*
+		* var player  = new Player.Model();
+		* player.on(&#x27;all&#x27;, fxn); &#x2F;&#x2F; log all events
+		* player.load({data: {&lt;valid data&gt;}})
+		*&#x2F;
+
+		initialize : function( obj )
+		{
+			if( !_.isUndefined(obj) ) this.load(obj); &#x2F;&#x2F; allow for load later
+		},
+
+		&#x2F;**
+		* load 
+		* loads the project with data or supplied project_url
+		*
+		* @method load
+		* @param {Object} setup Setup object
+		* @param {String} [setup.project_url] A complete project_url pointing to a valid Zeega project data file.
+		* @param {Object} [setup.data]A valid Zeega project data object.
+		*&#x2F;
+
+		load : function( obj )
+		{
+			this.off(&#x27;data_loaded&#x27;, this.start); &#x2F;&#x2F; cancel previous listeners
+			this.on(&#x27;data_loaded&#x27;, this.start, this); &#x2F;&#x2F; make a new listener
+			&#x2F;&#x2F; this if may be able to be replaced by a _.once(**)
+			if( !this.initialized )
+			{
+				var _this = this;
+				this.set(obj,{silent:true}); &#x2F;&#x2F; overwrite project settings and add data
+				
+				if( obj &amp;&amp; obj.data &amp;&amp; _.isObject( obj.data ) )
+				{
+					this._dataDetect(obj.data);
+				}
+				else if( obj &amp;&amp; obj.url &amp;&amp; _.isString( obj.url ) )
+				{
+					&#x2F;&#x2F; try to load project from project_url
+					this.url = obj.url;
+					this.fetch({silent: true})
+						.success(function(res){
+							_this._dataDetect(res);
+						})
+						.error(function(){ _this._onError(&#x27;3 - fetch error. bad project_url?&#x27;); });
+				}
+				else this._onError(&#x27;1 - invalid or missing data. could be setting up player. nonfatal.&#x27;);
+			}
+			else this._onError(&#x27;2 - already loaded&#x27;);
+		},
+
+		_dataDetect : function(res)
+		{
+			var _this = this;
+			var parsed;
+			&#x2F;&#x2F;determine which parser to use
+			_.each(Parser,function(p){
+				if(p.validate(res))
+				{
+					console.log(&#x27;parsed using: &#x27;+ p.name);
+					&#x2F;&#x2F; parse the response
+					parsed = p.parse(res, _this.toJSON() );
+					return false;
+				}
+			});
+
+			if( !_.isUndefined(parsed) )
+			{
+				&#x2F;&#x2F; continue loading the player
+				_this.set( parsed, {silent:true} );
+				parseProject( _this );
+				_this._listen();
+			}
+			else _this._onError(&#x27;4 - no valid parser found&#x27;);
+		},
+
+		_listen : function()
+		{
+			var _this = this;
+			this.frames.on(&#x27;all&#x27;,function(e,obj){
+				_this.trigger(e,obj);
+			});
+
+			this.on(&#x27;cue_frame&#x27;, this.cueFrame, this);
+		},
+
+		&#x2F;&#x2F; renders the player to the dom &#x2F;&#x2F; this could be a _.once
+		render : function()
+		{
+			var _this = this;
+			this.Layout = new PlayerLayout({
+				model: this,
+				attributes: {
+					id : &#x27;ZEEGA-player-&#x27;+ this.id,
+					&#x27;data-projectID&#x27; : this.id
+				}
+			});
+			&#x2F;&#x2F; draw the player in to the target div if defined. or append to the body
+			if( this.get(&#x27;div_id&#x27;) )
+			{
+				$(&#x27;#&#x27;+ this.get(&#x27;div_id&#x27;)).css(&#x27;position&#x27;,&#x27;relative&#x27;).html(this.Layout.el);
+			}
+			else $(&#x27;body&#x27;).append(this.Layout.el);
+			this.Layout.render();
+			this.Layout.$el.fadeIn(this.get(&#x27;fadeIn&#x27;),function(){
+				_this.onRendered();
+			});
+		},
+
+		onRendered : function()
+		{
+			this.ready = true;
+			this._initEvents(); &#x2F;&#x2F; this should be elsewhere. in an onReady fxn?
+			this.trigger(&#x27;ready&#x27;);
+
+			this.preloadFramesFrom( this.get(&#x27;start_frame&#x27;) );
+
+			if( this.get(&#x27;autoplay&#x27;) ) this.play();
+		},
+
+		_initEvents : function()
+		{
+			var _this = this;
+			if( this.get(&#x27;keyboard&#x27;) )
+			{
+				$(window).keyup(function(e){
+					switch( e.which )
+					{
+						case 27: &#x2F;&#x2F; esc
+							if(_this.get(&#x27;escapable&#x27;)) _this.destroy();
+							break;
+						case 37: &#x2F;&#x2F; left arrow
+							_this.cuePrev();
+							break;
+						case 39: &#x2F;&#x2F; right arrow
+							_this.cueNext();
+							break;
+						case 32: &#x2F;&#x2F; spacebar
+							_this.playPause();
+							break;
+					}
+				});
+			}
+		},
+
+		start : function()
+		{
+			this.render();
+		},
+
+		&#x2F;&#x2F; if the player is paused, then play the project
+		&#x2F;&#x2F; if the player is not rendered, then render it first
+		&#x2F;**
+		* play 
+		* plays the project
+		* -if the player is paused, then play the project
+		* -if the player is not rendered, then render it first
+		*
+		* @method play
+		*&#x2F;
+
+		play : function()
+		{
+			if( !this.ready )
+			{
+				console.log(&#x27;is not ready. render&#x27;);
+				this.render();
+			}
+			else if( this.status == &#x27;paused&#x27; )
+			{
+				this.status = &#x27;playing&#x27;;
+				if( this.currentFrame ) this.currentFrame.play();
+				&#x2F;&#x2F; if there is no info on where the player is or where to start go to first frame in project
+				if( _.isNull(this.currentFrame) &amp;&amp; _.isNull( this.get(&#x27;start_frame&#x27;) ) )
+				{
+					this.cueFrame( this.get(&#x27;sequences&#x27;)[0].frames[0] );
+				}
+				else if( _.isNull(this.currentFrame) &amp;&amp; !_.isNull( this.get(&#x27;start_frame&#x27;) ) &amp;&amp; this.frames.get( this.get(&#x27;start_frame&#x27;) ) )
+				{
+					this.cueFrame( this.get(&#x27;start_frame&#x27;) );
+				}
+				else if( !_.isNull(this.currentFrame) )
+				{
+					&#x2F;&#x2F; unpause the player
+				}
+				else this._onError(&#x27;3 - could not play&#x27;);
+				this.trigger(&#x27;play&#x27;);
+			}
+		},
+
+		&#x2F;&#x2F; if the player is playing, pause the project
+		pause : function()
+		{
+			if( this.status == &#x27;playing&#x27; )
+			{
+				this.status =&#x27;paused&#x27;;
+				&#x2F;&#x2F; pause each frame - layer
+				this.currentFrame.pause();
+				&#x2F;&#x2F; pause auto advance
+				this.trigger(&#x27;pause&#x27;);
+			}
+		},
+
+		playPause : function()
+		{
+			if( this.status == &#x27;paused&#x27; ) this.play();
+			else this.pause();
+		},
+
+		&#x2F;&#x2F; goes to the next frame after n ms
+		cueNext : function(ms)
+		{
+			this.cueFrame( this.currentFrame.get(&#x27;next&#x27;), ms );
+		},
+
+		&#x2F;&#x2F; goes to the prev frame after n ms
+		cuePrev : function(ms)
+		{
+			this.cueFrame( this.currentFrame.get(&#x27;prev&#x27;), ms );
+		},
+
+		&#x2F;&#x2F; goes to specified frame after n ms
+		cueFrame : function( id, ms)
+		{
+			if( !_.isUndefined(id) &amp;&amp; !_.isUndefined( this.frames.get(id) ) )
+			{
+				var _this = this;
+				var time = ms || 0;
+				if( time !== 0 ) _.delay(function(){ _this.goToFrame(id); }, time);
+				else this.goToFrame(id);
+			}
+		},
+
+		&#x2F;&#x2F; should this live in the cueFrame method so it&#x27;s not exposed?
+		goToFrame :function(id)
+		{
+			this.preloadFramesFrom( id );
+			var oldID;
+			if(this.currentFrame)
+			{
+				this.currentFrame.exit( id );
+				oldID = this.currentFrame.id;
+			}
+			&#x2F;&#x2F; unrender current frame
+			&#x2F;&#x2F; swap out current frame with new one
+			this.currentFrame = this.frames.get( id );
+			&#x2F;&#x2F; render current frame &#x2F;&#x2F; should trigger a frame rendered event when successful
+			this.currentFrame.render( oldID );
+			this.status = &#x27;playing&#x27;;
+			this.trigger(&#x27;play&#x27;);
+		},
+
+		preloadFramesFrom : function( id )
+		{
+			var _this = this;
+			var frame = this.frames.get( id );
+			_.each( frame.get(&#x27;preload_frames&#x27;), function(frameID){
+				_this.frames.get(frameID).preload();
+			});
+		},
+
+		&#x2F;&#x2F; returns project metadata
+		getMetadata : function()
+		{
+			return false;
+		},
+
+		&#x2F;&#x2F; returns an array of citation information from the current frames layers
+		getCitations : function()
+		{
+			return false;
+		},
+
+		&#x2F;&#x2F; returns the frame structure for the project &#x2F;&#x2F; not implemented
+		getProjectTree : function()
+		{
+			return false;
+		},
+
+		&#x2F;&#x2F; completely obliterate the player. triggers event
+		destroy : function()
+		{
+			var _this = this;
+			this.Layout.$el.fadeOut( this.get(&#x27;fadeOut&#x27;), function(){
+				&#x2F;&#x2F; destroy all layers before calling player_destroyed
+				_this.frames.each(function(frame){ frame.destroy(); });
+				_this.trigger(&#x27;player_destroyed&#x27;);
+			});
+		},
+
+		&#x2F;**
+		Fired when an error occurs...
+
+		@event onError
+		@param {String} str A description of the error
+		**&#x2F;
+		_onError : function(str)
+		{
+			this.trigger(&#x27;error&#x27;, str);
+			console.log(&#x27;Error code: &#x27; + str );
+		},
+
+		parse : function(res)
+		{
+			&#x2F;&#x2F; parses zeega collections pulled from the library api
+			if( res.items &amp;&amp; res.items[0].child_items)
+			{
+				res = res.items[0];
+				res.items = res.child_items;
+			}
+			return res;
+		}
+
+	});
+
+	&#x2F;*
+		parse the project and trigger data_loaded when finished
+
+		private
+	*&#x2F;
+	var parseProject = function( player )
+	{
+		addTargetDivToLayers(player.get(&#x27;layers&#x27;), player.get(&#x27;div_id&#x27;));
+		
+		var frames = new Frame.Collection( player.get(&#x27;frames&#x27;) );
+		frames.load( player.get(&#x27;sequences&#x27;), player.get(&#x27;layers&#x27;), player.get(&#x27;preload_ahead&#x27;) );
+			
+		console.log(&#x27;parse project&#x27;, player, frames);
+		
+		player.frames = frames;
+
+		&#x2F;&#x2F; set start frame
+		if(_.isNull(player.get(&#x27;start_frame&#x27;)))
+		{
+			player.set({&#x27;start_frame&#x27;: player.get(&#x27;sequences&#x27;)[0].frames[0]},{silent:true});
+		}
+
+		player.initialized = true;
+		player.trigger(&#x27;data_loaded&#x27;);
+	};
+
+	var addTargetDivToLayers = function(layerArray, targetDiv)
+	{
+		_.each(layerArray, function(layer){
+			layer.target_div = targetDiv;
+		});
+	};
+
+
+	&#x2F;*
+		the player layout
+
+		# contains resize logic
+		# renders the window target for frames&#x2F;layers
+
+		private
+	*&#x2F;
+	var PlayerLayout = Zeega.Backbone.Layout.extend({
+
+		fetch: function(path) {
+			&#x2F;&#x2F; Initialize done for use in async-mode
+			var done;
+
+			&#x2F;&#x2F; Concatenate the file extension.
+			path = &#x27;app&#x2F;templates&#x2F;layouts&#x2F;&#x27;+ path + &quot;.html&quot;;
+
+			&#x2F;&#x2F; If cached, use the compiled template.
+			if (JST[path]) {
+				return JST[path];
+			} else {
+				&#x2F;&#x2F; Put fetch into &#x60;async-mode&#x60;.
+				done = this.async();
+
+				&#x2F;&#x2F; Seek out the template asynchronously.
+				return $.ajax({ url: Zeega.root + path }).then(function(contents) {
+					done(JST[path] = _.template(contents));
+				});
+			}
+		},
+
+		template : &#x27;player-layout&#x27;,
+		className : &#x27;ZEEGA-player&#x27;,
+
+		initialize : function()
+		{
+			var _this = this;
+			&#x2F;&#x2F; debounce the resize function so it doesn&#x27;t bog down the browser
+			var lazyResize = _.debounce(function(){ _this.resizeWindow(); }, 300);
+			&#x2F;&#x2F; attempt to detect if the parent container is being resized
+			if(this.model.get(&#x27;div_id&#x27;)) $(&#x27;#&#x27;+ this.model.get(&#x27;div_id&#x27;) ).resize(lazyResize); &#x2F;&#x2F; &lt; ——— not sure if this works
+			else $(window).resize(lazyResize);
+		},
+
+		serialize : function(){ return this.model.toJSON(); },
+
+		afterRender : function()
+		{
+			&#x2F;&#x2F; correctly size the player window
+			this.$(&#x27;.ZEEGA-player-window&#x27;).css( this.getWindowSize() );
+		},
+
+		resizeWindow : function()
+		{
+			&#x2F;&#x2F; animate the window size in place
+			var css = this.getWindowSize();
+			this.$(&#x27;.ZEEGA-player-window&#x27;).animate( css );
+			this.model.trigger(&#x27;window_resized&#x27;, css );
+		},
+
+		&#x2F;&#x2F; calculate and return the correct window size for the player window
+		&#x2F;&#x2F; uses the player&#x27;s window_ratio attribute
+		getWindowSize : function()
+		{
+			var css = {};
+			var winWidth =  this.model.get(&#x27;div_id&#x27;) ? $(&#x27;#&#x27;+ this.model.get(&#x27;div_id&#x27;)).width() : window.innerWidth;
+			var winHeight = this.model.get(&#x27;div_id&#x27;) ? $(&#x27;#&#x27;+ this.model.get(&#x27;div_id&#x27;)).height() : window.innerHeight;
+			var winRatio = winWidth &#x2F; winHeight;
+
+			if(this.model.get(&#x27;window_fit&#x27;))
+			{
+				if( winRatio &gt; this.model.get(&#x27;window_ratio&#x27;) )
+				{
+					css.width = winWidth + &#x27;px&#x27;;
+					css.height = winWidth &#x2F; this.model.get(&#x27;window_ratio&#x27;) +&#x27;px&#x27;;
+				}
+				else
+				{
+					css.width = winHeight * this.model.get(&#x27;window_ratio&#x27;) +&#x27;px&#x27;;
+					css.height = winHeight +&#x27;px&#x27;;
+				}
+			}
+			else
+			{
+				if( winRatio &gt; this.model.get(&#x27;window_ratio&#x27;) )
+				{
+					css.width = winHeight * this.model.get(&#x27;window_ratio&#x27;) +&#x27;px&#x27;;
+					css.height = winHeight +&#x27;px&#x27;;
+				}
+				else
+				{
+					css.width = winWidth + &#x27;px&#x27;;
+					css.height = winWidth &#x2F; this.model.get(&#x27;window_ratio&#x27;) +&#x27;px&#x27;;
+				}
+			}
+			return css;
+		}
+	});
+
+	Zeega.player = Player;
+
+	return Zeega;
+});
+    </pre>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>
