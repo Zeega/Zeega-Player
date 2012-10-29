@@ -436,7 +436,6 @@ function(Zeega, Frame, Parser)
 					// unpause the player
 				}
 				else this._onError('3 - could not play');
-				this.trigger('play');
 			}
 		},
 
@@ -498,8 +497,12 @@ function(Zeega, Frame, Parser)
 			this.currentFrame = this.frames.get( id );
 			// render current frame // should trigger a frame rendered event when successful
 			this.currentFrame.render( oldID );
-			this.status = 'playing';
-			this.trigger('play');
+
+			if( this.status != 'playing' )
+			{
+				this.status = 'playing';
+				this.trigger('play');
+			}
 		},
 
 		preloadFramesFrom : function( id )
@@ -514,7 +517,7 @@ function(Zeega, Frame, Parser)
 		// returns project metadata
 		getProjectData : function()
 		{
-			
+
 			return false;
 		},
 
