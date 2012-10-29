@@ -20508,19 +20508,18 @@ function(Zeega, Frame, Parser)
 		},
 
 		// returns project metadata
-		getProjectMetadata : function()
+		getProjectData : function()
 		{
+			
 			return false;
 		},
 
-		getFrameMetadata : function()
+		getFrameData : function()
 		{
-			return { frame: this.currentFrame.toJSON(),layers: this.currentFrame.layers.toJSON() };
-		},
-
-		// returns an array of citation information from the current frames layers
-		getCitations : function()
-		{
+			if( this.currentFrame ) return {
+				frame: this.currentFrame.toJSON(),
+				layers: this.currentFrame.layers.toJSON()
+			};
 			return false;
 		},
 
