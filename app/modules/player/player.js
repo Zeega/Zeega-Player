@@ -415,12 +415,10 @@ function(Zeega, Frame, Parser)
 		{
 			if( !this.ready )
 			{
-				console.log('is not ready. render');
-				this.render();
+				this.render(); // render the player first!
 			}
 			else if( this.status == 'paused' )
 			{
-				this.status = 'playing';
 				if( this.currentFrame ) this.currentFrame.play();
 				// if there is no info on where the player is or where to start go to first frame in project
 				if( _.isNull(this.currentFrame) && _.isNull( this.get('start_frame') ) )
