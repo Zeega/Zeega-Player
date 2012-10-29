@@ -20508,9 +20508,14 @@ function(Zeega, Frame, Parser)
 		},
 
 		// returns project metadata
-		getMetadata : function()
+		getProjectMetadata : function()
 		{
 			return false;
+		},
+
+		getFrameMetadata : function()
+		{
+			return { frame: this.currentFrame.toJSON(),layers: this.currentFrame.layers.toJSON() };
 		},
 
 		// returns an array of citation information from the current frames layers
