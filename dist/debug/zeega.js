@@ -7454,7 +7454,7 @@ function(Zeega, _Layer){
 
 		onExit : function()
 		{
-			killKeyboard();
+			this.killKeyboard();
 		},
 
 		events : {
