@@ -519,12 +519,15 @@ function(Zeega, Frame, Parser)
 		// returns project metadata
 		getProjectData : function()
 		{
+			var frames = this.frames.map(function(frame){
+				return {
+					frame: frame.toJSON(),
+					layers: frame.layers.toJSON()
+				};
+			});
 			return _.extend({},
 				this.toJSON(),
-				{
-					frames : this.frames.toJSON(),
-					layers : this.layers.toJSON()
-				}
+				{ frames : frames }
 			);
 		},
 
