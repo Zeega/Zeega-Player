@@ -20517,10 +20517,10 @@ function(Zeega, Frame, Parser)
 		getProjectData : function()
 		{
 			var frames = this.frames.map(function(frame){
-				return {
-					frame: frame.toJSON(),
-					layers: frame.layers.toJSON()
-				};
+				return _.extend({},
+					frame.toJSON(),
+					{ layers: frame.layers.toJSON() }
+				);
 			});
 			return _.extend({},
 				this.toJSON(),
@@ -20530,10 +20530,10 @@ function(Zeega, Frame, Parser)
 
 		getFrameData : function()
 		{
-			if( this.currentFrame ) return {
-				frame: this.currentFrame.toJSON(),
-				layers: this.currentFrame.layers.toJSON()
-			};
+			if( this.currentFrame ) return _.extend({},
+				this.currentFrame.toJSON(),
+				{ layers: this.currentframe.layers.toJSON() }
+			);
 			return false;
 		},
 
