@@ -19519,7 +19519,7 @@ function(Zeega, Layer)
 				this.layers.each(function(layer){
 					if( !_.include(commonLayers, layer.id) ) layer.render();
 				});
-				this.trigger('frame_rendered', { frame: this.toJSON(),layers: this.layers.toJSON() });
+				this.trigger('frame_rendered', _.extend({}, this.toJSON(), {layers: this.layers.toJSON()} ));
 			}
 			else
 			{
