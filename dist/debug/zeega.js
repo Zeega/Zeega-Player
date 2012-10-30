@@ -20533,7 +20533,7 @@ function(Zeega, Frame, Parser)
 			var _this = this;
 			if( this.currentFrame ) return _.extend({},
 				_this.currentFrame.toJSON(),
-				{ layers: _this.currentframe.layers.toJSON() }
+				{ layers: _this.currentFrame.layers.toJSON() }
 			);
 			return false;
 		},
