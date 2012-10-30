@@ -533,9 +533,10 @@ function(Zeega, Frame, Parser)
 
 		getFrameData : function()
 		{
+			var _this = this;
 			if( this.currentFrame ) return _.extend({},
-				this.currentFrame.toJSON(),
-				{ layers: this.currentframe.layers.toJSON() }
+				_this.currentFrame.toJSON(),
+				{ layers: _this.currentframe.layers.toJSON() }
 			);
 			return false;
 		},
