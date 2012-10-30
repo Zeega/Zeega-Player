@@ -20416,7 +20416,11 @@ function(Zeega, Frame, Parser)
 			}
 			else if( this.status == 'paused' )
 			{
-				if( this.currentFrame ) this.currentFrame.play();
+				if( this.currentFrame )
+				{
+					this.status ='playing';
+					this.currentFrame.play();
+				}
 				// if there is no info on where the player is or where to start go to first frame in project
 				if( _.isNull(this.currentFrame) && _.isNull( this.get('start_frame') ) )
 				{
