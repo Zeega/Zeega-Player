@@ -19373,6 +19373,7 @@ function(Zeega, Plugin)
 				if( this.status == 'waiting')
 				{
 					this.status = 'loading';
+					this.trigger('layer_loading', this.toJSON());
 					this.visualElement.player_onPreload();
 				}
 				else if( this.status == 'ready' )
@@ -19390,14 +19391,14 @@ function(Zeega, Plugin)
 		{
 			this.ready = true;
 			this.status = 'ready';
-			this.trigger('ready', this);
+			this.trigger('layer_ready', this.toJSON());
 		},
 
 		onVisualError : function()
 		{
 			this.ready = true;
 			this.status = 'error';
-			this.trigger('error');
+			this.trigger('layer_error', this.toJSON());
 		},
 
 		updateZIndex : function(z)
@@ -19498,7 +19499,7 @@ function(Zeega, Layer)
 				this.layers.each(function(layer){
 					if( layer.status == 'waiting' )
 					{
-						layer.on('ready', _this.onLayerReady, _this);
+						layer.on('layer_ready', _this.onLayerReady, _this);
 						layer.render();
 					}
 				});
@@ -19532,7 +19533,7 @@ function(Zeega, Layer)
 
 		onLayerReady : function( layer )
 		{
-			this.trigger('layer_ready',layer.toJSON() );
+			//this.trigger('layer_ready',layer.toJSON() );
 			this.trigger('frame_progress', this.getLayerStates() );
 
 			if( this.isFrameReady() ) this.onFrameReady();

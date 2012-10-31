@@ -54,6 +54,7 @@ function(Zeega, Plugin)
 				if( this.status == 'waiting')
 				{
 					this.status = 'loading';
+					this.trigger('layer_loading', this.toJSON());
 					this.visualElement.player_onPreload();
 				}
 				else if( this.status == 'ready' )
@@ -71,14 +72,14 @@ function(Zeega, Plugin)
 		{
 			this.ready = true;
 			this.status = 'ready';
-			this.trigger('ready', this);
+			this.trigger('layer_ready', this.toJSON());
 		},
 
 		onVisualError : function()
 		{
 			this.ready = true;
 			this.status = 'error';
-			this.trigger('error');
+			this.trigger('layer_error', this.toJSON());
 		},
 
 		updateZIndex : function(z)

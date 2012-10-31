@@ -48,7 +48,7 @@ function(Zeega, Layer)
 				this.layers.each(function(layer){
 					if( layer.status == 'waiting' )
 					{
-						layer.on('ready', _this.onLayerReady, _this);
+						layer.on('layer_ready', _this.onLayerReady, _this);
 						layer.render();
 					}
 				});
@@ -82,7 +82,7 @@ function(Zeega, Layer)
 
 		onLayerReady : function( layer )
 		{
-			this.trigger('layer_ready',layer.toJSON() );
+			//this.trigger('layer_ready',layer.toJSON() );
 			this.trigger('frame_progress', this.getLayerStates() );
 
 			if( this.isFrameReady() ) this.onFrameReady();
