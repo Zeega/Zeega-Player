@@ -99,6 +99,7 @@ function(Zeega, Layer)
 			this.trigger('frame_ready',{ frame: this.toJSON(),layers: this.layers.toJSON() });
 			if( !_.isNull(this.renderOnReady) )
 			{
+				this.trigger('can_play');
 				this.render( this.renderOnReady );
 				this.renderOnReady = null;
 			}
