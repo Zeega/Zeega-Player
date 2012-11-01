@@ -122,6 +122,7 @@ function(Zeega){
 				});
 				
 				this.popcorn.listen('timeupdate',function(){ _this.private_onTimeUpdate(); });
+				this.popcorn.listen('ended',function(){ _this.onEnded(); });
 			}
 		},
 		
@@ -216,6 +217,11 @@ function(Zeega){
 		onCanplay : function()
 		{
 			if(this.settings.autoplay && this.popcorn) this.popcorn.play();
+		},
+
+		_onEnded : function()
+		{
+			this.model.trigger('media_ended', this.model.toJSON() );
 		},
 		
 		// getters && setters //

@@ -94,7 +94,8 @@ function()
 		var layerDefaults = {
 			width:100,
 			top:0,
-			left:0
+			left:0,
+			loop:false
 		};
 		return _.map( itemsArray, function(item){
 			return {
