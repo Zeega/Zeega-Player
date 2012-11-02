@@ -20591,6 +20591,16 @@ function(Zeega, Frame, Parser)
 		},
 
 		/**
+		resize the players based on the current browser window dimensions
+
+		@method fitPlayer
+		**/
+		fitPlayer : function()
+		{
+			this.Layout.resizeWindow();
+		},
+
+		/**
 		Fired when an error occurs...
 
 		@event onError
