@@ -563,7 +563,7 @@ function(Zeega, Frame, Parser)
 
 		@method fitPlayer
 		**/
-		fitPlayer : function()
+		fitWindow : function()
 		{
 			this.Layout.resizeWindow();
 		},
