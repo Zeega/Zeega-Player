@@ -610,7 +610,7 @@ function(Zeega, Frame, Parser)
 		player.frames = frames;
 
 		// set start frame
-		if(_.isNull(player.get('start_frame')))
+		if(_.isNull(player.get('start_frame')) || _.isUndefined( player.frames.get(player.get('start_frame'))) )
 		{
 			player.set({'start_frame': player.get('sequences')[0].frames[0]},{silent:true});
 		}
