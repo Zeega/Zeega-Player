@@ -109,10 +109,12 @@ function()
 
 	var generateFrameArrayFromItems = function(itemsArray, persistentLayers)
 	{
+		console.log('******** generate frame array from items', itemsArray, persistentLayers);
 		return _.map( itemsArray, function(item){
+			var layers = item.media_type == 'Video' ? [item.id] : _.compact( [item.id].concat(persistentLayers) );
 			return {
 				id : item.id,
-				layers : _.compact( [item.id].concat(persistentLayers) ),
+				layers : layers,
 				attr : { advance : 0 }
 			};
 		});
