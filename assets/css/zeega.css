@@ -71,7 +71,7 @@
   position: absolute;
   top: 0;
   width: 100%;
-  display: none;
+  opacity: 0.01;
 }
 .ZEEGA-player .ZEEGA-player-window,
 .ZEEGA-player .ZEEGA-player-overlay {

@@ -354,9 +354,16 @@ function(Zeega, Frame, Parser)
 			}
 			else $('body').append(this.Layout.el);
 			this.Layout.render();
-			this.Layout.$el.fadeIn(this.get('fadeIn'),function(){
-				_this.onRendered();
-			});
+			
+			_.delay( function(){_this.onRendered();},100);
+			
+		},
+
+		_fadeIn : function()
+		{
+			console.log('fade in1111',this.Layout.$el );
+			this.Layout.$el.fadeTo('fast',100);
+			//this.Layout.$el.css('opacity',1);
 		},
 
 		onRendered : function()
@@ -419,6 +426,7 @@ function(Zeega, Frame, Parser)
 			}
 			else if( this.status == 'paused' )
 			{
+				this._fadeIn();
 				if( this.currentFrame )
 				{
 					this.status ='playing';
