@@ -62,6 +62,30 @@ __p+='<a href=\'#\' class=\'slideshow-arrow slideshow-left-arrow disabled\'><img
 return __p;
 };
 
+this['JST']['app/templates/plugins/slideshowthumbslider.html'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<a href=\'#\' class=\'arrow arrow-left slideshow-control-prev\'></a>\n<a href=\'#\' class=\'arrow arrow-right slideshow-control-next\'></a>\n\n<ul>\n\t';
+ _.each(attr.slides, function(slide, i){ 
+;__p+='\n\t\t<li>\n\t\t\t<a href=\'#\' data-slidenum="'+
+( i )+
+'">\n\t\t\t\t<div class=\'slideshow-thumbnail\' style="background:url('+
+( slide.attr.uri )+
+'); background-repeat:no-repeat;background-size:100%;background-position:center"></div>\n\t\t\t\t<div class=\'thumb-title\'>';
+ if(slide.attr.title.replace(/\s+/g, '') != ''){ 
+;__p+=''+
+( slide.attr.title )+
+'';
+ }else{ 
+;__p+='untitled';
+ } 
+;__p+='</div>\n\t\t\t</a>\n\t\t</li>\n\t';
+ });
+;__p+='\n</ul>';
+}
+return __p;
+};
+
 this['JST']['app/templates/plugins/video.html'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){

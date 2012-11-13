@@ -693,6 +693,7 @@ function(Zeega, Frame, Parser)
 			var css = this.getWindowSize();
 			this.$('.ZEEGA-player-window').animate( css );
 			this.model.trigger('window_resized', css );
+			Zeega.trigger('resize_window',css);
 		},
 
 		// calculate and return the correct window size for the player window

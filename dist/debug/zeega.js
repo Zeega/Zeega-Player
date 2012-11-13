@@ -69,6 +69,30 @@ __p+='<a href=\'#\' class=\'slideshow-arrow slideshow-left-arrow disabled\'><img
 return __p;
 };
 
+this['JST']['app/templates/plugins/slideshowthumbslider.html'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<a href=\'#\' class=\'arrow arrow-left slideshow-control-prev\'></a>\n<a href=\'#\' class=\'arrow arrow-right slideshow-control-next\'></a>\n\n<ul>\n\t';
+ _.each(attr.slides, function(slide, i){ 
+;__p+='\n\t\t<li>\n\t\t\t<a href=\'#\' data-slidenum="'+
+( i )+
+'">\n\t\t\t\t<div class=\'slideshow-thumbnail\' style="background:url('+
+( slide.attr.uri )+
+'); background-repeat:no-repeat;background-size:100%;background-position:center"></div>\n\t\t\t\t<div class=\'thumb-title\'>';
+ if(slide.attr.title.replace(/\s+/g, '') != ''){ 
+;__p+=''+
+( slide.attr.title )+
+'';
+ }else{ 
+;__p+='untitled';
+ } 
+;__p+='</div>\n\t\t\t</a>\n\t\t</li>\n\t';
+ });
+;__p+='\n</ul>';
+}
+return __p;
+};
+
 this['JST']['app/templates/plugins/video.html'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
@@ -7078,7 +7102,10 @@ function(Zeega){
 		afterRender : function()
 		{
 			this.verifyReady();
+			this.onRender();
 		},
+
+		onRender : function(){},
 
 		applySize : function()
 		{
@@ -7192,6 +7219,27 @@ function(Zeega){
 		getAttr : function(key){ return this.model.get('attr')[key]; } // convenience method
 
 
+	});
+
+	_Layer.LayoutView = Zeega.Backbone.LayoutView.extend({
+		
+		fetch: function(path) {
+			// Initialize done for use in async-mode
+			var done;
+			// Concatenate the file extension.
+			path = 'app/templates/'+ path + ".html";
+			// If cached, use the compiled template.
+			if (JST[path]) {
+				return JST[path];
+			} else {
+				// Put fetch into `async-mode`.
+				done = this.async();
+				// Seek out the template asynchronously.
+				return $.ajax({ url: Zeega.root + path }).then(function(contents) {
+					done(JST[path] = _.template(contents));
+				});
+			}
+		}
 	});
 
 	return _Layer;
@@ -7418,6 +7466,7 @@ function(Zeega, _Layer){
 		defaultAttributes : {
 			'arrows' : true, // turns on/off visual arrow controls
 			'keyboard' : false, // turns on/off keyboard controls
+			'thumbnails' : true, // turns on/off thumbnail drawer
 
 			'title' : 'Slideshow Layer',
 			'url' : 'none',
@@ -7440,6 +7489,8 @@ function(Zeega, _Layer){
 		init : function()
 		{
 			this.slideCount = this.model.get('attr').slides.length;
+			this.model.on('slideshow_switch-frame', this.scrollTo, this);
+			Zeega.on('resize_window', this.positionArrows, this);
 		},
 
 		serialize : function(){ return this.model.toJSON(); },
@@ -7450,6 +7501,14 @@ function(Zeega, _Layer){
 			this.hideArrows();
 			this.initKeyboard();
 			this.emitSlideData( this.slide );
+			this.positionArrows();
+		},
+
+		onRender : function()
+		{
+			this.thumbSlider = new SSSlider({model:this.model});
+			this.$el.append( this.thumbSlider.el );
+			this.thumbSlider.render();
 		},
 
 		onExit : function()
@@ -7458,7 +7517,7 @@ function(Zeega, _Layer){
 		},
 
 		events : {
-			'click  .slideshow-left-arrow' : 'goLeft', 
+			'click  .slideshow-left-arrow' : 'goLeft',
 			'click  .slideshow-right-arrow' : 'goRight'
 		},
 
@@ -7492,7 +7551,12 @@ function(Zeega, _Layer){
 
 		emitSlideData : function(slideNo)
 		{
-			this.model.trigger('slideshow_update',this.getAttr('slides')[slideNo] );
+			this.model.trigger('slideshow_update', { slideNum: slideNo, data: this.getAttr('slides')[slideNo] } );
+		},
+
+		positionArrows : function()
+		{
+			this.$('.slideshow-arrow').css('top', (window.innerHeight/2 - 50) +'px');
 		},
 
 		hideArrows : function()
@@ -7527,6 +7591,84 @@ function(Zeega, _Layer){
 			if( this.getAttr('keyboard') ) $(window).unbind('keyup.slideshow');
 		}
 		
+	});
+
+	var SSSlider = _Layer.LayoutView.extend({
+
+		slide : 0,
+		slidePos : 0,
+
+		className : 'slideshow-slider',
+
+		template : 'plugins/slideshowthumbslider',
+
+		initialize : function()
+		{
+			var _this = this;
+			this.slideNum = this.model.get('attr').slides.length;
+			this.model.on('slideshow_update', function(slide){ _this.highlightThumb(slide.slideNum);}, this );
+			Zeega.on('resize_window', this.onResize, this);
+		},
+
+		serialize : function()
+		{
+			return this.model.toJSON();
+		},
+
+		afterRender : function()
+		{
+			this.onResize();
+		},
+
+		onResize : function()
+		{
+			this.$el.css('top', (window.innerHeight-this.$el.height()) +'px');
+		},
+
+		events : {
+			'click li a' : 'onClickThumb',
+			'click .slideshow-control-prev' : 'prev',
+			'click .slideshow-control-next' : 'next'
+		},
+
+		prev : function()
+		{
+			if(this.slidePos > 0)
+			{
+				this.slidePos--;
+				console.log('scroll left');
+				this.$('ul').animate({ 'left': this.slidePos*-171+'px' });
+			}
+			return false;
+		},
+
+		next : function()
+		{
+			if(this.slidePos < this.slideNum-1 )
+			{
+				this.slidePos++;
+				console.log('scroll right');
+				this.$('ul').animate({ 'left': this.slidePos*-171+'px' });
+			}
+			return false;
+		},
+
+		onClickThumb : function(e)
+		{
+			var slideNum = $(e.target).closest('a').data('slidenum');
+			this.highlightThumb(slideNum);
+			this.model.trigger('slideshow_switch-frame',slideNum);
+			return false;
+		},
+
+		highlightThumb : function(num)
+		{
+			this.slide = num;
+			this.$('li').removeClass('active');
+			$(this.$('li')[num]).addClass('active');
+		}
+		
+
 	});
 
 	return Layer;
@@ -20726,6 +20868,7 @@ function(Zeega, Frame, Parser)
 			var css = this.getWindowSize();
 			this.$('.ZEEGA-player-window').animate( css );
 			this.model.trigger('window_resized', css );
+			Zeega.trigger('resize_window',css);
 		},
 
 		// calculate and return the correct window size for the player window

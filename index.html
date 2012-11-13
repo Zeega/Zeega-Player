@@ -64,9 +64,8 @@
 		var project = new Zeega.player({window_fit:true});
 		project.on('all', function(e, obj){ if(e!='media_timeupdate') console.log('1: e:',e,obj);});
 		project.load({
-			div_id : 'main',
+			//div_id : 'main',
 			autoplay : true,
-			start_frame: 222222,
 			//data : testdata,
 			//url: 'http://alpha.zeega.org/api/projects/2259',
 			//url : 'http://api.flickr.com/services/feeds/photos_public.gne?tags=massascension&format=json&jsoncallback=?',
