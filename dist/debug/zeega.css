@@ -65,7 +65,7 @@
   position: absolute;
   font-size: 11px;
   z-index: 30;
-  height: 168px;
+  height: 150px;
   background: rgba(0, 0, 0, 0.5);
   padding: 10px;
   color: white;
@@ -129,7 +129,7 @@
   /* Opera */
 
   position: absolute;
-  top: 50%;
+  top: 30%;
   z-index: 2;
 }
 .slideshow-slider .arrow:hover {

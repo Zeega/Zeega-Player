@@ -7636,7 +7636,6 @@ function(Zeega, _Layer){
 			if(this.slidePos > 0)
 			{
 				this.slidePos--;
-				console.log('scroll left');
 				this.$('ul').animate({ 'left': this.slidePos*-171+'px' });
 			}
 			return false;
@@ -7647,7 +7646,6 @@ function(Zeega, _Layer){
 			if(this.slidePos < this.slideNum-1 )
 			{
 				this.slidePos++;
-				console.log('scroll right');
 				this.$('ul').animate({ 'left': this.slidePos*-171+'px' });
 			}
 			return false;
