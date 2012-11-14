@@ -185,8 +185,7 @@ module.exports = function(grunt) {
 					"dist/release/img/" : "assets/img/*",
 					"assets/css/less/layers" : "app/modules/plugins/layers/**/*.less",
 
-					"dist/debug/libs" : ["assets/js/libs/backbone.js","assets/js/libs/lodash.js"],
-					"dist/release/libs" : ["assets/js/libs/backbone.js","assets/js/libs/lodash.js"],
+					"dist/release/img/layers" : "assets/img/layers/*",
 
 					"dist/debug" : "assets/css/zeega.css",
 					"dist/release" : "assets/css/zeega.css"
