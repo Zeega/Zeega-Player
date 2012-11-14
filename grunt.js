@@ -61,8 +61,8 @@ module.exports = function(grunt) {
 		// also minifies all the CSS as well.  This is named index.css, because we
 		// only want to load one stylesheet in index.html.
 		mincss: {
-			"dist/release/zeega.css": [
-				"dist/debug/zeega.css"
+			"dist/release/css/zeega.css": [
+				"dist/debug/css/zeega.css"
 			]
 		},
 
@@ -187,8 +187,8 @@ module.exports = function(grunt) {
 
 					"dist/release/img/layers" : "assets/img/layers/*",
 
-					"dist/debug" : "assets/css/zeega.css",
-					"dist/release" : "assets/css/zeega.css"
+					"dist/debug/css" : "assets/css/zeega.css",
+					"dist/release/css" : "assets/css/zeega.css"
 				},
 				options : { flatten: true }
 			}
