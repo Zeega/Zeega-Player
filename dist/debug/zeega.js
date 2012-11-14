@@ -52,7 +52,7 @@ return __p;
 this['JST']['app/templates/plugins/slideshow.html'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<a href=\'#\' class=\'slideshow-arrow slideshow-left-arrow disabled\'><img src=\'../assets/img/layers/slideshow-arrow.png\'/></a>\n<a href=\'#\' class=\'slideshow-arrow slideshow-right-arrow\'><img src=\'../assets/img/layers/slideshow-arrow.png\'/></a>\n<div class=\'slideshow-container\' style=\'width:'+
+__p+='<a href=\'#\' class=\'slideshow-arrow arrow-left slideshow-control-prev disabled\'></a>\n<a href=\'#\' class=\'slideshow-arrow arrow-right slideshow-control-next\'></a>\n\n<div class=\'slideshow-container\' style=\'width:'+
 ( (attr.slides.length *100) +'%' )+
 '\'>\n\t';
  _.each( attr.slides, function(slide,i){ 
@@ -72,15 +72,13 @@ return __p;
 this['JST']['app/templates/plugins/slideshowthumbslider.html'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<a href=\'#\' class=\'arrow arrow-left slideshow-control-prev\'></a>\n<a href=\'#\' class=\'arrow arrow-right slideshow-control-next\'></a>\n\n<ul>\n\t';
+__p+='<a href=\'#\' class=\'arrow arrow-left slideshow-slider-control-prev\'></a>\n<a href=\'#\' class=\'arrow arrow-right slideshow-slider-control-next\'></a>\n\n<ul>\n\t';
  _.each(attr.slides, function(slide, i){ 
 ;__p+='\n\t\t<li>\n\t\t\t<a href=\'#\' class=\'slider-thumb\' data-slidenum="'+
 ( i )+
 '">\n\t\t\t\t<div class=\'slideshow-thumbnail\' style="background:url('+
 ( slide.attr.uri )+
-'); background-repeat:no-repeat;background-size:100%;background-position:center"></div>\n\t\t\t</a>\n\t\t\t<div class=\'thumb-title\'><a href="'+
-( slide.attr.attribution_uri )+
-'" target=\'blank\'>';
+'); background-repeat:no-repeat;background-size:100%;background-position:center"></div>\n\t\t\t</a>\n\t\t\t<div class=\'thumb-title\'>\n\t\t\t\t';
  if(slide.attr.media_creator_username.replace(/\s+/g, '') != ''){ 
 ;__p+=''+
 ( slide.attr.media_creator_username )+
@@ -88,7 +86,11 @@ __p+='<a href=\'#\' class=\'arrow arrow-left slideshow-control-prev\'></a>\n<a h
  }else{ 
 ;__p+='unknown';
  } 
-;__p+='</a></div>\n\t\t</li>\n\t';
+;__p+='\n\t\t\t\t<a href="'+
+( slide.attr.attribution_uri )+
+'" target=\'blank\'><i class=\'slideshow-icon-'+
+( slide.attr.archive.toLowerCase() )+
+' ssarchive\'></i></a>\n\t\t\t</div>\n\t\t</li>\n\t';
  });
 ;__p+='\n</ul>';
 }
@@ -7452,12 +7454,107 @@ function(Zeega, _Layer){
 	return Layer;
 
 });
-zeega.define('zeega_dir/plugins/layers/slideshow/slideshow',[
+zeega.define('zeega_dir/plugins/layers/slideshow/thumbnail-slider',[
 	"zeega",
 	'zeega_dir/plugins/layers/_layer/_layer'
 ],
 
 function(Zeega, _Layer){
+
+	var SSSlider = _Layer.LayoutView.extend({
+
+		slide : 0,
+		slidePos : 0,
+
+		className : 'slideshow-slider',
+
+		template : 'plugins/slideshowthumbslider',
+
+		initialize : function()
+		{
+			var _this = this;
+			this.slideNum = this.model.get('attr').slides.length;
+			this.model.on('slideshow_update', function(slide){ _this.highlightThumb(slide.slideNum);}, this );
+			Zeega.on('resize_window', this.onResize, this);
+		},
+
+		serialize : function()
+		{
+			console.log('asldkjfa;slfjasd;f',this.model.toJSON());
+			return this.model.toJSON();
+		},
+
+		afterRender : function()
+		{
+			this.onResize();
+		},
+
+		onResize : function()
+		{
+			this.$el.css('top', (window.innerHeight-this.$el.height()) +'px');
+		},
+
+		events : {
+			'click a.slider-thumb' : 'onClickThumb',
+			'click a.trackback' : 'onClickTrackback',
+			'click .slideshow-slider-control-prev' : 'prev',
+			'click .slideshow-slider-control-next' : 'next'
+		},
+
+		prev : function()
+		{
+			if(this.slidePos > 0)
+			{
+				this.slidePos--;
+				this.$('ul').animate({ 'left': this.slidePos*-171+'px' });
+			}
+			return false;
+		},
+
+		next : function()
+		{
+			if(this.slidePos < this.slideNum-1 )
+			{
+				this.slidePos++;
+				this.$('ul').animate({ 'left': this.slidePos*-171+'px' });
+			}
+			return false;
+		},
+
+		onClickThumb : function(e)
+		{
+			var slideNum = $(e.target).closest('a').data('slidenum');
+			this.highlightThumb(slideNum);
+			this.model.trigger('slideshow_switch-frame',slideNum);
+			return false;
+		},
+
+		onClickTrackback : function()
+		{
+			return false;
+		},
+
+		highlightThumb : function(num)
+		{
+			this.slide = num;
+			this.$('li').removeClass('active');
+			$(this.$('li')[num]).addClass('active');
+		}
+		
+
+	});
+
+	return SSSlider;
+
+});
+
+zeega.define('zeega_dir/plugins/layers/slideshow/slideshow',[
+	"zeega",
+	'zeega_dir/plugins/layers/_layer/_layer',
+	'zeega_dir/plugins/layers/slideshow/thumbnail-slider'
+],
+
+function(Zeega, _Layer, SSSlider){
 
 	var Layer = Zeega.module();
 
@@ -7468,7 +7565,7 @@ function(Zeega, _Layer){
 		defaultAttributes : {
 			'arrows' : true, // turns on/off visual arrow controls
 			'keyboard' : false, // turns on/off keyboard controls
-			'thumbnails' : true, // turns on/off thumbnail drawer
+			'thumbnail_slider' : true, // turns on/off thumbnail drawer
 
 			'title' : 'Slideshow Layer',
 			'url' : 'none',
@@ -7519,8 +7616,8 @@ function(Zeega, _Layer){
 		},
 
 		events : {
-			'click  .slideshow-left-arrow' : 'goLeft',
-			'click  .slideshow-right-arrow' : 'goRight'
+			'click  .slideshow-control-prev' : 'goLeft',
+			'click  .slideshow-control-next' : 'goRight'
 		},
 
 		goLeft : function()
@@ -7564,9 +7661,9 @@ function(Zeega, _Layer){
 		hideArrows : function()
 		{
 			if( this.slideCount <= 1 )						this.$('.slideshow-arrow').remove();
-			else if( this.slide === 0 )						this.$('.slideshow-left-arrow').addClass('disabled');
-			else if( this.slide == this.slideCount - 1 )	this.$('.slideshow-right-arrow').addClass('disabled');
-			else											this.$('.slideshow-left-arrow, .slideshow-right-arrow').removeClass('disabled');
+			else if( this.slide === 0 )						this.$('.slideshow-control-prev').addClass('disabled');
+			else if( this.slide == this.slideCount - 1 )	this.$('.slideshow-control-next').addClass('disabled');
+			else											this.$('.slideshow-control-prev, .slideshow-control-next').removeClass('disabled');
 		},
 
 		initKeyboard : function()
@@ -7593,89 +7690,6 @@ function(Zeega, _Layer){
 			if( this.getAttr('keyboard') ) $(window).unbind('keyup.slideshow');
 		}
 		
-	});
-
-	var SSSlider = _Layer.LayoutView.extend({
-
-		slide : 0,
-		slidePos : 0,
-
-		className : 'slideshow-slider',
-
-		template : 'plugins/slideshowthumbslider',
-
-		initialize : function()
-		{
-			var _this = this;
-			this.slideNum = this.model.get('attr').slides.length;
-			this.model.on('slideshow_update', function(slide){ _this.highlightThumb(slide.slideNum);}, this );
-			Zeega.on('resize_window', this.onResize, this);
-		},
-
-		serialize : function()
-		{
-			console.log('asldkjfa;slfjasd;f',this.model.toJSON());
-			return this.model.toJSON();
-		},
-
-		afterRender : function()
-		{
-			this.onResize();
-		},
-
-		onResize : function()
-		{
-			this.$el.css('top', (window.innerHeight-this.$el.height()) +'px');
-		},
-
-		events : {
-			'click a.slider-thumb' : 'onClickThumb',
-			'click a.trackback' : 'onClickTrackback',
-			'click .slideshow-control-prev' : 'prev',
-			'click .slideshow-control-next' : 'next'
-		},
-
-		prev : function()
-		{
-			if(this.slidePos > 0)
-			{
-				this.slidePos--;
-				this.$('ul').animate({ 'left': this.slidePos*-171+'px' });
-			}
-			return false;
-		},
-
-		next : function()
-		{
-			if(this.slidePos < this.slideNum-1 )
-			{
-				this.slidePos++;
-				this.$('ul').animate({ 'left': this.slidePos*-171+'px' });
-			}
-			return false;
-		},
-
-		onClickThumb : function(e)
-		{
-			var slideNum = $(e.target).closest('a').data('slidenum');
-			this.highlightThumb(slideNum);
-			this.model.trigger('slideshow_switch-frame',slideNum);
-			return false;
-		},
-
-		onClickTrackback : function()
-		{
-			return false;
-		},
-
-		highlightThumb : function(num)
-		{
-			this.slide = num;
-			this.$('li').removeClass('active');
-			$(this.$('li')[num]).addClass('active');
-		}
-		
-
 	});
 
 	return Layer;

@@ -45,7 +45,7 @@ return __p;
 this['JST']['app/templates/plugins/slideshow.html'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<a href=\'#\' class=\'slideshow-arrow slideshow-left-arrow disabled\'><img src=\'../assets/img/layers/slideshow-arrow.png\'/></a>\n<a href=\'#\' class=\'slideshow-arrow slideshow-right-arrow\'><img src=\'../assets/img/layers/slideshow-arrow.png\'/></a>\n<div class=\'slideshow-container\' style=\'width:'+
+__p+='<a href=\'#\' class=\'slideshow-arrow arrow-left slideshow-control-prev disabled\'></a>\n<a href=\'#\' class=\'slideshow-arrow arrow-right slideshow-control-next\'></a>\n\n<div class=\'slideshow-container\' style=\'width:'+
 ( (attr.slides.length *100) +'%' )+
 '\'>\n\t';
  _.each( attr.slides, function(slide,i){ 
@@ -65,15 +65,13 @@ return __p;
 this['JST']['app/templates/plugins/slideshowthumbslider.html'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<a href=\'#\' class=\'arrow arrow-left slideshow-control-prev\'></a>\n<a href=\'#\' class=\'arrow arrow-right slideshow-control-next\'></a>\n\n<ul>\n\t';
+__p+='<a href=\'#\' class=\'arrow arrow-left slideshow-slider-control-prev\'></a>\n<a href=\'#\' class=\'arrow arrow-right slideshow-slider-control-next\'></a>\n\n<ul>\n\t';
  _.each(attr.slides, function(slide, i){ 
 ;__p+='\n\t\t<li>\n\t\t\t<a href=\'#\' class=\'slider-thumb\' data-slidenum="'+
 ( i )+
 '">\n\t\t\t\t<div class=\'slideshow-thumbnail\' style="background:url('+
 ( slide.attr.uri )+
-'); background-repeat:no-repeat;background-size:100%;background-position:center"></div>\n\t\t\t</a>\n\t\t\t<div class=\'thumb-title\'><a href="'+
-( slide.attr.attribution_uri )+
-'" target=\'blank\'>';
+'); background-repeat:no-repeat;background-size:100%;background-position:center"></div>\n\t\t\t</a>\n\t\t\t<div class=\'thumb-title\'>\n\t\t\t\t';
  if(slide.attr.media_creator_username.replace(/\s+/g, '') != ''){ 
 ;__p+=''+
 ( slide.attr.media_creator_username )+
@@ -81,7 +79,11 @@ __p+='<a href=\'#\' class=\'arrow arrow-left slideshow-control-prev\'></a>\n<a h
  }else{ 
 ;__p+='unknown';
  } 
-;__p+='</a></div>\n\t\t</li>\n\t';
+;__p+='\n\t\t\t\t<a href="'+
+( slide.attr.attribution_uri )+
+'" target=\'blank\'><i class=\'slideshow-icon-'+
+( slide.attr.archive.toLowerCase() )+
+' ssarchive\'></i></a>\n\t\t\t</div>\n\t\t</li>\n\t';
  });
 ;__p+='\n</ul>';
 }
