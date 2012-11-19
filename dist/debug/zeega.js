@@ -8540,9 +8540,13 @@ zeega.define("libs/modernizr", function(){});
             //  GC readyStack
             readyStack = null;
           };
-
+          if (document.addEventListener){
+              document.addEventListener( "DOMContentLoaded", DOMContentLoaded, false );
+          } else if (document.attachEvent){
+            document.attachEvent( "DOMContentLoaded", DOMContentLoaded, false );
+          }
           //  Register global DOM ready listener
-          document.addEventListener( "DOMContentLoaded", DOMContentLoaded, false );
+          
         }
 
         return;
