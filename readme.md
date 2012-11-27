@@ -5,8 +5,6 @@
 ##Dependencies
 
 * jquery
-* underscore or lodash
-* backbone
 
 ## tasks
 
