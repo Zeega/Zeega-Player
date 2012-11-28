@@ -78,7 +78,9 @@ __p+='<a href=\'#\' class=\'arrow arrow-left slideshow-slider-control-prev\'></a
 ( i )+
 '">\n\t\t\t\t<div class=\'slideshow-thumbnail\' style="background:url('+
 ( slide.attr.uri )+
-'); background-repeat:no-repeat;background-size:100%;background-position:center"></div>\n\t\t\t</a>\n\t\t\t<div class=\'thumb-title\'>\n\t\t\t\t';
+'); background-repeat:no-repeat;background-size:100%;background-position:center"></div>\n\t\t\t</a>\n\t\t\t<div class=\'thumb-title\'>\n\t\t\t\t<a href="'+
+( slide.attr.attribution_uri )+
+'" target=\'blank\'>\n\t\t\t\t\t';
  if(slide.attr.media_creator_username.replace(/\s+/g, '') != ''){ 
 ;__p+=''+
 ( slide.attr.media_creator_username )+
@@ -86,11 +88,9 @@ __p+='<a href=\'#\' class=\'arrow arrow-left slideshow-slider-control-prev\'></a
  }else{ 
 ;__p+='unknown';
  } 
-;__p+='\n\t\t\t\t<a href="'+
-( slide.attr.attribution_uri )+
-'" target=\'blank\'><i class=\'slideshow-icon-'+
+;__p+='\n\t\t\t\t\t<i class=\'slideshow-icon-'+
 ( slide.attr.archive.toLowerCase() )+
-' ssarchive\'></i></a>\n\t\t\t</div>\n\t\t</li>\n\t';
+' ssarchive\'></i>\n\t\t\t\t</a>\n\t\t\t</div>\n\t\t</li>\n\t';
  });
 ;__p+='\n</ul>';
 }
@@ -7023,7 +7023,7 @@ function(Zeega){
 		controls : [],
 
 		defaults : {
-			citataion: true,
+			citation: true,
 			default_controls : true,
 			draggable : true,
 			has_controls : true,
@@ -7036,6 +7036,7 @@ function(Zeega){
 
 		initialize : function()
 		{
+			this.defaults = _.extend(this.defaults, this.defaultAttributes);
 			this.init();
 		},
 
@@ -7514,7 +7515,8 @@ function(Zeega, _Layer){
 
 		next : function()
 		{
-			if(this.slidePos < this.slideNum-1 )
+			// check slider position offset 
+			if(this.slidePos < this.slideNum-1 && (this.$('ul').offset().left + this.$('ul').width()) > window.innerWidth )
 			{
 				this.slidePos++;
 				this.$('ul').animate({ 'left': this.slidePos*-171+'px' });
@@ -7568,6 +7570,9 @@ function(Zeega, _Layer, SSSlider){
 			'keyboard' : false, // turns on/off keyboard controls
 			'thumbnail_slider' : true, // turns on/off thumbnail drawer
 
+			'start_frame_order' : 4,
+			'start_frame_id' : null,
+
 			'title' : 'Slideshow Layer',
 			'url' : 'none',
 			'left' : 0,
@@ -7576,6 +7581,11 @@ function(Zeega, _Layer, SSSlider){
 			'width' : 100,
 			'opacity':1,
 			'aspect':1.33
+		},
+
+		init: function()
+		{
+			console.log('init ss layer model', this);
 		}
 
 	});
@@ -7588,6 +7598,7 @@ function(Zeega, _Layer, SSSlider){
 
 		init : function()
 		{
+			console.log('init ss layer', this);
 			this.slideCount = this.model.get('attr').slides.length;
 			this.model.on('slideshow_switch-frame', this.scrollTo, this);
 			Zeega.on('resize_window', this.positionArrows, this);
@@ -7627,7 +7638,6 @@ function(Zeega, _Layer, SSSlider){
 			{
 				this.slide--;
 				this.scrollTo(this.slide);
-				this.hideArrows();
 			}
 			return false;
 		},
@@ -7638,13 +7648,14 @@ function(Zeega, _Layer, SSSlider){
 			{
 				this.slide++;
 				this.scrollTo(this.slide);
-				this.hideArrows();
 			}
 			return false;
 		},
 
 		scrollTo : function( slideNo )
 		{
+			this.slide = slideNo;
+			this.hideArrows();
 			this.$('.slideshow-container').animate({left: (slideNo * -100)+'%'});
 			this.emitSlideData(slideNo);
 		},
