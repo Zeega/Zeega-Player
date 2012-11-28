@@ -7,7 +7,7 @@ module.exports = function(grunt) {
 
 		// The clean task ensures all files are removed from the dist/ directory so
 		// that no files linger from previous builds.
-		clean: ["dist/", "app/templates/plugins/", "assets/img/layers/"],
+		clean: ["dist/", "app/templates/plugins/", "assets/img/layers/*"],
 
 		// The lint task will run the build configuration and the application
 		// JavaScript through JSHint and report any errors.  You can change the
@@ -181,14 +181,14 @@ module.exports = function(grunt) {
 					// copy plugin template html files into the template folder
 					// to : from
 					"app/templates/plugins/": "app/modules/plugins/**/*.html",
-					"assets/img/layers" : "app/modules/plugins/layers/**/img/*",
+					"assets/img/layers/" : "app/modules/plugins/layers/**/img/*",
 					"dist/release/img/" : "assets/img/*",
-					"assets/css/less/layers" : "app/modules/plugins/layers/**/*.less",
+					"assets/css/less/layers/" : "app/modules/plugins/layers/**/*.less",
 
-					"dist/release/img/layers" : "assets/img/layers/*",
+					"dist/release/img/layers/" : "assets/img/layers/**",
 
-					"dist/debug/css" : "assets/css/zeega.css",
-					"dist/release/css" : "assets/css/zeega.css"
+					"dist/debug/css/" : "assets/css/zeega.css",
+					"dist/release/css/" : "assets/css/zeega.css"
 				},
 				options : { flatten: true }
 			}
