@@ -5,9 +5,9 @@ copyright 2012
 ZEEGA LICENSE INFO HERE
 
 */
-this['JST'] = this['JST'] || {};
+this["JST"] = this["JST"] || {};
 
-this['JST']['app/templates/layouts/player-layout.html'] = function(obj){
+this["JST"]["app/templates/layouts/player-layout.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='';
@@ -19,7 +19,7 @@ __p+='';
 return __p;
 };
 
-this['JST']['app/templates/plugins/audio.html'] = function(obj){
+this["JST"]["app/templates/plugins/audio.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='';
@@ -27,7 +27,7 @@ __p+='';
 return __p;
 };
 
-this['JST']['app/templates/plugins/image.html'] = function(obj){
+this["JST"]["app/templates/plugins/image.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='<img src="'+
@@ -37,7 +37,7 @@ __p+='<img src="'+
 return __p;
 };
 
-this['JST']['app/templates/plugins/link.html'] = function(obj){
+this["JST"]["app/templates/plugins/link.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='<a href=\'#\' style=\'position:absolute;width:100%;height:100%\'>\n\t';
@@ -49,7 +49,7 @@ __p+='<a href=\'#\' style=\'position:absolute;width:100%;height:100%\'>\n\t';
 return __p;
 };
 
-this['JST']['app/templates/plugins/slideshow.html'] = function(obj){
+this["JST"]["app/templates/plugins/slideshow.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='<a href=\'#\' class=\'slideshow-arrow arrow-left slideshow-control-prev disabled\'></a>\n<a href=\'#\' class=\'slideshow-arrow arrow-right slideshow-control-next\'></a>\n\n<div class=\'slideshow-container\' style=\'width:'+
@@ -69,7 +69,7 @@ __p+='<a href=\'#\' class=\'slideshow-arrow arrow-left slideshow-control-prev di
 return __p;
 };
 
-this['JST']['app/templates/plugins/slideshowthumbslider.html'] = function(obj){
+this["JST"]["app/templates/plugins/slideshowthumbslider.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='<a href=\'#\' class=\'arrow arrow-left slideshow-slider-control-prev\'></a>\n<a href=\'#\' class=\'arrow arrow-right slideshow-slider-control-next\'></a>\n\n<ul>\n\t';
@@ -97,7 +97,7 @@ __p+='<a href=\'#\' class=\'arrow arrow-left slideshow-slider-control-prev\'></a
 return __p;
 };
 
-this['JST']['app/templates/plugins/video.html'] = function(obj){
+this["JST"]["app/templates/plugins/video.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='';
@@ -6149,8 +6149,9 @@ zeega.define("../assets/js/libs/almond", function(){});
 
 zeega.define("backbone", ["lodash"], (function (global) {
     return function () {
-        return global.Backbone;
-    }
+        var ret, fn;
+        return ret || global.Backbone;
+    };
 }(this)));
 
 /*!
@@ -20562,7 +20563,7 @@ function(Zeega, Frame, Parser)
 		_fadeIn : function()
 		{
 			console.log('fade in1111',this.Layout.$el );
-			this.Layout.$el.fadeTo('fast',100);
+			this.Layout.$el.fadeTo('fast',1);
 			//this.Layout.$el.css('opacity',1);
 		},
 
