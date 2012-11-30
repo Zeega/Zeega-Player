@@ -39,8 +39,14 @@
   position: absolute;
   transition: opacity 0.5s;
   -moz-transition: opacity 0.5s;
+  /* Firefox 4 */
+
   -webkit-transition: opacity 0.5s;
+  /* Safari and Chrome */
+
   -o-transition: opacity 0.5s;
+  /* Opera */
+
   transition: border-color 0.5s;
   -moz-transition: border-color 0.5s;
   /* Firefox 4 */
@@ -59,8 +65,14 @@
   border-color: #ffa500;
   transition: border-color 0.5s;
   -moz-transition: border-color 0.5s;
+  /* Firefox 4 */
+
   -webkit-transition: border-color 0.5s;
+  /* Safari and Chrome */
+
   -o-transition: border-color 0.5s;
+  /* Opera */
+
   opacity: 1;
   transition: opacity 0.5s;
   -moz-transition: opacity 0.5s;
@@ -189,8 +201,14 @@
   position: absolute;
   transition: opacity 0.5s;
   -moz-transition: opacity 0.5s;
+  /* Firefox 4 */
+
   -webkit-transition: opacity 0.5s;
+  /* Safari and Chrome */
+
   -o-transition: opacity 0.5s;
+  /* Opera */
+
   transition: border-color 0.5s;
   -moz-transition: border-color 0.5s;
   /* Firefox 4 */
@@ -211,8 +229,14 @@
   border-color: #ffa500;
   transition: border-color 0.5s;
   -moz-transition: border-color 0.5s;
+  /* Firefox 4 */
+
   -webkit-transition: border-color 0.5s;
+  /* Safari and Chrome */
+
   -o-transition: border-color 0.5s;
+  /* Opera */
+
   opacity: 1;
   transition: opacity 0.5s;
   -moz-transition: opacity 0.5s;
