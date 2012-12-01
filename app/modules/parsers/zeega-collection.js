@@ -11,8 +11,9 @@ function()
 	Parser[type].parse = function( res, opts )
 	{
 		var project = {};
-		if(opts.collection_mode == 'slideshow' && res.items[0].child_items.length > 0 ) project = parseSlideshowCollection( res );
-		else project = parseStandardCollection( res );
+		if(opts.collection_mode == 'slideshow' && res.items[0].child_items.length > 0 )
+			project = parseSlideshowCollection( res, opts );
+		else project = parseStandardCollection( res, opts );
 
 		return project;
 	};
@@ -23,7 +24,7 @@ function()
 		return false;
 	};
 
-	var parseStandardCollection = function( res )
+	var parseStandardCollection = function( res, opts )
 	{
 		// layers from timebased items
 		var layers = generateLayerArrayFromItems( res.items[0].child_items );
@@ -44,7 +45,7 @@ function()
 		});
 	};
 
-	var parseSlideshowCollection = function( res )
+	var parseSlideshowCollection = function( res, opts )
 	{
 		var frames,slideshowLayer;
 		var imageLayers = [];
@@ -53,9 +54,8 @@ function()
 			if(item.layer_type == 'Image') imageLayers.push(item);
 			else if( item.layer_type == 'Audio' || item.media_type == 'Video' ) timebasedLayers.push(item);
 		});
-
 		// slideshow layer from image items
-		if(imageLayers.length) slideshowLayer = generateSlideshowLayer( imageLayers );
+		if(imageLayers.length) slideshowLayer = generateSlideshowLayer( imageLayers, opts.slideshow_start_frame_order,opts.slideshow_start_frame_id );
 		// layers from timebased items
 		var layers = generateLayerArrayFromItems( timebasedLayers );
 		if(slideshowLayer) layers.push(slideshowLayer);
@@ -119,7 +119,7 @@ function()
 		});
 	};
 
-	var generateSlideshowLayer = function( imageLayerArray )
+	var generateSlideshowLayer = function( imageLayerArray, slideshow_start_frame_order, slideshow_start_frame_id )
 	{
 		var layerDefaults = {
 			keyboard : false,
@@ -137,6 +137,8 @@ function()
 
 		return {
 			attr : _.defaults( {slides:slides}, layerDefaults),
+			start_frame_order: slideshow_start_frame_order,
+			start_frame_id: slideshow_start_frame_id,
 			type : 'SlideShow',
 			id : 1
 		};

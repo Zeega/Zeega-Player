@@ -65,13 +65,16 @@ function(Zeega, Frame, Parser)
 			chromeless : true,
 
 			/**
-			Sets the collection project playback
+			Sets the collection project playback. 'standard', 'slideshow'
 
 			@property collection_mode 
 			@type String
 			@default 'standard'
 			**/
 			collection_mode : 'standard',
+
+			slideshow_start_frame_order : null,
+			slideshow_start_frame_id : null,
 
 			/**
 			Time to wait after player is ready before playing project
