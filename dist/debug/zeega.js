@@ -7617,7 +7617,8 @@ function(Zeega, _Layer, SSSlider){
 					return parseInt(slide.id,10);
 				});
 				var index = _.indexOf(slideIDArray,this.model.get('start_frame_id'));
-				this.scrollTo( index );
+				console.log('@@@ slideshow with start frame id', this, slideIDArray, index);
+				this.scrollTo( index >= 0 ? index : 0 );
 				this.model.set({'start_frame_id':null},{silent:true});
 				
 			}
