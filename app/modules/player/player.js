@@ -50,7 +50,7 @@ function(Zeega, Frame, Parser)
 			/**
 			Sets the player to play when data is successfully parsed and rendered to the dom
 
-			@property autoplay 
+			@property autoplay
 			@type Boolean
 			@default true
 			**/
@@ -58,7 +58,7 @@ function(Zeega, Frame, Parser)
 			/**
 			Creates a player with no visual controls. Useful if wrapping the player in custom UI
 
-			@property chromeless 
+			@property chromeless
 			@type Boolean
 			@default true
 			**/
@@ -67,14 +67,14 @@ function(Zeega, Frame, Parser)
 			/**
 			Sets the collection project playback. 'standard', 'slideshow'
 
-			@property collection_mode 
+			@property collection_mode
 			@type String
 			@default 'standard'
 			**/
 			collection_mode : 'standard',
 
-			slideshow_start_frame_order : null,
-			slideshow_start_frame_id : null,
+			start_slide : null,
+			start_slide_id : null,
 
 			/**
 			Time to wait after player is ready before playing project

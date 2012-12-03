@@ -55,7 +55,7 @@ function()
 			else if( item.layer_type == 'Audio' || item.media_type == 'Video' ) timebasedLayers.push(item);
 		});
 		// slideshow layer from image items
-		if(imageLayers.length) slideshowLayer = generateSlideshowLayer( imageLayers, opts.slideshow_start_frame_order,opts.slideshow_start_frame_id );
+		if(imageLayers.length) slideshowLayer = generateSlideshowLayer( imageLayers, opts.start_slide,opts.start_slide_id );
 		// layers from timebased items
 		var layers = generateLayerArrayFromItems( timebasedLayers );
 		if(slideshowLayer) layers.push(slideshowLayer);
@@ -119,7 +119,7 @@ function()
 		});
 	};
 
-	var generateSlideshowLayer = function( imageLayerArray, slideshow_start_frame_order, slideshow_start_frame_id )
+	var generateSlideshowLayer = function( imageLayerArray, slideshow_start_slide, slideshow_start_slide_id )
 	{
 		var layerDefaults = {
 			keyboard : false,
@@ -137,8 +137,8 @@ function()
 
 		return {
 			attr : _.defaults( {slides:slides}, layerDefaults),
-			start_frame_order: slideshow_start_frame_order,
-			start_frame_id: slideshow_start_frame_id,
+			start_slide: parseInt(slideshow_start_slide,10),
+			start_slide_id: parseInt(slideshow_start_slide_id,10),
 			type : 'SlideShow',
 			id : 1
 		};
