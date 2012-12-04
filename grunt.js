@@ -18,7 +18,6 @@ module.exports = function(grunt) {
 				"build/config.js",
 				"app/**/*.js",
 				"app/modules/plugins/*.js"
-//				"assets/js/libs/popcorn/popcorn-flash.js"
 			]
 		},
 
