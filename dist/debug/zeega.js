@@ -78,9 +78,9 @@ __p+='<a href=\'#\' class=\'arrow arrow-left slideshow-slider-control-prev\'></a
 ( i )+
 '">\n\t\t\t\t<div class=\'slideshow-thumbnail\' style="background:url('+
 ( slide.attr.uri )+
-'); background-repeat:no-repeat;background-size:100%;background-position:center"></div>\n\t\t\t</a>\n\t\t\t<div class=\'thumb-title\'>\n\t\t\t\t<a href="'+
+'); background-repeat:no-repeat;background-size:100%;background-position:center"></div>\n\t\t\t\t<div class=\'thumb-title\'>\n\t\t\t\t\t<a href="'+
 ( slide.attr.attribution_uri )+
-'" target=\'blank\'>\n\t\t\t\t\t';
+'" target=\'blank\'>\n\t\t\t\t\t\t';
  if(slide.attr.media_creator_username.replace(/\s+/g, '') != ''){ 
 ;__p+=''+
 ( slide.attr.media_creator_username )+
@@ -88,9 +88,9 @@ __p+='<a href=\'#\' class=\'arrow arrow-left slideshow-slider-control-prev\'></a
  }else{ 
 ;__p+='unknown';
  } 
-;__p+='\n\t\t\t\t\t<i class=\'slideshow-icon-'+
+;__p+='\n\t\t\t\t\t\t<i class=\'slideshow-icon-'+
 ( slide.attr.archive.toLowerCase() )+
-' ssarchive\'></i>\n\t\t\t\t</a>\n\t\t\t</div>\n\t\t</li>\n\t';
+' ssarchive\'></i>\n\t\t\t\t\t</a>\n\t\t\t\t</div>\n\t\t\t</a>\n\t\t\t\n\t\t</li>\n\t';
  });
 ;__p+='\n</ul>';
 }
