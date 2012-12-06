@@ -21983,6 +21983,7 @@ function(Zeega, Frame, Parser)
 				if( this.currentFrame )
 				{
 					this.status ='playing';
+					this.trigger('play');
 					this.currentFrame.play();
 				}
 				// if there is no info on where the player is or where to start go to first frame in project
