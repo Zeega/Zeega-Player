@@ -46,7 +46,7 @@ function(Zeega, Layer)
 			if(this.status != 'ready')
 			{
 				this.layers.each(function(layer){
-					if( layer.status == 'waiting' )
+					if( layer.status == 'waiting' || layer.status != 'loading' )
 					{
 						layer.on('layer_ready', _this.onLayerReady, _this);
 						layer.render();
@@ -75,13 +75,17 @@ function(Zeega, Layer)
 			{
 				this.renderOnReady = oldID;
 			}
+
+			/* determines the z-index of the layer in relation to other layers on the frame */
 			this.layers.each(function(layer, i){
-				layer.updateZIndex( _this.layers.length - i );
+				layer.updateZIndex( i );
 			});
 		},
 
 		onLayerReady : function( layer )
 		{
+			this.layers.get(layer.id).off('layer_ready', this.onLayerReady );
+
 			//this.trigger('layer_ready',layer.toJSON() );
 			this.trigger('frame_progress', this.getLayerStates() );
 
