@@ -4,7 +4,7 @@
 
 ##Dependencies
 
-* jquery
+* jquery 1.8+
 
 ## tasks
 
@@ -18,9 +18,9 @@
     git commit -am 'message'
     git push origin master
 
-### when you update an html template file in the layers
+### copy relevant layer files (html,less) after editing
 
-    bbb copy
+    bbb comp
     or
     bbb release
 
