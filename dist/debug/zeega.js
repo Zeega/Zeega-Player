@@ -21695,6 +21695,17 @@ function(Zeega, Frame, Parser)
 			@deprecated
 			**/
 			mode :'standalone',
+
+			/**
+			selector of element used to cueNext the Zeega
+			
+			@property next
+			@type String
+			@default null
+			**/
+			next : null,
+
+
 			/**
 			Sets the individual properties of overlays
 
@@ -21762,6 +21773,15 @@ function(Zeega, Frame, Parser)
 			**/
 			preload_ahead : 2,
 			
+			/**
+			selector of element used to cuePrev the Zeega
+			
+			@property prev
+			@type String
+			@default null
+			**/
+			prev : null,
+
 			/**
 			The frame id to start the player
 			
@@ -22239,6 +22259,23 @@ function(Zeega, Frame, Parser)
 		{
 			// correctly size the player window
 			this.$('.ZEEGA-player-window').css( this.getWindowSize() );
+			this.setControls();
+		},
+
+		setControls: function() {
+			var _this = this;
+			if( this.model.get('next') && $(this.model.get('next')).length ) {
+				$(this.model.get('next')).click(function(){
+					_this.model.cueNext();
+					return false;
+				});
+			}
+			if( this.model.get('prev') && $(this.model.get('prev')).length ) {
+				$(this.model.get('prev')).click(function(){
+					_this.model.cuePrev();
+					return false;
+				});
+			}
 		},
 
 		resizeWindow : function()
