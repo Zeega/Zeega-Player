@@ -21766,14 +21766,7 @@ function(Zeega, Frame, Parser, PlayerLayout)
 			@default 0
 			**/
 			delay : 0,
-			/**
-			Sets if the project be escaped through user input (esc or close buttons)
 
-			@property escapable
-			@type Boolean
-			@default true
-			**/
-			escapable : true,
 			/**
 			If there are overlays, do they fade out?
 
@@ -22086,9 +22079,6 @@ function(Zeega, Frame, Parser, PlayerLayout)
 				$(window).keyup(function(e){
 					switch( e.which )
 					{
-						case 27: // esc
-							if(_this.get('escapable')) _this.destroy();
-							break;
 						case 37: // left arrow
 							_this.cuePrev();
 							break;
