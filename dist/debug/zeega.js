@@ -21044,7 +21044,7 @@ function(Zeega, Layer)
 			if(this.status != 'ready')
 			{
 				this.layers.each(function(layer){
-					if( layer.status == 'waiting' || layer.status != 'loading' )
+					if( layer.status == 'waiting' || layer.status == 'loading' )
 					{
 						layer.on('layer_ready', _this.onLayerReady, _this);
 						layer.render();
@@ -21082,15 +21082,13 @@ function(Zeega, Layer)
 
 		onLayerReady : function( layer )
 		{
-			this.layers.get(layer.id).off('layer_ready', this.onLayerReady );
-
 			//this.trigger('layer_ready',layer.toJSON() );
 			this.trigger('frame_progress', this.getLayerStates() );
 
 			if( this.isFrameReady() ) this.onFrameReady();
 
 			// trigger events on layer readiness
-			var statuses = this.layers.map(function(layer){ return layer.status;	});
+			var statuses = this.layers.map(function(layer){ return layer.status; });
 			//var include
 		},
 
@@ -21918,9 +21916,7 @@ function(Zeega, Frame, Parser)
 
 		_fadeIn : function()
 		{
-			console.log('fade in1111',this.Layout.$el );
 			this.Layout.$el.fadeTo('fast',1);
-			//this.Layout.$el.css('opacity',1);
 		},
 
 		onRendered : function()

@@ -62,7 +62,7 @@
 	$(window).bind('zeega_ready', function(){
 
 		var project = new Zeega.player({window_fit:true});
-		//project.on('all', function(e, obj){ if(e!='media_timeupdate') console.log('1: e:',e,obj);});
+		project.on('all', function(e, obj){ if(e!='media_timeupdate') console.log('1: e:',e,obj);});
 		project.load({
 			//div_id : 'main',
 			autoplay : true,

@@ -364,9 +364,7 @@ function(Zeega, Frame, Parser)
 
 		_fadeIn : function()
 		{
-			console.log('fade in1111',this.Layout.$el );
 			this.Layout.$el.fadeTo('fast',1);
-			//this.Layout.$el.css('opacity',1);
 		},
 
 		onRendered : function()
