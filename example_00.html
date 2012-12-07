@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <title>Zeega Player Test Page</title>
+
+    <!-- Zeega styles must be loaded for player to work! -->
+    <link rel="stylesheet" href="assets/css/zeega.css">
+
+    <style>
+
+        #player {
+            height:400px;
+            width:600px;
+            margin: 0 auto;
+        }
+
+        .controls {
+            width:600px;
+            margin: 0 auto;
+        }
+
+    </style>
+
+
+</head>
+
+<body>
+
+    <!-- optional container to put your zeega into. it must have explicit height and width -->
+    <div id="player"></div>
+
+    <div class='controls'>
+        <a href='#' class='prev'>prev</a>
+        <a href='#' class='next'>next</a>
+    </div>
+
+    <!-- load jquery first -->
+    <script src="assets/js/libs/jquery.js"></script>
+    <!-- load the Zeega player -->
+    <script src="dist/debug/zeega.js"></script> <!-- debug -->
+    <!--<script src="dist/release/zeega.js"></script>--> <!-- release -->
+
+    <script>
+    $(window).bind('zeega_ready', function(){
+
+        var project = new Zeega.player({window_fit:true});
+        project.on('all', function(e, obj){ if(e!='media_timeupdate') console.log('1: e:',e,obj);});
+        project.load({
+            div_id : 'player',
+            autoplay : true,
+            //url: 'http://staging.zeega.org/api/projects/3662',
+            url : 'http://api.flickr.com/services/feeds/photos_public.gne?tags=puppies&format=json&jsoncallback=?',
+            collection_mode: 'slideshow' // standard, slideshow
+        });
+
+        $('#playpause').click(function(){
+            project.playPause();
+        });
+    });
+    </script>
+
+</body>
+</html>
