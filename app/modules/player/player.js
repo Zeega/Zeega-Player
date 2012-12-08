@@ -5,10 +5,12 @@ define([
 	// parsers
 	"zeega_dir/parsers/_all",
 
+	"modules/player/status",
+
 	"modules/player/player-layout"
 ],
 
-function(Zeega, Frame, Parser, PlayerLayout)
+function(Zeega, Frame, Parser, Status, PlayerLayout)
 {
 	/**
 	Player
@@ -46,6 +48,7 @@ function(Zeega, Frame, Parser, PlayerLayout)
 		status : 'paused',
 
 		currentFrame : null,
+		currentSequence: null,
 
 		// default settings -  can be overridden by project data
 		defaults : {
@@ -277,11 +280,13 @@ function(Zeega, Frame, Parser, PlayerLayout)
 
 		initialize : function( obj )
 		{
+			this._status = new Status.Model();
+			this._status.project = this;
 			if( !_.isUndefined(obj) ) this.load(obj); // allow for load later
 		},
 
 		/**
-		* load 
+		* load
 		* loads the project with data or supplied project_url
 		*
 		* @method load
@@ -485,13 +490,13 @@ function(Zeega, Frame, Parser, PlayerLayout)
 		// goes to the next frame after n ms
 		cueNext : function(ms)
 		{
-			this.cueFrame( this.currentFrame.get('next'), ms );
+			this.cueFrame( this.currentFrame.get('_next'), ms );
 		},
 
 		// goes to the prev frame after n ms
 		cuePrev : function(ms)
 		{
-			this.cueFrame( this.currentFrame.get('prev'), ms );
+			this.cueFrame( this.currentFrame.get('_prev'), ms );
 		},
 
 		// goes to specified frame after n ms
@@ -625,10 +630,9 @@ function(Zeega, Frame, Parser, PlayerLayout)
 		addTargetDivToLayers(player.get('layers'), player.get('div_id'));
 		
 		var frames = new Frame.Collection( player.get('frames') );
-		frames.load( player.get('sequences'), player.get('layers'), player.get('preload_ahead') );
-			
-		console.log('parse project', player, frames);
-		
+		frames._status = player._status;
+		frames.load( player.get('sequences'), player.get('layers'), player.get('preload_ahead'), _ );
+					
 		player.frames = frames;
 
 		// set start frame

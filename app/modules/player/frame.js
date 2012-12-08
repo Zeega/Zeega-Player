@@ -69,7 +69,9 @@ function(Zeega, Layer)
 				this.layers.each(function(layer){
 					if( !_.include(commonLayers, layer.id) ) layer.render();
 				});
-				this.trigger('frame_rendered', _.extend({}, this.toJSON(), {layers: this.layers.toJSON()} ));
+
+				// update status
+				this._status.set('current_frame_id',this.id);
 			}
 			else
 			{
@@ -84,7 +86,6 @@ function(Zeega, Layer)
 
 		onLayerReady : function( layer )
 		{
-			//this.trigger('layer_ready',layer.toJSON() );
 			this.trigger('frame_progress', this.getLayerStates() );
 
 			if( this.isFrameReady() ) this.onFrameReady();
@@ -180,6 +181,7 @@ function(Zeega, Layer)
 				var linkedArray = [];
 				// make a layer collection inside the frame
 				frame.layers = new Layer.Collection();
+				frame._status = _this._status;
 				// add each layer to the collection
 				_.each( frame.get('layers'), function(layerID){
 					frame.layers.add( layerCollection.get(layerID) );
@@ -196,8 +198,9 @@ function(Zeega, Layer)
 							var next = sequence.frames[index+1] || null;
 
 							frame.set({
-								prev : prev,
-								next : next
+								_prev : prev,
+								_next : next,
+								_sequence: sequence.id
 							});
 							frame.setConnections();
 						}
