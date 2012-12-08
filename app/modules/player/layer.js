@@ -10,7 +10,7 @@ function(Zeega, Plugin)
 	var LayerModel = Zeega.Backbone.Model.extend({
 
 		ready : false,
-		status : 'waiting', // waiting, loading, ready, destroyed, error
+		state : 'waiting', // waiting, loading, ready, destroyed, error
 		
 		defaults : {
 			mode: 'player'
@@ -40,7 +40,7 @@ function(Zeega, Plugin)
 			else
 			{
 				this.ready = true;
-				this.status = 'error';
+				this.state = 'error';
 				console.log('could not find valid layer type: ',this.get('type'));
 			}
 		},
@@ -51,13 +51,13 @@ function(Zeega, Plugin)
 			if( this.visualElement )
 			{
 				// if the layer is ready, then just show it
-				if( this.status == 'waiting')
+				if( this.state == 'waiting')
 				{
-					this.status = 'loading';
-					this.trigger('layer_loading', this.toJSON());
+					this.state = 'loading';
+					this.status.emit('layer_loading', this.toJSON());
 					this.visualElement.player_onPreload();
 				}
-				else if( this.status == 'ready' )
+				else if( this.state == 'ready' )
 				{
 					this.visualElement.play();
 				}
@@ -71,14 +71,14 @@ function(Zeega, Plugin)
 		onVisualReady : function()
 		{
 			this.ready = true;
-			this.status = 'ready';
+			this.state = 'ready';
 			this.trigger('layer_ready', this.toJSON());
 		},
 
 		onVisualError : function()
 		{
 			this.ready = true;
-			this.status = 'error';
+			this.state = 'error';
 			this.trigger('layer_error', this.toJSON());
 		},
 
@@ -117,9 +117,9 @@ function(Zeega, Plugin)
 		destroy : function()
 		{
 			// do not attempt to destroy if the layer is waiting or destroyed
-			if( this.status != 'waiting' && this.status != 'destroyed' )
+			if( this.state != 'waiting' && this.state != 'destroyed' )
 			{
-				this.status = 'destroyed';
+				this.state = 'destroyed';
 			}
 		}
 	});

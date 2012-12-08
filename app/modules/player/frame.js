@@ -10,7 +10,7 @@ function(Zeega, Layer)
 	var FrameModel = Zeega.Backbone.Model.extend({
 
 		ready : false,
-		status : 'waiting', // waiting, loading, ready, destroyed
+		state : 'waiting', // waiting, loading, ready, destroyed
 		hasPlayed : false,
 
 		// frame render as soon as it's loaded. used primarily for the initial frame
@@ -23,13 +23,13 @@ function(Zeega, Layer)
 			link_to : [],				// ids of frames this frame can lead to
 			link_from : [],				// ids of frames this frame can be accessed from
 			preload_frames : [],
-			next : null,				// id of the next frame
-			prev : null					// id of the previous frame
+			_next : null,				// id of the next frame
+			_prev : null					// id of the previous frame
 		},
 
 		// for convenience
-		getNext : function(){ return this.get('next'); },
-		getPrev : function(){ return this.get('prev'); },
+		getNext : function(){ return this.get('_next'); },
+		getPrev : function(){ return this.get('_prev'); },
 
 		// sets the sequence adjacencies as a string
 		setConnections : function()
@@ -40,14 +40,11 @@ function(Zeega, Layer)
 			else this.set('connections','none');
 		},
 
-		preload : function()
-		{
-			var _this = this;
-			if(this.status != 'ready')
-			{
+		preload : function() {
+			if(!this.ready) {
+				var _this = this;
 				this.layers.each(function(layer){
-					if( layer.status == 'waiting' || layer.status == 'loading' )
-					{
+					if( layer.state == 'waiting' || layer.state == 'loading' ) {
 						layer.on('layer_ready', _this.onLayerReady, _this);
 						layer.render();
 					}
@@ -61,7 +58,7 @@ function(Zeega, Layer)
 			// if frame is completely loaded, then just render it
 			// else try preloading the layers
 			var _this = this;
-			if( _this.status == 'ready' )
+			if( this.ready )
 			{
 				// only render non-common layers. allows for persistent layers
 				var commonLayers = this.get('common_layers')[oldID] || [];
@@ -71,7 +68,7 @@ function(Zeega, Layer)
 				});
 
 				// update status
-				this._status.set('current_frame_id',this.id);
+				this.relay.set('current_frame',this.id);
 			}
 			else
 			{
@@ -84,25 +81,25 @@ function(Zeega, Layer)
 			});
 		},
 
-		onLayerReady : function( layer )
-		{
-			this.trigger('frame_progress', this.getLayerStates() );
+		onLayerReady : function( layer ) {
 
-			if( this.isFrameReady() ) this.onFrameReady();
+			this.status.emit('layer_ready', layer );
+
+//			this.status.emit('frame_progress', this.getLayerStates() );
+
+			if( this.isFrameReady() && !this.ready ) this.onFrameReady();
 
 			// trigger events on layer readiness
-			var statuses = this.layers.map(function(layer){ return layer.status; });
-			//var include
+			var states = this.layers.map(function(layer){ return layer.state; });
 		},
 
-		onFrameReady : function()
-		{
+		onFrameReady : function() {
 			this.ready = true;
-			this.status = 'ready';
-			this.trigger('frame_ready',{ frame: this.toJSON(),layers: this.layers.toJSON() });
+			this.state = 'ready';
+			this.status.emit('frame_ready',{ frame: this.toJSON(),layers: this.layers.toJSON() });
 			if( !_.isNull(this.renderOnReady) )
 			{
-				this.trigger('can_play');
+				this.status.emit('can_play');
 				this.render( this.renderOnReady );
 				this.renderOnReady = null;
 			}
@@ -111,11 +108,11 @@ function(Zeega, Layer)
 		getLayerStates : function()
 		{
 			var states = {};
-			states.ready =		_.map( _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'ready'; }), function(layer){ return layer.attributes; });
-			states.waiting =	_.map( _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'waiting'; }), function(layer){ return layer.attributes; });
-			states.loading =	_.map( _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'loading'; }), function(layer){ return layer.attributes; });
-			states.destroyed =	_.map( _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'destroyed'; }), function(layer){ return layer.attributes; });
-			states.error =		_.map( _.filter( _.toArray(this.layers), function(layer){ return layer.status == 'error'; }), function(layer){ return layer.attributes; });
+			states.ready =		_.map( _.filter( _.toArray(this.layers), function(layer){ return layer.state == 'ready'; }), function(layer){ return layer.attributes; });
+			states.waiting =	_.map( _.filter( _.toArray(this.layers), function(layer){ return layer.state == 'waiting'; }), function(layer){ return layer.attributes; });
+			states.loading =	_.map( _.filter( _.toArray(this.layers), function(layer){ return layer.state == 'loading'; }), function(layer){ return layer.attributes; });
+			states.destroyed =	_.map( _.filter( _.toArray(this.layers), function(layer){ return layer.state == 'destroyed'; }), function(layer){ return layer.attributes; });
+			states.error =		_.map( _.filter( _.toArray(this.layers), function(layer){ return layer.state == 'error'; }), function(layer){ return layer.attributes; });
 			return states;
 		},
 
@@ -157,10 +154,10 @@ function(Zeega, Layer)
 		destroy : function()
 		{
 			// do not attempt to destroy if the layer is waiting or destroyed
-			if( this.status != 'waiting' && this.status != 'destroyed' )
+			if( this.state!= 'waiting' && this.state != 'destroyed' )
 			{
 				this.layers.each(function(layer){ layer.destroy(); });
-				this.status = 'destroyed';
+				this.state = 'destroyed';
 			}
 		}
 
@@ -181,7 +178,8 @@ function(Zeega, Layer)
 				var linkedArray = [];
 				// make a layer collection inside the frame
 				frame.layers = new Layer.Collection();
-				frame._status = _this._status;
+				frame.relay = _this.relay;
+				frame.status = _this.status;
 				// add each layer to the collection
 				_.each( frame.get('layers'), function(layerID){
 					frame.layers.add( layerCollection.get(layerID) );
@@ -229,11 +227,19 @@ function(Zeega, Layer)
 					link_from : linkFrom
 				});
 
+
+				frame.layers.each(function(layer){
+					layer.relay = _this.relay;
+					layer.status = _this.status;
+				});
+
+/*
 				// listen for layer events and propagate through the frame to the player
 				frame.layers.on('all',function(e,obj){
-					var emit = _.extend({},obj,{frame:frame.id});
-					_this.trigger(e, emit);
+					var info = _.extend({},obj,{frame:frame.id});
+					_this.status.emit(e, info);
 				});
+*/
 				
 			});
 			
@@ -262,10 +268,9 @@ function(Zeega, Layer)
 					var framesToPreload = [frame.id];
 					var targetArray = [frame.id];
 
-					var loop = function()
-					{
+					var loop = function() {
 						_.each( targetArray, function(frameID){
-							targetArray = _.compact([ frame.get('prev'), frame.get('next') ]);
+							targetArray = _.compact([ frame.get('_prev'), frame.get('_next') ]);
 							framesToPreload = _.union( framesToPreload, targetArray, frame.get('link_to'), frame.get('link_from'));
 						});
 					};

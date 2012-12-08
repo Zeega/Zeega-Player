@@ -5,12 +5,13 @@ define([
 	// parsers
 	"zeega_dir/parsers/_all",
 
+	"modules/player/relay",
 	"modules/player/status",
 
 	"modules/player/player-layout"
 ],
 
-function(Zeega, Frame, Parser, Status, PlayerLayout)
+function(Zeega, Frame, Parser, Relay, Status, PlayerLayout)
 {
 	/**
 	Player
@@ -45,7 +46,7 @@ function(Zeega, Frame, Parser, Status, PlayerLayout)
 		ready : false,			// the player is parsed and in the dom. can call play play. layers have not been preloaded yet
 		complete : false,		// have all layers been preloaded
 		initialized : false,	// has the project data been loaded and parsed
-		status : 'paused',
+		state : 'paused',
 
 		currentFrame : null,
 		currentSequence: null,
@@ -278,10 +279,10 @@ function(Zeega, Frame, Parser, Status, PlayerLayout)
 		* player.load({data: {<valid data>}})
 		*/
 
-		initialize : function( obj )
-		{
-			this._status = new Status.Model();
-			this._status.project = this;
+		initialize : function( obj ) {
+			this.relay = new Relay.Model();
+			this.status = new Status.Model();
+			this.status.project = this;
 			if( !_.isUndefined(obj) ) this.load(obj); // allow for load later
 		},
 
@@ -352,10 +353,6 @@ function(Zeega, Frame, Parser, Status, PlayerLayout)
 		_listen : function()
 		{
 			var _this = this;
-			this.frames.on('all',function(e,obj){
-				_this.trigger(e,obj);
-			});
-
 			this.on('cue_frame', this.cueFrame, this);
 		},
 
@@ -391,7 +388,7 @@ function(Zeega, Frame, Parser, Status, PlayerLayout)
 		{
 			this.ready = true;
 			this._initEvents(); // this should be elsewhere. in an onReady fxn?
-			this.trigger('ready');
+			this.status.emit('ready');
 
 			this.preloadFramesFrom( this.get('start_frame') );
 
@@ -442,13 +439,13 @@ function(Zeega, Frame, Parser, Status, PlayerLayout)
 			{
 				this.render(); // render the player first!
 			}
-			else if( this.status == 'paused' )
+			else if( this.state == 'paused' )
 			{
 				this._fadeIn();
 				if( this.currentFrame )
 				{
-					this.status ='playing';
-					this.trigger('play');
+					this.state ='playing';
+					this.state.emit('play');
 					this.currentFrame.play();
 				}
 				// if there is no info on where the player is or where to start go to first frame in project
@@ -471,49 +468,44 @@ function(Zeega, Frame, Parser, Status, PlayerLayout)
 		// if the player is playing, pause the project
 		pause : function()
 		{
-			if( this.status == 'playing' )
+			if( this.state == 'playing' )
 			{
-				this.status ='paused';
+				this.state ='paused';
 				// pause each frame - layer
 				this.currentFrame.pause();
 				// pause auto advance
-				this.trigger('pause');
+				this.status.emit('pause');
 			}
 		},
 
-		playPause : function()
-		{
-			if( this.status == 'paused' ) this.play();
+		playPause : function() {
+			if( this.state == 'paused' ) this.play();
 			else this.pause();
 		},
 
 		// goes to the next frame after n ms
-		cueNext : function(ms)
-		{
+		cueNext : function(ms) {
 			this.cueFrame( this.currentFrame.get('_next'), ms );
 		},
 
 		// goes to the prev frame after n ms
-		cuePrev : function(ms)
-		{
+		cuePrev : function(ms) {
 			this.cueFrame( this.currentFrame.get('_prev'), ms );
 		},
 
 		// goes to specified frame after n ms
-		cueFrame : function( id, ms)
-		{
+		cueFrame : function( id, ms) {
 			if( !_.isUndefined(id) && !_.isUndefined( this.frames.get(id) ) )
 			{
 				var _this = this;
 				var time = ms || 0;
-				if( time !== 0 ) _.delay(function(){ _this.goToFrame(id); }, time);
-				else this.goToFrame(id);
+				if( time !== 0 ) _.delay(function(){ _this._goToFrame(id); }, time);
+				else this._goToFrame(id);
 			}
 		},
 
 		// should this live in the cueFrame method so it's not exposed?
-		goToFrame :function(id)
-		{
+		_goToFrame :function(id) {
 			this.preloadFramesFrom( id );
 			var oldID;
 			if(this.currentFrame)
@@ -527,10 +519,10 @@ function(Zeega, Frame, Parser, Status, PlayerLayout)
 			// render current frame // should trigger a frame rendered event when successful
 			this.currentFrame.render( oldID );
 
-			if( this.status != 'playing' )
+			if( this.state != 'playing' )
 			{
-				this.status = 'playing';
-				this.trigger('play');
+				this.state = 'playing';
+				this.status.emit('play');
 			}
 		},
 
@@ -581,7 +573,7 @@ function(Zeega, Frame, Parser, Status, PlayerLayout)
 			this.Layout.$el.fadeOut( this.get('fadeOut'), function(){
 				// destroy all layers before calling player_destroyed
 				_this.frames.each(function(frame){ frame.destroy(); });
-				_this.trigger('player_destroyed');
+				_this.status.emit('player_destroyed');
 			});
 		},
 
@@ -603,7 +595,7 @@ function(Zeega, Frame, Parser, Status, PlayerLayout)
 		**/
 		_onError : function(str)
 		{
-			this.trigger('error', str);
+			this.status.emit('error', str);
 			console.log('Error code: ' + str );
 		},
 
@@ -630,9 +622,15 @@ function(Zeega, Frame, Parser, Status, PlayerLayout)
 		addTargetDivToLayers(player.get('layers'), player.get('div_id'));
 		
 		var frames = new Frame.Collection( player.get('frames') );
-		frames._status = player._status;
+		
+		frames.relay = player.relay;
+		frames.status = player.status;
+
 		frames.load( player.get('sequences'), player.get('layers'), player.get('preload_ahead'), _ );
-					
+		
+
+
+		player.sequences = new Zeega.Backbone.Collection(player.get('sequences'));
 		player.frames = frames;
 
 		// set start frame
@@ -642,7 +640,7 @@ function(Zeega, Frame, Parser, Status, PlayerLayout)
 		}
 
 		player.initialized = true;
-		player.trigger('data_loaded');
+		player.status.emit('data_loaded');
 	};
 
 	var addTargetDivToLayers = function(layerArray, targetDiv)
