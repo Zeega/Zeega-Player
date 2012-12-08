@@ -40,12 +40,12 @@ function(Zeega) {
 			if(this.get('current_frame'))
 			{
 				this.set({
-					previous_frame: this.get('current_frame_id'),
+					previous_frame: this.get('current_frame'),
 					previous_frame_model: this.get('current_frame_model')
 				},{ silent: true });
 			}
 			/* update the current_frame_model */
-			var frameModel = this.project.frames.get( this.get('current_frame_id') );
+			var frameModel = this.project.frames.get( this.get('current_frame') );
 
 			this.set({ 'current_frame_model': frameModel },{silent:true});
 			this.emit('frame_rendered', _.extend({}, frameModel.toJSON(), {layers: frameModel.layers.toJSON()} )  );
@@ -53,7 +53,7 @@ function(Zeega) {
 			/* check to see if the sequence entered is new */
 			if(this.get('current_sequence') != frameModel.get('_sequence')) {
 				this.set({
-					current_sequence_id: frameModel.get('_sequence'),
+					current_sequence: frameModel.get('_sequence'),
 					current_sequence_model: this.project.sequences.get( frameModel.get('_sequence') )
 				});
 				this.emit('sequence_enter', _.extend({},this.get('current_sequence_model')) );

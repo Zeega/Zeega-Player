@@ -354,6 +354,14 @@ function(Zeega, Frame, Parser, Relay, Status, PlayerLayout)
 		{
 			var _this = this;
 			this.on('cue_frame', this.cueFrame, this);
+
+			// relays
+			this.relay.on('change:current_frame', this._remote_cueFrame, this);
+
+		},
+
+		_remote_cueFrame: function( info, id ) {
+			this.cueFrame(id);
 		},
 
 		// renders the player to the dom // this could be a _.once
@@ -628,8 +636,6 @@ function(Zeega, Frame, Parser, Relay, Status, PlayerLayout)
 
 		frames.load( player.get('sequences'), player.get('layers'), player.get('preload_ahead'), _ );
 		
-
-
 		player.sequences = new Zeega.Backbone.Collection(player.get('sequences'));
 		player.frames = frames;
 

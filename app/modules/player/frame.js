@@ -68,7 +68,7 @@ function(Zeega, Layer)
 				});
 
 				// update status
-				this.relay.set('current_frame',this.id);
+				this.status.set('current_frame',this.id);
 			}
 			else
 			{
@@ -84,8 +84,6 @@ function(Zeega, Layer)
 		onLayerReady : function( layer ) {
 
 			this.status.emit('layer_ready', layer );
-
-//			this.status.emit('frame_progress', this.getLayerStates() );
 
 			if( this.isFrameReady() && !this.ready ) this.onFrameReady();
 
