@@ -48,9 +48,6 @@ function(Zeega, Frame, Parser, Relay, Status, PlayerLayout)
 		initialized : false,	// has the project data been loaded and parsed
 		state : 'paused',
 
-		currentFrame : null,
-		currentSequence: null,
-
 		// default settings -  can be overridden by project data
 		defaults : {
 			/**
@@ -433,7 +430,7 @@ function(Zeega, Frame, Parser, Relay, Status, PlayerLayout)
 		// if the player is paused, then play the project
 		// if the player is not rendered, then render it first
 		/**
-		* play 
+		* play
 		* plays the project
 		* -if the player is paused, then play the project
 		* -if the player is not rendered, then render it first
@@ -450,22 +447,22 @@ function(Zeega, Frame, Parser, Relay, Status, PlayerLayout)
 			else if( this.state == 'paused' )
 			{
 				this._fadeIn();
-				if( this.currentFrame )
+				if( this.status.get('current_frame') )
 				{
 					this.state ='playing';
 					this.state.emit('play');
-					this.currentFrame.play();
+					this.status.get('current_frame_model').play();
 				}
 				// if there is no info on where the player is or where to start go to first frame in project
-				if( _.isNull(this.currentFrame) && _.isNull( this.get('start_frame') ) )
+				if( _.isNull(this.status.get('current_frame')) && _.isNull( this.get('start_frame') ) )
 				{
 					this.cueFrame( this.get('sequences')[0].frames[0] );
 				}
-				else if( _.isNull(this.currentFrame) && !_.isNull( this.get('start_frame') ) && this.frames.get( this.get('start_frame') ) )
+				else if( _.isNull(this.status.get('current_frame')) && !_.isNull( this.get('start_frame') ) && this.frames.get( this.get('start_frame') ) )
 				{
 					this.cueFrame( this.get('start_frame') );
 				}
-				else if( !_.isNull(this.currentFrame) )
+				else if( !_.isNull(this.status.get('current_frame')) )
 				{
 					// unpause the player
 				}
@@ -480,7 +477,7 @@ function(Zeega, Frame, Parser, Relay, Status, PlayerLayout)
 			{
 				this.state ='paused';
 				// pause each frame - layer
-				this.currentFrame.pause();
+				this.status.get('current_frame_model').pause();
 				// pause auto advance
 				this.status.emit('pause');
 			}
@@ -493,12 +490,12 @@ function(Zeega, Frame, Parser, Relay, Status, PlayerLayout)
 
 		// goes to the next frame after n ms
 		cueNext : function(ms) {
-			this.cueFrame( this.currentFrame.get('_next'), ms );
+			this.cueFrame( this.status.get('current_frame_model').get('_next'), ms );
 		},
 
 		// goes to the prev frame after n ms
 		cuePrev : function(ms) {
-			this.cueFrame( this.currentFrame.get('_prev'), ms );
+			this.cueFrame( this.status.get('current_frame_model').get('_prev'), ms );
 		},
 
 		// goes to specified frame after n ms
@@ -516,16 +513,17 @@ function(Zeega, Frame, Parser, Relay, Status, PlayerLayout)
 		_goToFrame :function(id) {
 			this.preloadFramesFrom( id );
 			var oldID;
-			if(this.currentFrame)
+			if(this.status.get('current_frame'))
 			{
-				this.currentFrame.exit( id );
-				oldID = this.currentFrame.id;
+				this.status.get('current_frame_model').exit( id );
+				oldID = this.status.get('current_frame_model').id;
 			}
 			// unrender current frame
 			// swap out current frame with new one
-			this.currentFrame = this.frames.get( id );
+			this.status.set('current_frame', id);
+			
 			// render current frame // should trigger a frame rendered event when successful
-			this.currentFrame.render( oldID );
+			this.status.get('current_frame_model').render( oldID );
 
 			if( this.state != 'playing' )
 			{
@@ -561,9 +559,9 @@ function(Zeega, Frame, Parser, Relay, Status, PlayerLayout)
 		getFrameData : function()
 		{
 			var _this = this;
-			if( this.currentFrame ) return _.extend({},
-				_this.currentFrame.toJSON(),
-				{ layers: _this.currentFrame.layers.toJSON() }
+			if( this.status.get('current_frame') ) return _.extend({},
+				_this.status.get('current_frame_model').toJSON(),
+				{ layers: _this.status.get('current_frame_model').layers.toJSON() }
 			);
 			return false;
 		},
