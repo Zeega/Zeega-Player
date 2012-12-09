@@ -21180,24 +21180,19 @@ function(Zeega, Layer)
 				_.each( frame.get('layers'), function(layerID){
 					frame.layers.add( layerCollection.get(layerID) );
 				});
-
 				// make connections by sequence>frame order
 				_.each( sequences, function(sequence){
-					if( sequence.frames.length > 1 )
+					var index = _.indexOf( sequence.frames, frame.id );
+					if( index > -1 )
 					{
-						var index = _.indexOf( sequence.frames, frame.id );
-						if( index > -1 )
-						{
-							var prev = sequence.frames[index-1] || null;
-							var next = sequence.frames[index+1] || null;
-
-							frame.set({
-								_prev : prev,
-								_next : next,
-								_sequence: sequence.id
-							});
-							frame.setConnections();
-						}
+						var prev = sequence.frames[index-1] || null;
+						var next = sequence.frames[index+1] || null;
+						frame.set({
+							_prev : prev,
+							_next : next,
+							_sequence: sequence.id
+						});
+						frame.setConnections();
 					}
 				});
 
@@ -21732,6 +21727,7 @@ function(Zeega) {
 					current_sequence: frameModel.get('_sequence'),
 					current_sequence_model: this.project.sequences.get( frameModel.get('_sequence') )
 				});
+
 				this.emit('sequence_enter', _.extend({},this.get('current_sequence_model').toJSON() ) );
 			}
 
