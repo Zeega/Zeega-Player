@@ -32,11 +32,10 @@ function(Zeega, Layer)
 		getPrev : function(){ return this.get('_prev'); },
 
 		// sets the sequence adjacencies as a string
-		setConnections : function()
-		{
-			if( !_.isNull(this.get('prev')) && !_.isNull(this.get('next')) ) this.set('connections','lr');
-			else if( !_.isNull(this.get('prev')) && _.isNull(this.get('next')) ) this.set('connections','l');
-			else if( _.isNull(this.get('prev')) && !_.isNull(this.get('next')) ) this.set('connections','r');
+		setConnections : function() {
+			if( !_.isNull(this.get('_prev')) && !_.isNull(this.get('_next')) ) this.set('connections','lr');
+			else if( !_.isNull(this.get('_prev')) && _.isNull(this.get('_next')) ) this.set('connections','l');
+			else if( _.isNull(this.get('_prev')) && !_.isNull(this.get('_next')) ) this.set('connections','r');
 			else this.set('connections','none');
 		},
 
