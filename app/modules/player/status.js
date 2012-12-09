@@ -56,7 +56,7 @@ function(Zeega) {
 					current_sequence: frameModel.get('_sequence'),
 					current_sequence_model: this.project.sequences.get( frameModel.get('_sequence') )
 				});
-				this.emit('sequence_enter', _.extend({},this.get('current_sequence_model')) );
+				this.emit('sequence_enter', _.extend({},this.get('current_sequence_model').toJSON() ) );
 			}
 
 		},
