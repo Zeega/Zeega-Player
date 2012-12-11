@@ -40,11 +40,19 @@ return __p;
 this["JST"]["app/templates/plugins/link.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<a href=\'#\' style=\'position:absolute;width:100%;height:100%\'>\n\t';
+__p+='<a href=\'#\' class=\'ZEEGA-link-inner\'>\n  ';
  if( mode == 'editor' && !_.isNull( attr.to_frame ) ) { 
-;__p+='\n\t\t<i class="icon-share go-to-sequence"></i>\n\t';
+;__p+='\n    <i class="icon-share go-to-sequence"></i>\n  ';
  } 
 ;__p+='\n</a>';
+}
+return __p;
+};
+
+this["JST"]["app/templates/plugins/rectangle.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='';
 }
 return __p;
 };
@@ -6980,275 +6988,243 @@ keys = _.keys(LayoutManager.prototype.options);
 zeega.define("plugins/backbone.layoutmanager", function(){});
 
 zeega.define('zeega',[
-	'backbone',
-	"plugins/backbone.layoutmanager"
+  'backbone',
+  "plugins/backbone.layoutmanager"
 ],
 
 function(Backbone) {
-	// Provide a global location to place configuration settings and module
-	// creation.
-	var app = {
-		// The root path to run the application.
-		root: "/"
-	};
+  // Provide a global location to place configuration settings and module
+  // creation.
+  var app = {
+    // The root path to run the application.
+    root: "/"
+  };
 
-	// Localize or create a new JavaScript Template object.
-	var JST = window.JST = window.JST || {};
+  // Localize or create a new JavaScript Template object.
+  var JST = window.JST = window.JST || {};
 
-	var zeegaBackbone = Backbone.noConflict();
-	
-	// Mix Backbone.Events, modules, and layout management into the app object.
-	return _.extend(app, {
-		// Create a custom object with a nested Views object.
-		module: function(additionalProps) {
-			return _.extend({ Views: {} }, additionalProps);
-		},
+  var zeegaBackbone = Backbone.noConflict();
+  
+  // Mix Backbone.Events, modules, and layout management into the app object.
+  return _.extend(app, {
+    // Create a custom object with a nested Views object.
+    module: function(additionalProps) {
+      return _.extend({ Views: {} }, additionalProps);
+    },
 
-		Backbone : zeegaBackbone
+    Backbone : zeegaBackbone
 
-	}, zeegaBackbone.Events);
+  }, zeegaBackbone.Events);
 
 });
 
 zeega.define('zeega_dir/plugins/layers/_layer/_layer',[
-	"zeega"
+  "zeega"
 ],
 
-function(Zeega){
+function( Zeega ) {
 
-	_Layer = Zeega.Backbone.Model.extend({
-		
-		layerType : null,
+  _Layer = Zeega.Backbone.Model.extend({
+    
+    layerType: null,
 
-		controls : [],
+    controls: [],
 
-		defaults : {
-			citation: true,
-			default_controls : true,
-			draggable : true,
-			has_controls : true,
-			linkable : true,
-			mode : 'player',
-			resizable : false,
-			showCitation : true
-		},
-		defaultAttributes : {},
+    defaults: {
+      citation: true,
+      default_controls: true,
+      draggable: true,
+      has_controls: true,
+      linkable: true,
+      mode: 'player',
+      resizable: false
+    },
 
-		initialize : function()
-		{
-			this.defaults = _.extend(this.defaults, this.defaultAttributes);
-			this.init();
-		},
+    defaultAttributes: {},
 
-		init : function(){},
+    initialize: function() {
+      this.defaults = _.extend( this.defaults, this.defaultAttributes );
+      this.init();
+    },
 
-		player_onPreload : function(){},
-		player_onPlay : function(){},
-		player_onPause : function(){},
-		player_onExit : function(){},
-		player_onUnrender : function(){},
-		player_onRenderError : function(){},
+    init: function(){},
 
-		editor_onLayerEnter : function(){},
-		editor_onLayerExit : function(){},
-		editor_onControlsOpen : function(){},
-		editor_onControlsClosed : function(){}
+    player_onPreload: function(){},
+    player_onPlay: function(){},
+    player_onPause: function(){},
+    player_onExit: function(){},
+    player_onUnrender: function(){},
+    player_onRenderError: function(){},
 
-	});
+    editor_onLayerEnter: function(){},
+    editor_onLayerExit: function(){},
+    editor_onControlsOpen: function(){},
+    editor_onControlsClosed: function(){}
+  });
 
-	_Layer.Visual = Zeega.Backbone.LayoutView.extend({
-		
-		fetch: function(path) {
-			// Initialize done for use in async-mode
-			var done;
-			// Concatenate the file extension.
-			path = 'app/templates/'+ path + ".html";
-			// If cached, use the compiled template.
-			if (JST[path]) {
-				return JST[path];
-			} else {
-				// Put fetch into `async-mode`.
-				done = this.async();
-				// Seek out the template asynchronously.
-				return $.ajax({ url: Zeega.root + path }).then(function(contents) {
-					done(JST[path] = _.template(contents));
-				});
-			}
-		},
+  _Layer.Visual = Zeega.Backbone.LayoutView.extend({
+    
+    className: 'visual-element',
+    template: '',
 
-		className : 'visual-element',
-		template : '',
+    fetch: function( path ) {
+      // Initialize done for use in async-mode
+      var done;
+      // Concatenate the file extension.
+      path = 'app/templates/'+ path + ".html";
+      // If cached, use the compiled template.
+      if ( JST[path] ) {
+        return JST[path];
+      } else {
+        // Put fetch into `async-mode`.
+        done = this.async();
+        // Seek out the template asynchronously.
+        return $.ajax({ url: Zeega.root + path }).then(function( contents ) {
+          done(JST[path] = _.template( contents ));
+        });
+      }
+    },
 
-		serialize : function(){ return this.model.toJSON(); },
+    serialize: function() { return this.model.toJSON(); },
 
-		initialize : function()
-		{
-			this.init();
-		},
+    initialize: function() {
+      this.init();
+    },
 
-		beforePlayerRender : function(){},
-		beforeRender : function()
-		{
-			this.className = this._className +' '+ this.className;
-			this.beforePlayerRender();
+    beforePlayerRender: function(){},
+    beforeRender: function() {
+      this.className = this._className +' '+ this.className;
+      this.beforePlayerRender();
 
-			if(this.model.get('target_div') !== '' && !_.isNull(this.model.get('target_div')) )
-			{
-				$('#'+ this.model.get('target_div') +' .ZEEGA-player-window').append( this.el );
-			}
-			else
-			{
-				$('.ZEEGA-player-window').append( this.el );
-			}
-			this.$el.addClass('visual-element-'+ this.model.get('type').toLowerCase() );
-			this.moveOffStage();
-			this.applySize();
-		},
+      if(this.model.get('target_div') !== '' && !_.isNull(this.model.get('target_div')) ) {
+        $('#'+ this.model.get('target_div') +' .ZEEGA-player-window').append( this.el );
+      } else {
+        $('.ZEEGA-player-window').append( this.el );
+      }
+      this.$el.addClass( 'visual-element-'+ this.model.get('type').toLowerCase() );
+      this.moveOffStage();
+      this.applySize();
+    },
 
-		afterRender : function()
-		{
-			this.verifyReady();
-			this.onRender();
-		},
+    afterRender: function() {
+      this.verifyReady();
+      this.onRender();
+    },
 
-		onRender : function(){},
+    onRender: function(){},
 
-		applySize : function()
-		{
-			this.$el.css({
-				height : this.getAttr('height') +'%', // photos need a height!
-				width : this.getAttr('width') +'%'
-			});
-		},
+    applySize: function() {
+      this.$el.css({
+        height: this.getAttr('height') +'%', // photos need a height!
+        width: this.getAttr('width') +'%'
+      });
+    },
 
-		init : function(){},
-		render : function(){},
+    init: function(){},
+    render: function(){},
 
-		// default verify fxn. return ready immediately
-		verifyReady : function(){ this.model.trigger('visual_ready',this.model.id); },
+    // default verify fxn. return ready immediately
+    verifyReady: function(){ this.model.trigger('visual_ready', this.model.id ); },
 
-		player_onPreload : function()
-		{
-			this.render();
-		},
-		player_onPlay : function()
-		{
-			this.onPlay();
-		},
-		player_onPause : function()
-		{
-			this.onPause();
-		},
-		player_onExit : function()
-		{
-			this.pause();
-			this.moveOffStage();
-			this.onExit();
-		},
-		player_onUnrender : function(){},
-		player_onRenderError : function(){},
+    player_onPreload: function() {
+      this.render();
+    },
 
-		onPreload : function()
-		{
+    player_onPlay: function() {
+      this.onPlay();
+    },
 
-		},
+    player_onPause: function() {
+      this.onPause();
+    },
 
-		onPlay : function()
-		{
+    player_onExit: function() {
+      this.pause();
+      this.moveOffStage();
+      this.onExit();
+    },
 
-		},
+    player_onUnrender: function(){},
+    player_onRenderError: function(){},
 
-		onPause : function()
-		{
+    onPreload: function(){},
+    onPlay: function(){},
+    onPause: function(){},
+    onExit: function(){},
 
-		},
+    updateZIndex: function( z ) {
+      this.$el.css('z-index', z);
+    },
 
-		onExit : function()
-		{
+    editor_onLayerEnter: function(){},
+    editor_onLayerExit: function(){},
+    editor_onControlsOpen: function(){},
+    editor_onControlsClosed: function(){},
 
-		},
+    moveOffStage: function() {
+      this.$el.css({
+        top: '-1000%',
+        left: '-1000%'
+      });
+    },
 
-		updateZIndex : function( z )
-		{
-			this.$el.css('z-index', z);
-		},
+    moveOnStage: function() {
+      this.$el.css({
+        top: this.getAttr('top') + '%',
+        left: this.getAttr('left') + '%'
+      });
+    },
 
+    play: function() {
+      this.isPlaying = true;
+      this.moveOnStage();
+      this.player_onPlay();
+    },
 
-		editor_onLayerEnter : function(){},
-		editor_onLayerExit : function(){},
-		editor_onControlsOpen : function(){},
-		editor_onControlsClosed : function(){},
+    pause: function() {
+      this.isPlaying = false;
+      this.player_onPause();
+    },
 
-		moveOffStage : function()
-		{
-			this.$el.css({
-				top: '-1000%',
-				left: '-1000%'
-			});
-		},
+    playPause: function() {
+      if( this.isPlaying !== false ) {
+        this.isPlaying = false;
+        this.player_onPause();
+      } else {
+        this.isPlaying = true;
+        this.player_onPlay();
+      }
+    },
 
-		moveOnStage : function()
-		{
-			this.$el.css({
-				top: this.getAttr('top') +'%',
-				left: this.getAttr('left') +'%'
-			});
-		},
+    // convenience fxn
+    getAttr: function( key ) {
+      return this.model.get('attr')[key];
+    }
 
-		play : function()
-		{
-			this.isPlaying = true;
-			this.moveOnStage();
-			this.player_onPlay();
-		},
+  });
 
-		pause : function()
-		{
-			this.isPlaying = false;
-			this.player_onPause();
-		},
+  _Layer.LayoutView = Zeega.Backbone.LayoutView.extend({
+    
+    fetch: function( path ) {
+      // Initialize done for use in async-mode
+      var done;
+      // Concatenate the file extension.
+      path = 'app/templates/'+ path + ".html";
+      // If cached, use the compiled template.
+      if (JST[path]) {
+        return JST[path];
+      } else {
+        // Put fetch into `async-mode`.
+        done = this.async();
+        // Seek out the template asynchronously.
+        return $.ajax({ url: Zeega.root + path }).then(function( contents ) {
+          done(JST[path] = _.template( contents ));
+        });
+      }
+    }
+  });
 
-		playPause : function()
-		{
-			if( this.isPlaying !== false )
-			{
-				this.isPlaying = false;
-				this.player_onPause();
-			}
-			else
-			{
-				this.isPlaying = true;
-				this.player_onPlay();
-			}
-		},
-
-		getAttr : function(key){ return this.model.get('attr')[key]; } // convenience method
-
-
-	});
-
-	_Layer.LayoutView = Zeega.Backbone.LayoutView.extend({
-		
-		fetch: function(path) {
-			// Initialize done for use in async-mode
-			var done;
-			// Concatenate the file extension.
-			path = 'app/templates/'+ path + ".html";
-			// If cached, use the compiled template.
-			if (JST[path]) {
-				return JST[path];
-			} else {
-				// Put fetch into `async-mode`.
-				done = this.async();
-				// Seek out the template asynchronously.
-				return $.ajax({ url: Zeega.root + path }).then(function(contents) {
-					done(JST[path] = _.template(contents));
-				});
-			}
-		}
-	});
-
-	return _Layer;
+  return _Layer;
 
 });
 
@@ -7258,466 +7234,441 @@ function(Zeega){
 zeega.define("plugins/jquery.imagesloaded.min", function(){});
 
 zeega.define('zeega_dir/plugins/layers/image/image',[
-	"zeega",
-	'zeega_dir/plugins/layers/_layer/_layer',
-
-	//plugins
-	'plugins/jquery.imagesloaded.min'
+  "zeega",
+  'zeega_dir/plugins/layers/_layer/_layer',
+  //plugins
+  'plugins/jquery.imagesloaded.min'
 ],
 
-function(Zeega, _Layer){
+function( Zeega, _Layer ){
 
-	var Layer = Zeega.module();
+  var Layer = Zeega.module();
 
-	Layer.Image = _Layer.extend({
-			
-		layerType : 'Image',
+  Layer.Image = _Layer.extend({
+      
+    layerType: 'Image',
 
-		defaultAttributes : {
-			'title' : 'Image Layer',
-			'url' : 'none',
-			'left' : 0,
-			'top' : 0,
-			'height' : 100,
-			'width' : 100,
-			'opacity':1,
-			'aspect':1.33
-		},
+    defaultAttributes: {
+      'title': 'Image Layer',
+      'url': 'none',
+      'left': 0,
+      'top': 0,
+      'height': 100,
+      'width': 100,
+      'opacity': 1,
+      'aspect': 1.33
+    },
 
-		controls : [
-			
-			{
-				type : 'checkbox',
-				property : 'dissolve',
-				label : 'Fade In'
-			},
-			{
-				type : 'slider',
-				property : 'width',
-				label : 'Scale',
-				suffix : '%',
-				min : 1,
-				max : 200
-			},
-			{
-				type : 'slider',
-				property : 'opacity',
-				label : 'Scale',
-				step : 0.01,
-				min : 0.05,
-				max : 1
-			}
+    controls : [
+      {
+        type: 'checkbox',
+        property: 'dissolve',
+        label: 'Fade In'
+      },
+      {
+        type: 'slider',
+        property: 'width',
+        label: 'Scale',
+        suffix: '%',
+        min: 1,
+        max: 200
+      },
+      {
+        type: 'slider',
+        property: 'opacity',
+        label: 'Scale',
+        step: 0.01,
+        min: 0.05,
+        max: 1
+      }
+    ]
 
-		]
+  });
 
-	});
+  Layer.Image.Visual = _Layer.Visual.extend({
+    
+    template: 'plugins/image',
 
-	Layer.Image.Visual = _Layer.Visual.extend({
-		
-		template : 'plugins/image',
+    serialize: function() {
+      return this.model.toJSON();
+    },
+    
+    verifyReady: function() {
+      var _this = this,
+        img = this.$el.imagesLoaded();
 
-		serialize : function(){ return this.model.toJSON(); },
-		
-		verifyReady : function()
-		{
-			var _this = this;
-			var img = this.$el.imagesLoaded();
-			img.done(function(){ _this.model.trigger('visual_ready',_this.model.id); });
-			img.fail(function(){ _this.model.trigger('visual_error',_this.model.id); });
-		}
-		
-	});
+      img.done(function() {
+        _this.model.trigger('visual_ready',_this.model.id);
+      });
+      img.fail(function() {
+        _this.model.trigger('visual_error',_this.model.id);
+      });
+    }
+    
+  });
 
-	return Layer;
-
+  return Layer;
 });
 
 zeega.define('zeega_dir/plugins/layers/link/link',[
-	"zeega",
-	'zeega_dir/plugins/layers/_layer/_layer'
+  "zeega",
+  'zeega_dir/plugins/layers/_layer/_layer'
 ],
 
-function(Zeega, _Layer){
+function(Zeega, _Layer) {
 
-	var Layer = Zeega.module();
+  var Layer = Zeega.module();
 
-	Layer.Link = _Layer.extend({
+  Layer.Link = _Layer.extend({
 
-		layerType : 'Link',
+    layerType: 'Link',
 
-		defaultAttributes : {
-			'title' : 'Link Layer',
-			'from_sequence' : null,
-			'to_frame' : null,
-			'from_frame' : null,
-			'left' : 25,
-			'top' : 25,
-			'height' : 50,
-			'width' : 50,
-			'opacity' : 1,
-			'opacity_hover' : 1,
-			'blink_on_start' : true,
-			'glow_on_hover' : true,
+    defaultAttributes: {
+      'title': 'Link Layer',
+      'from_sequence': null,
+      'to_frame': null,
+      'from_frame': null,
+      'left': 25,
+      'top': 25,
+      'height': 50,
+      'width': 50,
+      'opacity': 1,
+      'opacity_hover': 1,
+      'blink_on_start': true,
+      'glow_on_hover': true,
+      'citation': false,
+      'linkable': false,
+      'default_controls': false
+    }
+  });
+  
+  Layer.Link.Visual = _Layer.Visual.extend({
+    
+    template: 'plugins/link',
 
-			'citation':false,
-			'linkable' : false,
-			'default_controls' : false
-		}
-		
-	});
-	
-	Layer.Link.Visual = _Layer.Visual.extend({
-		
-		template : 'plugins/link',
+    serialize: function() {
+      console.log('link layer', this.model);
+      return this.model.toJSON();
+    },
+    
+    beforePlayerRender: function() {
+      var _this = this,
+        style = {
+          'border-radius': '0',
+          'height': this.getAttr('height') + '%',
+          'background': this.getAttr('backgroundColor'),
+          'opacity': this.getAttr('opacity'),
+          'box-shadow': '0 0 10px rgba(255,255,255,'+ this.getAttr('opacity') +')'
+        };
 
-		serialize : function(){ return this.model.toJSON(); },
-		
-		beforePlayerRender : function()
-		{
-			var _this = this;
-			var style = {
-				'overflow' : 'visible',
-				'z-index' : 100,
-				'border' : 'none',
-				'border-radius' : '0',
-				'height' : this.getAttr('height') +'%',
-				
-				background: 'red',
-				opacity: 0.1
-			};
+      this.$el.attr('data-glowOnHover', this.getAttr('glow_on_hover') );
 /*
-			this.$el.removeClass('link-arrow-right link-arrow-down link-arrow-up link-arrow-left');
+      this.$el.removeClass('link-arrow-right link-arrow-down link-arrow-up link-arrow-left');
 
-			if( this.preview ) this.delegateEvents({'click':'goClick'});
+      if( this.preview ) this.delegateEvents({'click':'goClick'});
 
-			if(this.model.get('attr').link_type == 'arrow_left')
-				this.$el.html( this.getTemplate() ).css( style ).addClass('link-arrow-left');
-			else if(this.model.get('attr').link_type == 'arrow_right')
-				this.$el.html( this.getTemplate() ).css( style ).addClass('link-arrow-right');
-			else if(this.model.get('attr').link_type == 'arrow_up')
-				this.$el.html( this.getTemplate() ).css( style ).addClass('link-arrow-up');
+      if(this.model.get('attr').link_type == 'arrow_left')
+        this.$el.html( this.getTemplate() ).css( style ).addClass('link-arrow-left');
+      else if(this.model.get('attr').link_type == 'arrow_right')
+        this.$el.html( this.getTemplate() ).css( style ).addClass('link-arrow-right');
+      else if(this.model.get('attr').link_type == 'arrow_up')
+        this.$el.html( this.getTemplate() ).css( style ).addClass('link-arrow-up');
 
-			if( this.model.get('attr').glow_on_hover ) this.$el.addClass('linked-layer-glow');
+      if( this.model.get('attr').glow_on_hover ) this.$el.addClass('linked-layer-glow');
 
-			if( this.getAttr('mode') == 'editor' )
-			{
-				_.extend( style, {
-					'border' : '2px dashed orangered',
-					'border-radius' : '6px'
-				});
-			}
+      if( this.getAttr('mode') == 'editor' )
+      {
+        _.extend( style, {
+          'border' : '2px dashed orangered',
+          'border-radius' : '6px'
+        });
+      }
 */
-			this.$el.css(style);
-		},
-		
-		events : {
-			'click a' : 'goClick',
-			'mouseover' : 'onMouseOver',
-			'mouseout' : 'onMouseOut'
-		},
+      this.$('.ZEEGA-link-inner').css( style );
+    },
+    
+    events: {
+      'click a': 'goClick',
+      'mouseover': 'onMouseOver',
+      'mouseout': 'onMouseOut'
+    },
 
-		onMouseOver : function()
-		{
-			//console.log('link on mouseover');
-			//this.$el.stop().fadeTo( 500, this.model.get('attr').opacity_hover );
-		},
+    onMouseOver: function() {
+      this.$el.stop().fadeTo( 500, this.getAttr('opacity_hover') );
+    },
 
-		onMouseOut : function()
-		{
-			//console.log('link on mouseover');
-			//this.$el.stop().fadeTo( 500, this.model.get('attr').opacity );
-		},
-		
-		goClick : function()
-		{
-			this.model.relay.set( 'current_frame', this.getAttr('to_frame') );
-			return false;
-		}
-		
-		/*
-		player_onPlay : function()
-		{
-			this.render();
-			this.delegateEvents({
-				'click':'goClick',
-				'mouseover' : 'onMouseOver',
-				'mouseout' : 'onMouseOut'
-			});
-			var _this = this;
-			this.$el.animate({opacity:1},1000,function(){
-				_this.$el.animate({opacity:0},1000);
-			});
-		}
-		*/
-		
-		
-	});
-	
-	return Layer;
-
+    onMouseOut: function() {
+      this.$el.stop().fadeTo( 500, this.getAttr('opacity') );
+    },
+    
+    goClick: function() {
+      this.model.relay.set( 'current_frame', this.getAttr('to_frame') );
+      return false;
+    }
+    
+    /*
+    player_onPlay : function()
+    {
+      this.render();
+      this.delegateEvents({
+        'click':'goClick',
+        'mouseover' : 'onMouseOver',
+        'mouseout' : 'onMouseOut'
+      });
+      var _this = this;
+      this.$el.animate({opacity:1},1000,function(){
+        _this.$el.animate({opacity:0},1000);
+      });
+    }
+    */
+    
+    
+  });
+  
+  return Layer;
 });
 zeega.define('zeega_dir/plugins/layers/slideshow/thumbnail-slider',[
-	"zeega",
-	'zeega_dir/plugins/layers/_layer/_layer'
+  "zeega",
+  'zeega_dir/plugins/layers/_layer/_layer'
 ],
 
-function(Zeega, _Layer){
+function( Zeega, _Layer ) {
 
-	var SSSlider = _Layer.LayoutView.extend({
+  var SSSlider = _Layer.LayoutView.extend({
 
-		slide : 0,
-		slidePos : 0,
+    slide : 0,
+    slidePos : 0,
 
-		className : 'slideshow-slider',
+    className : 'slideshow-slider',
+    template : 'plugins/slideshowthumbslider',
 
-		template : 'plugins/slideshowthumbslider',
+    initialize: function() {
+      var _this = this;
 
-		initialize : function()
-		{
-			var _this = this;
-			this.slideNum = this.model.get('attr').slides.length;
-			this.model.on('slideshow_update', function(slide){ _this.highlightThumb(slide.slideNum);}, this );
-			Zeega.on('resize_window', this.onResize, this);
-		},
+      this.slideNum = this.model.get('attr').slides.length;
+      this.model.on('slideshow_update', function( slide ){ _this.highlightThumb(slide.slideNum);}, this );
+      Zeega.on('resize_window', this.onResize, this );
+    },
 
-		serialize : function()
-		{
-			console.log('asldkjfa;slfjasd;f',this.model.toJSON());
-			return this.model.toJSON();
-		},
+    serialize: function() {
+      return this.model.toJSON();
+    },
 
-		afterRender : function()
-		{
-			this.onResize();
-		},
+    afterRender: function(){
+      this.onResize();
+    },
 
-		onResize : function()
-		{
-			this.$el.css('top', (window.innerHeight-this.$el.height()) +'px');
-		},
+    onResize: function() {
+      this.$el.css('top', (window.innerHeight-this.$el.height()) +'px');
+    },
 
-		events : {
-			'click a.slider-thumb' : 'onClickThumb',
-			'click a.trackback' : 'onClickTrackback',
-			'click .slideshow-slider-control-prev' : 'prev',
-			'click .slideshow-slider-control-next' : 'next'
-		},
+    events: {
+      'click a.slider-thumb': 'onClickThumb',
+      'click a.trackback': 'onClickTrackback',
+      'click .slideshow-slider-control-prev': 'prev',
+      'click .slideshow-slider-control-next': 'next'
+    },
 
-		prev : function()
-		{
-			if(this.slidePos > 0)
-			{
-				this.slidePos--;
-				this.$('ul').stop().animate({ 'left': this.slidePos*-171+'px' });
-			}
-			return false;
-		},
+    prev: function() {
+      
+      if( this.slidePos > 0 ) {
+        this.slidePos--;
+        this.$('ul').stop().animate({'left': this.slidePos*-171+'px' });
+      }
+      return false;
+    },
 
-		next : function()
-		{
-			// check slider position offset 
-			if(this.slidePos < this.slideNum-1 && (this.$('ul').offset().left + this.$('ul').width()) > window.innerWidth )
-			{
-				this.slidePos++;
-				this.$('ul').stop().animate({ 'left': this.slidePos*-171+'px' });
-			}
-			return false;
-		},
+    next: function() {
+      // check slider position offset
+      if(this.slidePos < this.slideNum-1 && (this.$('ul').offset().left + this.$('ul').width()) > window.innerWidth ) {
+        this.slidePos++;
+        this.$('ul').stop().animate({ 'left': this.slidePos*-171+'px' });
+      }
+      return false;
+    },
 
-		onClickThumb : function(e)
-		{
-			var slideNum = $(e.target).closest('a').data('slidenum');
-			this.highlightThumb(slideNum);
-			this.model.trigger('slideshow_switch-frame',slideNum);
-			return false;
-		},
+    onClickThumb: function( e ) {
 
-		onClickTrackback : function()
-		{
-			return false;
-		},
+      var slideNum = $( e.target ).closest('a').data('slidenum');
+      this.highlightThumb( slideNum );
+      this.model.trigger('slideshow_switch-frame', slideNum );
+      return false;
+    },
 
-		highlightThumb : function(num)
-		{
-			this.slide = num;
-			this.$('li').removeClass('active');
-			$(this.$('li')[num]).addClass('active');
-		}
-		
+    onClickTrackback: function() {
+      return false;
+    },
 
-	});
+    highlightThumb: function( num ) {
 
-	return SSSlider;
+      this.slide = num;
+      this.$('li').removeClass('active');
+      $(this.$('li')[num]).addClass('active');
+    }
+  });
 
+  return SSSlider;
 });
-
 zeega.define('zeega_dir/plugins/layers/slideshow/slideshow',[
-	"zeega",
-	'zeega_dir/plugins/layers/_layer/_layer',
-	'zeega_dir/plugins/layers/slideshow/thumbnail-slider'
+  "zeega",
+  'zeega_dir/plugins/layers/_layer/_layer',
+  'zeega_dir/plugins/layers/slideshow/thumbnail-slider'
 ],
 
-function(Zeega, _Layer, SSSlider){
+function(Zeega, _Layer, SSSlider) {
 
-	var Layer = Zeega.module();
+  var Layer = Zeega.module();
 
-	Layer.SlideShow = _Layer.extend({
-			
-		layerType : 'SlideShow',
+  Layer.SlideShow = _Layer.extend({
+      
+    layerType : 'SlideShow',
 
-		defaultAttributes : {
-			'arrows' : true, // turns on/off visual arrow controls
-			'keyboard' : false, // turns on/off keyboard controls
-			'thumbnail_slider' : true, // turns on/off thumbnail drawer
+    defaultAttributes : {
+      'arrows': true, // turns on/off visual arrow controls
+      'keyboard': false, // turns on/off keyboard controls
+      'thumbnail_slider': true, // turns on/off thumbnail drawer
 
-			'start_slide' : null,
-			'start_slide_id' : null,
+      'start_slide': null,
+      'start_slide_id': null,
 
-			'title' : 'Slideshow Layer',
-			'url' : 'none',
-			'left' : 0,
-			'top' : 0,
-			'height' : 100,
-			'width' : 100,
-			'opacity':1,
-			'aspect':1.33
-		}
+      'title': 'Slideshow Layer',
+      'url': 'none',
+      'left': 0,
+      'top': 0,
+      'height': 100,
+      'width': 100,
+      'opacity': 1,
+      'aspect': 1.33
+    }
+  });
 
-	});
+  Layer.SlideShow.Visual = _Layer.Visual.extend({
+    
+    template: 'plugins/slideshow',
 
-	Layer.SlideShow.Visual = _Layer.Visual.extend({
-		
-		template : 'plugins/slideshow',
+    slide: 0,
 
-		slide : 0,
+    init: function() {
+      this.slideCount = this.model.get('attr').slides.length;
+      this.model.on('slideshow_switch-frame', this.scrollTo, this);
+      Zeega.on('resize_window', this.positionArrows, this);
+    },
 
-		init : function()
-		{
-			this.slideCount = this.model.get('attr').slides.length;
-			this.model.on('slideshow_switch-frame', this.scrollTo, this);
-			Zeega.on('resize_window', this.positionArrows, this);
-		},
+    serialize: function() {
+      return this.model.toJSON();
+    },
 
-		serialize : function(){ return this.model.toJSON(); },
+    onPlay: function() {
+      this.$el.css({ 'height': '100%' });
+      this.hideArrows();
+      this.initKeyboard();
+      this.emitSlideData( this.slide );
+      this.positionArrows();
+      if( this.model.get('start_slide')) {
+        this.scrollTo( this.model.get('start_slide'));
+        this.model.set({'start_slide':null},{silent:true});
+      } else if( this.model.get('start_slide_id')) {
+        var slideIDArray = _.map( this.model.get('attr').slides, function( slide ) {
+            return parseInt(slide.id,10);
+          }),
+          index = _.indexOf(slideIDArray,this.model.get('start_slide_id'));
 
-		onPlay : function()
-		{
-			this.$el.css({'height': '100%'});
-			this.hideArrows();
-			this.initKeyboard();
-			this.emitSlideData( this.slide );
-			this.positionArrows();
-			if( this.model.get('start_slide'))
-			{
-				this.scrollTo( this.model.get('start_slide'));
-				this.model.set({'start_slide':null},{silent:true});
-			}
-			else if( this.model.get('start_slide_id'))
-			{
-				var slideIDArray = _.map( this.model.get('attr').slides ,function(slide){
-					return parseInt(slide.id,10);
-				});
-				var index = _.indexOf(slideIDArray,this.model.get('start_slide_id'));
-				this.scrollTo( index );
-				this.model.set({'start_slide_id':null},{silent:true});
-				
-			}
-		},
+        this.scrollTo( index );
+        this.model.set({ 'start_slide_id': null }, { silent: true });
+      }
+    },
 
-		onRender : function()
-		{
-			this.thumbSlider = new SSSlider({model:this.model});
-			this.$el.append( this.thumbSlider.el );
-			this.thumbSlider.render();
-			
-		},
+    onRender: function() {
+      this.thumbSlider = new SSSlider({ model: this.model });
+      this.$el.append( this.thumbSlider.el );
+      this.thumbSlider.render();
+    },
 
-		onExit : function()
-		{
-			this.killKeyboard();
-		},
+    onExit: function() {
+      this.killKeyboard();
+    },
 
-		events : {
-			'click  .slideshow-control-prev' : 'goLeft',
-			'click  .slideshow-control-next' : 'goRight'
-		},
+    events: {
+      'click  .slideshow-control-prev' : 'goLeft',
+      'click  .slideshow-control-next' : 'goRight'
+    },
 
-		goLeft : function()
-		{
-			if(this.slide > 0 )
-			{
-				this.slide--;
-				this.scrollTo(this.slide);
-			}
-			return false;
-		},
+    goLeft: function() {
+      
+      if( this.slide > 0 ) {
+        this.slide--;
+        this.scrollTo(this.slide);
+      }
+      return false;
+    },
 
-		goRight : function()
-		{
-			if(this.slide < this.slideCount -1 )
-			{
-				this.slide++;
-				this.scrollTo(this.slide);
-			}
-			return false;
-		},
+    goRight: function() {
 
-		scrollTo : function( slideNo )
-		{
-			this.slide = slideNo;
-			this.hideArrows();
-			this.$('.slideshow-container').stop().animate({left: (slideNo * -100)+'%'});
-			this.emitSlideData(slideNo);
-		},
+      if( this.slide < this.slideCount -1 ) {
+        this.slide++;
+        this.scrollTo(this.slide);
+      }
+      return false;
+    },
 
-		emitSlideData : function(slideNo)
-		{
-			this.model.trigger('slideshow_update', { slideNum: slideNo, data: this.getAttr('slides')[slideNo] } );
-		},
+    scrollTo: function( slideNo ) {
 
-		positionArrows : function()
-		{
-			this.$('.slideshow-arrow').css('top', (window.innerHeight/2 - 50) +'px');
-		},
+      this.slide = slideNo;
+      this.hideArrows();
+      this.$('.slideshow-container').stop().animate({ left: (slideNo * -100)+'%' });
+      this.emitSlideData( slideNo );
+    },
 
-		hideArrows : function()
-		{
-			if( this.slideCount <= 1 )						this.$('.slideshow-arrow').remove();
-			else if( this.slide === 0 )						this.$('.slideshow-control-prev').addClass('disabled');
-			else if( this.slide == this.slideCount - 1 )	this.$('.slideshow-control-next').addClass('disabled');
-			else											this.$('.slideshow-control-prev, .slideshow-control-next').removeClass('disabled');
-		},
+    emitSlideData: function(slideNo) {
+      this.model.trigger('slideshow_update', { slideNum: slideNo, data: this.getAttr('slides')[slideNo] } );
+    },
 
-		initKeyboard : function()
-		{
-			if( this.getAttr('keyboard') )
-			{
-				var _this = this;
-				$(window).bind('keyup.slideshow', function(e){
-					switch( e.which )
-					{
-						case 37: // left arrow
-							_this.goLeft();
-							break;
-						case 39: // right arrow
-							_this.goRight();
-							break;
-					}
-				});
-			}
-		},
+    positionArrows: function() {
+      this.$('.slideshow-arrow').css('top', (window.innerHeight/2 - 50) +'px');
+    },
 
-		killKeyboard : function()
-		{
-			if( this.getAttr('keyboard') ) $(window).unbind('keyup.slideshow');
-		}
-		
-	});
+    hideArrows: function() {
 
-	return Layer;
+      if( this.slideCount <= 1 ) {
+        this.$('.slideshow-arrow').remove();
+      } else if( this.slide === 0 ) {
+        this.$('.slideshow-control-prev').addClass('disabled');
+      } else if( this.slide == this.slideCount - 1 ) {
+        this.$('.slideshow-control-next').addClass('disabled');
+      } else {
+        this.$('.slideshow-control-prev, .slideshow-control-next').removeClass('disabled');
+      }
+    },
 
+    initKeyboard: function() {
+
+      if( this.getAttr('keyboard') ) {
+        var _this = this;
+
+        $(window).bind('keyup.slideshow', function( e ) {
+          switch( e.which ) {
+            case 37: // left arrow
+              _this.goLeft();
+              break;
+            case 39: // right arrow
+              _this.goRight();
+              break;
+          }
+        });
+      }
+    },
+
+    killKeyboard: function() {
+      
+      if( this.getAttr('keyboard') ) {
+        $(window).unbind('keyup.slideshow');
+      }
+    }
+    
+  });
+
+  return Layer;
 });
-
 /* Modernizr 2.6.2 (Custom Build) | MIT & BSD
  * Build: http://modernizr.com/download/#-applicationcache-canvas-canvastext-draganddrop-hashchange-history-audio-video-input-inputtypes-localstorage-postmessage-sessionstorage-websockets-websqldatabase-webworkers-geolocation-inlinesvg-smil-svg-svgclippaths-touch-webgl-shiv-mq-teststyles-hasevent-prefixes-domprefixes
  */
@@ -20639,203 +20590,241 @@ function(Zeega){
 });
 
 zeega.define('zeega_dir/plugins/layers/video/video',[
-	"zeega",
-	'zeega_dir/plugins/layers/_layer/_layer',
-
-	'zeega_dir/plugins/media-player/media-player'
+  "zeega",
+  'zeega_dir/plugins/layers/_layer/_layer',
+  'zeega_dir/plugins/media-player/media-player'
 ],
 
-function(Zeega, _Layer, MediaPlayer){
+function( Zeega, _Layer, MediaPlayer ) {
 
-	var Layer = Zeega.module();
+  var Layer = Zeega.module();
 
-	Layer.Video = _Layer.extend({
-			
-		layerType : 'Video',
+  Layer.Video = _Layer.extend({
+      
+    layerType: 'Video',
 
-		defaultAttributes : {
-			'title' : 'Video Layer',
-			'url' : 'none',
-			'left' : 0,
-			'top' : 0,
-			'height' : 100,
-			'width' : 100,
-			'volume' : 0.5,
-			'cue_in'  : 0,
-			'cue_out' : null,
-			'fade_in' : 0,
-			'fade_out' : 0,
-			'dissolve': false,
-			'loop' : false,
-			'opacity':1,
-			'dimension':1.5,
-			'citation':true
-		}
+    defaultAttributes: {
+      'title': 'Video Layer',
+      'url': 'none',
+      'left': 0,
+      'top': 0,
+      'height': 100,
+      'width': 100,
+      'volume': 0.5,
+      'cue_in': 0,
+      'cue_out': null,
+      'fade_in': 0,
+      'fade_out': 0,
+      'dissolve': false,
+      'loop': false,
+      'opacity': 1,
+      'dimension': 1.5,
+      'citation': true
+    }
+  });
 
-	});
+  Layer.Video.Visual = _Layer.Visual.extend({
+    
+    template: 'plugins/video',
 
-	Layer.Video.Visual = _Layer.Visual.extend({
-		
-		template : 'plugins/video',
+    ended: false,
+    playbackCount: 0,
 
-		ended : false,
-		playbackCount : 0,
+    init: function() {
+      //this.mediaPlayer = new MediaPlayer.Views.Player({
+      //  model:this.model,
+      //  control_mode : 'editor',
+      //  media_target : '#layer-visual-'+this.id,
+      //  controls_target : '#media-controls-'+this.id
+      //})
+    },
 
-		init : function()
-		{
-			//this.mediaPlayer = new MediaPlayer.Views.Player({
-			//	model:this.model,
-			//	control_mode : 'editor',
-			//	media_target : '#layer-visual-'+this.id,
-			//	controls_target : '#media-controls-'+this.id
-			//})
-		},
+    onPlay: function() {
 
-		onPlay : function()
-		{
-			this.ended = false;
-			this.mediaPlayer.play();
-		},
+      this.ended = false;
+      this.mediaPlayer.play();
+    },
 
-		onPause : function()
-		{
-			this.mediaPlayer.pause();
-		},
-		
-		onExit : function()
-		{
-			this.mediaPlayer.pause();
-		},
-		
-		verifyReady : function()
-		{
-			if( this.mediaPlayer_loaded !== true )
-			{
-				var _this = this;
-				this.mediaPlayer = new MediaPlayer.Views.Player({
-					model:this.model,
-					control_mode : 'none',
-					media_target : '#visual-element-'+ this.id
-				});
-				this.$el.append( this.mediaPlayer.el );
-				this.mediaPlayer.render();
-				this.mediaPlayer.placePlayer();
-				this.mediaPlayer.popcorn.listen('timeupdate', function(){ _this.onTimeUpdate(); });
-				this.model.on('media_ended', function(){ _this.onEnded(); });
+    onPause: function() {
 
-				this.mediaPlayer_loaded = true;
-			}
-			else
-			{
-				this.mediaPlayer.pause();
-			}
-		},
+      this.mediaPlayer.pause();
+    },
+    
+    onExit: function() {
 
-		onTimeUpdate : function()
-		{
-			if(!this.ended)
-			{
-				//Fades
-				var out,vol;
-				if( this.getAttr('cue_out') === 0 || this.getAttr('cue_out') === null ) out = this.mediaPlayer.getDuration();
-				else out = this.getAttr('cue_out');
-				var t = this.mediaPlayer.getCurrentTime();
-				var f = parseFloat(this.getAttr('cue_in'))+parseFloat(this.getAttr('fade_in'));
-				var g = out - parseFloat(this.getAttr('fade_out'));
+      this.mediaPlayer.pause();
+    },
+    
+    verifyReady: function() {
+      if( this.mediaPlayer_loaded !== true ) {
+        var _this = this;
+        this.mediaPlayer = new MediaPlayer.Views.Player({
+          model: this.model,
+          control_mode: 'none',
+          media_target: '#visual-element-' + this.id
+        });
+        this.$el.append( this.mediaPlayer.el );
+        this.mediaPlayer.render();
+        this.mediaPlayer.placePlayer();
+        this.mediaPlayer.popcorn.listen('timeupdate', function() {
+          _this.onTimeUpdate();
+        });
+        this.model.on('media_ended', function() {
+          _this.onEnded();
+        });
 
-				if(this.getAttr('fade_in') > 0 && t < f )
-				{
-					vol = this.getAttr('volume') *(1.0-((f-t)/this.getAttr('fade_in')) * ((f-t) / this.getAttr('fade_in')));
-					this.mediaPlayer.setVolume(vol);
-				}
-				else if(this.getAttr('fade_out') > 0 && t > g )
-				{
-					//vol = this.getAttr('volume') * (1.0-((t-g) / this.getAttr('fade_out') ))*(1.0-((t-g)/this.getAttr('fade_out') ));
-					//this.mediaPlayer.setVolume(vol);
-				}
-				else if(Math.abs(this.getAttr('volume') - this.mediaPlayer.getVolume())>0.01)
-				{
-					this.mediaPlayer.setVolume(this.getAttr('volume'));
-				}
-				// send updates to the player. must include the layer info incase there are > 1 media layers on a single frame
-				var info = {
-					id : this.model.id,
-					media_type : this.getAttr('media_type'),
-					layer_type : this.getAttr('layer_type'),
-					current_time : this.mediaPlayer.getCurrentTime(),
-					duration : this.mediaPlayer.getDuration()
-				};
-				this.model.trigger('media_timeupdate', info);
-				if( this.mediaPlayer.getCurrentTime() >= out ) this.onEnded();
-			}
-		},
+        this.mediaPlayer_loaded = true;
+      } else {
+        this.mediaPlayer.pause();
+      }
+    },
 
-		onEnded : function()
-		{
-			this.playbackCount++;
-			this.model.trigger('playback_ended', this.model.toJSON() );
-			if(this.getAttr('loop'))
-			{
-				this.mediaPlayer.currentTime( this.getAttr('cue_in') );
-				this.mediaPlayer.play();
-			}
-			else
-			{
-				this.ended = true;
-			}
-		}
+    onTimeUpdate: function() {
+      if( !this.ended ) {
+        //Fades
+        var out,
+          vol;
 
-	});
+        if( this.getAttr('cue_out') === 0 || this.getAttr('cue_out') === null ) {
+          out = this.mediaPlayer.getDuration();
+        } else {
+          out = this.getAttr('cue_out');
+        }
 
-	Layer.Youtube = Layer.Video.extend();
-	Layer.Youtube.Visual = Layer.Video.Visual.extend();
+        var t = this.mediaPlayer.getCurrentTime(),
+          f = parseFloat(this.getAttr('cue_in'))+parseFloat(this.getAttr('fade_in')),
+          g = out - parseFloat(this.getAttr('fade_out'));
 
-	Layer.Vimeo = Layer.Video.extend();
-	Layer.Vimeo.Visual = Layer.Video.Visual.extend();
+        if( this.getAttr('fade_in') > 0 && t < f ) {
+          vol = this.getAttr('volume') *(1.0-((f-t)/this.getAttr('fade_in')) * ((f-t) / this.getAttr('fade_in')));
+          this.mediaPlayer.setVolume(vol);
+        } else if ( this.getAttr('fade_out') > 0 && t > g ) {
+          //vol = this.getAttr('volume') * (1.0-((t-g) / this.getAttr('fade_out') ))*(1.0-((t-g)/this.getAttr('fade_out') ));
+          //this.mediaPlayer.setVolume(vol);
+        } else if( Math.abs(this.getAttr('volume') - this.mediaPlayer.getVolume()) > 0.01 ) {
+          this.mediaPlayer.setVolume( this.getAttr('volume') );
+        }
+        // send updates to the player. must include the layer info incase there are > 1 media layers on a single frame
+        var info = {
+          id: this.model.id,
+          media_type: this.getAttr('media_type'),
+          layer_type: this.getAttr('layer_type'),
+          current_time: this.mediaPlayer.getCurrentTime(),
+          duration: this.mediaPlayer.getDuration()
+        };
 
-	return Layer;
+        this.model.trigger('media_timeupdate', info );
+        if( this.mediaPlayer.getCurrentTime() >= out ) {
+          this.onEnded();
+        }
+      }
+    },
 
+    onEnded: function() {
+      this.playbackCount++;
+      this.model.trigger('playback_ended', this.model.toJSON() );
+      if( this.getAttr('loop') ) {
+        this.mediaPlayer.currentTime( this.getAttr('cue_in') );
+        this.mediaPlayer.play();
+      } else {
+        this.ended = true;
+      }
+    }
+  });
+
+  Layer.Youtube = Layer.Video.extend();
+  Layer.Youtube.Visual = Layer.Video.Visual.extend();
+
+  Layer.Vimeo = Layer.Video.extend();
+  Layer.Vimeo.Visual = Layer.Video.Visual.extend();
+
+  return Layer;
 });
 zeega.define('zeega_dir/plugins/layers/audio/audio',[
-	'zeega',
-	'zeega_dir/plugins/layers/_layer/_layer',
-	'zeega_dir/plugins/layers/video/video'
+  'zeega',
+  'zeega_dir/plugins/layers/_layer/_layer',
+  'zeega_dir/plugins/layers/video/video'
 ],
 
-function(Zeega, _Layer, VideoLayer){
+function( Zeega, _Layer, VideoLayer ){
 
-	var Layer = Zeega.module();
+  var Layer = Zeega.module();
 
-	Layer.Audio = _Layer.extend({
-			
-		layerType : 'Audio',
+  Layer.Audio = _Layer.extend({
+    layerType : 'Audio',
+    defaultAttributes: {
+      'title': 'Audio Layer',
+      'url': 'none',
+      'left': 0,
+      'top': 0,
+      'height': 0,
+      'width': 0,
+      'volume': 0.5,
+      'cue_in': 0,
+      'cue_out': null,
+      'fade_in': 0,
+      'fade_out': 0,
+      'opacity': 0,
+      'citation': true
+    }
+  });
 
-		defaultAttributes : 
-		{
-			'title' : 'Audio Layer',
-			'url' : 'none',
-			'left' : 0,
-			'top' : 0,
-			'height' : 0,
-			'width' : 0,
-			'volume' : 0.5,
-			'cue_in'  : 0,
-			'cue_out' : null,
-			'fade_in'  : 0,
-			'fade_out' : 0,
-			'opacity' : 0,
-			'citation':true
-		}
+  Layer.Audio.Visual = VideoLayer.Video.Visual.extend({
+    template: 'plugins/audio'
+  });
 
-	});
-	Layer.Audio.Visual = VideoLayer.Video.Visual.extend({
-		template : 'plugins/audio'
-	});
-
-	return Layer;
-
+  return Layer;
 });
 
+zeega.define('zeega_dir/plugins/layers/rectangle/rectangle',[
+  "zeega",
+  'zeega_dir/plugins/layers/_layer/_layer'
+],
+
+function(Zeega, _Layer) {
+
+  var Layer = Zeega.module();
+
+  Layer.Rectangle = _Layer.extend({
+
+    layerType: 'Rectangle',
+
+    defaultAttributes: {
+      'citation': false,
+      'default_controls': false,
+      'height': 50,
+      'left': 25,
+      'linkable': false,
+      'opacity': 1,
+      'opacity_hover': 1,
+      'title': 'Rectangle Layer',
+      'top': 25,
+      'width': 50
+    }
+  });
+  
+  Layer.Rectangle.Visual = _Layer.Visual.extend({
+    
+    template: 'plugins/rectangle',
+
+    serialize: function() {
+      return this.model.toJSON();
+    },
+    
+    beforePlayerRender: function() {
+      // update the rectangle style
+      var _this = this,
+        style = {
+          'background-color': this.getAttr('backgroundColor'),
+          'height': this.getAttr('height') + '%',
+          'opacity': this.getAttr('opacity')
+        };
+      this.$el.css( style );
+    }
+  });
+  
+  return Layer;
+});
 /*
 
 plugin/layer manifest file
@@ -20845,24 +20834,33 @@ this should be auto generated probably!!
 */
 
 zeega.define('zeega_dir/plugins/layers/_all',[
-	'zeega_dir/plugins/layers/image/image',
-	'zeega_dir/plugins/layers/link/link',
-	'zeega_dir/plugins/layers/slideshow/slideshow',
-	'zeega_dir/plugins/layers/video/video',
-	'zeega_dir/plugins/layers/audio/audio'		
+  'zeega_dir/plugins/layers/image/image',
+  'zeega_dir/plugins/layers/link/link',
+  'zeega_dir/plugins/layers/slideshow/slideshow',
+  'zeega_dir/plugins/layers/video/video',
+  'zeega_dir/plugins/layers/audio/audio',
+  'zeega_dir/plugins/layers/rectangle/rectangle'
 ],
-	function(
-		image,
-		link,
-		slideshow,
-		video,
-		audio
-	)
-	{
-		var Plugins = {};
-		_.extend( Plugins, image, link, slideshow, video, audio ); // extend the plugin object with all the layers
-		return Plugins;
-	}
+  function(
+    image,
+    link,
+    slideshow,
+    video,
+    audio,
+    rectangle
+  ) {
+    var Plugins = {};
+    // extend the plugin object with all the layers
+    return _.extend(
+      Plugins,
+      image,
+      link,
+      slideshow,
+      video,
+      audio,
+      rectangle
+    );
+  }
 );
 zeega.define('zeega_dir/player/layer',[
 	"zeega",
@@ -21281,333 +21279,339 @@ function(Zeega, Layer)
 
 	return Frame;
 });
-// parsers.zeega_project
-
 zeega.define('zeega_dir/parsers/zeega-project',["lodash"],
 
-function()
-{
-	var type = 'zeega-project';
-	var Parser = {};
-	Parser[type] = { name: type };
+function() {
+  var type = 'zeega-project',
+    Parser = {};
 
-	Parser[type].parse = function( res, opts )
-	{
-		// no op
-		return res;
-	};
+  Parser[ type ] = { name: type };
 
-	Parser[type].validate = function( res )
-	{
-		if( res.sequences && res.frames && res.layers ) return true;
-		return false;
-	};
+  Parser[ type ].validate = function( response ) {
+    
+    if( response.sequences && response.frames && response.layers ) {
+      return true;
+    }
+    return false;
+  };
 
-	return Parser;
+  // no op. projects are already formatted
+  Parser[type].parse = function( response, opts ) {
+    return response;
+  };
+  
+  return Parser;
 });
-// parsers.zeega-collection
-
 zeega.define('zeega_dir/parsers/zeega-collection',["lodash"],
 
-function()
-{
-	var type = 'zeega-collection';
-	var Parser = {};
-	Parser[type] = { name: type };
+function() {
+  var type = 'zeega-collection',
+    Parser = {};
 
-	Parser[type].parse = function( res, opts )
-	{
-		var project = {};
-		if(opts.collection_mode == 'slideshow' && res.items[0].child_items.length > 0 )
-			project = parseSlideshowCollection( res, opts );
-		else project = parseStandardCollection( res, opts );
+  Parser[ type ] = { name: type };
 
-		return project;
-	};
+  Parser[ type ].validate = function( response ) {
+    
+    if( response.items && response.items[0] && response.items[0].child_items ) {
+      return true;
+    }
+    return false;
+  };
 
-	Parser[type].validate = function( res )
-	{
-		if( res.items && res.items[0] && res.items[0].child_items ) return true;
-		return false;
-	};
+  Parser[ type ].parse = function( response, opts ) {
+    var project = {};
 
-	var parseStandardCollection = function( res, opts )
-	{
-		// layers from timebased items
-		var layers = generateLayerArrayFromItems( res.items[0].child_items );
-		// frames from timebased items
-		var frames = generateFrameArrayFromItems( res.items[0].child_items );
+    if( opts.collection_mode == 'slideshow' && response.items[0].child_items.length > 0 ) {
+      project = parseSlideshowCollection( response, opts );
+    } else {
+      project = parseStandardCollection( response, opts );
+    }
+    return project;
+  };
 
-		var sequence = {
-			id : 0,
-			title : "collection",
-			persistent_layers : [],
-			frames : _.pluck( frames, 'id')
-		};
+  var parseStandardCollection = function( response, opts ) {
+    // layers from timebased items
+    var layers = generateLayerArrayFromItems( response.items[0].child_items ),
+      frames = generateFrameArrayFromItems( response.items[0].child_items ),
+      sequence = {
+        id: 0,
+        title: "collection",
+        persistent_layers: [],
+        frames: _.pluck( frames, 'id' )
+      };
 
-		return _.extend( res.items[0], {
-			sequences : [ sequence ],
-			frames : frames,
-			layers : layers
-		});
-	};
+    return _.extend(
+      response.items[0],
+      {
+        sequences: [ sequence ],
+        frames: frames,
+        layers: layers
+      });
+  };
 
-	var parseSlideshowCollection = function( res, opts )
-	{
-		var frames,slideshowLayer;
-		var imageLayers = [];
-		var timebasedLayers = [];
-		_.each( res.items[0].child_items, function(item){
-			if(item.layer_type == 'Image') imageLayers.push(item);
-			else if( item.layer_type == 'Audio' || item.media_type == 'Video' ) timebasedLayers.push(item);
-		});
-		// slideshow layer from image items
-		if(imageLayers.length) slideshowLayer = generateSlideshowLayer( imageLayers, opts.start_slide,opts.start_slide_id );
-		// layers from timebased items
-		var layers = generateLayerArrayFromItems( timebasedLayers );
-		if(slideshowLayer) layers.push(slideshowLayer);
+  function parseSlideshowCollection( response, opts ) {
+    var frames,slideshowLayer,
+      imageLayers = [],
+      timebasedLayers = [];
 
-		if( timebasedLayers.length )
-		{
-			// frames from timebased items
-			frames = generateFrameArrayFromItems( timebasedLayers, slideshowLayer ? [ slideshowLayer.id ] : [] );
-		}
-		else
-		{
-			// create single frame if no timebased layers exist
-			frames = [{
-				id : 1,
-				layers : [1],
-				attr : { advance : 0 }
-			}];
-		}
+    _.each( response.items[0].child_items, function( item ) {
+      
+      if( item.layer_type == 'Image' ) {
+        imageLayers.push(item);
+      } else if( item.layer_type == 'Audio' || item.media_type == 'Video' ) {
+        timebasedLayers.push(item);
+      }
+    });
+    // slideshow layer from image items
+    if( imageLayers.length ) {
+      slideshowLayer = generateSlideshowLayer( imageLayers, opts.start_slide, opts.start_slide_id );
+    }
+    // layers from timebased items
+    var layers = generateLayerArrayFromItems( timebasedLayers );
+    if( slideshowLayer ) {
+      layers.push( slideshowLayer );
+    }
+    // frames from timebased items
+    if( timebasedLayers.length ) {
+      frames = generateFrameArrayFromItems( timebasedLayers, slideshowLayer ? [ slideshowLayer.id ] : [] );
+    } else {
+      // create single frame if no timebased layers exist
+      frames = [{
+        id: 1,
+        layers: [1],
+        attr: { advance : 0 }
+      }];
+    }
 
-		var sequence = {
-			id : 0,
-			title : "collection",
-			persistent_layers : slideshowLayer ? [ slideshowLayer.id ] : [],
-			frames : _.pluck( frames, 'id')
-		};
+    var sequence = {
+      id: 0,
+      title: "collection",
+      persistent_layers: slideshowLayer ? [ slideshowLayer.id ] : [],
+      frames: _.pluck( frames, 'id')
+    };
 
-		return _.extend( res.items[0], {
-			sequences : [ sequence ],
-			frames : frames,
-			layers : layers
-		});
-	};
+    return _.extend(
+      response.items[0],
+      {
+        sequences: [ sequence ],
+        frames: frames,
+        layers: layers
+      });
+  }
 
-	var generateLayerArrayFromItems = function(itemsArray)
-	{
-		var layerDefaults = {
-			width:100,
-			top:0,
-			left:0,
-			loop:false
-		};
-		return _.map( itemsArray, function(item){
-			return {
-				attr: _.defaults(item,layerDefaults),
-				type : item.layer_type,
-				id : item.id
-				//target_div : divID
-			};
-		});
-	};
+  function generateLayerArrayFromItems( itemsArray ) {
+    var layerDefaults = {
+      width: 100,
+      top: 0,
+      left: 0,
+      loop: false
+    };
 
-	var generateFrameArrayFromItems = function(itemsArray, persistentLayers)
-	{
-		return _.map( itemsArray, function(item){
-			var layers = item.media_type == 'Video' ? [item.id] : _.compact( [item.id].concat(persistentLayers) );
-			return {
-				id : item.id,
-				layers : layers,
-				attr : { advance : 0 }
-			};
-		});
-	};
+    return _.map( itemsArray, function( item ) {
+      return {
+        attr: _.defaults(item,layerDefaults),
+        type: item.layer_type,
+        id: item.id
+      };
+    });
+  }
 
-	var generateSlideshowLayer = function( imageLayerArray, slideshow_start_slide, slideshow_start_slide_id )
-	{
-		var layerDefaults = {
-			keyboard : false,
-			width:100,
-			top:0,
-			left:0
-		};
-		var slides = _.map( imageLayerArray, function(item){
-			return {
-				attr: item,
-				type : item.layer_type,
-				id : item.id
-			};
-		});
+  function generateFrameArrayFromItems( itemsArray, persistentLayers ) {
+    
+    return _.map( itemsArray, function( item ) {
+      var layers = item.media_type == 'Video' ? [item.id] : _.compact( [item.id].concat( persistentLayers ) );
+      return {
+        id : item.id,
+        layers : layers,
+        attr : { advance : 0 }
+      };
+    });
+  }
 
-		return {
-			attr : _.defaults( {slides:slides}, layerDefaults),
-			start_slide: parseInt(slideshow_start_slide,10),
-			start_slide_id: parseInt(slideshow_start_slide_id,10),
-			type : 'SlideShow',
-			id : 1
-		};
-	};
+  function generateSlideshowLayer( imageLayerArray, slideshow_start_slide, slideshow_start_slide_id ) {
+    var layerDefaults = {
+        keyboard: false,
+        width: 100,
+        top: 0,
+        left: 0
+      },
+      slides = _.map( imageLayerArray, function( item ) {
+        return {
+          attr: item,
+          type: item.layer_type,
+          id: item.id
+        };
+      });
 
-	return Parser;
+    return {
+      attr: _.defaults({ slides: slides }, layerDefaults ),
+      start_slide: parseInt(slideshow_start_slide,10),
+      start_slide_id: parseInt(slideshow_start_slide_id,10),
+      type: 'SlideShow',
+      id: 1
+    };
+  }
+
+  return Parser;
 });
 // parsers.zeega-dynamic-collection;
 zeega.define("zeega_dir/parsers/zeega-dynamic-collection", function(){});
 
-// parsers.flickr
+zeega.define('zeega_dir/parsers/flickr',[
+  "lodash"
+],
+function() {
+  var type = 'flickr',
+    Parser = {};
+  
+  Parser[ type ] = { name: type };
 
-zeega.define('zeega_dir/parsers/flickr',["lodash"],
+  // parser validation. returns true if data conforms to parameters
+  Parser[ type ].validate = function( response ) {
 
-function()
-{
-	var type = 'flickr';
-	var Parser = {};
-	Parser[type] = { name: type };
+    if( response.generator && response.generator == 'http://www.flickr.com/' ) {
+      return true;
+    }
+    return false;
+  };
 
-	Parser[type].parse = function( res, opts )
-	{
-		// layers from timebased items
-		var layers = generateLayerArrayFromItems( res.items );
-		// frames from timebased items
-		var frames = generateFrameArrayFromItems( res.items );
+  // parser returns valid Zeega data object
+  Parser[ type ].parse = function( response, opts ) {
 
-		var sequence = {
-			id : 0,
-			title : "flickr collection",
-			persistent_layers : [],
-			frames : _.pluck( frames, 'id')
-		};
+    // layers and frames from timebased items
+    var layers = generateLayerArrayFromItems( response.items ),
+      frames = generateFrameArrayFromItems( response.items ),
+      sequence = {
+        id : 0,
+        title : "flickr collection",
+        persistent_layers : [],
+        frames : _.pluck( frames, 'id')
+      };
 
-		return _.extend( res, {
-			sequences : [ sequence ],
-			frames : frames,
-			layers : layers
-		});
-	};
+    return _.extend(
+      response,
+      {
+        sequences : [ sequence ],
+        frames : frames,
+        layers : layers
+      });
+  };
 
-	Parser[type].validate = function( res )
-	{
-		if( res.generator && res.generator == 'http://www.flickr.com/' ) return true;
-		return false;
-	};
+  function generateLayerArrayFromItems( itemsArray ) {
+    var layerDefaults = {
+      width:100,
+      top:0,
+      left:0
+    };
 
-	var generateLayerArrayFromItems = function(itemsArray)
-	{
-		var layerDefaults = {
-			width:100,
-			top:0,
-			left:0
-		};
-		return _.map( itemsArray, function(item){
-			item.uri = item.media.m;
-			return {
-				attr: _.defaults(item,layerDefaults),
-				type : "Image",
-				id : item.link
-				//target_div : divID
-			};
-		});
-	};
+    return _.map( itemsArray, function( item ) {
+      item.uri = item.media.m;
+      return {
+        attr: _.defaults(item,layerDefaults),
+        type : "Image",
+        id : item.link
+      };
+    });
+  }
 
-	var generateFrameArrayFromItems = function(itemsArray, persistentLayers)
-	{
-		return _.map( itemsArray, function(item){
-			return {
-				id : item.link,
-				layers : _.compact( [item.link].concat(persistentLayers) ),
-				attr : { advance : 0 }
-			};
-		});
-	};
+  function generateFrameArrayFromItems( itemsArray, persistentLayers ) {
 
-	return Parser;
+    return _.map( itemsArray, function( item ) {
+      return {
+        id : item.link,
+        layers : _.compact( [item.link].concat(persistentLayers) ),
+        attr : { advance : 0 }
+      };
+    });
+  }
+
+  return Parser;
 });
-// parsers.youtube
-
 zeega.define('zeega_dir/parsers/youtube',["lodash"],
 
-function()
-{
-	var type = 'youtube';
-	var Parser = {};
-	Parser[type] = { name: type };
+function() {
+  var type = 'youtube',
+    Parser = {};
 
-	Parser[type].parse = function( res, opts )
-	{
-		// layers from timebased items
-		var layers = generateLayerArrayFromItems( res.feed.entry );
-		// frames from timebased items
-		
-		var frames = generateFrameArrayFromItems( res.feed.entry );
+  Parser[ type ] = { name: type };
 
-		var sequence = {
-			id : 0,
-			title : "youtube playlist",
-			persistent_layers : [],
-			frames : _.pluck( frames, 'id')
-		};
+  Parser[ type ].validate = function( res ) {
+    if( res.generator && res.generator == 'http://gdata.youtube.com/' ) {
+      return true;
+    }
+    return true;
+  };
 
-		var project= _.extend( res, {
-			sequences : [ sequence ],
-			frames : frames,
-			layers : layers
-		});
-		console.log(project);
-		return project;
-	};
+  Parser[ type ].parse = function( res, opts ) {
+    // layers and frames from timebased items
+    var layers = generateLayerArrayFromItems( res.feed.entry ),
+      frames = generateFrameArrayFromItems( res.feed.entry ),
+      sequence = {
+        id : 0,
+        title : "youtube playlist",
+        persistent_layers : [],
+        frames : _.pluck( frames, 'id')
+      },
+      project = _.extend(
+      res,
+      {
+        sequences : [ sequence ],
+        frames : frames,
+        layers : layers
+      });
+    return project;
+  };
 
-	Parser[type].validate = function( res )
-	{
-		if( res.generator && res.generator == 'http://gdata.youtube.com/' ) return true;
-		return true;
-	};
-	var generateUniqueId=function(string){
-		var k=0;
-		for(var i=0;i<string.length;i++){
-			k+=string.charCodeAt(i);
-		}
-		return k;
-	};
 
-	var generateLayerArrayFromItems = function(itemsArray)
-	{
-		var layerDefaults = {
-			width:100,
-			top:0,
-			left:0,
-			media_type : "Video",
-			layer_type:"Youtube"
-		};
-		return _.map( itemsArray, function(item){
-			
-			
-			return {
-				attr: _.extend(_.defaults(item,layerDefaults),{attribution_uri:"http://www.youtube.com/watch?v="+item.media$group.yt$videoid.$t}),
-				type: 'Video',
-				id : item.media$group.yt$videoid.$t,
-				attribution_uri:"http://www.youtube.com/watch?v="+item.media$group.yt$videoid.$t,
-				uri : item.media$group.yt$videoid.$t
+  function generateUniqueId( string ) {
+    var k = 0,
+      i = 0,
+      length = string.length;
 
-				//target_div : divID
-			};
-		});
-	};
+    for( ; i < length; i++ ) {
+      k += string.charCodeAt( i );
+    }
+    return k;
+  }
 
-	var generateFrameArrayFromItems = function(itemsArray, persistentLayers)
-	{
-		return _.map( itemsArray, function(item){
-			var id= item.media$group.yt$videoid.$t;
-			return {
-				id :id,
-				layers : _.compact( [id].concat(persistentLayers) ),
-				attr : { advance : 0 }
-			};
-		});
-	};
+  function generateLayerArrayFromItems( itemsArray ) {
+    var layerDefaults = {
+      width:100,
+      top:0,
+      left:0,
+      media_type : "Video",
+      layer_type:"Youtube"
+    };
 
-	return Parser;
+    return _.map( itemsArray, function(item){
+      
+      return {
+        attr: _.extend(
+          _.defaults(item,layerDefaults),
+          {
+            attribution_uri:"http://www.youtube.com/watch?v=" + item.media$group.yt$videoid.$t
+          }),
+        type: 'Video',
+        id: item.media$group.yt$videoid.$t,
+        attribution_uri: "http://www.youtube.com/watch?v=" + item.media$group.yt$videoid.$t,
+        uri: item.media$group.yt$videoid.$t
+      };
+    });
+  }
+
+  function generateFrameArrayFromItems( itemsArray, persistentLayers ) {
+
+    return _.map( itemsArray, function( item ) {
+      var id = item.media$group.yt$videoid.$t;
+      return {
+        id: id,
+        layers: _.compact( [id].concat( persistentLayers ) ),
+        attr: { advance: 0 }
+      };
+    });
+  }
+
+  return Parser;
 });
 /*
 
@@ -21618,24 +21622,32 @@ this should be auto generated probably!!
 */
 
 zeega.define('zeega_dir/parsers/_all',[
-	'zeega_dir/parsers/zeega-project',
-	'zeega_dir/parsers/zeega-collection',
-	'zeega_dir/parsers/zeega-dynamic-collection',
-	'zeega_dir/parsers/flickr',
-	'zeega_dir/parsers/youtube'
+  'zeega_dir/parsers/zeega-project',
+  'zeega_dir/parsers/zeega-collection',
+  'zeega_dir/parsers/zeega-dynamic-collection',
+  'zeega_dir/parsers/flickr',
+  'zeega_dir/parsers/youtube'
 ],
-	function(
-		zProject,
-		zCollection,
-		zDynamicCollection,
-		flickr,
-		youtube
-	)
-	{
-		var Parsers = {};
-		_.extend( Parsers, zProject, zCollection, zDynamicCollection, flickr,youtube ); // extend the plugin object with all the layers
-		return Parsers;
-	}
+  function(
+    zProject,
+    zCollection,
+    zDynamicCollection,
+    flickr,
+    youtube
+  )
+  {
+    // extend the plugin object with all the layers
+    var Parsers = {};
+    
+    return _.extend(
+      Parsers,
+      zProject,
+      zCollection,
+      zDynamicCollection,
+      flickr,
+      youtube
+    );
+  }
 );
 /*
 	relay.js
