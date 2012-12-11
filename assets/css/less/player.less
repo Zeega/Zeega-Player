@@ -1,32 +1,45 @@
-.ZEEGA-player
-{
-	background-color:#000000;
-	height:100%;
-	left:0;
-	overflow:hidden;
-	position: absolute;
-	top:0;
-	width:100%;
-	opacity:0.01;
-//	display: none; //initially don't display anything
+.ZEEGA-player {
+  background-color:#000000;
+  height:100%;
+  left:0;
+  overflow:hidden;
+  position: absolute;
+  top:0;
+  width:100%;
+  opacity:0.01;
+//  display: none; //initially don't display anything
 
-	.ZEEGA-player-window,
-	.ZEEGA-player-overlay
-	{
-		margin: 0 auto;
-		position: relative;
-	}
+  .ZEEGA-player-window,
+  .ZEEGA-player-overlay {
+    margin: 0 auto;
+    position: relative;
+  }
 }
 
 
-.ZEEGA-player-window
-{
-	overflow:hidden;
+.ZEEGA-player-window {
+  overflow:hidden;
 
-	&>.visual-element
-	{
-		position: absolute;
-		top:0;
-		left:0;
-	}
+  &>.visual-element {
+    position: absolute;
+    top:0;
+    left:0;
+  }
+}
+
+// sets hover glow
+[ data-glowOnHover = true ] {
+  box-shadow: 0 0 10px transparent;
+  transition: box-shadow 0.5s;
+  -moz-transition: box-shadow 0.5s; /* Firefox 4 */
+  -webkit-transition: box-shadow 0.5s; /* Safari and Chrome */
+  -o-transition: box-shadow 0.5s; /* Opera */
+
+    &:hover {
+    box-shadow: 0 0 10px white;
+    transition: box-shadow 0.5s;
+    -moz-transition: box-shadow 0.5s; /* Firefox 4 */
+    -webkit-transition: box-shadow 0.5s; /* Safari and Chrome */
+    -o-transition: box-shadow 0.5s; /* Opera */
+  }
 }

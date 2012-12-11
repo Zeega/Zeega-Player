@@ -1,92 +1,92 @@
 <!doctype html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
 
-	<title>Zeega Player Test Page</title>
+  <title>Zeega Player Test Page</title>
 
-	<!-- Application styles. -->
-	<link rel="stylesheet" href="assets/css/zeega.css">
+  <!-- Application styles. -->
+  <link rel="stylesheet" href="assets/css/zeega.css">
 </head>
 
 <body>
-	<!-- Main container. -->
-	<a href='#' id='playpause'>>></a>
-	<div id="main" style='height:400px;width:600px;float:left'></div>
-	<!--
-	<div id="secondary" style='height:400px;width:600px;float:left'></div>
+  <!-- Main container. -->
+  <a href='#' id='playpause'>>></a>
+  <div id="main" style='height:400px;width:600px;float:left'></div>
+  <!--
+  <div id="secondary" style='height:400px;width:600px;float:left'></div>
 -->
 <!-- dev env -->
-	
-	<script src="assets/js/libs/jquery.js"></script>
+  
+  <script src="assets/js/libs/jquery.js"></script>
 
-	<script>
-		var testdata = 
-		{		
-			"items":[
-				{
-					"child_items" : [{
+  <script>
+    var testdata = 
+    {   
+      "items":[
+        {
+          "child_items" : [{
 
-						"id": 50259,
-						"site_id": 1,
-						"user_id": 1311,
-		                "username" : "austinmusicmap@gmail.com",
-		                "display_name" : "Austin Music Map",
-						"title": "Introducing the Annie Street Arts Collective",
-						"description":"The Annie Street Arts Collective (anniestreetartscollective.com\/) puts on secret shows around Austin\u2014in backyards, under bridges, in abandoned buildings. The goal is to create an atmosphere for careful listening and to encourage people to experience the c...",
-						"text":"",
-						"uri": "_ezJkTBkzD4",
-						"attribution_uri": "http://www.youtube.com/watch?v=_ezJkTBkzD4&amp;amp;feature=youtube_gdata_player",
-						"date_created": "2012-01-02T00:00:00",
-						"media_type": "Video",
-						"layer_type": "Youtube",
-						"thumbnail_url": "http:\/\/static.zeega.org\/community\/items\/0\/50259\/50882eae467a7.jpg",
-						"child_items_count": 0,
-						"media_creator_username": "AustinMusicMap",
-						"media_creator_realname": "Unknown",
-						"archive": "Youtube","media_date_created" : "2012-09-07T12:00:00Z","media_date_created_end" : "2012-01-02T00:00:00","attributes" :"s:6:\"a:0:{}\";","tags" : ["Music","blues","story"],
-						"media_geo_latitude": null,
-						"media_geo_longitude": null,"editable" : false,
-						"published" : false
-					}]
-				}
-			]
-		};
-		console.log(testdata)
-	</script>
+            "id": 50259,
+            "site_id": 1,
+            "user_id": 1311,
+                    "username" : "austinmusicmap@gmail.com",
+                    "display_name" : "Austin Music Map",
+            "title": "Introducing the Annie Street Arts Collective",
+            "description":"The Annie Street Arts Collective (anniestreetartscollective.com\/) puts on secret shows around Austin\u2014in backyards, under bridges, in abandoned buildings. The goal is to create an atmosphere for careful listening and to encourage people to experience the c...",
+            "text":"",
+            "uri": "_ezJkTBkzD4",
+            "attribution_uri": "http://www.youtube.com/watch?v=_ezJkTBkzD4&amp;amp;feature=youtube_gdata_player",
+            "date_created": "2012-01-02T00:00:00",
+            "media_type": "Video",
+            "layer_type": "Youtube",
+            "thumbnail_url": "http:\/\/static.zeega.org\/community\/items\/0\/50259\/50882eae467a7.jpg",
+            "child_items_count": 0,
+            "media_creator_username": "AustinMusicMap",
+            "media_creator_realname": "Unknown",
+            "archive": "Youtube","media_date_created" : "2012-09-07T12:00:00Z","media_date_created_end" : "2012-01-02T00:00:00","attributes" :"s:6:\"a:0:{}\";","tags" : ["Music","blues","story"],
+            "media_geo_latitude": null,
+            "media_geo_longitude": null,"editable" : false,
+            "published" : false
+          }]
+        }
+      ]
+    };
+    console.log(testdata)
+  </script>
 
 
-	<script>
-	$(window).bind('zeega_ready', function(){
+  <script>
+  $(window).bind('zeega_ready', function(){
 
-		var project = new Zeega.player({window_fit:true});
-		project.on('all', function(e, obj){ if(e!='media_timeupdate') console.log('		player event:',e,obj);});
-		project.load({
-			div_id : 'main',
-			autoplay : true,
-			//data : testdata,
-			//url: 'http://alpha.zeega.org/api/projects/3629',
-			url: 'http://dev.zeega.org/joseph/web/api/projects/3632',
-			//url : 'http://api.flickr.com/services/feeds/photos_public.gne?tags=massascension&format=json&jsoncallback=?',
-			//url: 'http://alpha.zeega.org/api/items/49217',
-			//slideshow_start_frame_order : 4,
-			//start_slide_id: 37575,
+    var project = new Zeega.player({window_fit:true});
+    project.on('all', function(e, obj){ if(e!='media_timeupdate') console.log('   player event:',e,obj);});
+    project.load({
+      div_id : 'main',
+      autoplay : true,
+      //data : testdata,
+      //url: 'http://alpha.zeega.org/api/projects/3629',
+      url: 'http://dev.zeega.org/joseph/web/api/projects/3632',
+      //url : 'http://api.flickr.com/services/feeds/photos_public.gne?tags=massascension&format=json&jsoncallback=?',
+      //url: 'http://alpha.zeega.org/api/items/49217',
+      //slideshow_start_frame_order : 4,
+      //start_slide_id: 37575,
 
-			//url: 'http://planettakeout.org/zeegaapi/items/46075/items?page=1', //dynamic
-			//collection_mode: 'slideshow' // standard, slideshow
-		});
+      //url: 'http://planettakeout.org/zeegaapi/items/46075/items?page=1', //dynamic
+      //collection_mode: 'slideshow' // standard, slideshow
+    });
 
-		$('#playpause').click(function(){
-			project.playPause();
-		});
+    $('#playpause').click(function(){
+      project.playPause();
+    });
 
-		console.log('project', project);
-	});
-	</script>
+    console.log('project', project);
+  });
+  </script>
 
-	<script data-main="app/player_config" src="assets/js/libs/require.js"></script>
+  <script data-main="app/player_config" src="assets/js/libs/require.js"></script>
 
 
 
