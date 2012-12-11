@@ -64,12 +64,12 @@
 		var project = new Zeega.player({window_fit:true});
 		project.on('all', function(e, obj){ if(e!='media_timeupdate') console.log('		player event:',e,obj);});
 		project.load({
-			//div_id : 'main',
+			div_id : 'main',
 			autoplay : true,
 			//data : testdata,
 			//url: 'http://alpha.zeega.org/api/projects/3629',
-			//url: 'http://dev.zeega.org/joseph/web/api/projects/3631',
-			url : 'http://api.flickr.com/services/feeds/photos_public.gne?tags=massascension&format=json&jsoncallback=?',
+			url: 'http://dev.zeega.org/joseph/web/api/projects/3632',
+			//url : 'http://api.flickr.com/services/feeds/photos_public.gne?tags=massascension&format=json&jsoncallback=?',
 			//url: 'http://alpha.zeega.org/api/items/49217',
 			//slideshow_start_frame_order : 4,
 			//start_slide_id: 37575,
@@ -82,17 +82,6 @@
 			project.playPause();
 		});
 
-		// var project2 = new Zeega.player({window_fit:true});
-		// project2.on('all', function(e, obj){ if(e!='media_timeupdate') console.log('2: e:',e,obj);});
-		// project2.load({
-		// 	div_id : 'secondary',
-		// 	url: 'http://alpha.zeega.org/api/projects/2259',
-
-		// 	//collection_url: 'http://alpha.zeega.org/api/items/49217',
-		// 	//collection_url: 'http://planettakeout.org/zeegaapi/items/46075/items?page=1',
-		// 	//collection_mode: 'slideshow' // standard, slideshow
-		// });
-
 		console.log('project', project);
 	});
 	</script>
@@ -100,46 +89,6 @@
 	<script data-main="app/player_config" src="assets/js/libs/require.js"></script>
 
 
-<!-- release env -->
-	<!-- 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-	
-	<script>
-		console.log('beginz');
-	$(window).bind('zeega_ready', function(){
-		console.log('inside');
-
-
-		var project = new Zeega.player({window_fit:true});
-		project.on('all', function(e, obj){ if(e!='media_timeupdate') console.log('e:',e,obj);});
-		project.load({
-			div_id : 'main',
-			//project_url: 'http://alpha.zeega.org/api/projects/2259',
-
-			collection_url: 'http://alpha.zeega.org/api/items/49217',
-			//collection_url: 'http://planettakeout.org/zeegaapi/items/46075/items?page=1',
-			collection_mode: 'slideshow' // standard, slideshow
-		});
-
-		var project2 = new Zeega.player({window_fit:true});
-		project2.on('all', function(e, obj){ if(e!='media_timeupdate') console.log('e:',e,obj);});
-		project2.load({
-			div_id : 'secondary',
-			project_url: 'http://alpha.zeega.org/api/projects/2259',
-
-			//collection_url: 'http://alpha.zeega.org/api/items/49217',
-			//collection_url: 'http://planettakeout.org/zeegaapi/items/46075/items?page=1',
-			//collection_mode: 'slideshow' // standard, slideshow
-		});
-
-
-
-		console.log('project', project);
-	});
-	</script>
-
-	<script data-main="app/config" src="dist/debug/zeega.js"></script>
- -->
 
 </body>
 </html>
