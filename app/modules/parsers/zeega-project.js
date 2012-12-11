@@ -1,24 +1,23 @@
-// parsers.zeega_project
-
 define(["lodash"],
 
-function()
-{
-	var type = 'zeega-project';
-	var Parser = {};
-	Parser[type] = { name: type };
+function() {
+  var type = 'zeega-project',
+    Parser = {};
 
-	Parser[type].parse = function( res, opts )
-	{
-		// no op
-		return res;
-	};
+  Parser[ type ] = { name: type };
 
-	Parser[type].validate = function( res )
-	{
-		if( res.sequences && res.frames && res.layers ) return true;
-		return false;
-	};
+  Parser[ type ].validate = function( response ) {
+    
+    if( response.sequences && response.frames && response.layers ) {
+      return true;
+    }
+    return false;
+  };
 
-	return Parser;
+  // no op. projects are already formatted
+  Parser[type].parse = function( response, opts ) {
+    return response;
+  };
+  
+  return Parser;
 });
