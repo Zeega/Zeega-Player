@@ -10,11 +10,7 @@ this["JST"] = this["JST"] || {};
 this["JST"]["app/templates/layouts/player-layout.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='';
- if( !chromeless ) { 
-;__p+='\n\t<div class=\'ZEEGA-player-overlay\'></div>\n';
- } 
-;__p+='\n<div class=\'ZEEGA-player-window\'></div>';
+__p+='<div class=\'ZEEGA-player-window\'></div>';
 }
 return __p;
 };
@@ -6988,33 +6984,33 @@ keys = _.keys(LayoutManager.prototype.options);
 zeega.define("plugins/backbone.layoutmanager", function(){});
 
 zeega.define('zeega',[
-  'backbone',
-  "plugins/backbone.layoutmanager"
+    "backbone",
+    "plugins/backbone.layoutmanager"
 ],
 
-function(Backbone) {
-  // Provide a global location to place configuration settings and module
-  // creation.
-  var app = {
-    // The root path to run the application.
-    root: "/"
-  };
+function( Backbone ) {
+    // Provide a global location to place configuration settings and module
+    // creation.
+    var app = {
+        // The root path to run the application.
+        root: "/"
+    };
 
-  // Localize or create a new JavaScript Template object.
-  var JST = window.JST = window.JST || {};
+    // Localize or create a new JavaScript Template object.
+    var JST = window.JST = window.JST || {};
 
-  var zeegaBackbone = Backbone.noConflict();
-  
-  // Mix Backbone.Events, modules, and layout management into the app object.
-  return _.extend(app, {
-    // Create a custom object with a nested Views object.
-    module: function(additionalProps) {
-      return _.extend({ Views: {} }, additionalProps);
-    },
+    var zeegaBackbone = Backbone.noConflict();
 
-    Backbone : zeegaBackbone
+    // Mix Backbone.Events, modules, and layout management into the app object.
+    return _.extend(app, {
+        // Create a custom object with a nested Views object.
+        module: function( additionalProps ) {
+            return _.extend({ Views: {} }, additionalProps);
+        },
 
-  }, zeegaBackbone.Events);
+        Backbone: zeegaBackbone
+
+    }, zeegaBackbone.Events );
 
 });
 
@@ -21024,8 +21020,13 @@ function(Zeega, Layer)
 		},
 
 		// for convenience
-		getNext : function(){ return this.get('_next'); },
-		getPrev : function(){ return this.get('_prev'); },
+		getNext: function() {
+			return this.get('_next');
+		},
+
+		getPrev: function() {
+			return this.get('_prev');
+		},
 
 		// sets the sequence adjacencies as a string
 		setConnections : function() {
@@ -21160,33 +21161,52 @@ function(Zeega, Layer)
 		model : FrameModel,
 
 		// logic that populates the frame with information about it's connections, state, and position within the project
-		load : function( sequences,layers, preload_ahead )
+		load : function( sequences, layers, preload_ahead )
 		{
-			var _this = this;
+			var _this = this,
 			// create a layer collection. this does not need to be saved anywhere
-			var layerCollection = new Layer.Collection(layers);
+				layerCollection = new Layer.Collection(layers);
+				sequenceCollection = new Zeega.Backbone.Collection( sequences );
 
-			this.each(function(frame){
 
+				console.log('frame parse', sequences, layers);
+
+			this.each(function( frame ) {
 				var linkedArray = [];
+
 				// make a layer collection inside the frame
 				frame.layers = new Layer.Collection();
 				frame.relay = _this.relay;
 				frame.status = _this.status;
 				// add each layer to the collection
-				_.each( frame.get('layers'), function(layerID){
-					frame.layers.add( layerCollection.get(layerID) );
+				_.each( frame.get('layers'), function( layerID ) {
+					frame.layers.add( layerCollection.get( layerID ) );
 				});
 				// make connections by sequence>frame order
-				_.each( sequences, function(sequence){
-					var index = _.indexOf( sequence.frames, frame.id );
-					if( index > -1 )
-					{
-						var prev = sequence.frames[index-1] || null;
-						var next = sequence.frames[index+1] || null;
+				sequenceCollection.each(function( sequence, i ){
+					var index = _.indexOf( sequence.get("frames"), frame.id );
+
+					if ( index > -1 ) {
+						var prev = null,
+							next = null;
+
+						if ( index > 0 && sequence.get("frames").length > 1 ) {
+							prev = sequence.get("frames")[ index - 1 ];
+						} else if ( i > 0 && sequences[ i - 1 ].advance_to ) {
+
+							// TODO connect sequences in reverse
+
+						}
+
+						if ( index < sequence.get("frames").length - 1 && sequence.get("frames").length > 1 ) {
+							next = sequence.get("frames")[ index +1 ];
+						} else if ( sequence.get("advance_to") ) {
+							next = sequenceCollection.get( sequence.get("advance_to") ).get('frames')[0];
+						}
+
 						frame.set({
-							_prev : prev,
-							_next : next,
+							_prev: prev,
+							_next: next,
 							_sequence: sequence.id
 						});
 						frame.setConnections();
@@ -21195,15 +21215,15 @@ function(Zeega, Layer)
 
 				// make connections by link layers
 				// get all a frame's link layers
-				var linkLayers = frame.layers.where({type:'Link'});
-				var linkTo = [];
-				var linkFrom = [];
+				var linkLayers = frame.layers.where({type:'Link'}),
+					linkTo = [],
+					linkFrom = [];
+
 				_.each( linkLayers, function(layer){
 					// links that originate from this frame
-					if( layer.get('attr').from_frame == frame.id )
+					if( layer.get('attr').from_frame == frame.id ) {
 						linkTo.push( layer.get('attr').to_frame );
-					else
-					{
+					} else {
 						// links that originate on other frames
 						// remove layer model from collection because it shouldn't be rendered
 						frame.layers.remove( layer );
@@ -21282,337 +21302,345 @@ function(Zeega, Layer)
 zeega.define('zeega_dir/parsers/zeega-project',["lodash"],
 
 function() {
-  var type = 'zeega-project',
-    Parser = {};
+    var type = "zeega-project",
+        Parser = {};
 
-  Parser[ type ] = { name: type };
+    Parser[ type ] = { name: type };
 
-  Parser[ type ].validate = function( response ) {
-    
-    if( response.sequences && response.frames && response.layers ) {
-      return true;
-    }
-    return false;
-  };
+    Parser[ type ].validate = function( response ) {
 
-  // no op. projects are already formatted
-  Parser[type].parse = function( response, opts ) {
-    return response;
-  };
-  
-  return Parser;
+        if( response.sequences && response.frames && response.layers ) {
+            return true;
+        }
+        return false;
+    };
+
+    // no op. projects are already formatted
+    Parser[type].parse = function( response, opts ) {
+        return response;
+    };
+
+    return Parser;
 });
-zeega.define('zeega_dir/parsers/zeega-collection',["lodash"],
 
+zeega.define('zeega_dir/parsers/zeega-collection',[
+    "lodash"
+],
 function() {
-  var type = 'zeega-collection',
-    Parser = {};
+    var type = "zeega-collection",
+        Parser = {};
 
-  Parser[ type ] = { name: type };
+    Parser[ type ] = { name: type };
 
-  Parser[ type ].validate = function( response ) {
-    
-    if( response.items && response.items[0] && response.items[0].child_items ) {
-      return true;
-    }
-    return false;
-  };
+    Parser[ type ].validate = function( response ) {
 
-  Parser[ type ].parse = function( response, opts ) {
-    var project = {};
-
-    if( opts.collection_mode == 'slideshow' && response.items[0].child_items.length > 0 ) {
-      project = parseSlideshowCollection( response, opts );
-    } else {
-      project = parseStandardCollection( response, opts );
-    }
-    return project;
-  };
-
-  var parseStandardCollection = function( response, opts ) {
-    // layers from timebased items
-    var layers = generateLayerArrayFromItems( response.items[0].child_items ),
-      frames = generateFrameArrayFromItems( response.items[0].child_items ),
-      sequence = {
-        id: 0,
-        title: "collection",
-        persistent_layers: [],
-        frames: _.pluck( frames, 'id' )
-      };
-
-    return _.extend(
-      response.items[0],
-      {
-        sequences: [ sequence ],
-        frames: frames,
-        layers: layers
-      });
-  };
-
-  function parseSlideshowCollection( response, opts ) {
-    var frames,slideshowLayer,
-      imageLayers = [],
-      timebasedLayers = [];
-
-    _.each( response.items[0].child_items, function( item ) {
-      
-      if( item.layer_type == 'Image' ) {
-        imageLayers.push(item);
-      } else if( item.layer_type == 'Audio' || item.media_type == 'Video' ) {
-        timebasedLayers.push(item);
-      }
-    });
-    // slideshow layer from image items
-    if( imageLayers.length ) {
-      slideshowLayer = generateSlideshowLayer( imageLayers, opts.start_slide, opts.start_slide_id );
-    }
-    // layers from timebased items
-    var layers = generateLayerArrayFromItems( timebasedLayers );
-    if( slideshowLayer ) {
-      layers.push( slideshowLayer );
-    }
-    // frames from timebased items
-    if( timebasedLayers.length ) {
-      frames = generateFrameArrayFromItems( timebasedLayers, slideshowLayer ? [ slideshowLayer.id ] : [] );
-    } else {
-      // create single frame if no timebased layers exist
-      frames = [{
-        id: 1,
-        layers: [1],
-        attr: { advance : 0 }
-      }];
-    }
-
-    var sequence = {
-      id: 0,
-      title: "collection",
-      persistent_layers: slideshowLayer ? [ slideshowLayer.id ] : [],
-      frames: _.pluck( frames, 'id')
+        if ( response.items && response.items[0] && response.items[0].child_items ) {
+            return true;
+        }
+        return false;
     };
 
-    return _.extend(
-      response.items[0],
-      {
-        sequences: [ sequence ],
-        frames: frames,
-        layers: layers
-      });
-  }
+    Parser[ type ].parse = function( response, opts ) {
+        var project = {};
 
-  function generateLayerArrayFromItems( itemsArray ) {
-    var layerDefaults = {
-      width: 100,
-      top: 0,
-      left: 0,
-      loop: false
+        if ( opts.collection_mode == "slideshow" && response.items[0].child_items.length > 0 ) {
+            project = parseSlideshowCollection( response, opts );
+        } else {
+            project = parseStandardCollection( response, opts );
+        }
+        return project;
     };
 
-    return _.map( itemsArray, function( item ) {
-      return {
-        attr: _.defaults(item,layerDefaults),
-        type: item.layer_type,
-        id: item.id
-      };
-    });
-  }
+    var parseStandardCollection = function( response, opts ) {
+        // layers from timebased items
+        var layers = generateLayerArrayFromItems( response.items[0].child_items ),
+            frames = generateFrameArrayFromItems( response.items[0].child_items ),
+            sequence = {
+                id: 0,
+                title: "collection",
+                persistent_layers: [],
+                frames: _.pluck( frames, "id" )
+            };
 
-  function generateFrameArrayFromItems( itemsArray, persistentLayers ) {
-    
-    return _.map( itemsArray, function( item ) {
-      var layers = item.media_type == 'Video' ? [item.id] : _.compact( [item.id].concat( persistentLayers ) );
-      return {
-        id : item.id,
-        layers : layers,
-        attr : { advance : 0 }
-      };
-    });
-  }
+        return _.extend(
+            response.items[0],
+            {
+                sequences: [ sequence ],
+                frames: frames,
+                layers: layers
+            });
+    };
 
-  function generateSlideshowLayer( imageLayerArray, slideshow_start_slide, slideshow_start_slide_id ) {
-    var layerDefaults = {
-        keyboard: false,
-        width: 100,
-        top: 0,
-        left: 0
-      },
-      slides = _.map( imageLayerArray, function( item ) {
-        return {
-          attr: item,
-          type: item.layer_type,
-          id: item.id
+    function parseSlideshowCollection( response, opts ) {
+        var frames,slideshowLayer,
+            imageLayers = [],
+            timebasedLayers = [];
+
+        _.each( response.items[0].child_items, function( item ) {
+
+            if ( item.layer_type == "Image" ) {
+                imageLayers.push(item);
+            } else if ( item.layer_type == "Audio" || item.media_type == "Video" ) {
+                timebasedLayers.push(item);
+            }
+        });
+        // slideshow layer from image items
+        if ( imageLayers.length ) {
+            slideshowLayer = generateSlideshowLayer( imageLayers, opts.start_slide, opts.start_slide_id );
+        }
+        // layers from timebased items
+        var layers = generateLayerArrayFromItems( timebasedLayers );
+        if ( slideshowLayer ) {
+            layers.push( slideshowLayer );
+        }
+        // frames from timebased items
+        if ( timebasedLayers.length ) {
+            frames = generateFrameArrayFromItems( timebasedLayers, slideshowLayer ? [ slideshowLayer.id ] : [] );
+        } else {
+            // create single frame if no timebased layers exist
+            frames = [{
+                id: 1,
+                layers: [1],
+                attr: { advance : 0 }
+            }];
+        }
+
+        var sequence = {
+            id: 0,
+            title: "collection",
+            persistent_layers: slideshowLayer ? [ slideshowLayer.id ] : [],
+            frames: _.pluck( frames, "id")
         };
-      });
 
-    return {
-      attr: _.defaults({ slides: slides }, layerDefaults ),
-      start_slide: parseInt(slideshow_start_slide,10),
-      start_slide_id: parseInt(slideshow_start_slide_id,10),
-      type: 'SlideShow',
-      id: 1
-    };
-  }
+        return _.extend(
+            response.items[0],
+            {
+                sequences: [ sequence ],
+                frames: frames,
+                layers: layers
+            });
+    }
 
-  return Parser;
+    function generateLayerArrayFromItems( itemsArray ) {
+        var layerDefaults = {
+            width: 100,
+            top: 0,
+            left: 0,
+            loop: false
+        };
+
+        return _.map( itemsArray, function( item ) {
+            return {
+                attr: _.defaults(item,layerDefaults),
+                type: item.layer_type,
+                id: item.id
+            };
+        });
+    }
+
+    function generateFrameArrayFromItems( itemsArray, persistentLayers ) {
+
+        return _.map( itemsArray, function( item ) {
+            var layers = item.media_type == "Video" ?
+                [item.id] : _.compact( [item.id].concat( persistentLayers ) );
+
+            return {
+                id: item.id,
+                layers: layers,
+                attr: { advance : 0 }
+            };
+        });
+    }
+
+    function generateSlideshowLayer( imageLayerArray, slideshow_start_slide, slideshow_start_slide_id ) {
+        var layerDefaults = {
+                keyboard: false,
+                width: 100,
+                top: 0,
+                left: 0
+            },
+            slides = _.map( imageLayerArray, function( item ) {
+                return {
+                    attr: item,
+                    type: item.layer_type,
+                    id: item.id
+                };
+            });
+
+        return {
+            attr: _.defaults({ slides: slides }, layerDefaults ),
+            start_slide: parseInt(slideshow_start_slide,10),
+            start_slide_id: parseInt(slideshow_start_slide_id,10),
+            type: "SlideShow",
+            id: 1
+        };
+    }
+
+    return Parser;
 });
+
 // parsers.zeega-dynamic-collection;
 zeega.define("zeega_dir/parsers/zeega-dynamic-collection", function(){});
 
 zeega.define('zeega_dir/parsers/flickr',[
-  "lodash"
+    "lodash"
 ],
 function() {
-  var type = 'flickr',
-    Parser = {};
-  
-  Parser[ type ] = { name: type };
+    var type = "flickr",
+        Parser = {};
 
-  // parser validation. returns true if data conforms to parameters
-  Parser[ type ].validate = function( response ) {
+    Parser[ type ] = { name: type };
 
-    if( response.generator && response.generator == 'http://www.flickr.com/' ) {
-      return true;
-    }
-    return false;
-  };
+    // parser validation. returns true if data conforms to parameters
+    Parser[ type ].validate = function( response ) {
 
-  // parser returns valid Zeega data object
-  Parser[ type ].parse = function( response, opts ) {
-
-    // layers and frames from timebased items
-    var layers = generateLayerArrayFromItems( response.items ),
-      frames = generateFrameArrayFromItems( response.items ),
-      sequence = {
-        id : 0,
-        title : "flickr collection",
-        persistent_layers : [],
-        frames : _.pluck( frames, 'id')
-      };
-
-    return _.extend(
-      response,
-      {
-        sequences : [ sequence ],
-        frames : frames,
-        layers : layers
-      });
-  };
-
-  function generateLayerArrayFromItems( itemsArray ) {
-    var layerDefaults = {
-      width:100,
-      top:0,
-      left:0
+        if ( response.generator && response.generator == "http://www.flickr.com/" ) {
+            return true;
+        }
+        return false;
     };
 
-    return _.map( itemsArray, function( item ) {
-      item.uri = item.media.m;
-      return {
-        attr: _.defaults(item,layerDefaults),
-        type : "Image",
-        id : item.link
-      };
-    });
-  }
+    // parser returns valid Zeega data object
+    Parser[ type ].parse = function( response, opts ) {
 
-  function generateFrameArrayFromItems( itemsArray, persistentLayers ) {
+        // layers and frames from timebased items
+        var layers = generateLayerArrayFromItems( response.items ),
+            frames = generateFrameArrayFromItems( response.items ),
+            sequence = {
+                id: 0,
+                title: "flickr collection",
+                persistent_layers: [],
+                frames: _.pluck( frames, "id")
+            };
 
-    return _.map( itemsArray, function( item ) {
-      return {
-        id : item.link,
-        layers : _.compact( [item.link].concat(persistentLayers) ),
-        attr : { advance : 0 }
-      };
-    });
-  }
+        return _.extend(
+            response,
+            {
+                sequences: [ sequence ],
+                frames: frames,
+                layers: layers
+            });
+    };
 
-  return Parser;
+    function generateLayerArrayFromItems( itemsArray ) {
+        var layerDefaults = {
+            width:100,
+            top:0,
+            left:0
+        };
+
+        return _.map( itemsArray, function( item ) {
+            item.uri = item.media.m;
+            return {
+                attr: _.defaults(item,layerDefaults),
+                type: "Image",
+                id: item.link
+            };
+        });
+    }
+
+    function generateFrameArrayFromItems( itemsArray, persistentLayers ) {
+
+        return _.map( itemsArray, function( item ) {
+            return {
+                id: item.link,
+                layers: _.compact( [item.link].concat(persistentLayers) ),
+                attr: { advance: 0 }
+            };
+        });
+    }
+
+    return Parser;
 });
-zeega.define('zeega_dir/parsers/youtube',["lodash"],
 
+zeega.define('zeega_dir/parsers/youtube',[
+    "lodash"
+],
 function() {
-  var type = 'youtube',
-    Parser = {};
+    var type = "youtube",
+        Parser = {};
 
-  Parser[ type ] = { name: type };
+    Parser[ type ] = { name: type };
 
-  Parser[ type ].validate = function( res ) {
-    if( res.generator && res.generator == 'http://gdata.youtube.com/' ) {
-      return true;
-    }
-    return true;
-  };
-
-  Parser[ type ].parse = function( res, opts ) {
-    // layers and frames from timebased items
-    var layers = generateLayerArrayFromItems( res.feed.entry ),
-      frames = generateFrameArrayFromItems( res.feed.entry ),
-      sequence = {
-        id : 0,
-        title : "youtube playlist",
-        persistent_layers : [],
-        frames : _.pluck( frames, 'id')
-      },
-      project = _.extend(
-      res,
-      {
-        sequences : [ sequence ],
-        frames : frames,
-        layers : layers
-      });
-    return project;
-  };
-
-
-  function generateUniqueId( string ) {
-    var k = 0,
-      i = 0,
-      length = string.length;
-
-    for( ; i < length; i++ ) {
-      k += string.charCodeAt( i );
-    }
-    return k;
-  }
-
-  function generateLayerArrayFromItems( itemsArray ) {
-    var layerDefaults = {
-      width:100,
-      top:0,
-      left:0,
-      media_type : "Video",
-      layer_type:"Youtube"
+    Parser[ type ].validate = function( res ) {
+        if ( res.generator && res.generator == "http://gdata.youtube.com/" ) {
+            return true;
+        }
+        return true;
     };
 
-    return _.map( itemsArray, function(item){
-      
-      return {
-        attr: _.extend(
-          _.defaults(item,layerDefaults),
-          {
-            attribution_uri:"http://www.youtube.com/watch?v=" + item.media$group.yt$videoid.$t
-          }),
-        type: 'Video',
-        id: item.media$group.yt$videoid.$t,
-        attribution_uri: "http://www.youtube.com/watch?v=" + item.media$group.yt$videoid.$t,
-        uri: item.media$group.yt$videoid.$t
-      };
-    });
-  }
+    Parser[ type ].parse = function( res, opts ) {
+        // layers and frames from timebased items
+        var layers = generateLayerArrayFromItems( res.feed.entry ),
+            frames = generateFrameArrayFromItems( res.feed.entry ),
+            sequence = {
+                id: 0,
+                title: "youtube playlist",
+                persistent_layers: [],
+                frames: _.pluck( frames, "id" )
+            },
+            project = _.extend(
+            res,
+            {
+                sequences: [ sequence ],
+                frames: frames,
+                layers: layers
+            });
+        return project;
+    };
 
-  function generateFrameArrayFromItems( itemsArray, persistentLayers ) {
 
-    return _.map( itemsArray, function( item ) {
-      var id = item.media$group.yt$videoid.$t;
-      return {
-        id: id,
-        layers: _.compact( [id].concat( persistentLayers ) ),
-        attr: { advance: 0 }
-      };
-    });
-  }
+    function generateUniqueId( string ) {
+        var k = 0,
+            i = 0,
+            length = string.length;
 
-  return Parser;
+        for ( ; i < length; i++ ) {
+            k += string.charCodeAt( i );
+        }
+        return k;
+    }
+
+    function generateLayerArrayFromItems( itemsArray ) {
+        var layerDefaults = {
+            width:100,
+            top:0,
+            left:0,
+            media_type: "Video",
+            layer_type:"Youtube"
+        };
+
+        return _.map( itemsArray, function( item ) {
+
+            return {
+                attr: _.extend(
+                    _.defaults( item, layerDefaults ),
+                    {
+                        attribution_uri:"http://www.youtube.com/watch?v=" + item.media$group.yt$videoid.$t
+                    }),
+                type: "Video",
+                id: item.media$group.yt$videoid.$t,
+                attribution_uri: "http://www.youtube.com/watch?v=" + item.media$group.yt$videoid.$t,
+                uri: item.media$group.yt$videoid.$t
+            };
+        });
+    }
+
+    function generateFrameArrayFromItems( itemsArray, persistentLayers ) {
+
+        return _.map( itemsArray, function( item ) {
+            var id = item.media$group.yt$videoid.$t;
+            return {
+                id: id,
+                layers: _.compact( [id].concat( persistentLayers ) ),
+                attr: { advance: 0 }
+            };
+        });
+    }
+
+    return Parser;
 });
+
 /*
 
 parser manifest file
@@ -21622,33 +21650,32 @@ this should be auto generated probably!!
 */
 
 zeega.define('zeega_dir/parsers/_all',[
-  'zeega_dir/parsers/zeega-project',
-  'zeega_dir/parsers/zeega-collection',
-  'zeega_dir/parsers/zeega-dynamic-collection',
-  'zeega_dir/parsers/flickr',
-  'zeega_dir/parsers/youtube'
+    "zeega_dir/parsers/zeega-project",
+    "zeega_dir/parsers/zeega-collection",
+    "zeega_dir/parsers/zeega-dynamic-collection",
+    "zeega_dir/parsers/flickr",
+    "zeega_dir/parsers/youtube"
 ],
-  function(
+function(
     zProject,
     zCollection,
     zDynamicCollection,
     flickr,
     youtube
-  )
-  {
+) {
     // extend the plugin object with all the layers
     var Parsers = {};
-    
+
     return _.extend(
-      Parsers,
-      zProject,
-      zCollection,
-      zDynamicCollection,
-      flickr,
-      youtube
+        Parsers,
+        zProject,
+        zCollection,
+        zDynamicCollection,
+        flickr,
+        youtube
     );
-  }
-);
+});
+
 /*
 	relay.js
 
@@ -21949,15 +21976,6 @@ function(Zeega, Frame, Parser, Relay, Status, PlayerLayout)
 			**/
 			autoplay : true,
 			/**
-			Creates a player with no visual controls. Useful if wrapping the player in custom UI
-
-			@property chromeless
-			@type Boolean
-			@default true
-			**/
-			chromeless : true,
-
-			/**
 			Sets the collection project playback. 'standard', 'slideshow'
 
 			@property collection_mode
@@ -22038,66 +22056,6 @@ function(Zeega, Frame, Parser, Relay, Status, PlayerLayout)
 			@default null
 			**/
 			next : null,
-
-
-			/**
-			Sets the individual properties of overlays
-
-			@property overlays
-			@type Object
-			@default mixed
-			**/
-			overlays : {
-				/**
-				Turn on/off arrows
-
-				@property overlays.arrows
-				@type Boolean
-				@default true
-				**/
-				arrows : true,
-				/**
-				Turn on/off Zeega branding
-
-				@property overlays.branding
-				@type Boolean
-				@default true
-				**/
-				branding : true,
-				/**
-				Turn on/off Zeega layer level citations
-
-				@property overlays.citations_layers
-				@type Boolean
-				@default true
-				**/
-				citations_layer : true,
-				/**
-				Turn on/off frame level citations
-
-				@property overlays.citations_frame
-				@type Boolean
-				@default true
-				**/
-				citations_frame : true,
-				/**
-				Turn on/off frame project level citations
-
-				@property overlays.citations_project
-				@type Boolean
-				@default true
-				**/
-				citations_project : true,
-				/**
-				Turn on/off social share icons
-
-				@property overlays.social
-				@type Boolean
-				@default true
-				**/
-				social : true
-			},
-
 			/**
 			The number of frames to attempt preload on
 			
@@ -22549,12 +22507,15 @@ function(Zeega, Frame, Parser, Relay, Status, PlayerLayout)
 	return Zeega;
 });
 zeega.require([
-  // Application.
-  "modules/player/player"
+    // Application.
+    "modules/player/player"
 ],
-function(Zeega){
-  window.Zeega = Zeega;
-  $(window).trigger('zeega_ready');
+function( Zeega ) {
+    window.Zeega = Zeega;
+    // TODO: This might perform better if called as
+    // $( window ).triggerHandler("zeega_ready");
+    // Investigate whether bubbling is necessary
+    $( window ).trigger("zeega_ready");
 });
 
 zeega.define("main", function(){});
