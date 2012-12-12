@@ -59,15 +59,6 @@ function(Zeega, Frame, Parser, Relay, Status, PlayerLayout)
 			**/
 			autoplay : true,
 			/**
-			Creates a player with no visual controls. Useful if wrapping the player in custom UI
-
-			@property chromeless
-			@type Boolean
-			@default true
-			**/
-			chromeless : true,
-
-			/**
 			Sets the collection project playback. 'standard', 'slideshow'
 
 			@property collection_mode
@@ -148,66 +139,6 @@ function(Zeega, Frame, Parser, Relay, Status, PlayerLayout)
 			@default null
 			**/
 			next : null,
-
-
-			/**
-			Sets the individual properties of overlays
-
-			@property overlays
-			@type Object
-			@default mixed
-			**/
-			overlays : {
-				/**
-				Turn on/off arrows
-
-				@property overlays.arrows
-				@type Boolean
-				@default true
-				**/
-				arrows : true,
-				/**
-				Turn on/off Zeega branding
-
-				@property overlays.branding
-				@type Boolean
-				@default true
-				**/
-				branding : true,
-				/**
-				Turn on/off Zeega layer level citations
-
-				@property overlays.citations_layers
-				@type Boolean
-				@default true
-				**/
-				citations_layer : true,
-				/**
-				Turn on/off frame level citations
-
-				@property overlays.citations_frame
-				@type Boolean
-				@default true
-				**/
-				citations_frame : true,
-				/**
-				Turn on/off frame project level citations
-
-				@property overlays.citations_project
-				@type Boolean
-				@default true
-				**/
-				citations_project : true,
-				/**
-				Turn on/off social share icons
-
-				@property overlays.social
-				@type Boolean
-				@default true
-				**/
-				social : true
-			},
-
 			/**
 			The number of frames to attempt preload on
 			
