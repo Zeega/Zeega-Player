@@ -10,7 +10,7 @@ function() {
     // parser validation. returns true if data conforms to parameters
     Parser[ type ].validate = function( response ) {
 
-        if( response.generator && response.generator == "http://www.flickr.com/" ) {
+        if ( response.generator && response.generator == "http://www.flickr.com/" ) {
             return true;
         }
         return false;
