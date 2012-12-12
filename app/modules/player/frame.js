@@ -28,8 +28,13 @@ function(Zeega, Layer)
 		},
 
 		// for convenience
-		getNext : function(){ return this.get('_next'); },
-		getPrev : function(){ return this.get('_prev'); },
+		getNext: function() {
+			return this.get('_next');
+		},
+
+		getPrev: function() {
+			return this.get('_prev');
+		},
 
 		// sets the sequence adjacencies as a string
 		setConnections : function() {
@@ -164,33 +169,52 @@ function(Zeega, Layer)
 		model : FrameModel,
 
 		// logic that populates the frame with information about it's connections, state, and position within the project
-		load : function( sequences,layers, preload_ahead )
+		load : function( sequences, layers, preload_ahead )
 		{
-			var _this = this;
+			var _this = this,
 			// create a layer collection. this does not need to be saved anywhere
-			var layerCollection = new Layer.Collection(layers);
+				layerCollection = new Layer.Collection(layers);
+				sequenceCollection = new Zeega.Backbone.Collection( sequences );
 
-			this.each(function(frame){
 
+				console.log('frame parse', sequences, layers);
+
+			this.each(function( frame ) {
 				var linkedArray = [];
+
 				// make a layer collection inside the frame
 				frame.layers = new Layer.Collection();
 				frame.relay = _this.relay;
 				frame.status = _this.status;
 				// add each layer to the collection
-				_.each( frame.get('layers'), function(layerID){
-					frame.layers.add( layerCollection.get(layerID) );
+				_.each( frame.get('layers'), function( layerID ) {
+					frame.layers.add( layerCollection.get( layerID ) );
 				});
 				// make connections by sequence>frame order
-				_.each( sequences, function(sequence){
-					var index = _.indexOf( sequence.frames, frame.id );
-					if( index > -1 )
-					{
-						var prev = sequence.frames[index-1] || null;
-						var next = sequence.frames[index+1] || null;
+				sequenceCollection.each(function( sequence, i ){
+					var index = _.indexOf( sequence.get("frames"), frame.id );
+
+					if ( index > -1 ) {
+						var prev = null,
+							next = null;
+
+						if ( index > 0 && sequence.get("frames").length > 1 ) {
+							prev = sequence.get("frames")[ index - 1 ];
+						} else if ( i > 0 && sequences[ i - 1 ].advance_to ) {
+
+							// TODO connect sequences in reverse
+
+						}
+
+						if ( index < sequence.get("frames").length - 1 && sequence.get("frames").length > 1 ) {
+							next = sequence.get("frames")[ index +1 ];
+						} else if ( sequence.get("advance_to") ) {
+							next = sequenceCollection.get( sequence.get("advance_to") ).get('frames')[0];
+						}
+
 						frame.set({
-							_prev : prev,
-							_next : next,
+							_prev: prev,
+							_next: next,
 							_sequence: sequence.id
 						});
 						frame.setConnections();
@@ -199,15 +223,15 @@ function(Zeega, Layer)
 
 				// make connections by link layers
 				// get all a frame's link layers
-				var linkLayers = frame.layers.where({type:'Link'});
-				var linkTo = [];
-				var linkFrom = [];
+				var linkLayers = frame.layers.where({type:'Link'}),
+					linkTo = [],
+					linkFrom = [];
+
 				_.each( linkLayers, function(layer){
 					// links that originate from this frame
-					if( layer.get('attr').from_frame == frame.id )
+					if( layer.get('attr').from_frame == frame.id ) {
 						linkTo.push( layer.get('attr').to_frame );
-					else
-					{
+					} else {
 						// links that originate on other frames
 						// remove layer model from collection because it shouldn't be rendered
 						frame.layers.remove( layer );
