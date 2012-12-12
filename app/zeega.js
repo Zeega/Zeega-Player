@@ -1,5 +1,5 @@
 define([
-  'backbone',
+  "backbone",
   "plugins/backbone.layoutmanager"
 ],
 
@@ -15,7 +15,7 @@ function(Backbone) {
   var JST = window.JST = window.JST || {};
 
   var zeegaBackbone = Backbone.noConflict();
-  
+
   // Mix Backbone.Events, modules, and layout management into the app object.
   return _.extend(app, {
     // Create a custom object with a nested Views object.

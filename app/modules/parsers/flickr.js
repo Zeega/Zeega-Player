@@ -2,15 +2,15 @@ define([
   "lodash"
 ],
 function() {
-  var type = 'flickr',
+  var type = "flickr",
     Parser = {};
-  
+
   Parser[ type ] = { name: type };
 
   // parser validation. returns true if data conforms to parameters
   Parser[ type ].validate = function( response ) {
 
-    if( response.generator && response.generator == 'http://www.flickr.com/' ) {
+    if( response.generator && response.generator == "http://www.flickr.com/" ) {
       return true;
     }
     return false;
@@ -23,18 +23,18 @@ function() {
     var layers = generateLayerArrayFromItems( response.items ),
       frames = generateFrameArrayFromItems( response.items ),
       sequence = {
-        id : 0,
-        title : "flickr collection",
-        persistent_layers : [],
-        frames : _.pluck( frames, 'id')
+        id: 0,
+        title: "flickr collection",
+        persistent_layers: [],
+        frames: _.pluck( frames, "id")
       };
 
     return _.extend(
       response,
       {
-        sequences : [ sequence ],
-        frames : frames,
-        layers : layers
+        sequences: [ sequence ],
+        frames: frames,
+        layers: layers
       });
   };
 
@@ -49,8 +49,8 @@ function() {
       item.uri = item.media.m;
       return {
         attr: _.defaults(item,layerDefaults),
-        type : "Image",
-        id : item.link
+        type: "Image",
+        id: item.link
       };
     });
   }
@@ -59,9 +59,9 @@ function() {
 
     return _.map( itemsArray, function( item ) {
       return {
-        id : item.link,
-        layers : _.compact( [item.link].concat(persistentLayers) ),
-        attr : { advance : 0 }
+        id: item.link,
+        layers: _.compact( [item.link].concat(persistentLayers) ),
+        attr: { advance: 0 }
       };
     });
   }

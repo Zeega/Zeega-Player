@@ -4,5 +4,5 @@ require([
 ],
 function(Zeega){
   window.Zeega = Zeega;
-  $(window).trigger('zeega_ready');
+  $(window).trigger("zeega_ready");
 });

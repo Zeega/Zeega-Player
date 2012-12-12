@@ -1,13 +1,13 @@
 define(["lodash"],
 
 function() {
-  var type = 'youtube',
+  var type = "youtube",
     Parser = {};
 
   Parser[ type ] = { name: type };
 
   Parser[ type ].validate = function( res ) {
-    if( res.generator && res.generator == 'http://gdata.youtube.com/' ) {
+    if( res.generator && res.generator == "http://gdata.youtube.com/" ) {
       return true;
     }
     return true;
@@ -21,7 +21,7 @@ function() {
         id : 0,
         title : "youtube playlist",
         persistent_layers : [],
-        frames : _.pluck( frames, 'id')
+        frames : _.pluck( frames, "id")
       },
       project = _.extend(
       res,
@@ -55,14 +55,14 @@ function() {
     };
 
     return _.map( itemsArray, function(item){
-      
+
       return {
         attr: _.extend(
           _.defaults(item,layerDefaults),
           {
             attribution_uri:"http://www.youtube.com/watch?v=" + item.media$group.yt$videoid.$t
           }),
-        type: 'Video',
+        type: "Video",
         id: item.media$group.yt$videoid.$t,
         attribution_uri: "http://www.youtube.com/watch?v=" + item.media$group.yt$videoid.$t,
         uri: item.media$group.yt$videoid.$t
