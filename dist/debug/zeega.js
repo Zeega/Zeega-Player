@@ -21172,6 +21172,16 @@ function( Zeega, Layer ) {
 
                 // update status
                 this.status.set( "current_frame",this.id );
+
+                // TODO this needs to be able to pause and play
+                if ( this.get('attr').advance ) {
+                    var _this = this;
+                    _.delay(function() {
+                        _this.relay.set({ current_frame: _this.get('_next') });
+                    }, this.get('attr').advance );
+                }
+
+
             } else {
                 this.renderOnReady = oldID;
             }
@@ -22423,10 +22433,9 @@ function(Zeega, Frame, Parser, Relay, Status, PlayerLayout)
 			else if( this.state == 'paused' )
 			{
 				this._fadeIn();
-				if( this.status.get('current_frame') )
-				{
+				if( this.status.get('current_frame') ) {
 					this.state ='playing';
-					this.state.emit('play');
+					this.status.emit('play');
 					this.status.get('current_frame_model').play();
 				}
 				// if there is no info on where the player is or where to start go to first frame in project
