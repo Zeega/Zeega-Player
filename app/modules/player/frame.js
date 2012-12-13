@@ -69,7 +69,7 @@ function( Zeega, Layer ) {
 
         // render from frame.
         render: function( oldID ) {
-            var commonLayers;
+            var commonLayers, advance;
             // if frame is completely loaded, then just render it
             // else try preloading the layers
             if ( this.ready ) {
@@ -85,15 +85,17 @@ function( Zeega, Layer ) {
                 // update status
                 this.status.set( "current_frame",this.id );
 
+                advance = this.get("attr").advance;
+
                 // TODO this needs to be able to pause and play
-                if ( this.get('attr').advance ) {
-                    var _this = this;
+                if ( advance ) {
+
                     _.delay(function() {
-                        _this.relay.set({ current_frame: _this.get('_next') });
-                    }, this.get('attr').advance );
+                        _this.relay.set({
+                            current_frame: this.get("_next")
+                        });
+                    }.bind(this), advance );
                 }
-
-
             } else {
                 this.renderOnReady = oldID;
             }
@@ -261,7 +263,7 @@ function( Zeega, Layer ) {
                     linkTo = [],
                     linkFrom = [];
 
-                _.each( linkLayers, function(layer){
+                _.each( linkLayers, function( layer ) {
                     // links that originate from this frame
                     if ( layer.get("attr").from_frame == frame.id ) {
                         linkTo.push( layer.get("attr").to_frame );
