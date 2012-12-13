@@ -378,10 +378,9 @@ function(Zeega, Frame, Parser, Relay, Status, PlayerLayout)
 			else if( this.state == 'paused' )
 			{
 				this._fadeIn();
-				if( this.status.get('current_frame') )
-				{
+				if( this.status.get('current_frame') ) {
 					this.state ='playing';
-					this.state.emit('play');
+					this.status.emit('play');
 					this.status.get('current_frame_model').play();
 				}
 				// if there is no info on where the player is or where to start go to first frame in project

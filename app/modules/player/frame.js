@@ -156,6 +156,9 @@ function( Zeega, Layer ) {
         },
 
         play: function() {
+
+            console.log('---frame play', this);
+
             this.layers.each(function( layer ) {
                 layer.play();
             });
