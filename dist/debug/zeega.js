@@ -20975,446 +20975,454 @@ function(
 });
 
 zeega.define('zeega_dir/player/layer',[
-	"zeega",
-	"zeega_dir/plugins/layers/_all"
+    "zeega",
+    "zeega_dir/plugins/layers/_all"
 ],
 
-function(Zeega, Plugin)
-{
-	var Layer = Zeega.module();
+function( Zeega, Plugin ) {
 
-	var LayerModel = Zeega.Backbone.Model.extend({
+    var Layer = Zeega.module();
 
-		ready : false,
-		state : 'waiting', // waiting, loading, ready, destroyed, error
-		
-		defaults : {
-			mode: 'player'
-		},
+    var LayerModel = Zeega.Backbone.Model.extend({
 
-		initialize : function()
-		{
-			// init link layer type inside here
-			if( Plugin[this.get('type')] )
-			{
-				this.layerClass = new Plugin[this.get('type')]();
-				var def = _.defaults( this.toJSON(), this.layerClass.defaults );
-				this.set(def);
+        ready: false,
+        state: "waiting", // waiting, loading, ready, destroyed, error
 
-				// create and store the layerClass
-				this.visualElement = new Plugin[this.get('type')].Visual({
-					model:this,
-					attributes:{
-						id : 'visual-element-' + this.id,
-						'data-layer_id' : this.id
-					}
-				});
-				// listen to visual element events
-				this.on('visual_ready', this.onVisualReady, this);
-				this.on('visual_error', this.onVisualError, this);
-			}
-			else
-			{
-				this.ready = true;
-				this.state = 'error';
-				console.log('could not find valid layer type: ',this.get('type'));
-			}
-		},
+        defaults: {
+            mode: "player"
+        },
 
-		render : function()
-		{
-			// make sure the layer class is loaded or fail gracefully
-			if( this.visualElement )
-			{
-				// if the layer is ready, then just show it
-				if( this.state == 'waiting')
-				{
-					this.state = 'loading';
-					this.status.emit('layer_loading', this.toJSON());
-					this.visualElement.player_onPreload();
-				}
-				else if( this.state == 'ready' )
-				{
-					this.visualElement.play();
-				}
-			}
-			else
-			{
-				console.log('***	The layer '+ this.get('type') +' is missing. ): ', this.id);
-			}
-		},
+        initialize: function() {
+            var plugin = Plugin[ this.get("type") ];
 
-		onVisualReady : function()
-		{
-			this.ready = true;
-			this.state = 'ready';
-			this.trigger('layer_ready', this.toJSON());
-		},
+            // init link layer type inside here
+            if ( plugin ) {
+                this.layerClass = new plugin();
+                this.set( _.defaults( this.toJSON(), this.layerClass.defaults ) );
 
-		onVisualError : function()
-		{
-			this.ready = true;
-			this.state = 'error';
-			this.trigger('layer_error', this.toJSON());
-		},
+                // create and store the layerClass
+                this.visualElement = new plugin.Visual({
+                    model: this,
+                    attributes: {
+                        "id": "visual-element-" + this.id,
+                        "data-layer_id": this.id
+                    }
+                });
+                // listen to visual element events
+                this.on( "visual_ready", this.onVisualReady, this );
+                this.on( "visual_error", this.onVisualError, this );
+            } else {
+                this.ready = true;
+                this.state = "error";
+                console.log( "could not find valid layer type: ", this.get("type") );
+            }
+        },
 
-		updateZIndex : function(z)
-		{
-			this.visualElement.updateZIndex(z);
-		},
+        render: function() {
+            // make sure the layer class is loaded or fail gracefully
+            if ( this.visualElement ) {
+                // if the layer is ready, then just show it
+                if ( this.state == "waiting") {
+                    this.state = "loading";
+                    this.status.emit("layer_loading", this.toJSON());
+                    this.visualElement.player_onPreload();
+                } else if( this.state == "ready" ) {
+                    this.visualElement.play();
+                }
+            } else {
+                console.log("***    The layer "+ this.get("type") +" is missing. ): ", this.id);
+            }
+        },
 
-		pause : function()
-		{
-			this.visualElement.player_onPause();
-		},
+        onVisualReady: function() {
+            this.ready = true;
+            this.state = "ready";
+            this.trigger("layer_ready", this.toJSON());
+        },
 
-		play : function()
-		{
-			this.visualElement.player_onPlay();
-		},
+        onVisualError: function() {
+            this.ready = true;
+            this.state = "error";
+            this.trigger("layer_error", this.toJSON());
+        },
 
-		exit : function()
-		{
-			if( this.layerClass )
-			{
-				this.visualElement.player_onExit();
-			}
-		},
+        updateZIndex: function(z) {
+            this.visualElement.updateZIndex(z);
+        },
 
-		remove : function()
-		{
-			if( this.layerClass )
-			{
-				this.visualElement.remove();
-			}
-		},
+        pause: function() {
+            this.visualElement.player_onPause();
+        },
 
-		// removes the layer. destroys players, removes from dom, etc
-		destroy : function()
-		{
-			// do not attempt to destroy if the layer is waiting or destroyed
-			if( this.state != 'waiting' && this.state != 'destroyed' )
-			{
-				this.state = 'destroyed';
-			}
-		}
-	});
+        play: function() {
+            this.visualElement.player_onPlay();
+        },
 
-	Layer.Collection = Zeega.Backbone.Collection.extend({
-		model : LayerModel
-	});
+        exit: function() {
+            if ( this.layerClass ) {
+                this.visualElement.player_onExit();
+            }
+        },
 
-	return Layer;
+        remove: function() {
+            if ( this.layerClass ) {
+                this.visualElement.remove();
+            }
+        },
+
+        // removes the layer. destroys players, removes from dom, etc
+        destroy: function() {
+            // do not attempt to destroy if the layer is waiting or destroyed
+            if ( this.state != "waiting" && this.state != "destroyed" ) {
+                this.state = "destroyed";
+            }
+        }
+    });
+
+    Layer.Collection = Zeega.Backbone.Collection.extend({
+        model: LayerModel
+    });
+
+    return Layer;
 });
+
 zeega.define('zeega_dir/player/frame',[
-	"zeega",
-	"zeega_dir/player/layer"
+    "zeega",
+    "zeega_dir/player/layer"
 ],
 
-function(Zeega, Layer)
-{
-	var Frame = Zeega.module();
+function( Zeega, Layer ) {
 
-	var FrameModel = Zeega.Backbone.Model.extend({
+    var Frame = Zeega.module();
 
-		ready : false,
-		state : 'waiting', // waiting, loading, ready, destroyed
-		hasPlayed : false,
+    var FrameModel = Zeega.Backbone.Model.extend({
 
-		// frame render as soon as it's loaded. used primarily for the initial frame
-		renderOnReady : null,
+        ready: false,
+        // waiting, loading, ready, destroyed
+        state: "waiting",
+        hasPlayed: false,
 
-		defaults : {
-			attr : { advance : 0 },
-			common_layers : {},			// ids of frames and their common layers for loading
-			layers : [],				// ids of layers contained on frame
-			link_to : [],				// ids of frames this frame can lead to
-			link_from : [],				// ids of frames this frame can be accessed from
-			preload_frames : [],
-			_next : null,				// id of the next frame
-			_prev : null					// id of the previous frame
-		},
+        // frame render as soon as it's loaded. used primarily for the initial frame
+        renderOnReady: null,
 
-		// for convenience
-		getNext: function() {
-			return this.get('_next');
-		},
+        defaults: {
+            attr: { advance: 0 },
+            // ids of frames and their common layers for loading
+            common_layers: {},
+            // ids of layers contained on frame
+            layers: [],
+            // ids of frames this frame can lead to
+            link_to: [],
+            // ids of frames this frame can be accessed from
+            link_from: [],
 
-		getPrev: function() {
-			return this.get('_prev');
-		},
+            preload_frames: [],
+            // id of the next frame
+            _next: null,
+            // id of the previous frame
+            _prev: null
+        },
 
-		// sets the sequence adjacencies as a string
-		setConnections : function() {
-			if( !_.isNull(this.get('_prev')) && !_.isNull(this.get('_next')) ) this.set('connections','lr');
-			else if( !_.isNull(this.get('_prev')) && _.isNull(this.get('_next')) ) this.set('connections','l');
-			else if( _.isNull(this.get('_prev')) && !_.isNull(this.get('_next')) ) this.set('connections','r');
-			else this.set('connections','none');
-		},
+        // for convenience
+        getNext: function() {
+            return this.get("_next");
+        },
 
-		preload : function() {
-			if(!this.ready) {
-				var _this = this;
-				this.layers.each(function(layer){
-					if( layer.state == 'waiting' || layer.state == 'loading' ) {
-						layer.on('layer_ready', _this.onLayerReady, _this);
-						layer.render();
-					}
-				});
-			}
-		},
+        getPrev: function() {
+            return this.get("_prev");
+        },
 
-		// render from frame.
-		render : function( oldID )
-		{
-			// if frame is completely loaded, then just render it
-			// else try preloading the layers
-			var _this = this;
-			if( this.ready )
-			{
-				// only render non-common layers. allows for persistent layers
-				var commonLayers = this.get('common_layers')[oldID] || [];
-				// if the frame is 'ready', then just render the layers
-				this.layers.each(function(layer){
-					if( !_.include(commonLayers, layer.id) ) layer.render();
-				});
+        // sets the sequence adjacencies as a string
+        setConnections: function() {
+            var prev = this.get("_prev"),
+                next = this.get("_next");
 
-				// update status
-				this.status.set('current_frame',this.id);
-			}
-			else
-			{
-				this.renderOnReady = oldID;
-			}
+            this.set( "connections",
+                prev & next ? "lr" :
+                prev ? "l" :
+                next ? "r" : "none"
+            );
+        },
 
-			/* determines the z-index of the layer in relation to other layers on the frame */
-			this.layers.each(function(layer, i){
-				layer.updateZIndex( i );
-			});
-		},
+        preload: function() {
+            if ( !this.ready ) {
+                this.layers.each(function( layer ) {
+                    if ( layer.state === "waiting" || layer.state === "loading" ) {
+                        layer.on( "layer_ready", this.onLayerReady, this );
+                        layer.render();
+                    }
+                }, this );
+            }
+        },
 
-		onLayerReady : function( layer ) {
+        // render from frame.
+        render: function( oldID ) {
+            var commonLayers;
+            // if frame is completely loaded, then just render it
+            // else try preloading the layers
+            if ( this.ready ) {
+                // only render non-common layers. allows for persistent layers
+                commonLayers = this.get("common_layers")[ oldID ] || [];
+                // if the frame is "ready", then just render the layers
+                this.layers.each(function( layer ) {
+                    if ( !_.include(commonLayers, layer.id) ) {
+                        layer.render();
+                    }
+                });
 
-			this.status.emit('layer_ready', layer );
+                // update status
+                this.status.set( "current_frame",this.id );
+            } else {
+                this.renderOnReady = oldID;
+            }
 
-			if( this.isFrameReady() && !this.ready ) this.onFrameReady();
+            /* determines the z-index of the layer in relation to other layers on the frame */
+            this.layers.each(function(layer, i){
+                layer.updateZIndex( i );
+            });
+        },
 
-			// trigger events on layer readiness
-			var states = this.layers.map(function(layer){ return layer.state; });
-		},
+        onLayerReady: function( layer ) {
 
-		onFrameReady : function() {
-			this.ready = true;
-			this.state = 'ready';
-			this.status.emit('frame_ready',{ frame: this.toJSON(),layers: this.layers.toJSON() });
-			if( !_.isNull(this.renderOnReady) )
-			{
-				this.status.emit('can_play');
-				this.render( this.renderOnReady );
-				this.renderOnReady = null;
-			}
-		},
+            this.status.emit("layer_ready", layer );
 
-		getLayerStates : function()
-		{
-			var states = {};
-			states.ready =		_.map( _.filter( _.toArray(this.layers), function(layer){ return layer.state == 'ready'; }), function(layer){ return layer.attributes; });
-			states.waiting =	_.map( _.filter( _.toArray(this.layers), function(layer){ return layer.state == 'waiting'; }), function(layer){ return layer.attributes; });
-			states.loading =	_.map( _.filter( _.toArray(this.layers), function(layer){ return layer.state == 'loading'; }), function(layer){ return layer.attributes; });
-			states.destroyed =	_.map( _.filter( _.toArray(this.layers), function(layer){ return layer.state == 'destroyed'; }), function(layer){ return layer.attributes; });
-			states.error =		_.map( _.filter( _.toArray(this.layers), function(layer){ return layer.state == 'error'; }), function(layer){ return layer.attributes; });
-			return states;
-		},
+            if ( this.isFrameReady() && !this.ready ) {
+                this.onFrameReady();
+            }
 
-		isFrameReady : function()
-		{
-			var states = this.getLayerStates();
-			if( states.ready.length + states.error.length  == this.layers.length ) return true;
-			return false;
-		},
+            // TODO: This does nothing?
+            // trigger events on layer readiness
+            var states = this.layers.map(function(layer){ return layer.state; });
+        },
 
-		pause : function()
-		{
-			this.layers.each(function(layer){
-				layer.pause();
-			});
-		},
+        onFrameReady: function() {
+            this.ready = true;
+            this.state = "ready";
+            this.status.emit("frame_ready", {
+                frame: this.toJSON(),
+                layers: this.layers.toJSON()
+            });
 
-		play : function()
-		{
-			this.layers.each(function(layer){
-				layer.play();
-			});
-		},
+            if ( !_.isNull(this.renderOnReady) ) {
+                this.status.emit("can_play");
+                this.render( this.renderOnReady );
+                this.renderOnReady = null;
+            }
+        },
 
-		exit : function( newID )
-		{
-			var commonLayers = this.get('common_layers')[newID] || [];
-			this.layers.each(function(layer){
-				if( !_.include(commonLayers, layer.id) ) layer.exit();
-			});
-		},
+        getLayerStates: function() {
+            var layers = _.toArray( this.layers );
 
-		unrender : function( newID )
-		{
-			// not sure I need this
-		},
+            return [
+                "ready", "waiting", "loading", "destroyed", "error"
+            ].reduce(function( states, which ) {
+                var filtereds = layers.filter(function( layer ) {
+                    return layer.state === which;
+                });
 
-		// manages the removal of all child layers
-		destroy : function()
-		{
-			// do not attempt to destroy if the layer is waiting or destroyed
-			if( this.state!= 'waiting' && this.state != 'destroyed' )
-			{
-				this.layers.each(function(layer){ layer.destroy(); });
-				this.state = 'destroyed';
-			}
-		}
+                states[ which ] = filtereds.map(function( layer ) {
+                    return layer.attributes;
+                });
 
-	});
+                return states;
+            }, {});
+        },
 
-	Frame.Collection = Zeega.Backbone.Collection.extend({
-		model : FrameModel,
+        isFrameReady: function() {
+            var states = this.getLayerStates();
 
-		// logic that populates the frame with information about it's connections, state, and position within the project
-		load : function( sequences, layers, preload_ahead )
-		{
-			var _this = this,
-			// create a layer collection. this does not need to be saved anywhere
-				layerCollection = new Layer.Collection(layers);
-				sequenceCollection = new Zeega.Backbone.Collection( sequences );
+            if ( (states.ready.length + states.error.length) === this.layers.length ) {
+                return true;
+            }
+            return false;
+        },
 
+        pause: function() {
+            this.layers.each(function( layer ) {
+                layer.pause();
+            });
+        },
 
-				console.log('frame parse', sequences, layers);
+        play: function() {
+            this.layers.each(function( layer ) {
+                layer.play();
+            });
+        },
 
-			this.each(function( frame ) {
-				var linkedArray = [];
+        exit: function( newID ) {
+            var commonLayers = this.get("common_layers")[ newID ] || [];
 
-				// make a layer collection inside the frame
-				frame.layers = new Layer.Collection();
-				frame.relay = _this.relay;
-				frame.status = _this.status;
-				// add each layer to the collection
-				_.each( frame.get('layers'), function( layerID ) {
-					frame.layers.add( layerCollection.get( layerID ) );
-				});
-				// make connections by sequence>frame order
-				sequenceCollection.each(function( sequence, i ){
-					var index = _.indexOf( sequence.get("frames"), frame.id );
+            this.layers.each(function( layer ) {
+                if ( !_.include(commonLayers, layer.id) ) {
+                    layer.exit();
+                }
+            });
+        },
 
-					if ( index > -1 ) {
-						var prev = null,
-							next = null;
+        unrender: function( newID ) {
+            // not sure I need this
+        },
 
-						if ( index > 0 && sequence.get("frames").length > 1 ) {
-							prev = sequence.get("frames")[ index - 1 ];
-						} else if ( i > 0 && sequences[ i - 1 ].advance_to ) {
+        // manages the removal of all child layers
+        destroy: function() {
+            // do not attempt to destroy if the layer is waiting or destroyed
+            if ( this.state !== "waiting" && this.state !== "destroyed" ) {
+                this.layers.each(function( layer ) {
+                    layer.destroy();
+                });
+                this.state = "destroyed";
+            }
+        }
 
-							// TODO connect sequences in reverse
+    });
 
-						}
+    Frame.Collection = Zeega.Backbone.Collection.extend({
+        model: FrameModel,
 
-						if ( index < sequence.get("frames").length - 1 && sequence.get("frames").length > 1 ) {
-							next = sequence.get("frames")[ index +1 ];
-						} else if ( sequence.get("advance_to") ) {
-							next = sequenceCollection.get( sequence.get("advance_to") ).get('frames')[0];
-						}
-
-						frame.set({
-							_prev: prev,
-							_next: next,
-							_sequence: sequence.id
-						});
-						frame.setConnections();
-					}
-				});
-
-				// make connections by link layers
-				// get all a frame's link layers
-				var linkLayers = frame.layers.where({type:'Link'}),
-					linkTo = [],
-					linkFrom = [];
-
-				_.each( linkLayers, function(layer){
-					// links that originate from this frame
-					if( layer.get('attr').from_frame == frame.id ) {
-						linkTo.push( layer.get('attr').to_frame );
-					} else {
-						// links that originate on other frames
-						// remove layer model from collection because it shouldn't be rendered
-						frame.layers.remove( layer );
-						linkFrom.push( layer.get('attr').from_frame );
-					}
-				});
-				frame.set({
-					link_to : linkTo,
-					link_from : linkFrom
-				});
+        // logic that populates the frame with information about it's connections, state, and position within the project
+        load: function( sequences, layers, loadAheadBy ) {
+            var _this = this,
+            // create a layer collection. this does not need to be saved anywhere
+                layerCollection = new Layer.Collection( layers );
+                sequenceCollection = new Zeega.Backbone.Collection( sequences );
 
 
-				frame.layers.each(function(layer){
-					layer.relay = _this.relay;
-					layer.status = _this.status;
-				});
+                console.log("frame parse", sequences, layers);
+
+            this.each(function( frame ) {
+                var linkedArray = [];
+
+                // make a layer collection inside the frame
+                frame.layers = new Layer.Collection();
+                frame.relay = _this.relay;
+                frame.status = _this.status;
+                // add each layer to the collection
+                _.each( frame.get("layers"), function( layerID ) {
+                    frame.layers.add( layerCollection.get( layerID ) );
+                });
+                // make connections by sequence>frame order
+                sequenceCollection.each(function( sequence, i ){
+                    var frames = sequence.get("frames"),
+                        advance = sequence.get("advance_to"),
+                        index = frames.indexOf( frame.id ),
+                        prev = null,
+                        next = null;
+
+                    if ( index > -1 ) {
+
+                        if ( index > 0 && frames.length > 1 ) {
+                            prev = frames[ index - 1 ];
+                        } else if ( i > 0 && sequences[ i - 1 ].advance_to ) {
+
+                            // TODO connect sequences in reverse
+
+                        }
+
+                        if ( index < frames.length - 1 && frames.length > 1 ) {
+                            next = frames[ index +1 ];
+                        } else if ( advance ) {
+                            next = sequenceCollection.get( advance ).get("frames")[0];
+                        }
+
+                        frame.set({
+                            _prev: prev,
+                            _next: next,
+                            _sequence: sequence.id
+                        });
+                        frame.setConnections();
+                    }
+                });
+
+                // make connections by link layers
+                // get all a frame's link layers
+                var linkLayers = frame.layers.where({ type:"Link" }),
+                    linkTo = [],
+                    linkFrom = [];
+
+                _.each( linkLayers, function(layer){
+                    // links that originate from this frame
+                    if ( layer.get("attr").from_frame == frame.id ) {
+                        linkTo.push( layer.get("attr").to_frame );
+                    } else {
+                        // links that originate on other frames
+                        // remove layer model from collection because it shouldn"t be rendered
+                        frame.layers.remove( layer );
+                        linkFrom.push( layer.get("attr").from_frame );
+                    }
+                });
+
+                frame.set({
+                    link_to: linkTo,
+                    link_from: linkFrom
+                });
+
+
+                frame.layers.each(function( layer ) {
+                    layer.relay = _this.relay;
+                    layer.status = _this.status;
+                });
 
 /*
-				// listen for layer events and propagate through the frame to the player
-				frame.layers.on('all',function(e,obj){
-					var info = _.extend({},obj,{frame:frame.id});
-					_this.status.emit(e, info);
-				});
+                // listen for layer events and propagate through the frame to the player
+                frame.layers.on("all",function(e,obj){
+                    var info = _.extend({},obj,{frame:frame.id});
+                    _this.status.emit(e, info);
+                });
 */
-				
-			});
-			
-			// another for loop that has to happen after all link layers are populated
-			this.each(function(frame){
-				// set common layers object
-				// {
-				//		123 : [a,b,c],
-				//		234 : [c,d,e]
-				// }
-				var commonLayers = {};
-				var allConnected = _.uniq( _.compact( _.union( frame.get('prev'), frame.get('next'), frame.get('link_to'), frame.get('link_from') ) ) );
-				_.each( allConnected, function(frameID){
-					commonLayers[frameID] = _.intersection( frame.layers.pluck('id'), _this.get(frameID).layers.pluck('id') );
-				});
-				frame.set({ common_layers: commonLayers });
-			});
 
-			// figure out the frames that should preload when this frame is rendered
-			var preloadAhead = preload_ahead || 0;
-			if(preloadAhead)
-			{
+            });
 
-				this.each(function(frame){
+            // another for loop that has to happen after all link layers are populated
+            this.each(function( frame ) {
+                // set common layers object
+                // {
+                //      123: [a,b,c],
+                //      234: [c,d,e]
+                // }
+                var connected, commonLayers,
+                    values = [ "prev", "next", "link_to", "link_from" ].map(function( value ) {
+                        return frame.get( value );
+                    });
 
-					var framesToPreload = [frame.id];
-					var targetArray = [frame.id];
+                // This is sort of insane...
+                connected = _.uniq( _.compact( _.union.apply( null, values ) ) );
 
-					var loop = function() {
-						_.each( targetArray, function(frameID){
-							targetArray = _.compact([ frame.get('_prev'), frame.get('_next') ]);
-							framesToPreload = _.union( framesToPreload, targetArray, frame.get('link_to'), frame.get('link_from'));
-						});
-					};
+                commonLayers = connected.reduce(function( common, id ) {
+                    common[ id ] = _.intersection(
+                        frame.layers.pluck("id"), this.get( id ).layers.pluck("id")
+                    );
+                    return common;
+                }.bind(this), {});
 
-					for( var i = 0 ; i < preloadAhead ; i++) loop();
+                frame.set({
+                    common_layers: commonLayers
+                });
+            });
 
-					frame.set('preload_frames', framesToPreload );
-				});
+            // figure out the frames that should preload when this frame is rendered
+            // TODO: Investigate why (formerly preload_ahead) was being passed,
+            // despite it not actually being a functional parameter beyond ensuring that
+            // this conditional expression evaluated as true
+            // if ( loadAheadBy ) {
 
-			}
-		}
+            this.each(function( frame ) {
+                var targets = [ frame.get("_prev"), frame.get("_next") ].filter(Boolean);
 
-		
+                frame.set( "preload_frames",
+                    _.union(
+                        [ frame.id ], targets, frame.get("link_to"), frame.get("link_from")
+                    )
+                );
+            });
+            // }
+        }
+    });
 
-	});
 
-	
 
-	return Frame;
+    return Frame;
 });
+
 zeega.define('zeega_dir/parsers/zeega-project',["lodash"],
 
 function() {
