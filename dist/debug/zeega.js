@@ -21392,7 +21392,7 @@ function( Zeega, Layer ) {
                         frame.layers.pluck("id"), this.get( id ).layers.pluck("id")
                     );
                     return common;
-                }.bind(this), {});
+                }.bind(_this), {});
 
                 frame.set({
                     common_layers: commonLayers
