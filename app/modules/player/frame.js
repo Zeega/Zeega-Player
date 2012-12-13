@@ -84,6 +84,16 @@ function( Zeega, Layer ) {
 
                 // update status
                 this.status.set( "current_frame",this.id );
+
+                // TODO this needs to be able to pause and play
+                if ( this.get('attr').advance ) {
+                    var _this = this;
+                    _.delay(function() {
+                        _this.relay.set({ current_frame: _this.get('_next') });
+                    }, this.get('attr').advance );
+                }
+
+
             } else {
                 this.renderOnReady = oldID;
             }
@@ -156,9 +166,6 @@ function( Zeega, Layer ) {
         },
 
         play: function() {
-
-            console.log('---frame play', this);
-
             this.layers.each(function( layer ) {
                 layer.play();
             });
