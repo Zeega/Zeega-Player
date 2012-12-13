@@ -1,132 +1,111 @@
 define([
-	"zeega",
-	"zeega_dir/plugins/layers/_all"
+    "zeega",
+    "zeega_dir/plugins/layers/_all"
 ],
 
-function(Zeega, Plugin)
-{
-	var Layer = Zeega.module();
+function( Zeega, Plugin ) {
 
-	var LayerModel = Zeega.Backbone.Model.extend({
+    var Layer = Zeega.module();
 
-		ready : false,
-		state : 'waiting', // waiting, loading, ready, destroyed, error
-		
-		defaults : {
-			mode: 'player'
-		},
+    var LayerModel = Zeega.Backbone.Model.extend({
 
-		initialize : function()
-		{
-			// init link layer type inside here
-			if( Plugin[this.get('type')] )
-			{
-				this.layerClass = new Plugin[this.get('type')]();
-				var def = _.defaults( this.toJSON(), this.layerClass.defaults );
-				this.set(def);
+        ready: false,
+        state: "waiting", // waiting, loading, ready, destroyed, error
 
-				// create and store the layerClass
-				this.visualElement = new Plugin[this.get('type')].Visual({
-					model:this,
-					attributes:{
-						id : 'visual-element-' + this.id,
-						'data-layer_id' : this.id
-					}
-				});
-				// listen to visual element events
-				this.on('visual_ready', this.onVisualReady, this);
-				this.on('visual_error', this.onVisualError, this);
-			}
-			else
-			{
-				this.ready = true;
-				this.state = 'error';
-				console.log('could not find valid layer type: ',this.get('type'));
-			}
-		},
+        defaults: {
+            mode: "player"
+        },
 
-		render : function()
-		{
-			// make sure the layer class is loaded or fail gracefully
-			if( this.visualElement )
-			{
-				// if the layer is ready, then just show it
-				if( this.state == 'waiting')
-				{
-					this.state = 'loading';
-					this.status.emit('layer_loading', this.toJSON());
-					this.visualElement.player_onPreload();
-				}
-				else if( this.state == 'ready' )
-				{
-					this.visualElement.play();
-				}
-			}
-			else
-			{
-				console.log('***	The layer '+ this.get('type') +' is missing. ): ', this.id);
-			}
-		},
+        initialize: function() {
+            var plugin = Plugin[ this.get("type") ];
 
-		onVisualReady : function()
-		{
-			this.ready = true;
-			this.state = 'ready';
-			this.trigger('layer_ready', this.toJSON());
-		},
+            // init link layer type inside here
+            if ( plugin ) {
+                this.layerClass = new plugin();
+                this.set( _.defaults( this.toJSON(), this.layerClass.defaults ) );
 
-		onVisualError : function()
-		{
-			this.ready = true;
-			this.state = 'error';
-			this.trigger('layer_error', this.toJSON());
-		},
+                // create and store the layerClass
+                this.visualElement = new plugin.Visual({
+                    model: this,
+                    attributes: {
+                        "id": "visual-element-" + this.id,
+                        "data-layer_id": this.id
+                    }
+                });
+                // listen to visual element events
+                this.on( "visual_ready", this.onVisualReady, this );
+                this.on( "visual_error", this.onVisualError, this );
+            } else {
+                this.ready = true;
+                this.state = "error";
+                console.log( "could not find valid layer type: ", this.get("type") );
+            }
+        },
 
-		updateZIndex : function(z)
-		{
-			this.visualElement.updateZIndex(z);
-		},
+        render: function() {
+            // make sure the layer class is loaded or fail gracefully
+            if ( this.visualElement ) {
+                // if the layer is ready, then just show it
+                if ( this.state == "waiting") {
+                    this.state = "loading";
+                    this.status.emit("layer_loading", this.toJSON());
+                    this.visualElement.player_onPreload();
+                } else if( this.state == "ready" ) {
+                    this.visualElement.play();
+                }
+            } else {
+                console.log("***    The layer "+ this.get("type") +" is missing. ): ", this.id);
+            }
+        },
 
-		pause : function()
-		{
-			this.visualElement.player_onPause();
-		},
+        onVisualReady: function() {
+            this.ready = true;
+            this.state = "ready";
+            this.trigger("layer_ready", this.toJSON());
+        },
 
-		play : function()
-		{
-			this.visualElement.player_onPlay();
-		},
+        onVisualError: function() {
+            this.ready = true;
+            this.state = "error";
+            this.trigger("layer_error", this.toJSON());
+        },
 
-		exit : function()
-		{
-			if( this.layerClass )
-			{
-				this.visualElement.player_onExit();
-			}
-		},
+        updateZIndex: function(z) {
+            this.visualElement.updateZIndex(z);
+        },
 
-		remove : function()
-		{
-			if( this.layerClass )
-			{
-				this.visualElement.remove();
-			}
-		},
+        pause: function() {
+            this.visualElement.player_onPause();
+        },
 
-		// removes the layer. destroys players, removes from dom, etc
-		destroy : function()
-		{
-			// do not attempt to destroy if the layer is waiting or destroyed
-			if( this.state != 'waiting' && this.state != 'destroyed' )
-			{
-				this.state = 'destroyed';
-			}
-		}
-	});
+        play: function() {
+            this.visualElement.player_onPlay();
+        },
 
-	Layer.Collection = Zeega.Backbone.Collection.extend({
-		model : LayerModel
-	});
+        exit: function() {
+            if ( this.layerClass ) {
+                this.visualElement.player_onExit();
+            }
+        },
 
-	return Layer;
+        remove: function() {
+            if ( this.layerClass ) {
+                this.visualElement.remove();
+            }
+        },
+
+        // removes the layer. destroys players, removes from dom, etc
+        destroy: function() {
+            // do not attempt to destroy if the layer is waiting or destroyed
+            if ( this.state != "waiting" && this.state != "destroyed" ) {
+                this.state = "destroyed";
+            }
+        }
+    });
+
+    Layer.Collection = Zeega.Backbone.Collection.extend({
+        model: LayerModel
+    });
+
+    return Layer;
 });
