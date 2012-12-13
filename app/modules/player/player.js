@@ -295,7 +295,7 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
 
         // renders the player to the dom // this could be a _.once
         render: function() {
-            var divId;
+            var divId = this.get('div_id');
 
             this.Layout = new PlayerLayout.Layout({
                 model: this,
