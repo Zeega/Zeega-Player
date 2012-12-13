@@ -142,10 +142,12 @@ function() {
                 };
             });
 
+            console.log('parser', slideshow_start_slide);
+
         return {
             attr: _.defaults({ slides: slides }, layerDefaults ),
-            start_slide: parseInt(slideshow_start_slide,10),
-            start_slide_id: parseInt(slideshow_start_slide_id,10),
+            start_slide: parseInt(slideshow_start_slide,10) || 0,
+            start_slide_id: parseInt(slideshow_start_slide_id,10) || null,
             type: "SlideShow",
             id: 1
         };

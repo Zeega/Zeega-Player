@@ -36,37 +36,40 @@ function(Zeega )
 			}
 		},
 
-		template : 'player-layout',
-		className : 'ZEEGA-player',
+		template: 'player-layout',
+		className: 'ZEEGA-player',
 
-		initialize : function()
-		{
+		initialize: function() {
 			var _this = this;
 			// debounce the resize function so it doesn't bog down the browser
 			var lazyResize = _.debounce(function(){ _this.resizeWindow(); }, 300);
 			// attempt to detect if the parent container is being resized
-			if(this.model.get('div_id')) $('#'+ this.model.get('div_id') ).resize(lazyResize); // < ——— not sure if this works
-			else $(window).resize(lazyResize);
+			if ( !this.model.get('div_id') ) {
+				$(window).resize(lazyResize);
+			}
 		},
 
-		serialize : function(){ return this.model.toJSON(); },
+		serialize: function() {
+			return this.model.toJSON();
+		},
 
-		afterRender : function()
-		{
+		afterRender: function() {
 			// correctly size the player window
 			this.$('.ZEEGA-player-window').css( this.getWindowSize() );
 			this.setControls();
+			this.resizeWindow();
 		},
 
 		setControls: function() {
 			var _this = this;
-			if( this.model.get('next') && $(this.model.get('next')).length ) {
+
+			if ( this.model.get('next') && $(this.model.get('next')).length ) {
 				$(this.model.get('next')).click(function(){
 					_this.model.cueNext();
 					return false;
 				});
 			}
-			if( this.model.get('prev') && $(this.model.get('prev')).length ) {
+			if ( this.model.get('prev') && $(this.model.get('prev')).length ) {
 				$(this.model.get('prev')).click(function(){
 					_this.model.cuePrev();
 					return false;
@@ -74,8 +77,7 @@ function(Zeega )
 			}
 		},
 
-		resizeWindow : function()
-		{
+		resizeWindow: function() {
 			// animate the window size in place
 			var css = this.getWindowSize();
 			this.$('.ZEEGA-player-window').animate( css );

@@ -69,15 +69,17 @@ return __p;
 this["JST"]["app/templates/plugins/slideshowthumbslider.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<a href=\'#\' class=\'arrow arrow-left slideshow-slider-control-prev\'></a>\n<a href=\'#\' class=\'arrow arrow-right slideshow-slider-control-next\'></a>\n\n<ul>\n\t';
+__p+='<a href=\'#\' class=\'arrow arrow-left slideshow-slider-control-prev\'></a>\n<a href=\'#\' class=\'arrow arrow-right slideshow-slider-control-next\'></a>\n<div class=\'slide-meta\'>'+
+( attr.slides[0].attr.title )+
+'</div>\n<div class=\'slideshow-thumb-wrapper\'>\n    <ul>\n        ';
  _.each(attr.slides, function(slide, i){ 
-;__p+='\n\t\t<li>\n\t\t\t<div class=\'slideshow-thumbnail\' style="background:url('+
-( slide.attr.uri )+
-'); background-repeat:no-repeat;background-size:100%;background-position:center">\n\t\t\t\t<a href=\'#\' class=\'slider-thumb\' data-slidenum="'+
+;__p+='\n            <li>\n                <div class=\'slideshow-thumbnail\' style="background:url('+
+( slide.attr.thumbnail_url )+
+'); background-repeat:no-repeat;background-size:100%;background-position:center">\n                    <a href=\'#\' class=\'slider-thumb\' data-slidenum="'+
 ( i )+
-'"></a>\n\t\t\t\t<div class=\'thumb-title\'>\n\t\t\t\t\t<a href="'+
+'"></a>\n                    <div class=\'thumb-title\'>\n                        <a href="'+
 ( slide.attr.attribution_uri )+
-'" target=\'blank\'>\n\t\t\t\t\t\t';
+'" target=\'blank\'>\n                            ';
  if(slide.attr.media_creator_username.replace(/\s+/g, '') != ''){ 
 ;__p+=''+
 ( slide.attr.media_creator_username )+
@@ -85,11 +87,11 @@ __p+='<a href=\'#\' class=\'arrow arrow-left slideshow-slider-control-prev\'></a
  }else{ 
 ;__p+='unknown';
  } 
-;__p+='\n\t\t\t\t\t\t<i class=\'slideshow-icon-'+
+;__p+='\n                            <i class=\'slideshow-icon-'+
 ( slide.attr.archive.toLowerCase() )+
-' ssarchive\'></i>\n\t\t\t\t\t</a>\n\t\t\t\t</div>\n\t\t\t</div>\t\t\t\n\t\t</li>\n\t';
+' ssarchive\'></i>\n                        </a>\n                    </div>\n                </div>\n            </li>\n        ';
  });
-;__p+='\n</ul>';
+;__p+='\n    </ul>\n</div>';
 }
 return __p;
 };
