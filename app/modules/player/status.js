@@ -15,6 +15,10 @@ function( Zeega ) {
 
         silent: false,
 
+        projectTimerstamp: null,
+        frameTimestamp: null,
+        pauseTimestamp: null,
+
         defaults: {
 
             previous_frame: null,
@@ -30,13 +34,29 @@ function( Zeega ) {
         },
 
         initialize: function() {
-            this.on("change:current_frame",this.onChangeFrame,this);
+            this.initTimer = _.once( this._initProjectTimer );
+            this.on("change:current_frame", this.onChangeFrame,this);
+            
+            console.log('this', this, this.project);
+        },
+
+        loadProject: function( project ) {
+            this.project = project;
+            this.project.on("play", this.onPlay, this );
+            this.project.on("pause", this.onPause, this );
         },
 
         onChangeFrame: function( info ) {
             var frame, sequence,
                 currentFrame = this.get("current_frame"),
                 currentFrameModel = this.get("current_frame_model");
+
+            // reset the pause timestamp if the frame changes
+            this.pauseTimestamp = null;
+            // initialize the player timer // only happens once
+            this.initTimer();
+            // udpate the  the timestamp
+             this.frameTimestamp = new Date().getTime();
 
             /* update the previous frame data */
             if ( currentFrame ) {
@@ -81,11 +101,21 @@ function( Zeega ) {
         },
 
         /*
-            remotely trigger events internally to the player
+            record the time the player is started
         */
-        remote: function( e, info ) {
+        _initProjectTimer: function () {
+            this.projectTimerstamp = new Date().getTime();
+        },
 
+        onPlay: function() {
+            console.log( new Date().getTime() - this.pauseTimestamp ); // time elapsed since pause
+            //this.pauseTimestamp = null;
+        },
+
+        onPause: function() {
+            this.pauseTimestamp = new Date().getTime();
         }
+
     });
 
     return Status;
