@@ -282,7 +282,7 @@ console.log('render frame', advance);
 
                         if ( index < frames.length - 1 && frames.length > 1 ) {
                             next = frames[ index +1 ];
-                        } else if ( advance ) {
+                        } else if ( advance && sequenceCollection.get( advance ) ) {
                             next = sequenceCollection.get( advance ).get("frames")[0];
                         }
 
