@@ -209,7 +209,7 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
         initialize: function( obj ) {
             this.relay = new Relay.Model();
             this.status = new Status.Model();
-            this.status.project = this;
+            this.status.loadProject( this );
             if ( obj !== undefined ) {
                 this.load( obj ); // allow for load later
             }
@@ -588,7 +588,7 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
         player.status.emit("data_loaded");
 
         // TODO: Investigate why no explicit return
-    };
+    }
 
     function addTargetDivToLayers( layerArray, targetDiv ) {
         _.each(layerArray, function( layer ) {
@@ -596,7 +596,7 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
         });
 
         // TODO: Investigate why no explicit return
-    };
+    }
 
     Zeega.player = Player;
 

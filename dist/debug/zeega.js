@@ -53,6 +53,18 @@ __p+='';
 return __p;
 };
 
+this["JST"]["app/templates/plugins/slideshow-metadata.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div class=\'slide-title\'>'+
+( title )+
+'</div>\n<div class=\'slide-description\'>'+
+( description )+
+'</div>\n';
+}
+return __p;
+};
+
 this["JST"]["app/templates/plugins/slideshow.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
@@ -76,9 +88,7 @@ return __p;
 this["JST"]["app/templates/plugins/slideshowthumbslider.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<a href=\'#\' class=\'arrow arrow-left slideshow-slider-control-prev\'></a>\n<a href=\'#\' class=\'arrow arrow-right slideshow-slider-control-next\'></a>\n<div class=\'slide-meta\'>'+
-( attr.slides[0].attr.title )+
-'</div>\n<div class=\'slideshow-thumb-wrapper\'>\n    <ul>\n        ';
+__p+='<div class=\'slideshow-thumb-wrapper\'>\n    <ul>\n        ';
  _.each(attr.slides, function(slide, i){ 
 ;__p+='\n            <li>\n                <div class=\'slideshow-thumbnail\' style="background:url('+
 ( slide.attr.thumbnail_url )+
@@ -7458,12 +7468,49 @@ function( Zeega, _Layer ) {
     return Layer;
 });
 
-zeega.define('zeega_dir/plugins/layers/slideshow/thumbnail-slider',[
+zeega.define('zeega_dir/plugins/layers/slideshow/slideshow-metadata',[
     "zeega",
     "zeega_dir/plugins/layers/_layer/_layer"
 ],
 
 function( Zeega, _Layer ) {
+
+    var Metadata = {};
+
+    Metadata.View = _Layer.LayoutView.extend({
+
+        className: 'slide-metadata',
+
+        template: "plugins/slideshow-metadata",
+
+        initialize: function() {
+            this.model.on('all', function(e) { console.log('e',e); });
+            this.model.on("slideshow_update", this.onUpdate, this );
+            this.slideInfo = this.model.get('attr').slides[0].attr;
+        },
+
+        onUpdate: function( info ) {
+            this.slideInfo = info.data.attr;
+            this.render();
+        },
+
+        serialize: function() {
+            return _.extend({ title: '', description: ''}, this.slideInfo );
+        }
+
+    });
+
+  return Metadata;
+});
+
+zeega.define('zeega_dir/plugins/layers/slideshow/thumbnail-slider',[
+    "zeega",
+    "zeega_dir/plugins/layers/_layer/_layer",
+    "zeega_dir/plugins/layers/slideshow/slideshow-metadata"
+
+],
+
+function( Zeega, _Layer, Metadata ) {
 
     var SSSlider = _Layer.LayoutView.extend({
 
@@ -7474,13 +7521,11 @@ function( Zeega, _Layer ) {
         template: "plugins/slideshowthumbslider",
 
         initialize: function() {
-            // TODO: If the target platforms are modern, there is no need to
-            // use this-aliasing. Investigate rationale, remove if possible.
-            var _this = this;
 
             this.slideNum = this.model.get("attr").slides.length;
             this.model.on("slideshow_update", function( slide ) {
-                _this.highlightThumb(slide.slideNum);
+                this.onResize();
+                this.highlightThumb( slide.slideNum );
             }, this );
 
             Zeega.on("resize_window", this.onResize, this );
@@ -7490,9 +7535,25 @@ function( Zeega, _Layer ) {
             return this.model.toJSON();
         },
 
-        afterRender: function(){
+        afterRender: function() {
             this.onResize();
+            this.makeDraggable();
             this.sinkThumbSlider();
+
+            this.metadata = new Metadata.View({ model: this.model });
+            this.$el.prepend( this.metadata.el );
+            this.metadata.render();
+        },
+
+        makeDraggable: function() {
+            // TODO: make playerWidth an attribute of the player model
+            var playerWidth = this.$el.closest(".ZEEGA-player-window").width(),
+                dragWidth = -this.$(".slideshow-thumb-wrapper ul").width() + playerWidth - 10;
+
+            this.$(".slideshow-thumb-wrapper ul").draggable({
+                axis: 'x',
+                containment: [ dragWidth - playerWidth / 2 , 0, playerWidth / 2, 0 ]
+            });
         },
 
         onResize: function() {
@@ -7541,7 +7602,7 @@ function( Zeega, _Layer ) {
 
             // check slider position offset
             if ( this.slidePos < this.slideNum - 1 &&
-                    ($ul.offset().left + $ul.width()) > window.innerWidth ) {
+                    ($ul.offset().left + $ul.width()) > this.$el.closest(".ZEEGA-player").width() ) {
                 this.slidePos++;
                 $ul.stop().animate({
                     "left": this.slidePos * -171 + "px"
@@ -7563,14 +7624,20 @@ function( Zeega, _Layer ) {
         },
 
         highlightThumb: function( num ) {
-            var $li = this.$("li");
+            var playerWidth = this.$el.closest(".ZEEGA-player-window").width(),
+                leftPosition = 0,
+                $li = this.$("li"),
+                $active = $li.eq(num);
 
             this.slide = num;
             $li.removeClass("active");
-            // TODO: If num is zero-indexed, this could be written as:
-            // $li.eq(num).addClass("active");
-            // Which would elimate a trip through jQuery()
-            $( $li[num] ).addClass("active");
+            $active.addClass("active");
+
+            leftPosition = playerWidth / 2 - $active.position().left;
+
+            this.$(".slideshow-thumb-wrapper ul").stop().animate({
+                left: leftPosition
+            }, 250);
         }
   });
 
@@ -7704,7 +7771,9 @@ function( Zeega, _Layer, SSSlider ) {
 
         updateTitle: function( slideNo ) {
             var slide = this.model.get('attr').slides[slideNo];
-            this.$(".slide-meta").text( slide.attr.title );
+
+            this.$(".slide-title").text( slide.attr.title );
+            this.$(".slide-description").text( slide.attr.description );
         },
 
         emitSlideData: function(slideNo) {
@@ -7715,9 +7784,11 @@ function( Zeega, _Layer, SSSlider ) {
         },
 
         positionArrows: function() {
-            this.$(".slideshow-arrow").css(
-                "top", (window.innerHeight / 2 - 50) + "px"
-            );
+            this.$(".slideshow-arrow").css({
+                top: (this.$el.closest(".ZEEGA-player").height() / 2 - 50) + "px",
+                height: (this.$el.closest(".ZEEGA-player").height() / 10 )+ "px",
+                width: (this.$el.closest(".ZEEGA-player").height() / 10 )+ "px"
+            });
         },
 
         hideArrows: function() {
@@ -19897,786 +19968,843 @@ Popcorn.player( "flashvideo", {
 zeega.define("vendor/popcorn/popcorn-complete", function(){});
 
 zeega.define('zeega_dir/plugins/media-player/media-player',[
-	'zeega',
-	'libs/modernizr',
-	'vendor/popcorn/popcorn-complete'
+    "zeega",
+    "libs/modernizr",
+    "vendor/popcorn/popcorn-complete"
 ],
 
-function(Zeega){
+function(Zeega) {
+
+    var Player = {Views:{}};
+
+    Player.Views.Player = Zeega.Backbone.View.extend({
+
+        className: "media-player-container",
+
+        defaults: {
+            control_mode: "none", // none / simple / standard / editor
+            control_fade: true,
+
+            media_target: null,
+            controls_target: null,
+
+            autoplay: false,
+            cue_in: 0,
+            cue_out: null,
+            volume: 0.5,
+            fade_in: 0,
+            fade_out: 0
+        },
+
+        initialize: function( options ) {
+            var clone, format, settings, model;
+            // defaults
+            model = null;
+
+            if ( this.model !== undefined ) {
+                //_.extend( this.defaults, this.options );
+                //if there is a model then figure out what kind it is
+                clone = _.extend({}, this.model.toJSON());
+
+                settings = _.defaults(
+                    _.extend( clone.attr, this.options ), this.defaults
+                );
+
+                if ( this.model.get("uri") !== undefined ) {
+                    // it must be from an item
+                    format = this.getFormat( clone.attribution_uri );
+                } else if ( clone.attr && clone.attr.uri ) {
+                    // it must be from a layer
+                    format = this.getFormat( clone.attr.attribution_uri );
+                    settings.id = this.model.id;
+                } else {
+                    console.log("I dont know what kind of media this is:(");
+                }
+
+                this.format = format;
+                this.settings = settings;
+                this.settings.model = model;
+            }
+
+            this.model.on( "pause_play", this.playPause, this );
+        },
+
+        render: function() {
+            // move this to the CSS !!!  .media-player-container{ height, width}
+            this.$el.css({
+                "width": "100%",
+                "height": "100%"
+            });
+
+            // choose which template to use
+            var format = this.templates[ this.format ] ? this.format: "defaulttemplate";
+
+            this.$el.html(
+                _.template( this.templates[format](), this.settings )
+            );
+
+            //attach controls. is this the right place?
+            this.controls = new Player.Views.Player.Controls[ this.settings.control_mode ]({
+                model: this.model,
+                detached_controls: !_.isNull(this.settings.controls_target)
+            });
+            //draw the controls
+            if ( _.isNull(this.settings.controls_target) ) {
+                this.$el.append( this.controls.render().el );
+            } else {
+                $( this.settings.controls_target ).html( this.controls.render().el );
+            }
+
+            return this;
+        },
+
+        placePlayer: function() {
+            var _this = this,
+                type = this.model.get("type");
+
+            if ( !this.isVideoLoaded ) {
+
+                switch( this.format ) {
+                    case "html5":
+                        if ( (type == "Audio" && Modernizr.audio.mp3 === "") ||
+                             (type == "Video" && Modernizr.audio.h264 === "") ) {
+                            this.useFlash();
+                        } else {
+                            this.useHTML5();
+                        }
+                        break;
+                    case "flashvideo":
+                        this.useFlash();
+                        break;
+                    case "youtube":
+                        this.useYoutube();
+                        break;
+                    case "vimeo":
+                        this.useVimeo();
+                        break;
+                    default:
+                        console.log("none set");
+                }
+
+                this.initPopcornEvents();
+
+                this.isVideoLoaded = true;
+            }
+        },
+
+        initPopcornEvents: function() {
+            if ( this.popcorn ) {
+
+                this.popcorn.on( "canplay", function() {
+                    this.private_onCanPlay();
+                    this.onCanplay();
+                }.bind(this));
+
+                this.popcorn.on( "timeupdate", function() {
+                    this.private_onTimeUpdate();
+                }.bind(this));
+
+                this.popcorn.on( "ended", function() {
+                    this.onEnded();
+                }.bind(this));
+            }
+        },
+
+        addPopcornToControls: function() {
+            if ( this.controls && this.popcorn && this.settings.control_mode != "none" ) {
+                this.controls.addPopcorn( this.popcorn );
+            }
+        },
+
+        useHTML5: function() {
+            var _this = this,
+                target = "#media-player-html5-" + this.model.id,
+                model = this.model;
+
+            this.popcorn = Popcorn( target );
+            this.addPopcornToControls();
+            this.setVolume(0);
+
+            this.popcorn.on( "canplay", function() {
+
+                //_this.$el.spin(false);
+                if ( _this.settings.fade_in === 0 ) {
+                    _this.setVolume( _this.settings.volume );
+                }
+
+                if ( _this.settings.cue_in !== 0 ) {
+                    this.on( "seeked", function() {
+                        model.can_play = true;
+                        model.trigger( "visual_ready", _this.model.id );
+                    });
+                    _this.setCurrentTime( _this.settings.cue_in );
+                }
+                else {
+                    model.can_play = true;
+                    model.trigger( "visual_ready", _this.model.id );
+                }
+            });
+        },
+        useYoutube: function() {
+            var _this = this,
+                target = "#media-player-" + this.model.id,
+                src = this.model.get("attr").attribution_uri,
+                model = this.model;
+
+            this.popcorn = Popcorn.youtube( target, src, {
+                volume: this.settings.volume * 100,
+                cue_in: this.settings.cue_in
+            });
+
+            this.addPopcornToControls();
+            this.setVolume(0);
+
+            this.popcorn.on( "canplaythrough",function() {
+                _this.popcorn.play();
+                _this.popcorn.pause();
+
+                model.can_play = true;
+                model.trigger( "visual_ready", _this.model.id );
+
+                if ( model.get("attr").fade_in === 0 ) {
+                    _this.volume( model.get("attr").volume );
+                }
+                _this.popcorn.pause();
+            });
+
+        },
+        useFlash: function() {
+            var _this = this,
+                target = "#media-player-" + this.model.id,
+                src = this.model.get("attr").uri,
+                model = this.model;
+
+            this.popcorn = Popcorn.flashvideo( target, src, {
+                volume: this.settings.volume,
+                cue_in: this.settings.cue_in
+            });
+
+            this.popcorn.on( "loadeddata",function() {
+                //_this.$el.spin(false);
+
+                model.can_play = true;
+                model.trigger( "visual_ready", _this.model.id );
+
+                if ( model.get("attr").fade_in === 0 ) {
+                    _this.volume( model.get("attr").volume );
+                }
+            });
+        },
+
+        useVimeo: function() {
+            this.popcorn = Popcorn.vimeo( "#media-player-"+ this.model.id, this.get("url") );
+            this.popcorn.on( "loadeddata",function() {
+                _this.trigger("video_canPlay");
+                _this.popcorn.currentTime( _this.get("cue_in") );
+            });
+        },
+        private_onCanPlay: function() {
+            this.model.set( "duration", this.popcorn.duration() );
+
+            if ( this.model.get("cue_out") === null ) {
+                this.model.set( "cue_out", this.popcorn.duration() );
+            }
+        },
+        onCanplay: function() {
+            if ( this.settings.autoplay && this.popcorn ) {
+                this.popcorn.play();
+            }
+        },
+
+        _onEnded: function() {
+            this.model.trigger( "media_ended", this.model.toJSON() );
+        },
+
+        // getters && setters //
+
+        setVolume: function( vol ) {
+            var volume;
+            // constrain volume to 0 < v < 1, defend against string, object, etc...
+            volume = isNaN( +( volume = vol < 0 ? 0 : vol > 1 ? 1 : vol ) ) ? 0 : volume;
+
+            this.popcorn.volume( volume );
+        },
+        getVolume: function() {
+            return this.popcorn.volume();
+        },
+
+        setCurrentTime: function( t ) {
+            if ( _.isNumber( t ) )  {
+                this.popcorn.currentTime(t);
+            }
+        },
+        getCurrentTime: function() {
+            return this.popcorn.currentTime();
+        },
+
+        private_onTimeUpdate: function() {
+            var cueOut = this.settings.cue_out;
+
+            // pause if player gets to the cue out point
+
+            if ( cueOut === 0 ) {
+                this.settings.cue_out = cueOut = his.getDuration();
+            }
+
+            if ( cueOut !== null && this.popcorn.currentTime() >= cueOut ) {
+                this.pause();
+                this.popcorn.currentTime( this.settings.cue_in );
+            }
+        },
+
+        getDuration: function() {
+            return this.popcorn.duration();
+        },
+
+        play: function() {
+            if ( this.popcorn && this.popcorn.paused() ) {
+                this.popcorn.play();
+            }
+        },
+        pause: function() {
+            if ( this.popcorn && !this.popcorn.paused() ) {
+                this.popcorn.pause();
+            }
+        },
+        playPause: function() {
+            if ( this.popcorn ) {
+                if ( this.popcorn.paused() ) {
+                    this.popcorn.play();
+                } else {
+                    this.popcorn.pause();
+                }
+            }
+        },
+
+        destroy: function() {
+            if ( this.popcorn ) {
+                this.popcorn.pause();
+                Popcorn.destroy( this.popcorn );
+            }
+        },
+
+        getFormat: function( url ) {
+            var format = "html5";
+
+            // TODO: This regex might be overkill
+            // Popcorn qualifies youtube urls with:
+            // /(?:http:\/\/www\.|http:\/\/|www\.|\.|^)(youtu)/.test( url)
+            if ( url.match(/http:\/\/(?:youtu\.be\/|(?:[a-z]{2,3}\.)?youtube\.com\/watch(?:\?|#\!)v=)([\w\-]{11}).*/gi) ) {
+                format = "youtube"; // linted?
+            }
+            // TODO: same as above:
+            // This can probably be simplified as well...
+            if ( url.match(/^http:\/\/(?:www\.)?vimeo.com\/(.*)/) ) {
+                format = "vimeo";
+            }
+
+            // Force flash for html5 in Firefox browser
+            if ( /Firefox/.test( navigator.userAgent ) && format === "html5" ) {
+                format = "flashvideo";
+            }
+            return format;
+        },
 
 
-	var Player = {Views:{}};
+        templates: {
 
-	Player.Views.Player = Zeega.Backbone.View.extend({
-		
-		className : 'media-player-container',
-		
-		defaults : {
-			control_mode : 'none', // none / simple / standard / editor
-			control_fade : true,
-			
-			media_target : null,
-			controls_target : null,
-			
-			autoplay : false,
-			cue_in : 0,
-			cue_out : null,
-			volume : 0.5,
-			fade_in :0,
-			fade_out : 0
-		},
-		
-		initialize : function(options)
-		{
-			
-			if(!_.isUndefined(this.model))
-			{
-				//_.extend( this.defaults, this.options );
-				//if there is a model then figure out what kind it is
-				var cloneAttr = _.extend({},this.model.toJSON());
-				if( !_.isUndefined(this.model.get('uri')) )
-				{
-					// it must be from an item
-					this.format = this.getFormat(cloneAttr.attribution_uri);
-					this.settings = _.defaults( _.extend(cloneAttr, this.options) , this.defaults);
-					this.settings.model = null;
-				}
-				else if( cloneAttr.attr && cloneAttr.attr.uri )
-				{
-					//it must be from a layer
-					this.format = this.getFormat(cloneAttr.attr.attribution_uri);
-					this.settings = _.defaults( _.extend(cloneAttr.attr, this.options), this.defaults );
-					this.settings.id = this.model.id;
-					this.settings.model = null;
-				}
-				else
-				{
-					console.log('I dont know what kind of media this is :(');
-				}
-			}
-			
-			this.model.on('pause_play', this.playPause, this);
-			
-		},
-		
-		render : function()
-		{
-			this.$el.css({ 'width':'100%', 'height':'100%'}); // move this to the CSS !!!  .media-player-container{ height, width}
-			// choose which template to use
-			var format = this.templates[this.format] ? this.format : 'defaulttemplate';
-			this.$el.html( _.template( this.templates[format](), this.settings ));
-			
-			//attach controls. is this the right place?
-			this.controls = new Player.Views.Player.Controls[this.settings.control_mode]({
-				model:this.model,
-				detached_controls : !_.isNull(this.settings.controls_target)
-			});
-			//draw the controls
-			if( _.isNull(this.settings.controls_target) ) this.$el.append( this.controls.render().el );
-			else $( this.settings.controls_target ).html( this.controls.render().el );
+            html5: function() {
+                html = "<div id='media-player-<%= id %>' class='media-container'><video id='media-player-html5-<%= id %>' class='media-element media-type-<%= media_type %>' src='<%= uri %>'></video></div>";
 
-			return this;
-		},
-		
-		placePlayer : function()
-		{
-			if( !this.isVideoLoaded)
-			{
-				var _this = this;
-				switch( this.format )
-				{
-					case 'html5':
-						if( this.model.get('type') == 'Audio' && Modernizr.audio.mp3 === '') this.useFlash();
-						else if( this.model.get('type') == 'Video' && Modernizr.audio.h264 === '') this.useFlash();
-						else this.useHTML5();
-						break;
-					case 'flashvideo':
-						this.useFlash();
-						break;
-					case 'youtube':
-						this.useYoutube();
-						break;
-					case 'vimeo':
-						this.useVimeo();
-						break;
-					default:
-						console.log('none set');
-				}
+                return html;
+            },
 
-				this.initPopcornEvents();
+            flashvideo: function() {
+                html = "<div id='media-player-<%= id %>' class='media-container' style='width:100%;height:100%;'></div>";
 
-				this.isVideoLoaded = true;
-			}
-		},
-		
-		initPopcornEvents : function()
-		{
-			if(this.popcorn)
-			{
-				var _this = this;
-				this.popcorn.listen('canplay',function(){
-					_this.private_onCanPlay();
-					_this.onCanplay();
-				});
-				
-				this.popcorn.listen('timeupdate',function(){ _this.private_onTimeUpdate(); });
-				this.popcorn.listen('ended',function(){ _this.onEnded(); });
-			}
-		},
-		
-		addPopcornToControls : function()
-		{
-			if(this.controls && this.popcorn && this.settings.control_mode != 'none' )
-			{
-				this.controls.addPopcorn( this.popcorn );
-			}
-		},
-		
-		useHTML5 : function()
-		{
-			var _this = this;
-			var target = '#media-player-html5-'+ this.model.id;
-			
-			this.popcorn = Popcorn( target );
-			this.addPopcornToControls();
-			this.setVolume(0);
-		
-			this.popcorn.listen( 'canplay', function(){
-			
-				//_this.$el.spin(false);
-				if( _this.settings.fade_in === 0 ) _this.setVolume( _this.settings.volume );
-				if( _this.settings.cue_in !== 0 )
-				{
-					this.listen('seeked',function(){
-						_this.model.can_play = true;
-						_this.model.trigger('visual_ready', _this.model.id ) ;
-					});
-					_this.setCurrentTime( _this.settings.cue_in );
-				}
-				else
-				{
-					_this.model.can_play = true;
-					_this.model.trigger('visual_ready', _this.model.id ) ;
-				}
-			});
-		},
-		useYoutube : function()
-		{
-			var _this = this;
-			var target = '#media-player-'+ this.model.id;
-			var src = this.model.get('attr').attribution_uri;
-			
-			this.popcorn = Popcorn.youtube( target, src, {volume:_this.settings.volume * 100, cue_in:_this.settings.cue_in} );
-			this.addPopcornToControls();
-			this.setVolume(0);
+                return html;
+            },
 
-			this.popcorn.listen('canplaythrough',function(){
-				_this.model.can_play = true;
-				_this.popcorn.play();
-				_this.popcorn.pause();
-				_this.model.trigger('visual_ready', _this.model.id ) ;
-				if(_this.model.get('attr').fade_in === 0) _this.volume(_this.model.get('attr').volume);
-				_this.popcorn.pause();
-			});
-			
-		},
-		useFlash : function()
-		{
-			var _this = this;
-			var target = '#media-player-'+ this.model.id;
-			var src = this.model.get('attr').uri;
-			
-			this.popcorn = Popcorn.flashvideo( target, src, {volume:_this.settings.volume, cue_in:_this.settings.cue_in} );
-			
-			this.popcorn.listen('loadeddata',function(){
-				//_this.$el.spin(false);
-				
-				_this.model.can_play = true;
-				_this.model.trigger('visual_ready', _this.model.id ) ;
-				
-				if(_this.model.get('attr').fade_in === 0) _this.volume(_this.model.get('attr').volume);
-			});
-		},
+            defaulttemplate: function() {
+                html = "<div id='media-player-<%= id %>' class='media-container' style='width:100%;height:100%;'></div>";
 
-		useVimeo : function()
-		{
-			this.popcorn = Popcorn.vimeo('#media-player-'+ this.model.id, this.get('url') );
-			this.popcorn.listen('loadeddata',function(){
-				_this.trigger('video_canPlay');
-				_this.popcorn.currentTime(_this.get('cue_in'));
-			});
-		},
-		private_onCanPlay : function()
-		{
-			this.model.set('duration', this.popcorn.duration() );
-			if( _.isNull(this.model.get('cue_out')) ) this.model.set('cue_out', this.popcorn.duration() );
-			
-		},
-		onCanplay : function()
-		{
-			if(this.settings.autoplay && this.popcorn) this.popcorn.play();
-		},
-
-		_onEnded : function()
-		{
-			this.model.trigger('media_ended', this.model.toJSON() );
-		},
-		
-		// getters && setters //
-		
-		setVolume : function(vol)
-		{
-			// constrain volume to 0 < v < 1
-			var volume = vol < 0 ? 0 : vol;
-			volume = vol > 1 ? 1 : vol;
-			if( _.isNumber(vol) ) this.popcorn.volume( volume );
-		},
-		getVolume : function(){ return this.popcorn.volume(); },
-
-		setCurrentTime : function(t){ if( _.isNumber(t) )  this.popcorn.currentTime(t); },
-		getCurrentTime : function(){ return this.popcorn.currentTime(); },
-
-		private_onTimeUpdate : function()
-		{
-			// pause if player gets to the cue out point
-			
-			if(this.settings.cue_out === 0) this.settings.cue_out = this.getDuration();
-			
-			if( !_.isNull(this.settings.cue_out) && this.popcorn.currentTime() >= this.settings.cue_out )
-			{
-				this.pause();
-				this.popcorn.currentTime( this.settings.cue_in );
-			}
-		},
-
-		getDuration: function(){ return this.popcorn.duration(); },
-
-		play : function(){ if( this.popcorn && this.popcorn.paused() ) this.popcorn.play(); },
-		pause : function(){ if( this.popcorn && !this.popcorn.paused() ) this.popcorn.pause(); },
-		playPause : function()
-		{
-			if(this.popcorn)
-			{
-				if(this.popcorn.paused()) this.popcorn.play();
-				else this.popcorn.pause();
-			}
-		},
-		
-		destroy : function()
-		{
-			if(this.popcorn)
-			{
-				this.popcorn.pause();
-				
-				Popcorn.destroy( this.popcorn );
-				//this.popcorn.destroy();
-			}
-		},
-		
-		getFormat : function(url)
-		{
-			//separated to make it easier to isolate and update this list
-			var format = '';
-//			if( url.match(/http:\/\/(?:youtu\.be\/|(?:[a-z]{2,3}\.)?youtube\.com\/watch(?:\?|#\!)v=)([\w-]{11}).*/gi) ) format = 'youtube';
-			if( url.match(/http:\/\/(?:youtu\.be\/|(?:[a-z]{2,3}\.)?youtube\.com\/watch(?:\?|#\!)v=)([\w\-]{11}).*/gi) ) format = 'youtube'; // linted?
-			else if ( url.match(/^http:\/\/(?:www\.)?vimeo.com\/(.*)/) ) format = 'vimeo';
-			else format = 'html5';
-			//Force flash for html5 in Firefox browser
-			if( navigator.userAgent.split(' ')[navigator.userAgent.split(' ').length-1].split('/')[0] == 'Firefox' && format=='html5' ) format='flashvideo';
-			return format;
-		},
-		
-		
-		templates : {
-			
-			html5 : function()
-			{
-				html =
-				"<div id='media-player-<%= id %>' class='media-container'><video id='media-player-html5-<%= id %>' class='media-element media-type-<%= media_type %>' src='<%= uri %>'></video></div>";
-				return html;
-			},
-			
-			flashvideo : function()
-			{
-				html =
-				"<div id='media-player-<%= id %>' class='media-container' style='width:100%;height:100%;'></div>";
-				return html;
-			},
-
-			defaulttemplate : function()
-			{
-				html =
-				"<div id='media-player-<%= id %>' class='media-container' style='width:100%;height:100%;'></div>";
-				return html;
-			}
-			
-		}
-		
-	});
-	
-	
-	/*****************************
-	
-		CONTROLS
-		
-	*****************************/
-	
-	Player.Views.Player.Controls = Player.Views.Player.Controls || {};
-	
-	Player.Views.Player.Controls.none = Zeega.Backbone.View.extend({
-		className : 'controls playback-controls controls-none',
-		item_mode : false,
-		
-		initialize : function()
-		{
-			if(this.options.detached_controls) this.$el.addClass('playback-layer-controls');
-			if(this.model.get('uri')) this.item_mode = true;
-			this.init();
-		},
-		
-		init : function(){}
-	});
-	
-	Player.Views.Player.Controls.simple = Player.Views.Player.Controls.none.extend({
-		
-		className : 'controls playback-controls controls-simple',
-		
-		addPopcorn : function(pop)
-		{
-			this.popcorn = pop;
-			this.initPopcornEvents();
-		},
-		
-		initPopcornEvents : function()
-		{
-			var _this = this;
-			this.popcorn.listen('canplay',function(){ _this.onCanPlay(); });
-			this.popcorn.listen('canplaythrough',function(){ _this.onCanPlay(); });
-			this.popcorn.listen('ended',function(){ _this.onEnded(); });
-			this.popcorn.listen('playing',function(){ _this.onPlaying(); });
-			this.popcorn.listen('pause',function(){ _this.onPause(); });
-		},
-		
-		render : function()
-		{
-			this.$el.html( this.getTemplate() );
-			return this;
-		},
-		
-		events : {
-			'click' : 'playPause',
-			'mouseover' : 'onMouseover',
-			'mouseout' : 'onMouseout'
-		},
-		
-		onCanPlay : function()
-		{
-			this.updatePlayPauseIcon();
-			this.updateCues();
-		},
-		
-		updateCues : function()
-		{
-			this.cueIn = this.item_mode === true ? this.model.get('cue_in') : this.model.get('attr').cue_in;
-			this.cueOut = (this.item_mode === true ? this.model.get('cue_out') : this.model.get('attr').cue_out) || this.duration;
-		},
-		
-		playPause : function()
-		{
-			
-			if(this.popcorn)
-			{
-				if(this.popcorn.paused()) this.popcorn.play();
-				else this.popcorn.pause();
-				this.updatePlayPauseIcon();
-			}
-			return false;
-		},
-		
-		updatePlayPauseIcon : function()
-		{
-			if(this.popcorn)
-			{
-				if( !this.popcorn.paused() ) this.$el.find('.pause-play i').addClass('icon-pause').removeClass('icon-play');
-				else this.$el.find('.pause-play i').removeClass('icon-pause').addClass('icon-play');
-			}
-		},
-		
-		onPlaying : function()
-		{
-			// fade out after play
-			if( this.model.get('control_fade') ) this.setFadeTimeout();
-			this.updatePlayPauseIcon();
-			this.updatePlayPauseIcon();
-		},
-		
-		setFadeTimeout : function()
-		{
-			var _this = this;
-			if(this.timer) clearTimeout(_this.timer);
-			this.timer = setTimeout( function(){
-				_this.fadeOutControls();
-				clearTimeout(_this.timer);
-			}, 3500);
-		},
-		
-		onMouseover : function()
-		{
-			if(this.model.get('control_fade') && !this.popcorn.paused() )
-			{
-				if(this.timer) clearTimeout( this.timer );
-				this.fadeInControls();
-			}
-		},
-		onMouseout : function()
-		{
-			if(this.model.get('control_fade') && !this.popcorn.paused() )
-				this.setFadeTimeout();
-		},
-		
-		fadeOutControls : function()
-		{
-			if(this.$el.find('.player-control-inner').is(':visible') && !this.popcorn.paused()) this.$el.find('.player-control-inner').fadeOut('slow');
-		},
-		fadeInControls : function()
-		{
-			if(this.$el.find('.player-control-inner').is(':hidden')) this.$el.find('.player-control-inner').fadeIn('fast');
-		},
-		
-		onPause : function()
-		{
-			if(this.timer) clearTimeout( this.timer );
-			// make sure  controls are visible
-			this.fadeInControls();
-			this.updatePlayPauseIcon();
-		},
-		
-		onEnded : function()
-		{
-			this.$el.find('.pause-play i').addClass('icon-play').removeClass('icon-pause');
-		},
-		
-		getTemplate : function()
-		{
-			var html =
-			
-			"<div class='player-control-inner'><a href='#' class='pause-play pull-left'><i class='icon-pause icon-white'></i></a></div>";
-			
-			return html;
-		}
-	});
-	
-	Player.Views.Player.Controls.standard = Player.Views.Player.Controls.simple.extend({
-		
-		isSeeking : false,
-		
-		className : 'controls playback-controls controls-standard',
-		
-		addPopcorn : function(pop)
-		{
-			this.popcorn = pop;
-			this.initPopcornEvents();
-		},
-		
-		initPopcornEvents : function()
-		{
-			var _this = this;
-			this.popcorn.listen('canplay',function(){ _this.onCanPlay(); });
-			this.popcorn.listen('ended',function(){ _this.onEnded(); });
-			this.popcorn.listen('timeupdate',function(){ _this.updateElapsed(); });
-			this.popcorn.listen('playing',function(){ _this.onPlaying(); });
-			this.popcorn.listen('pause',function(){ _this.onPause(); });
-		},
-		
-		events : {
-			'click .pause-play' : 'playPause',
-			'mouseover' : 'onMouseover',
-			'mouseout' : 'onMouseout'
-		},
-		
-		onCanPlay : function()
-		{
-			this.updateDuration();
-			this.updateCues();
-			this.updatePlayPauseIcon();
-			
-			this.initScrubber();
-		},
-		
-		initScrubber : function()
-		{
-			var _this = this;
-			this.$el.find('.media-scrubber').slider({
-				range: 'min',
-				min: 0,
-				max : this.duration,
-				
-				slide : function(e,ui){ _this.scrub( ui.value ); },
-				stop : function(e,ui){ _this.seek(ui.value); }
-			});
-		},
-		
-		updateDuration : function()
-		{
-			this.duration = this.popcorn.duration();
-			this.$el.find('.media-time-duration').html( convertTime(this.duration) );
-		},
-		updateElapsed : function()
-		{
-			var elapsed = this.popcorn.currentTime();
-			this.$el.find('.media-time-elapsed').html( convertTime( elapsed ) );
-			this.$el.find('.media-scrubber').slider('value', elapsed);
-		},
-		
-		scrub : function( time )
-		{
-			var _this = this;
-			this.isSeeking = true;
-
-		},
-		seek : function( time )
-		{
-			var wasPlaying = !this.popcorn.paused();
-			if(wasPlaying) this.popcorn.pause();
-
-			if( time < this.cueIn )
-			{
-				this.$el.find('.media-scrubber').slider('value',this.cueIn);
-				time = this.cueIn;
-			}
-			else if( time > this.cueOut )
-			{
-				this.$el.find('.media-scrubber').slider('value',this.cueOut);
-				time = this.cueOut;
-			}
-			else
-			{
-				this.$el.find('.media-scrubber').slider('value',time);
-			}
-			
-			this.popcorn.currentTime(time);
-			if(wasPlaying) this.popcorn.play();
-		},
-		
-		getTemplate : function()
-		{
-			var html =
-			"<div class='player-control-inner'>"+
-				"<div class='media-scrubber'></div>"+
-				"<div class='control-panel-inner'>"+
-					"<a href='#' class='pause-play pull-left'><i class='icon-pause icon-white'></i></a>"+
-					"<div class='pull-right'><span class='media-time-elapsed'>0:00</span> / <span class='media-time-duration'>0:00</span></div>"+
-				"</div>"+
-			"</div>";
-			
-			return html;
-		}
-	});
-	
-	Player.Views.Player.Controls.editor = Player.Views.Player.Controls.standard.extend({
-		
-		className : 'controls playback-controls controls-editor',
-		
-		initPopcornEvents : function()
-		{
-			var _this = this;
-			this.popcorn.listen('canplay',function(){ _this.onCanPlay(); });
-			this.popcorn.listen('canplaythrough',function(){ _this.onCanPlay(); });
-			this.popcorn.listen('ended',function(){ _this.onEnded(); });
-			this.popcorn.listen('timeupdate',function(){ _this.updateElapsed(); });
-			this.popcorn.listen('playing',function(){ _this.onPlaying(); });
-			this.popcorn.listen('pause',function(){ _this.onPause(); });
-		},
-		
-		events : {
-			'click .pause-play' : 'playPause',
-			'mouseover' : 'onMouseover',
-			'mouseout' : 'onMouseout',
-			'mousedown .progress-outer' : 'scrub'
-		},
-		
-		onCanPlay : function()
-		{
-			this.updateDuration();
-			this.updateCues();
-			this.updatePlayPauseIcon();
-			
-			this.initScrubber();
-			this.initCropTool();
-		},
-		
-		updateDuration : function()
-		{
-			this.duration = this.popcorn.duration();
-			this.$el.find('.media-time-duration').html( convertTime(this.duration) );
-		},
-		updateElapsed : function()
-		{
-			var elapsed = this.popcorn.currentTime();
-			this.$el.find('.media-time-elapsed').html( convertTime( elapsed ) );
-			this.$el.find('.media-scrubber').slider('value', elapsed);
-			if(elapsed >= this.cueOut) this.popcorn.pause();
-		},
-		
-		initCropTool : function()
-		{
-			var _this = this;
-			
-			//this.cueIn = this.item_mode ? this.model.get('cue_in') : this.model.get('attr').cue_in;
-			//this.cueOut = (this.item_mode ? this.model.get('cue_out') : this.model.get('attr').cue_out) || this.duration;
-			
-			this.$el.find('.crop-time-left .time').text( convertTime( this.cueIn ) );
-			this.$el.find('.crop-time-right .time').text( convertTime( this.cueOut ) );
-			
-			this.$el.find('.crop-slider').slider({
-				range:true,
-				min:0,
-				max:_this.duration,
-				values : [ _this.cueIn , _this.cueOut ],
-				slide : function(e,ui){ _this.onCropSlide(e,ui); },
-				stop : function(e,ui){ _this.onCropStop(e,ui); }
-			});
-			
-			this.$el.find('.crop-time-left .time').unbind('keypress').keypress(function(e){
-				if((e.which >= 48 && e.which <= 58) || e.which == 13)
-				{
-					if( e.which == 13 )
-					{
-						var sec = _this.convertToSeconds($(this).text());
-						if(sec === false)
-						{
-							$(this).text( convertTime(_this.model.get('cue_in')) );
-						
-						}
-						else
-						{
-
-							sec = sec < 0 ? 0 : sec;
-							sec = sec > _this.model.get('cue_out') ? _this.model.get('cue_out') : sec;
-							$(this).text( convertTime(sec) );
-							_this.$el.find('.crop-slider').slider('values',0, sec );
-							_this.cueIn =sec;
-							_this.model.update({ 'cue_in' : sec });
-							_this.seek( sec );
-						}
-						this.blur();
-						return false;
-					}
-				}
-				else return false;
-			});
-			this.$el.find('.crop-time-right .time').unbind('keypress').keypress(function(e){
-				if((e.which >= 48 && e.which <= 58) || e.which == 13)
-				{
-					if( e.which == 13 )
-					{
-						var sec = _this.convertToSeconds( $(this).text() );
-					
-						if(sec === false)
-						{
-							$(this).text( convertTime(_this.model.get('cue_out')) );
-						}
-						else
-						{
-							sec = sec > _this.duration ? _this.duration : sec;
-							sec = sec < _this.model.get('cue_in') ? _this.model.get('cue_in') : sec;
-							$(this).text( convertTime(sec) );
-							_this.$el.find('.crop-slider').slider('values',1, sec );
-							_this.cueOut = sec;
-							_this.seek( Math.max(sec-5,_this.cueIn) );
-							_this.model.update({ 'cue_out' : sec });
-						}
-						this.blur();
-						return false;
-						
-					}
-				}
-				else return false;
-			});
-
-			//Temp fix, this should be removed
-			$('.time').mousedown(function(){$(this).focus();});
-		},
-		
-		convertToSeconds : function( string )
-		{
-			var st = string.split(/:/);
-			var flag = false;
-			var sec = 0;
-			
-			_.each( st.reverse(), function(number,i){
-				if(number.length > 2)
-				{
-					flag = true;
-					return false;
-				}
-				else
-				{
-					var num = parseInt(number,10);
-					if( !_.isNumber(num) )
-					{
-						flag = true;
-						return false;
-					}
-					else
-					{
-						if(i) sec += num * i * 60;
-						else sec += num;
-					}
-				}
-			});
-			if( flag ) return false;
-			else return sec;
-		},
-		
-		onCropSlide : function(e,ui)
-		{
-			this.$el.find('.crop-time-left .time').html( convertTime(ui.values[0]) );
-			this.$el.find('.crop-time-right .time').html( convertTime(ui.values[1]) );
-		},
-		
-		onCropStop : function(e,ui)
-		{
-			this.cueIn = ui.values[0];
-			this.cueOut = ui.values[1];
-			
-			if( !this.item_mode)
-			{
-				this.model.update({
-					'cue_in' : ui.values[0],
-					'cue_out' : ui.values[1]
-				});
-			}
-
-			this.popcorn.pause();
-			this.seek( ui.values[0] );
-		},
-		
-		getTemplate : function()
-		{
-			var html =
-			"<div class='player-control-inner'>"+
-			
-				"<div class='crop-wrapper'>"+
-					"<div class='crop-time-values clearfix'><span class='crop-time-left'>in [<span class='time' contenteditable='true'>0:00</span>]</span><span class='crop-time-right'>out [<span class='time' contenteditable='true'>0:00</span>]</span></div>"+
-					"<div class='crop-slider'></div>"+
-				"</div>"+
-				
-				"<div class='media-scrubber'></div>"+
-			
-				"<div class='control-panel-inner'>"+
-					"<a href='#' class='pause-play pull-left'><i class='icon-play icon-white'></i></a>"+
-					"<div class='pull-right'><span class='media-time-elapsed'>0:00</span> / <span class='media-time-duration'>0:00</span></div>"+
-				"</div>"+
-			
-			"</div>";
-			
-			return html;
-		}
-	});
+                return html;
+            }
+        }
+    });
 
 
-	return Player;
+    /*****************************
+
+        CONTROLS
+
+    *****************************/
+
+    Player.Views.Player.Controls = Player.Views.Player.Controls || {};
+
+    Player.Views.Player.Controls.none = Zeega.Backbone.View.extend({
+        className: "controls playback-controls controls-none",
+        item_mode: false,
+
+        initialize: function() {
+            if ( this.options.detached_controls ) {
+                this.$el.addClass("playback-layer-controls");
+            }
+
+            if ( this.model.get("uri") ) {
+                this.item_mode = true;
+            }
+            this.init();
+        },
+
+        init: function() {}
+    });
+
+    Player.Views.Player.Controls.simple = Player.Views.Player.Controls.none.extend({
+
+        className: "controls playback-controls controls-simple",
+
+        addPopcorn: function( pop ) {
+            this.popcorn = pop;
+            this.initPopcornEvents();
+        },
+
+        initPopcornEvents: function() {
+            var _this = this;
+
+            // TODO: Can this be DRY'ed out?
+            this.popcorn.on( "canplay", function() { _this.onCanPlay(); });
+            this.popcorn.on( "canplaythrough", function() { _this.onCanPlay(); });
+            this.popcorn.on( "ended", function() { _this.onEnded(); });
+            this.popcorn.on( "playing", function() { _this.onPlaying(); });
+            this.popcorn.on( "pause", function() { _this.onPause(); });
+        },
+
+        render: function() {
+            this.$el.html( this.getTemplate() );
+            return this;
+        },
+
+        events: {
+            "click": "playPause",
+            "mouseover": "onMouseover",
+            "mouseout": "onMouseout"
+        },
+
+        onCanPlay: function() {
+            this.updatePlayPauseIcon();
+            this.updateCues();
+        },
+
+        updateCues: function() {
+            var isItemMode = this.item_mode,
+                attrs = this.model.get("attr");
+
+            this.cueIn = isItemMode ? this.model.get("cue_in") : attrs.cue_in;
+            this.cueOut = isItemMode ? this.model.get("cue_out") : attrs.cue_out;
+
+            if ( !this.cueOut ) {
+                this.cueOut = this.duration;
+            }
+        },
+
+        playPause: function() {
+
+            if ( this.popcorn ) {
+                if ( this.popcorn.paused() ) {
+                    this.popcorn.play();
+                } else {
+                    this.popcorn.pause();
+                }
+                this.updatePlayPauseIcon();
+            }
+            // TODO: Why return false?
+            return false;
+        },
+
+        updatePlayPauseIcon: function() {
+            if ( this.popcorn ) {
+                this.$el.find(".pause-play i")
+                    .removeClass( !this.popcorn.paused() ? "icon-play" : "icon-pause" )
+                        .addClass( !this.popcorn.paused() ? "icon-pause" : "icon-play" );
+            }
+        },
+
+        onPlaying: function() {
+            // fade out after play
+            if ( this.model.get("control_fade") ) {
+                this.setFadeTimeout();
+            }
+            // TODO: Why is this called twice?
+            this.updatePlayPauseIcon();
+            this.updatePlayPauseIcon();
+        },
+
+        setFadeTimeout: function() {
+            if ( this.timer ) {
+                clearTimeout( this.timer );
+            }
+
+            this.timer = setTimeout(function() {
+                this.fadeOutControls();
+                clearTimeout( this.timer );
+            }.bind(this), 3500);
+        },
+
+        onMouseover: function() {
+            if ( this.model.get("control_fade") && !this.popcorn.paused() ) {
+                if ( this.timer ) {
+                    clearTimeout( this.timer );
+                }
+
+                this.fadeInControls();
+            }
+        },
+        onMouseout: function() {
+            if ( this.model.get("control_fade") && !this.popcorn.paused() ) {
+                this.setFadeTimeout();
+            }
+        },
+
+        fadeOutControls: function() {
+            var playControl = this.$el.find(".player-control-inner");
+
+            if ( playControl.is(":visible") && !this.popcorn.paused() ) {
+                playControl.fadeOut("slow");
+            }
+        },
+        fadeInControls: function() {
+            var playControl = this.$el.find(".player-control-inner");
+
+            if ( playControl.is(":hidden") ) {
+                playControl.fadeIn("fast");
+            }
+        },
+
+        onPause: function() {
+            if ( this.timer ) {
+                clearTimeout( this.timer );
+            }
+
+            // make sure  controls are visible
+            this.fadeInControls();
+            this.updatePlayPauseIcon();
+        },
+
+        onEnded: function() {
+            this.$el.find(".pause-play i").addClass("icon-play").removeClass("icon-pause");
+        },
+
+        getTemplate: function() {
+            var html = "<div class='player-control-inner'><a href='#' class='pause-play pull-left'><i class='icon-pause icon-white'></i></a></div>";
+
+            return html;
+        }
+    });
+
+    Player.Views.Player.Controls.standard = Player.Views.Player.Controls.simple.extend({
+
+        isSeeking: false,
+
+        className: "controls playback-controls controls-standard",
+
+        addPopcorn: function( pop ) {
+            this.popcorn = pop;
+            this.initPopcornEvents();
+        },
+
+        initPopcornEvents: function() {
+            var _this = this;
+
+            // TODO: same DRY-out concern as above
+            this.popcorn.on( "canplay", function() { _this.onCanPlay(); });
+            this.popcorn.on( "canplaythrough", function() { _this.onCanPlay(); });
+            this.popcorn.on( "ended", function() { _this.onEnded(); });
+            this.popcorn.on( "playing", function() { _this.onPlaying(); });
+            this.popcorn.on( "pause", function() { _this.onPause(); });
+        },
+
+        events: {
+            "click .pause-play": "playPause",
+            "mouseover": "onMouseover",
+            "mouseout": "onMouseout"
+        },
+
+        onCanPlay: function() {
+            this.updateDuration();
+            this.updateCues();
+            this.updatePlayPauseIcon();
+            this.initScrubber();
+        },
+
+        initScrubber: function() {
+            var _this = this;
+
+            this.$el.find(".media-scrubber").slider({
+                range: "min",
+                min: 0,
+                max: this.duration,
+
+                slide: function( e, ui ) {
+                    _this.scrub( ui.value );
+                },
+                stop: function( e, ui ) {
+                    _this.seek( ui.value );
+                }
+            });
+        },
+
+        updateDuration: function() {
+            this.duration = this.popcorn.duration();
+            this.$el.find(".media-time-duration").html( convertTime(this.duration) );
+        },
+        updateElapsed: function() {
+            var elapsed = this.popcorn.currentTime();
+            this.$el.find(".media-time-elapsed").html( convertTime( elapsed ) );
+            this.$el.find(".media-scrubber").slider("value", elapsed);
+        },
+
+        scrub: function( time ) {
+            var _this = this;
+            this.isSeeking = true;
+
+        },
+        seek: function( time ) {
+            var isPlaying = !this.popcorn.paused();
+
+            if ( isPlaying ) {
+                this.popcorn.pause();
+            }
+
+            if ( time < this.cueIn ) {
+                time = this.cueIn;
+            } else if ( time > this.cueOut ) {
+                time = this.cueOut;
+            }
+
+            this.$el.find(".media-scrubber").slider( "value", time );
+
+            this.popcorn.currentTime( time );
+
+            if ( isPlaying ) {
+                this.popcorn.play();
+            }
+        },
+
+        getTemplate: function() {
+            var html =
+            "<div class='player-control-inner'>"+
+                "<div class='media-scrubber'></div>"+
+                "<div class='control-panel-inner'>"+
+                    "<a href='#' class='pause-play pull-left'><i class='icon-pause icon-white'></i></a>"+
+                    "<div class='pull-right'><span class='media-time-elapsed'>0:00</span> / <span class='media-time-duration'>0:00</span></div>"+
+                "</div>"+
+            "</div>";
+
+            return html;
+        }
+    });
+
+    Player.Views.Player.Controls.editor = Player.Views.Player.Controls.standard.extend({
+
+        className: "controls playback-controls controls-editor",
+
+        initPopcornEvents: function() {
+            var _this = this;
+
+            // TODO: Same concern as above
+            this.popcorn.on( "canplay", function() { _this.onCanPlay(); });
+            this.popcorn.on( "canplaythrough", function() { _this.onCanPlay(); });
+            this.popcorn.on( "ended", function() { _this.onEnded(); });
+            this.popcorn.on( "timeupdate", function() { _this.updateElapsed(); });
+            this.popcorn.on( "playing", function() { _this.onPlaying(); });
+            this.popcorn.on( "pause", function() { _this.onPause(); });
+        },
+
+        events: {
+            "click .pause-play": "playPause",
+            "mouseover": "onMouseover",
+            "mouseout": "onMouseout",
+            "mousedown .progress-outer": "scrub"
+        },
+
+        onCanPlay: function() {
+            this.updateDuration();
+            this.updateCues();
+            this.updatePlayPauseIcon();
+
+            this.initScrubber();
+            this.initCropTool();
+        },
+
+        updateDuration: function() {
+            this.duration = this.popcorn.duration();
+            this.$el.find(".media-time-duration").html( convertTime(this.duration) );
+        },
+        updateElapsed: function() {
+            var elapsed = this.popcorn.currentTime();
+            this.$el.find(".media-time-elapsed").html( convertTime( elapsed ) );
+            this.$el.find(".media-scrubber").slider("value", elapsed);
+            if (elapsed >= this.cueOut) this.popcorn.pause();
+        },
+
+        initCropTool: function() {
+            var _this = this;
+
+            //this.cueIn = this.item_mode ? this.model.get("cue_in"): this.model.get("attr").cue_in;
+            //this.cueOut = (this.item_mode ? this.model.get("cue_out"): this.model.get("attr").cue_out) || this.duration;
+
+            this.$el.find(".crop-time-left .time").text( convertTime( this.cueIn ) );
+            this.$el.find(".crop-time-right .time").text( convertTime( this.cueOut ) );
+
+            this.$el.find(".crop-slider").slider({
+                range:true,
+                min:0,
+                max:_this.duration,
+                values: [ _this.cueIn , _this.cueOut ],
+                slide: function(e,ui) { _this.onCropSlide(e,ui); },
+                stop: function(e,ui) { _this.onCropStop(e,ui); }
+            });
+
+            this.$el.find(".crop-time-left .time").unbind("keypress").keypress(function(e) {
+                var sec;
+
+                // TODO: This needs refactoring
+                if ( (e.which >= 48 && e.which <= 58) || e.which == 13 ) {
+                    if ( e.which == 13 ) {
+                        sec = _this.convertToSeconds( $(this).text() );
+
+                        if ( sec === false ) {
+                            $(this).text( convertTime(_this.model.get("cue_in")) );
+                        } else {
+
+                            sec = sec < 0 ? 0: sec;
+                            sec = sec > _this.model.get("cue_out") ? _this.model.get("cue_out"): sec;
+                            $(this).text( convertTime(sec) );
+                            _this.$el.find(".crop-slider").slider("values",0, sec );
+                            _this.cueIn =sec;
+                            _this.model.update({ "cue_in": sec });
+                            _this.seek( sec );
+                        }
+                        this.blur();
+                        return false;
+                    }
+                }
+                else return false;
+            });
+            this.$el.find(".crop-time-right .time").unbind("keypress").keypress(function(e) {
+                var sec;
+
+                if ( (e.which >= 48 && e.which <= 58) || e.which == 13 ) {
+                    if ( e.which == 13 ) {
+                        sec = _this.convertToSeconds( $(this).text() );
+
+                        if ( sec === false ) {
+                            $(this).text( convertTime(_this.model.get("cue_out")) );
+                        } else {
+                            sec = sec > _this.duration ? _this.duration: sec;
+                            sec = sec < _this.model.get("cue_in") ? _this.model.get("cue_in"): sec;
+                            $(this).text( convertTime(sec) );
+                            _this.$el.find(".crop-slider").slider("values",1, sec );
+                            _this.cueOut = sec;
+                            _this.seek( Math.max(sec-5,_this.cueIn) );
+                            _this.model.update({ "cue_out": sec });
+                        }
+                        this.blur();
+                        return false;
+
+                    }
+                }
+                else return false;
+            });
+
+            //Temp fix, this should be removed
+            $(".time").mousedown(function() {
+                $(this).focus();
+            });
+        },
+
+        // TODO: If this is converting SMPTE strings, then I'd recommend
+        // using Popcorn.util.toSeconds(), as it's well tested
+        convertToSeconds: function( string ) {
+            var st = string.split(/:/),
+                flag = false,
+                sec = 0;
+
+            _.each( st.reverse(), function( number,i ) {
+                var num;
+
+                if ( number.length > 2 ) {
+                    flag = true;
+                    return false;
+                } else {
+                    num = parseInt(number,10);
+
+                    if ( !_.isNumber(num) ) {
+                        flag = true;
+                        return false;
+                    } else {
+                        if (i) {
+                            sec += num * i * 60;
+                        } else {
+                            sec += num;
+                        }
+                    }
+                }
+            });
+
+            // TODO: What does this mean??
+            if ( flag ) {
+                return false;
+            } else {
+                return sec;
+            }
+        },
+
+        onCropSlide: function( e, ui ) {
+            this.$el.find(".crop-time-left .time").html( convertTime(ui.values[0]) );
+            this.$el.find(".crop-time-right .time").html( convertTime(ui.values[1]) );
+        },
+
+        onCropStop: function( e, ui ) {
+            this.cueIn = ui.values[0];
+            this.cueOut = ui.values[1];
+
+            if ( !this.item_mode ) {
+                this.model.update({
+                    "cue_in": ui.values[0],
+                    "cue_out": ui.values[1]
+                });
+            }
+
+            this.popcorn.pause();
+            this.seek( ui.values[0] );
+        },
+
+        getTemplate: function() {
+            var html =
+            "<div class='player-control-inner'>" +
+
+                "<div class='crop-wrapper'>" +
+                    "<div class='crop-time-values clearfix'><span class='crop-time-left'>in [<span class='time' contenteditable='true'>0:00</span>]</span><span class='crop-time-right'>out [<span class='time' contenteditable='true'>0:00</span>]</span></div>" +
+                    "<div class='crop-slider'></div>" +
+                "</div>" +
+
+                "<div class='media-scrubber'></div>" +
+
+                "<div class='control-panel-inner'>" +
+                    "<a href='#' class='pause-play pull-left'><i class='icon-play icon-white'></i></a>" +
+                    "<div class='pull-right'><span class='media-time-elapsed'>0:00</span> / <span class='media-time-duration'>0:00</span></div>" +
+                "</div>" +
+
+            "</div>";
+
+            return html;
+        }
+    });
+
+
+    return Player;
 
 });
 
@@ -21157,7 +21285,7 @@ function( Zeega, Layer ) {
 
         // render from frame.
         render: function( oldID ) {
-            var commonLayers;
+            var commonLayers, advance;
             // if frame is completely loaded, then just render it
             // else try preloading the layers
             if ( this.ready ) {
@@ -21173,15 +21301,17 @@ function( Zeega, Layer ) {
                 // update status
                 this.status.set( "current_frame",this.id );
 
+                advance = this.get("attr").advance;
+
                 // TODO this needs to be able to pause and play
-                if ( this.get('attr').advance ) {
-                    var _this = this;
+                if ( advance ) {
+
                     _.delay(function() {
-                        _this.relay.set({ current_frame: _this.get('_next') });
-                    }, this.get('attr').advance );
+                        _this.relay.set({
+                            current_frame: this.get("_next")
+                        });
+                    }.bind(this), advance );
                 }
-
-
             } else {
                 this.renderOnReady = oldID;
             }
@@ -21349,7 +21479,7 @@ function( Zeega, Layer ) {
                     linkTo = [],
                     linkFrom = [];
 
-                _.each( linkLayers, function(layer){
+                _.each( linkLayers, function( layer ) {
                     // links that originate from this frame
                     if ( layer.get("attr").from_frame == frame.id ) {
                         linkTo.push( layer.get("attr").to_frame );
@@ -21813,836 +21943,861 @@ function(
 });
 
 /*
-	relay.js
+    relay.js
 
-	model that keeps track of player state, emits events, and relays commands to the player
+    model that keeps track of player state, emits events, and relays commands to the player
 
-	the same relay object lives in all frames and layers and can be listened to by any of them
+    the same relay object lives in all frames and layers and can be listened to by any of them
 
-	primarily used to relay commands from a layer to the project
+    primarily used to relay commands from a layer to the project
 */
 
 zeega.define('modules/player/relay',[
-	"zeega"
+    "zeega"
 ],
+function( Zeega ) {
 
-function(Zeega) {
+    var Relay = {};
 
-	var Relay = {};
+    Relay.Model = Zeega.Backbone.Model.extend({
 
-	Relay.Model = Zeega.Backbone.Model.extend({
+        defaults: {
+            current_frame: null,
+            current_frame_model: null
+        }
 
-		defaults: {
+    });
 
-			current_frame: null,
-			current_frame_model: null
-
-		}
-
-	});
-
-	return Relay;
+    return Relay;
 });
-/*
-	relay.js
 
-	model that keeps track of player state, emits events, and relays commands to the player
+/*
+    relay.js
+
+    model that keeps track of player state, emits events, and relays commands to the player
 */
 
 zeega.define('modules/player/status',[
-	"zeega"
+    "zeega"
 ],
+function( Zeega ) {
 
-function(Zeega) {
+    var Status = {};
 
-	var Status = {};
+    Status.Model = Zeega.Backbone.Model.extend({
 
-	Status.Model = Zeega.Backbone.Model.extend({
+        silent: false,
 
-		silent: false,
+        defaults: {
 
-		defaults: {
+            previous_frame: null,
+            previous_frame_model: null,
 
-			previous_frame: null,
-			previous_frame_model: null,
+            current_frame: null,
+            current_frame_model: null,
 
-			current_frame: null,
-			current_frame_model: null,
+            current_sequence: null,
+            current_sequence_model: null,
 
-			current_sequence: null,
-			current_sequence_model: null,
+            current_layers: []
+        },
 
-			current_layers: []
-		},
+        initialize: function() {
+            this.on("change:current_frame",this.onChangeFrame,this);
+        },
 
-		initialize: function() {
-			this.on('change:current_frame',this.onChangeFrame,this);
-		},
+        onChangeFrame: function( info ) {
+            var frame, sequence,
+                currentFrame = this.get("current_frame"),
+                currentFrameModel = this.get("current_frame_model");
 
-		onChangeFrame: function(info) {
-		
-			/* update the previous frame data */
-			if(this.get('current_frame'))
-			{
-				this.set({
-					previous_frame: this.get('current_frame'),
-					previous_frame_model: this.get('current_frame_model')
-				},{ silent: true });
-			}
-			/* update the current_frame_model */
-			var frameModel = this.project.frames.get( this.get('current_frame') );
+            /* update the previous frame data */
+            if ( currentFrame ) {
+                this.set({
+                    previous_frame: currentFrame,
+                    previous_frame_model: currentFrameModel
+                }, { silent: true });
+            }
+            /* update the current_frame_model */
+            frame = this.project.frames.get( currentFrame );
+            sequence = frame.get("_sequence");
 
-			this.set({ 'current_frame_model': frameModel },{silent:true});
-			this.emit('frame_rendered', _.extend({}, frameModel.toJSON(), {layers: frameModel.layers.toJSON()} )  );
+            this.set({ "current_frame_model": frame }, { silent: true });
+            this.emit( "frame_rendered",
+                _.extend({}, frame.toJSON(), {
+                    layers: frame.layers.toJSON()
+                })
+            );
 
-			/* check to see if the sequence entered is new */
-			if(this.get('current_sequence') != frameModel.get('_sequence')) {
-				this.set({
-					current_sequence: frameModel.get('_sequence'),
-					current_sequence_model: this.project.sequences.get( frameModel.get('_sequence') )
-				});
+            /* check to see if the sequence entered is new */
+            // TODO: Investigate value of "sequence"
+            if ( this.get("current_sequence") != sequence ) {
+                this.set({
+                    current_sequence: sequence,
+                    current_sequence_model: this.project.sequences.get( sequence )
+                });
 
-				this.emit('sequence_enter', _.extend({},this.get('current_sequence_model').toJSON() ) );
-			}
+                this.emit( "sequence_enter",
+                    _.extend({}, this.get("current_sequence_model").toJSON() )
+                );
+            }
 
-		},
+        },
 
-		/*
-			emit the state change to the external api
-		*/
-		emit: function(e,info) {
-			if(!this.silent) this.project.trigger(e,info);
-		},
+        /*
+            emit the state change to the external api
+        */
+        emit: function( e, info ) {
+            if ( !this.silent ) {
+                this.project.trigger( e, info );
+            }
+        },
 
-		/*
-			remotely trigger events internally to the player
-		*/
-		remote: function(e,info) {
+        /*
+            remotely trigger events internally to the player
+        */
+        remote: function( e, info ) {
 
-		}
+        }
+    });
 
-	});
-
-	return Status;
+    return Status;
 });
+
 zeega.define('modules/player/player-layout',[
-	"zeega"
+    "zeega"
 ],
+function( Zeega ) {
+    /*
+        the player layout
 
-function(Zeega )
-{
-	/*
-		the player layout
+        # contains resize logic
+        # renders the window target for frames/layers
 
-		# contains resize logic
-		# renders the window target for frames/layers
+    */
+    var Player = {};
 
-	*/
-	var Player = {};
+    Player.Layout = Zeega.Backbone.Layout.extend({
 
-	Player.Layout = Zeega.Backbone.Layout.extend({
+        fetch: function( path ) {
+            // Initialize done for use in async-mode
+            var done;
 
-		fetch: function(path) {
-			// Initialize done for use in async-mode
-			var done;
+            // Concatenate the file extension.
+            path = "app/templates/layouts/"+ path + ".html";
 
-			// Concatenate the file extension.
-			path = 'app/templates/layouts/'+ path + ".html";
+            // If cached, use the compiled template.
+            if ( JST[ path ] ) {
+                return JST[ path ];
+            } else {
+                // Put fetch into `async-mode`.
+                done = this.async();
 
-			// If cached, use the compiled template.
-			if (JST[path]) {
-				return JST[path];
-			} else {
-				// Put fetch into `async-mode`.
-				done = this.async();
+                // Seek out the template asynchronously.
+                return $.ajax({ url: Zeega.root + path }).then(function(contents) {
+                    done( JST[path] = _.template(contents) );
+                });
+            }
+        },
 
-				// Seek out the template asynchronously.
-				return $.ajax({ url: Zeega.root + path }).then(function(contents) {
-					done(JST[path] = _.template(contents));
-				});
-			}
-		},
+        template: "player-layout",
+        className: "ZEEGA-player",
 
-		template: 'player-layout',
-		className: 'ZEEGA-player',
+        initialize: function() {
+            // debounce the resize function so it doesn"t bog down the browser
+            var divId = this.model.get("div_id"),
+                lazyResize = _.debounce(function() {
+                    this.resizeWindow();
+                }.bind(this), 300);
 
-		initialize: function() {
-			var _this = this;
-			// debounce the resize function so it doesn't bog down the browser
-			var lazyResize = _.debounce(function(){ _this.resizeWindow(); }, 300);
-			// attempt to detect if the parent container is being resized
-			if ( !this.model.get('div_id') ) {
-				$(window).resize(lazyResize);
-			}
-		},
+            // attempt to detect if the parent container is being resized
+            $( divId ? "#" + divId : window ).resize( lazyResize );
+        },
 
-		serialize: function() {
-			return this.model.toJSON();
-		},
+        serialize: function() {
+            return this.model.toJSON();
+        },
 
-		afterRender: function() {
-			// correctly size the player window
-			this.$('.ZEEGA-player-window').css( this.getWindowSize() );
-			this.setControls();
-			this.resizeWindow();
-		},
+        afterRender: function() {
+            // correctly size the player window
+            this.$(".ZEEGA-player-window").css( this.getWindowSize() );
+            this.setControls();
+        },
 
-		setControls: function() {
-			var _this = this;
+        setControls: function() {
+            // TODO: Investigate whether or not this-alias can be safely
+            // replaced by bind(this)
+            var next = this.model.get("next"),
+                prev = this.model.get("prev"),
+                _this = this;
 
-			if ( this.model.get('next') && $(this.model.get('next')).length ) {
-				$(this.model.get('next')).click(function(){
-					_this.model.cueNext();
-					return false;
-				});
-			}
-			if ( this.model.get('prev') && $(this.model.get('prev')).length ) {
-				$(this.model.get('prev')).click(function(){
-					_this.model.cuePrev();
-					return false;
-				});
-			}
-		},
+            if ( next && next.length ) {
+                $( next ).click(function() {
+                    _this.model.cueNext();
+                    return false;
+                });
+            }
+            if ( prev && prev.length ) {
+                $( prev ).click(function() {
+                    _this.model.cuePrev();
+                    return false;
+                });
+            }
+        },
 
-		resizeWindow: function() {
-			// animate the window size in place
-			var css = this.getWindowSize();
-			this.$('.ZEEGA-player-window').animate( css );
-			this.model.trigger('window_resized', css );
-			Zeega.trigger('resize_window',css);
-		},
+        resizeWindow: function() {
+            // animate the window size in place
+            var css = this.getWindowSize();
+            this.$(".ZEEGA-player-window").animate( css );
+            this.model.trigger( "window_resized", css );
+            Zeega.trigger( "resize_window", css );
+        },
 
-		// calculate and return the correct window size for the player window
-		// uses the player's window_ratio attribute
-		getWindowSize : function()
-		{
-			var css = {};
-			var winWidth =  this.model.get('div_id') ? $('#'+ this.model.get('div_id')).width() : window.innerWidth;
-			var winHeight = this.model.get('div_id') ? $('#'+ this.model.get('div_id')).height() : window.innerHeight;
-			var winRatio = winWidth / winHeight;
+        // calculate and return the correct window size for the player window
+        // uses the player"s window_ratio attribute
+        getWindowSize: function() {
+            // TODO: This could be refactored a bit more
+            var css = {},
+                divId = this.model.get("div_id"),
+                windowRatio = this.model.get("window_ratio"),
+                winWidth = divId ? $( "#" + divId ).width(): window.innerWidth,
+                winHeight = divId ? $( "#" + divId ).height(): window.innerHeight,
+                actualRatio = winWidth / winHeight;
 
-			if(this.model.get('window_fit'))
-			{
-				if( winRatio > this.model.get('window_ratio') )
-				{
-					css.width = winWidth + 'px';
-					css.height = winWidth / this.model.get('window_ratio') +'px';
-				}
-				else
-				{
-					css.width = winHeight * this.model.get('window_ratio') +'px';
-					css.height = winHeight +'px';
-				}
-			}
-			else
-			{
-				if( winRatio > this.model.get('window_ratio') )
-				{
-					css.width = winHeight * this.model.get('window_ratio') +'px';
-					css.height = winHeight +'px';
-				}
-				else
-				{
-					css.width = winWidth + 'px';
-					css.height = winWidth / this.model.get('window_ratio') +'px';
-				}
-			}
-			return css;
-		}
-	});
+            if ( this.model.get("window_fit") ) {
+                if ( actualRatio > windowRatio ) {
+                    css.width = winWidth;
+                    css.height = winWidth / windowRatio;
+                } else {
+                    css.width = winHeight * windowRatio;
+                    css.height = winHeight;
+                }
+            } else {
+                if ( actualRatio > windowRatio ) {
+                    css.width = winHeight * windowRatio;
+                    css.height = winHeight;
+                } else {
+                    css.width = winWidth;
+                    css.height = winWidth / windowRatio;
+                }
+            }
 
-	return Player;
+            // Append unit to calculated value
+            css.width += "px";
+            css.height += "px";
+
+            return css;
+        }
+    });
+
+    return Player;
 });
+
 zeega.define('modules/player/player',[
-	"zeega",
-	"zeega_dir/player/frame",
+    "zeega",
+    "zeega_dir/player/frame",
 
-	// parsers
-	"zeega_dir/parsers/_all",
+    // parsers
+    "zeega_dir/parsers/_all",
 
-	"modules/player/relay",
-	"modules/player/status",
+    "modules/player/relay",
+    "modules/player/status",
 
-	"modules/player/player-layout"
+    "modules/player/player-layout"
 ],
 
-function(Zeega, Frame, Parser, Relay, Status, PlayerLayout)
-{
-	/**
-	Player
-
-	can accept:
-	
-	- valid ZEEGA data (json)
-	
-	- valid url returning valid ZEEGA data
-	
-	exposes the player API (play, pause, stop, destroy, getCitations, etc) // to be documented further
-	
-	broadcasts events (ready, play, pause, stop, timeupdate, frameadvance, etc) // to be documented further
-	
-	is the only external contact point
-
-		// initialize player
-		var player = new Player.Model({ url: "<valid url>"} });
-		// or
-		var player = new Player.Model({ data: {<valid data>} });
-		// or
-		var player  = new Player.Model();
-		player.on('all', fxn); // log all events
-		player.load({data: {<valid data>}})
-
-	@class Player
-	@constructor
-	*/
-
-	Player = Zeega.Backbone.Model.extend({
-
-		ready : false,			// the player is parsed and in the dom. can call play play. layers have not been preloaded yet
-		complete : false,		// have all layers been preloaded
-		initialized : false,	// has the project data been loaded and parsed
-		state : 'paused',
-
-		// default settings -  can be overridden by project data
-		defaults : {
-			/**
-			Sets the player to play when data is successfully parsed and rendered to the dom
-
-			@property autoplay
-			@type Boolean
-			@default true
-			**/
-			autoplay : true,
-			/**
-			Sets the collection project playback. 'standard', 'slideshow'
-
-			@property collection_mode
-			@type String
-			@default 'standard'
-			**/
-			collection_mode : 'standard',
-
-			start_slide : null,
-			start_slide_id : null,
-
-			/**
-			Time to wait after player is ready before playing project
-
-			overrides any overlay attributes
-
-			@property delay
-			@type Integer
-			@default 0
-			**/
-			delay : 0,
-
-			/**
-			If there are overlays, do they fade out?
-
-			@property fade_overlays
-			@type Boolean
-			@default true
-			**/
-			fade_overlays : true,
-			/**
-			ms the player takes to fade in
-
-			@property fadeIn
-			@type Integer
-			@default 500
-			**/
-			fadeIn : 500,
-			/**
-			ms the player takes to fade out
-
-			@property fadeOut
-			@type Integer
-			@default 500
-			**/
-			fadeOut : 500,
-			/**
-			Sets if the player be set to fullscreen
-
-			@property fullscreenEnable
-			@type Boolean
-			@default true
-			**/
-			fullscreenEnable : true,
-			/**
-			Turns the keyboard controls on or off
-
-			@property keyboard
-			@type Boolean
-			@default true
-			**/
-			keyboard : true,
-			/**
-			Sets the player mode
-
-			@property mode
-			@type String
-			@default 'standalone'
-			@deprecated
-			**/
-			mode :'standalone',
-
-			/**
-			selector of element used to cueNext the Zeega
-			
-			@property next
-			@type String
-			@default null
-			**/
-			next : null,
-			/**
-			The number of frames to attempt preload on
-			
-			@property preload_ahead
-			@type Integer
-			@default 2
-			**/
-			preload_ahead : 2,
-			
-			/**
-			selector of element used to cuePrev the Zeega
-			
-			@property prev
-			@type String
-			@default null
-			**/
-			prev : null,
-
-			/**
-			The frame id to start the player
-			
-			@property start_frame
-			@type Integer
-			@default null
-			**/
-			start_frame : null,
-			/**
-			The id of the target div to draw the player into
-			
-			@property div
-			@type String
-			@default null
-			**/
-			div_id : null,
-			/**
-			Defines whether or not the player is fullscreen or scales to fit the browser.
-
-			@property window_fit
-			@type Boolean
-			@default false
-			**/
-			window_fit : false,
-			/**
-			Defines aspect ratio of the Zeega project
-
-			@property window_ratio
-			@type Float
-			@default 4/3
-			**/
-			window_ratio : 4/3
-		},
-
-
-		/**
-		* initialize the zeega player:
-		*
-		* can be initialized like so:
-		*
-		* var player = new Player.Model({ url: "<valid url>"} });
-		* var player = new Player.Model({ data: {<valid data>} });
-		*
-		* or
-		*
-		* var player  = new Player.Model();
-		* player.on('all', fxn); // log all events
-		* player.load({data: {<valid data>}})
-		*/
-
-		initialize : function( obj ) {
-			this.relay = new Relay.Model();
-			this.status = new Status.Model();
-			this.status.project = this;
-			if( !_.isUndefined(obj) ) this.load(obj); // allow for load later
-		},
-
-		/**
-		* load
-		* loads the project with data or supplied project_url
-		*
-		* @method load
-		* @param {Object} setup Setup object
-		* @param {String} [setup.project_url] A complete project_url pointing to a valid Zeega project data file.
-		* @param {Object} [setup.data]A valid Zeega project data object.
-		*/
-
-		load : function( obj )
-		{
-			this.off('data_loaded', this.start); // cancel previous listeners
-			this.on('data_loaded', this.start, this); // make a new listener
-			// this if may be able to be replaced by a _.once(**)
-			if( !this.initialized )
-			{
-				var _this = this;
-				this.set(obj,{silent:true}); // overwrite project settings and add data
-				
-				if( obj && obj.data && _.isObject( obj.data ) )
-				{
-					this._dataDetect(obj.data);
-				}
-				else if( obj && obj.url && _.isString( obj.url ) )
-				{
-					// try to load project from project_url
-					this.url = obj.url;
-					this.fetch({silent: true})
-						.success(function(res){
-							_this._dataDetect(res);
-						})
-						.error(function(){ _this._onError('3 - fetch error. bad project_url?'); });
-				}
-				else this._onError('1 - invalid or missing data. could be setting up player. nonfatal.');
-			}
-			else this._onError('2 - already loaded');
-		},
-
-		_dataDetect : function(res)
-		{
-			var _this = this;
-			var parsed;
-			//determine which parser to use
-			_.each(Parser,function(p){
-				if(p.validate(res))
-				{
-					console.log('parsed using: '+ p.name);
-					// parse the response
-					parsed = p.parse(res, _this.toJSON() );
-					return false;
-				}
-			});
-
-			if( !_.isUndefined(parsed) )
-			{
-				// continue loading the player
-				_this.set( parsed, {silent:true} );
-				parseProject( _this );
-				_this._listen();
-			}
-			else _this._onError('4 - no valid parser found');
-		},
-
-		_listen : function()
-		{
-			var _this = this;
-			this.on('cue_frame', this.cueFrame, this);
-
-			// relays
-			this.relay.on('change:current_frame', this._remote_cueFrame, this);
-
-		},
-
-		_remote_cueFrame: function( info, id ) {
-			this.cueFrame(id);
-		},
-
-		// renders the player to the dom // this could be a _.once
-		render : function()
-		{
-			var _this = this;
-			this.Layout = new PlayerLayout.Layout({
-				model: this,
-				attributes: {
-					id : 'ZEEGA-player-'+ this.id,
-					'data-projectID' : this.id
-				}
-			});
-			// draw the player in to the target div if defined. or append to the body
-			if( this.get('div_id') )
-			{
-				$('#'+ this.get('div_id')).css('position','relative').html(this.Layout.el);
-			}
-			else $('body').append(this.Layout.el);
-			this.Layout.render();
-			
-			_.delay( function(){_this.onRendered();},100);
-			
-		},
-
-		_fadeIn : function()
-		{
-			this.Layout.$el.fadeTo('fast',1);
-		},
-
-		onRendered : function()
-		{
-			this.ready = true;
-			this._initEvents(); // this should be elsewhere. in an onReady fxn?
-			this.status.emit('ready');
-
-			this.preloadFramesFrom( this.get('start_frame') );
-
-			if( this.get('autoplay') ) this.play();
-		},
-
-		_initEvents : function()
-		{
-			var _this = this;
-			if( this.get('keyboard') )
-			{
-				$(window).keyup(function(e){
-					switch( e.which )
-					{
-						case 37: // left arrow
-							_this.cuePrev();
-							break;
-						case 39: // right arrow
-							_this.cueNext();
-							break;
-						case 32: // spacebar
-							_this.playPause();
-							break;
-					}
-				});
-			}
-		},
-
-		start : function()
-		{
-			this.render();
-		},
-
-		// if the player is paused, then play the project
-		// if the player is not rendered, then render it first
-		/**
-		* play
-		* plays the project
-		* -if the player is paused, then play the project
-		* -if the player is not rendered, then render it first
-		*
-		* @method play
-		*/
-
-		play : function()
-		{
-			if( !this.ready )
-			{
-				this.render(); // render the player first!
-			}
-			else if( this.state == 'paused' )
-			{
-				this._fadeIn();
-				if( this.status.get('current_frame') ) {
-					this.state ='playing';
-					this.status.emit('play');
-					this.status.get('current_frame_model').play();
-				}
-				// if there is no info on where the player is or where to start go to first frame in project
-				if( _.isNull(this.status.get('current_frame')) && _.isNull( this.get('start_frame') ) )
-				{
-					this.cueFrame( this.get('sequences')[0].frames[0] );
-				}
-				else if( _.isNull(this.status.get('current_frame')) && !_.isNull( this.get('start_frame') ) && this.frames.get( this.get('start_frame') ) )
-				{
-					this.cueFrame( this.get('start_frame') );
-				}
-				else if( !_.isNull(this.status.get('current_frame')) )
-				{
-					// unpause the player
-				}
-				else this._onError('3 - could not play');
-			}
-		},
-
-		// if the player is playing, pause the project
-		pause : function()
-		{
-			if( this.state == 'playing' )
-			{
-				this.state ='paused';
-				// pause each frame - layer
-				this.status.get('current_frame_model').pause();
-				// pause auto advance
-				this.status.emit('pause');
-			}
-		},
-
-		playPause : function() {
-			if( this.state == 'paused' ) this.play();
-			else this.pause();
-		},
-
-		// goes to the next frame after n ms
-		cueNext : function(ms) {
-			this.cueFrame( this.status.get('current_frame_model').get('_next'), ms );
-		},
-
-		// goes to the prev frame after n ms
-		cuePrev : function(ms) {
-			this.cueFrame( this.status.get('current_frame_model').get('_prev'), ms );
-		},
-
-		// goes to specified frame after n ms
-		cueFrame : function( id, ms) {
-			if( !_.isUndefined(id) && !_.isUndefined( this.frames.get(id) ) )
-			{
-				var _this = this;
-				var time = ms || 0;
-				if( time !== 0 ) _.delay(function(){ _this._goToFrame(id); }, time);
-				else this._goToFrame(id);
-			}
-		},
-
-		// should this live in the cueFrame method so it's not exposed?
-		_goToFrame :function(id) {
-			this.preloadFramesFrom( id );
-			var oldID;
-			if(this.status.get('current_frame'))
-			{
-				this.status.get('current_frame_model').exit( id );
-				oldID = this.status.get('current_frame_model').id;
-			}
-			// unrender current frame
-			// swap out current frame with new one
-			this.status.set('current_frame', id);
-			
-			// render current frame // should trigger a frame rendered event when successful
-			this.status.get('current_frame_model').render( oldID );
-
-			if( this.state != 'playing' )
-			{
-				this.state = 'playing';
-				this.status.emit('play');
-			}
-		},
-
-		preloadFramesFrom : function( id )
-		{
-			var _this = this;
-			var frame = this.frames.get( id );
-			_.each( frame.get('preload_frames'), function(frameID){
-				_this.frames.get(frameID).preload();
-			});
-		},
-
-		// returns project metadata
-		getProjectData : function()
-		{
-			var frames = this.frames.map(function(frame){
-				return _.extend({},
-					frame.toJSON(),
-					{ layers: frame.layers.toJSON() }
-				);
-			});
-			return _.extend({},
-				this.toJSON(),
-				{ frames : frames }
-			);
-		},
-
-		getFrameData : function()
-		{
-			var _this = this;
-			if( this.status.get('current_frame') ) return _.extend({},
-				_this.status.get('current_frame_model').toJSON(),
-				{ layers: _this.status.get('current_frame_model').layers.toJSON() }
-			);
-			return false;
-		},
-
-		// returns the frame structure for the project // not implemented
-		getProjectTree : function()
-		{
-			return false;
-		},
-
-		// completely obliterate the player. triggers event
-		destroy : function()
-		{
-			var _this = this;
-			this.Layout.$el.fadeOut( this.get('fadeOut'), function(){
-				// destroy all layers before calling player_destroyed
-				_this.frames.each(function(frame){ frame.destroy(); });
-				_this.status.emit('player_destroyed');
-			});
-		},
-
-		/**
-		resize the players based on the current browser window dimensions
-
-		@method fitPlayer
-		**/
-		fitWindow : function()
-		{
-			this.Layout.resizeWindow();
-		},
-
-		/**
-		Fired when an error occurs...
-
-		@event onError
-		@param {String} str A description of the error
-		**/
-		_onError : function(str)
-		{
-			this.status.emit('error', str);
-			console.log('Error code: ' + str );
-		},
-
-		parse : function(res)
-		{
-			// parses zeega collections pulled from the library api
-			if( res.items && res.items[0].child_items)
-			{
-				res = res.items[0];
-				res.items = res.child_items;
-			}
-			return res;
-		}
-
-	});
-
-	/*
-		parse the project and trigger data_loaded when finished
-
-		private
-	*/
-	var parseProject = function( player )
-	{
-		addTargetDivToLayers(player.get('layers'), player.get('div_id'));
-		
-		var frames = new Frame.Collection( player.get('frames') );
-		
-		frames.relay = player.relay;
-		frames.status = player.status;
-
-		frames.load( player.get('sequences'), player.get('layers'), player.get('preload_ahead'), _ );
-		
-		player.sequences = new Zeega.Backbone.Collection(player.get('sequences'));
-		player.frames = frames;
-
-		// set start frame
-		if(_.isNull(player.get('start_frame')) || _.isUndefined( player.frames.get(player.get('start_frame'))) )
-		{
-			player.set({'start_frame': player.get('sequences')[0].frames[0]},{silent:true});
-		}
-
-		player.initialized = true;
-		player.status.emit('data_loaded');
-	};
-
-	var addTargetDivToLayers = function(layerArray, targetDiv)
-	{
-		_.each(layerArray, function(layer){
-			layer.target_div = targetDiv;
-		});
-	};
-
-	Zeega.player = Player;
-
-	return Zeega;
+function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
+    /**
+    Player
+
+    can accept:
+
+    - valid ZEEGA data (json)
+
+    - valid url returning valid ZEEGA data
+
+    exposes the player API (play, pause, stop, destroy, getCitations, etc) // to be documented further
+
+    broadcasts events (ready, play, pause, stop, timeupdate, frameadvance, etc) // to be documented further
+
+    is the only external contact point
+
+        // initialize player
+        var player = new Player.Model({ url: "<valid url>"} });
+        // or
+        var player = new Player.Model({ data: {<valid data>} });
+        // or
+        var player  = new Player.Model();
+        player.on("all", fxn); // log all events
+        player.load({data: {<valid data>}})
+
+    @class Player
+    @constructor
+    */
+
+    Player = Zeega.Backbone.Model.extend({
+
+        ready: false,          // the player is parsed and in the dom. can call play play. layers have not been preloaded yet
+        complete: false,       // have all layers been preloaded
+        initialized: false,    // has the project data been loaded and parsed
+        state: "paused",
+
+        // default settings -  can be overridden by project data
+        defaults: {
+            /**
+            Sets the player to play when data is successfully parsed and rendered to the dom
+
+            @property autoplay
+            @type Boolean
+            @default true
+            **/
+            autoplay: true,
+            /**
+            Sets the collection project playback. "standard", "slideshow"
+
+            @property collection_mode
+            @type String
+            @default "standard"
+            **/
+            collection_mode: "standard",
+
+            start_slide: null,
+            start_slide_id: null,
+
+            /**
+            Time to wait after player is ready before playing project
+
+            overrides any overlay attributes
+
+            @property delay
+            @type Integer
+            @default 0
+            **/
+            delay: 0,
+
+            /**
+            If there are overlays, do they fade out?
+
+            @property fade_overlays
+            @type Boolean
+            @default true
+            **/
+            fade_overlays: true,
+            /**
+            ms the player takes to fade in
+
+            @property fadeIn
+            @type Integer
+            @default 500
+            **/
+            fadeIn: 500,
+            /**
+            ms the player takes to fade out
+
+            @property fadeOut
+            @type Integer
+            @default 500
+            **/
+            fadeOut: 500,
+            /**
+            Sets if the player be set to fullscreen
+
+            @property fullscreenEnable
+            @type Boolean
+            @default true
+            **/
+            fullscreenEnable: true,
+            /**
+            Turns the keyboard controls on or off
+
+            @property keyboard
+            @type Boolean
+            @default true
+            **/
+            keyboard: true,
+            /**
+            Sets the player mode
+
+            @property mode
+            @type String
+            @default "standalone"
+            @deprecated
+            **/
+            mode:"standalone",
+
+            /**
+            selector of element used to cueNext the Zeega
+
+            @property next
+            @type String
+            @default null
+            **/
+            next: null,
+            /**
+            The number of frames to attempt preload on
+
+            @property preload_ahead
+            @type Integer
+            @default 2
+            **/
+            preload_ahead: 2,
+
+            /**
+            selector of element used to cuePrev the Zeega
+
+            @property prev
+            @type String
+            @default null
+            **/
+            prev: null,
+
+            /**
+            The frame id to start the player
+
+            @property start_frame
+            @type Integer
+            @default null
+            **/
+            start_frame: null,
+            /**
+            The id of the target div to draw the player into
+
+            @property div
+            @type String
+            @default null
+            **/
+            div_id: null,
+            /**
+            Defines whether or not the player is fullscreen or scales to fit the browser.
+
+            @property window_fit
+            @type Boolean
+            @default false
+            **/
+            window_fit: false,
+            /**
+            Defines aspect ratio of the Zeega project
+
+            @property window_ratio
+            @type Float
+            @default 4/3
+            **/
+            window_ratio: 4/3
+        },
+
+
+        /**
+        * initialize the zeega player:
+        *
+        * can be initialized like so:
+        *
+        * var player = new Player.Model({ url: "<valid url>"} });
+        * var player = new Player.Model({ data: {<valid data>} });
+        *
+        * or
+        *
+        * var player  = new Player.Model();
+        * player.on("all", fxn); // log all events
+        * player.load({data: {<valid data>}})
+        */
+
+        initialize: function( obj ) {
+            this.relay = new Relay.Model();
+            this.status = new Status.Model();
+            this.status.project = this;
+            if ( obj !== undefined ) {
+                this.load( obj ); // allow for load later
+            }
+        },
+
+        /**
+        * load
+        * loads the project with data or supplied project_url
+        *
+        * @method load
+        * @param {Object} setup Setup object
+        * @param {String} [setup.project_url] A complete project_url pointing to a valid Zeega project data file.
+        * @param {Object} [setup.data]A valid Zeega project data object.
+        */
+
+        load: function( obj ) {
+            var _this = this,
+                error;
+
+            this.off( "data_loaded", this.start ); // cancel previous listeners
+            this.on( "data_loaded", this.start, this ); // make a new listener
+            // this if may be able to be replaced by a _.once(**)
+            if ( !this.initialized ) {
+                this.set( obj, { silent: true }); // overwrite project settings and add data
+
+                if ( obj && obj.data && _.isObject( obj.data ) ) {
+                    this._dataDetect( obj.data );
+                } else if ( obj && obj.url && _.isString( obj.url ) ) {
+                    // try to load project from project_url
+                    this.url = obj.url;
+                    this.fetch({ silent: true })
+                        .success(function( res ) {
+                            _this._dataDetect(res);
+                        })
+                        .error(function() {
+                            _this._onError("3 - fetch error. bad project_url?");
+                        });
+                } else {
+                    error = "1 - invalid or missing data. could be setting up player. nonfatal.";
+                }
+            } else {
+                error = "2 - already loaded";
+            }
+
+            if ( error ) {
+                this._onError( error );
+            }
+        },
+
+        _dataDetect: function( res ) {
+            var _this = this,
+                parsed;
+
+            // determine which parser to use
+            _.each( Parser,function( p ) {
+                if ( p.validate(res) ) {
+                    console.log( "parsed using: " + p.name );
+                    // parse the response
+                    parsed = p.parse( res, _this.toJSON() );
+                    return false;
+                }
+            });
+
+            if ( parsed !== undefined ) {
+                // continue loading the player
+                this.set( parsed, { silent: true } );
+                parseProject( this );
+                this._listen();
+            }
+            else this._onError("4 - no valid parser found");
+        },
+
+        _listen: function() {
+            this.on( "cue_frame", this.cueFrame, this );
+
+            // relays
+            this.relay.on( "change:current_frame", this._remote_cueFrame, this );
+        },
+
+        _remote_cueFrame: function( info, id ) {
+            this.cueFrame(id);
+        },
+
+        // renders the player to the dom // this could be a _.once
+        render: function() {
+            var divId = this.get('div_id');
+
+            this.Layout = new PlayerLayout.Layout({
+                model: this,
+                attributes: {
+                    id: "ZEEGA-player-" + this.id,
+                    "data-projectID": this.id
+                }
+            });
+            // draw the player in to the target div if defined. or append to the body
+            if ( divId ) {
+                $("#" + divId ).css( "position", "relative" ).html( this.Layout.el );
+            }
+            else {
+                $("body").append( this.Layout.el );
+            }
+
+            this.Layout.render();
+
+            _.delay(function() {
+                this.onRendered();
+            }.bind(this), 100);
+        },
+
+        _fadeIn: function() {
+            this.Layout.$el.fadeTo( "fast", 1 );
+        },
+
+        onRendered: function() {
+            this.ready = true;
+            this._initEvents(); // this should be elsewhere. in an onReady fxn?
+            this.status.emit("ready");
+
+            this.preloadFramesFrom( this.get("start_frame") );
+
+            if ( this.get("autoplay") ) {
+                this.play();
+            }
+        },
+
+        _initEvents: function() {
+            var _this = this;
+
+            if ( this.get("keyboard") ) {
+                $(window).keyup(function( event ) {
+                    switch( event.which ) {
+                        case 37: // left arrow
+                            _this.cuePrev();
+                            break;
+                        case 39: // right arrow
+                            _this.cueNext();
+                            break;
+                        case 32: // spacebar
+                            _this.playPause();
+                            break;
+                    }
+                });
+            }
+        },
+
+        start: function() {
+            this.render();
+        },
+
+        // if the player is paused, then play the project
+        // if the player is not rendered, then render it first
+        /**
+        * play
+        * plays the project
+        * -if the player is paused, then play the project
+        * -if the player is not rendered, then render it first
+        *
+        * @method play
+        */
+
+        play: function() {
+            var currentFrame = this.status.get("current_frame"),
+                startFrame = this.get("start_frame"),
+                isCurrentNull, isStartNull;
+
+            if ( !this.ready ) {
+                this.render(); // render the player first!
+            }
+            else if ( this.state == "paused" ) {
+                this._fadeIn();
+                if ( currentFrame ) {
+                    this.state = "playing";
+                    this.status.emit("play");
+                    this.status.get("current_frame_model").play();
+                }
+
+                // TODO: Find out what values currentFrame and startFrame could possibly be
+                // eg. current_frame, start_frame
+
+                isCurrentNull = currentFrame === null;
+                isStartNull = startFrame === null;
+
+                // if there is no info on where the player is or where to start go to first frame in project
+                if ( isCurrentNull && isStartNull ) {
+                    this.cueFrame( this.get("sequences")[0].frames[0] );
+                } else if ( isCurrentNull && !isStartNull && this.frames.get( startFrame ) ) {
+                    this.cueFrame( startFrame );
+                } else if ( !isCurrentNull ) {
+                    // unpause the player
+                } else {
+                    this._onError("3 - could not play");
+                }
+            }
+        },
+
+        // if the player is playing, pause the project
+        pause: function() {
+            if ( this.state == "playing" ) {
+                this.state ="paused";
+                // pause each frame - layer
+                this.status.get("current_frame_model").pause();
+                // pause auto advance
+                this.status.emit("pause");
+            }
+        },
+
+        playPause: function() {
+            if ( this.state == "paused" ) this.play();
+            else this.pause();
+        },
+
+        // goes to the next frame after n ms
+        cueNext: function( ms ) {
+            this.cueFrame( this.status.get("current_frame_model").get("_next"), ms );
+        },
+
+        // goes to the prev frame after n ms
+        cuePrev: function( ms ) {
+            this.cueFrame( this.status.get("current_frame_model").get("_prev"), ms );
+        },
+
+        // goes to specified frame after n ms
+        cueFrame: function( id, ms ) {
+            ms = ms || 0;
+
+            if ( id !== undefined && this.frames.get(id) !== undefined ) {
+                if ( ms > 0 ) {
+                    _.delay(function() {
+                        this._goToFrame( id );
+                    }.bind(this), ms );
+                }
+                else {
+                    this._goToFrame( id );
+                }
+            }
+        },
+
+        // should this live in the cueFrame method so it"s not exposed?
+        _goToFrame:function( id ) {
+            var oldID;
+
+            this.preloadFramesFrom( id );
+
+            if (this.status.get("current_frame")) {
+                this.status.get("current_frame_model").exit( id );
+                oldID = this.status.get("current_frame_model").id;
+            }
+            // unrender current frame
+            // swap out current frame with new one
+            this.status.set( "current_frame", id );
+
+            // render current frame // should trigger a frame rendered event when successful
+            this.status.get("current_frame_model").render( oldID );
+
+            if ( this.state !== "playing" ) {
+                this.state = "playing";
+                this.status.emit("play");
+            }
+        },
+
+        preloadFramesFrom: function( id ) {
+            var _this = this,
+                frame = this.frames.get( id );
+
+            _.each( frame.get("preload_frames"), function( frameID ) {
+                _this.frames.get( frameID ).preload();
+            });
+        },
+
+        // returns project metadata
+        getProjectData: function() {
+            var frames = this.frames.map(function( frame ) {
+                return _.extend({},
+                    frame.toJSON(),
+                    { layers: frame.layers.toJSON() }
+                );
+            });
+            return _.extend({},
+                this.toJSON(),
+                { frames: frames }
+            );
+        },
+
+        getFrameData: function() {
+            if ( this.status.get("current_frame") ) {
+
+                return _.extend({},
+                    this.status.get("current_frame_model").toJSON(),
+                    { layers: _this.status.get("current_frame_model").layers.toJSON() }
+                );
+            }
+
+            return false;
+        },
+
+        // returns the frame structure for the project // not implemented
+        getProjectTree: function() {
+            return false;
+        },
+
+        // completely obliterate the player. triggers event
+        destroy: function() {
+            // TODO: Investigate whether or not this-alias can be safely
+            // replaced by bind(this)
+            var _this = this;
+
+            this.Layout.$el.fadeOut( this.get("fadeOut"), function() {
+                // destroy all layers before calling player_destroyed
+                _this.frames.each(function(frame) { frame.destroy(); });
+                _this.status.emit("player_destroyed");
+            });
+        },
+
+        /**
+        resize the players based on the current browser window dimensions
+
+        @method fitPlayer
+        **/
+        fitWindow: function() {
+            this.Layout.resizeWindow();
+        },
+
+        /**
+        Fired when an error occurs...
+
+        @event onError
+        @param {String} str A description of the error
+        **/
+        _onError: function( str ) {
+            this.status.emit( "error", str );
+            console.log( "Error code: " + str );
+        },
+
+        parse: function( res ) {
+            // parses zeega collections pulled from the library api
+            if ( res.items && res.items[0].child_items ) {
+                res = res.items[0];
+                res.items = res.child_items;
+            }
+            return res;
+        }
+
+    });
+
+    /*
+        parse the project and trigger data_loaded when finished
+
+        private
+    */
+    function parseProject( player ) {
+        var frames,
+            layers = player.get("layers"),
+            startFrame = player.get("start_frame");
+
+        addTargetDivToLayers( layers, player.get("div_id"));
+
+        frames = new Frame.Collection( player.get("frames") );
+
+
+        frames.relay = player.relay;
+        frames.status = player.status;
+
+        frames.load( player.get("sequences"), layers, player.get("preload_ahead"), _ );
+
+        player.sequences = new Zeega.Backbone.Collection(player.get("sequences"));
+        player.frames = frames;
+
+        // set start frame
+        if ( startFrame === null || player.frames.get(startFrame) === undefined ) {
+            player.set({
+                "start_frame": player.get("sequences")[0].frames[0]
+            }, { silent: true });
+        }
+
+        player.initialized = true;
+        player.status.emit("data_loaded");
+
+        // TODO: Investigate why no explicit return
+    }
+
+    function addTargetDivToLayers( layerArray, targetDiv ) {
+        _.each(layerArray, function( layer ) {
+            layer.target_div = targetDiv;
+        });
+
+        // TODO: Investigate why no explicit return
+    }
+
+    Zeega.player = Player;
+
+    return Zeega;
 });
+
 zeega.require([
     // Application.
     "modules/player/player"

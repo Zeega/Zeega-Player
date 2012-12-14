@@ -46,6 +46,18 @@ __p+='';
 return __p;
 };
 
+this["JST"]["app/templates/plugins/slideshow-metadata.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div class=\'slide-title\'>'+
+( title )+
+'</div>\n<div class=\'slide-description\'>'+
+( description )+
+'</div>\n';
+}
+return __p;
+};
+
 this["JST"]["app/templates/plugins/slideshow.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
@@ -69,9 +81,7 @@ return __p;
 this["JST"]["app/templates/plugins/slideshowthumbslider.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<a href=\'#\' class=\'arrow arrow-left slideshow-slider-control-prev\'></a>\n<a href=\'#\' class=\'arrow arrow-right slideshow-slider-control-next\'></a>\n<div class=\'slide-meta\'>'+
-( attr.slides[0].attr.title )+
-'</div>\n<div class=\'slideshow-thumb-wrapper\'>\n    <ul>\n        ';
+__p+='<div class=\'slideshow-thumb-wrapper\'>\n    <ul>\n        ';
  _.each(attr.slides, function(slide, i){ 
 ;__p+='\n            <li>\n                <div class=\'slideshow-thumbnail\' style="background:url('+
 ( slide.attr.thumbnail_url )+
