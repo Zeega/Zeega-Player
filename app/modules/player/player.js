@@ -290,7 +290,6 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
         },
 
         _remote_cueFrame: function( info, id ) {
-            console.log('remote cue frame');
             this.cueFrame(id);
         },
 
@@ -461,6 +460,7 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
             // unrender current frame
             // swap out current frame with new one
             this.status.set( "current_frame", id );
+            this.relay.set({"current_frame": id}, { silent: true });
 
             // render current frame // should trigger a frame rendered event when successful
             this.status.get("current_frame_model").render( oldID );

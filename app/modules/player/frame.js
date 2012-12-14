@@ -87,7 +87,6 @@ function( Zeega, Layer ) {
                 this.status.set( "current_frame",this.id );
                 // set frame timer
                 advance = this.get("attr").advance;
-console.log('render frame', advance);
                 if ( advance ) {
                     this.startTimer( advance );
                 }
@@ -167,7 +166,6 @@ console.log('render frame', advance);
             if( this.timer ) {
                 clearTimeout( this.timer );
                 this.elapsed += ( new Date().getTime() - this.status.playTimestamp );
-                console.log('pause - elapsed',this.elapsed);
             }
 
             this.layers.each(function( layer ) {
@@ -187,27 +185,23 @@ console.log('render frame', advance);
             advance = this.get("attr").advance;
             if ( advance ) {
                 this.startTimer( advance - this.elapsed );
-                console.log('play-set', advance-this.elapsed);
             }
 
 
         },
 
         startTimer: function( ms ) {
-            console.log('start timer', ms);
             if ( this.timer ) {
                 clearTimeout( this.timer );
             }
             this.timer = setTimeout(function() {
-                console.log('GO', this.get("_next"));
                 this.relay.set({
                     current_frame: this.get("_next")
-                });
+                },{silent:false});
             }.bind(this), ms );
         },
 
         exit: function( newID ) {
-            console.log('exit frame');
             var commonLayers = this.get("common_layers")[ newID ] || [];
 
             this.elapsed = 0;
@@ -247,9 +241,6 @@ console.log('render frame', advance);
             // create a layer collection. this does not need to be saved anywhere
                 layerCollection = new Layer.Collection( layers );
                 sequenceCollection = new Zeega.Backbone.Collection( sequences );
-
-
-                console.log("frame parse", sequences, layers);
 
             this.each(function( frame ) {
                 var linkedArray = [];
