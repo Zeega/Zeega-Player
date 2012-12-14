@@ -21229,6 +21229,7 @@ function( Zeega, Layer ) {
         // waiting, loading, ready, destroyed
         state: "waiting",
         hasPlayed: false,
+        elapsed: 0,
 
         // frame render as soon as it's loaded. used primarily for the initial frame
         renderOnReady: null,
@@ -21285,7 +21286,7 @@ function( Zeega, Layer ) {
 
         // render from frame.
         render: function( oldID ) {
-            var commonLayers, advance;
+            var commonLayers;
             // if frame is completely loaded, then just render it
             // else try preloading the layers
             if ( this.ready ) {
@@ -21300,18 +21301,13 @@ function( Zeega, Layer ) {
 
                 // update status
                 this.status.set( "current_frame",this.id );
-
+                // set frame timer
                 advance = this.get("attr").advance;
-
-                // TODO this needs to be able to pause and play
                 if ( advance ) {
-
-                    _.delay(function() {
-                        _this.relay.set({
-                            current_frame: this.get("_next")
-                        });
-                    }.bind(this), advance );
+                    this.startTimer( advance );
                 }
+
+               
             } else {
                 this.renderOnReady = oldID;
             }
@@ -21320,6 +21316,7 @@ function( Zeega, Layer ) {
             this.layers.each(function(layer, i){
                 layer.updateZIndex( i );
             });
+
         },
 
         onLayerReady: function( layer ) {
@@ -21378,20 +21375,55 @@ function( Zeega, Layer ) {
         },
 
         pause: function() {
+
+            // cancel the timer
+            // record the current elapsed time on the frame
+            // the elapsed time will be subtracted from the total advance time when the timer is restarted in play()
+            if( this.timer ) {
+                clearTimeout( this.timer );
+                this.elapsed += ( new Date().getTime() - this.status.playTimestamp );
+            }
+
             this.layers.each(function( layer ) {
                 layer.pause();
             });
         },
 
         play: function() {
+            var advance;
+
             this.layers.each(function( layer ) {
                 layer.play();
             });
+
+            // set frame timer
+            
+            advance = this.get("attr").advance;
+            if ( advance ) {
+                this.startTimer( advance - this.elapsed );
+            }
+
+
+        },
+
+        startTimer: function( ms ) {
+            if ( this.timer ) {
+                clearTimeout( this.timer );
+            }
+            this.timer = setTimeout(function() {
+                this.relay.set({
+                    current_frame: this.get("_next")
+                },{silent:false});
+            }.bind(this), ms );
         },
 
         exit: function( newID ) {
             var commonLayers = this.get("common_layers")[ newID ] || [];
 
+            this.elapsed = 0;
+            if( this.timer ) {
+                clearTimeout( this.timer );
+            }
             this.layers.each(function( layer ) {
                 if ( !_.include(commonLayers, layer.id) ) {
                     layer.exit();
@@ -21426,9 +21458,6 @@ function( Zeega, Layer ) {
                 layerCollection = new Layer.Collection( layers );
                 sequenceCollection = new Zeega.Backbone.Collection( sequences );
 
-
-                console.log("frame parse", sequences, layers);
-
             this.each(function( frame ) {
                 var linkedArray = [];
 
@@ -21460,7 +21489,7 @@ function( Zeega, Layer ) {
 
                         if ( index < frames.length - 1 && frames.length > 1 ) {
                             next = frames[ index +1 ];
-                        } else if ( advance ) {
+                        } else if ( advance && sequenceCollection.get( advance ) ) {
                             next = sequenceCollection.get( advance ).get("frames")[0];
                         }
 
@@ -22082,7 +22111,7 @@ function( Zeega ) {
 
         onPlay: function() {
             console.log( new Date().getTime() - this.pauseTimestamp ); // time elapsed since pause
-            //this.pauseTimestamp = null;
+            this.playTimestamp = new Date().getTime();
         },
 
         onPause: function() {
@@ -22685,6 +22714,7 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
             // unrender current frame
             // swap out current frame with new one
             this.status.set( "current_frame", id );
+            this.relay.set({"current_frame": id}, { silent: true });
 
             // render current frame // should trigger a frame rendered event when successful
             this.status.get("current_frame_model").render( oldID );

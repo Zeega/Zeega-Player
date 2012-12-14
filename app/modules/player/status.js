@@ -108,7 +108,6 @@ function( Zeega ) {
         },
 
         onPlay: function() {
-            console.log( new Date().getTime() - this.pauseTimestamp ); // time elapsed since pause
             this.playTimestamp = new Date().getTime();
         },
 
