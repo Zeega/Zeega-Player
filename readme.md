@@ -10,19 +10,25 @@
 
 ### update submodules
 
-    git submodule udpate --init --recursive
+```bash
+git submodule update --init --recursive
+```
 
 ### commit changes to submodule
 
-    cd [path of submodule]
-    git commit -am 'message'
-    git push origin master
+```bash
+cd [path of submodule]
+git commit -am 'message'
+git push origin master
+```
 
 ### copy relevant layer files (html,less) after editing
 
-    bbb comp
-    or
-    bbb release
+```bash
+bbb comp
+or
+bbb release
+```
 
 ## Examples
 Included are some examples of basic implementations of the Zeega player.
