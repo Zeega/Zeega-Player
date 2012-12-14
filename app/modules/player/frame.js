@@ -13,6 +13,7 @@ function( Zeega, Layer ) {
         // waiting, loading, ready, destroyed
         state: "waiting",
         hasPlayed: false,
+        elapsed: 0,
 
         // frame render as soon as it's loaded. used primarily for the initial frame
         renderOnReady: null,
@@ -69,7 +70,7 @@ function( Zeega, Layer ) {
 
         // render from frame.
         render: function( oldID ) {
-            var commonLayers, advance;
+            var commonLayers;
             // if frame is completely loaded, then just render it
             // else try preloading the layers
             if ( this.ready ) {
@@ -84,18 +85,14 @@ function( Zeega, Layer ) {
 
                 // update status
                 this.status.set( "current_frame",this.id );
-
+                // set frame timer
                 advance = this.get("attr").advance;
-
-                // TODO this needs to be able to pause and play
+console.log('render frame', advance);
                 if ( advance ) {
-
-                    _.delay(function() {
-                        _this.relay.set({
-                            current_frame: this.get("_next")
-                        });
-                    }.bind(this), advance );
+                    this.startTimer( advance );
                 }
+
+               
             } else {
                 this.renderOnReady = oldID;
             }
@@ -104,6 +101,7 @@ function( Zeega, Layer ) {
             this.layers.each(function(layer, i){
                 layer.updateZIndex( i );
             });
+
         },
 
         onLayerReady: function( layer ) {
@@ -162,20 +160,60 @@ function( Zeega, Layer ) {
         },
 
         pause: function() {
+
+            // cancel the timer
+            // record the current elapsed time on the frame
+            // the elapsed time will be subtracted from the total advance time when the timer is restarted in play()
+            if( this.timer ) {
+                clearTimeout( this.timer );
+                this.elapsed += ( new Date().getTime() - this.status.playTimestamp );
+                console.log('pause - elapsed',this.elapsed);
+            }
+
             this.layers.each(function( layer ) {
                 layer.pause();
             });
         },
 
         play: function() {
+            var advance;
+
             this.layers.each(function( layer ) {
                 layer.play();
             });
+
+            // set frame timer
+            
+            advance = this.get("attr").advance;
+            if ( advance ) {
+                this.startTimer( advance - this.elapsed );
+                console.log('play-set', advance-this.elapsed);
+            }
+
+
+        },
+
+        startTimer: function( ms ) {
+            console.log('start timer', ms);
+            if ( this.timer ) {
+                clearTimeout( this.timer );
+            }
+            this.timer = setTimeout(function() {
+                console.log('GO', this.get("_next"));
+                this.relay.set({
+                    current_frame: this.get("_next")
+                });
+            }.bind(this), ms );
         },
 
         exit: function( newID ) {
+            console.log('exit frame');
             var commonLayers = this.get("common_layers")[ newID ] || [];
 
+            this.elapsed = 0;
+            if( this.timer ) {
+                clearTimeout( this.timer );
+            }
             this.layers.each(function( layer ) {
                 if ( !_.include(commonLayers, layer.id) ) {
                     layer.exit();

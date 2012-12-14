@@ -290,6 +290,7 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
         },
 
         _remote_cueFrame: function( info, id ) {
+            console.log('remote cue frame');
             this.cueFrame(id);
         },
 
