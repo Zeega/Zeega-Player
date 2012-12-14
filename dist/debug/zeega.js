@@ -60,7 +60,11 @@ __p+='<div class=\'slide-title\'>'+
 ( title )+
 '</div>\n<div class=\'slide-description\'>'+
 ( description )+
-'</div>\n';
+'</div>\n<a href="'+
+( attribution_uri )+
+'" target=\'blank\' class=\'attribution-link\'>\n    <i class=\'slideshow-icon-'+
+( archive.toLowerCase() )+
+' ssarchive\'></i>\n</a>\n';
 }
 return __p;
 };
@@ -94,19 +98,7 @@ __p+='<div class=\'slideshow-thumb-wrapper\'>\n    <ul>\n        ';
 ( slide.attr.thumbnail_url )+
 '); background-repeat:no-repeat;background-size:100%;background-position:center">\n                    <a href=\'#\' class=\'slider-thumb\' data-slidenum="'+
 ( i )+
-'"></a>\n                    <div class=\'thumb-title\'>\n                        <a href="'+
-( slide.attr.attribution_uri )+
-'" target=\'blank\'>\n                            ';
- if(slide.attr.media_creator_username.replace(/\s+/g, '') != ''){ 
-;__p+=''+
-( slide.attr.media_creator_username )+
-'';
- }else{ 
-;__p+='unknown';
- } 
-;__p+='\n                            <i class=\'slideshow-icon-'+
-( slide.attr.archive.toLowerCase() )+
-' ssarchive\'></i>\n                        </a>\n                    </div>\n                </div>\n            </li>\n        ';
+'"></a>\n                </div>\n            </li>\n        ';
  });
 ;__p+='\n    </ul>\n</div>';
 }
@@ -22110,7 +22102,6 @@ function( Zeega ) {
         },
 
         onPlay: function() {
-            console.log( new Date().getTime() - this.pauseTimestamp ); // time elapsed since pause
             this.playTimestamp = new Date().getTime();
         },
 
