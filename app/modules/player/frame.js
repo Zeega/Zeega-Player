@@ -333,7 +333,7 @@ function( Zeega, Layer ) {
                 //      234: [c,d,e]
                 // }
                 var connected, commonLayers,
-                    values = [ "prev", "next", "link_to", "link_from" ].map(function( value ) {
+                    values = [ "_prev", "_next", "link_to", "link_from" ].map(function( value ) {
                         return frame.get( value );
                     });
 
