@@ -32,29 +32,29 @@ $(window).bind("zeega_ready", function() {
     // debugger;
     project.on( "all", function( event, data ) {
 
-      // if ( events.indexOf( event ) === -1 ) {
-      //   window.events.push( event );
-      // }
+        // if ( events.indexOf( event ) === -1 ) {
+        //   window.events.push( event );
+        // }
 
 
-      // TODO: Ensure that all events have the second data param
-      // Currently missing from events:
-      // 1. data_loaded
-      // 2. ready
-      // 3. play
-      // 4. can_play
-      //
-      console.log( event, data );
+        // TODO: Ensure that all events have the second data param
+        // Currently missing from events:
+        // 1. data_loaded
+        // 2. ready
+        // 3. play
+        // 4. can_play
+        //
+        console.log( event, data );
 
 
-      report({
-        type: "event",
+        report({
+            type: "event",
             payload: {
                 event: event,
                 data: data ? data : null
                 // (data.attributes ? data.attributes : null) : null
             }
-      });
+        });
     });
 
     console.dir( "project", project );
