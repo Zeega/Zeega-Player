@@ -61,7 +61,7 @@ function() {
         });
         // slideshow layer from image items
         if ( imageLayers.length ) {
-            slideshowLayer = generateSlideshowLayer( imageLayers, opts.start_slide, opts.start_slide_id );
+            slideshowLayer = generateSlideshowLayer( imageLayers, opts.start_slide, opts.start_slide_id, opts.slides_bleed );
         }
         // layers from timebased items
         var layers = generateLayerArrayFromItems( timebasedLayers );
@@ -127,7 +127,7 @@ function() {
         });
     }
 
-    function generateSlideshowLayer( imageLayerArray, slideshow_start_slide, slideshow_start_slide_id ) {
+    function generateSlideshowLayer( imageLayerArray, slideshow_start_slide, slideshow_start_slide_id, slides_bleed ) {
         var layerDefaults = {
                 keyboard: false,
                 width: 100,
@@ -148,6 +148,7 @@ function() {
             attr: _.defaults({ slides: slides }, layerDefaults ),
             start_slide: parseInt(slideshow_start_slide,10) || 0,
             start_slide_id: parseInt(slideshow_start_slide_id,10) || null,
+            slides_bleed: slides_bleed,
             type: "SlideShow",
             id: 1
         };

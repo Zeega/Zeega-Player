@@ -140,6 +140,7 @@
 
 }
 .slideshow-slider {
+  bottom: 0px;
   color: white;
   font-family: 'Helvetica', sans-serif;
   position: absolute;

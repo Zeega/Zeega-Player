@@ -82,7 +82,31 @@ __p+='<a href=\'#\' class=\'slideshow-arrow arrow-left slideshow-control-prev di
 ( (100 / attr.slides.length) +'%' )+
 ';background:url('+
 ( slide.attr.uri )+
-') no-repeat center center;-webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover;\'></div>\n\t';
+') no-repeat center center;-webkit-background-size: ';
+ if( slides_bleed ) { 
+;__p+='cover';
+ } else { 
+;__p+='contain';
+ } 
+;__p+='; -moz-background-size: ';
+ if( slides_bleed ) { 
+;__p+='cover';
+ } else { 
+;__p+='contain';
+ } 
+;__p+='; -o-background-size: ';
+ if( slides_bleed ) { 
+;__p+='cover';
+ } else { 
+;__p+='contain';
+ } 
+;__p+='; background-size: ';
+ if( slides_bleed ) { 
+;__p+='cover';
+ } else { 
+;__p+='contain';
+ } 
+;__p+=';\'></div>\n\t';
  }) 
 ;__p+='\n</div>';
 }
@@ -7516,7 +7540,6 @@ function( Zeega, _Layer, Metadata ) {
 
             this.slideNum = this.model.get("attr").slides.length;
             this.model.on("slideshow_update", function( slide ) {
-                this.onResize();
                 this.highlightThumb( slide.slideNum );
             }, this );
 
@@ -7528,7 +7551,7 @@ function( Zeega, _Layer, Metadata ) {
         },
 
         afterRender: function() {
-            this.onResize();
+            //this.onResize();
             this.makeDraggable();
             this.sinkThumbSlider();
 
@@ -7549,7 +7572,7 @@ function( Zeega, _Layer, Metadata ) {
         },
 
         onResize: function() {
-            this.$el.css("top", (this.$el.closest('.ZEEGA-player').height() - this.$el.height()) +"px");
+            this.$el.css("bottom", 0 );
         },
 
         events: {
@@ -7566,15 +7589,13 @@ function( Zeega, _Layer, Metadata ) {
             if ( this.sinkThumbsTimer ) {
                 clearTimeout( this.sinkThumbsTimer );
             }
-            var newTop = this.$el.closest(".ZEEGA-player").height() - this.$el.height();
-            $(".slideshow-slider").animate({"top": newTop });
+            $(".slideshow-slider").animate({"bottom": 0 });
         },
 
         sinkThumbSlider: function() {
             var _this = this;
             this.sinkThumbsTimer = setTimeout(function() {
-                var newTop = _this.$el.closest(".ZEEGA-player").height() - _this.$el.height() + 70;
-                $(".slideshow-slider").animate({"top": newTop });
+                $(".slideshow-slider").animate({"bottom": -70 });
             }, 2000 );
         },
 
@@ -7660,6 +7681,7 @@ function( Zeega, _Layer, SSSlider ) {
 
             "start_slide": null,
             "start_slide_id": null,
+            "slides_bleed": true,
 
             "title": "Slideshow Layer",
             "url": "none",
@@ -7718,6 +7740,7 @@ function( Zeega, _Layer, SSSlider ) {
         },
 
         onRender: function() {
+            this.$el.css("height", this.$el.closest(".ZEEGA-player").height() );
             this.thumbSlider = new SSSlider({ model: this.model });
             this.$el.append( this.thumbSlider.el );
             this.thumbSlider.render();
@@ -21671,7 +21694,7 @@ function() {
         });
         // slideshow layer from image items
         if ( imageLayers.length ) {
-            slideshowLayer = generateSlideshowLayer( imageLayers, opts.start_slide, opts.start_slide_id );
+            slideshowLayer = generateSlideshowLayer( imageLayers, opts.start_slide, opts.start_slide_id, opts.slides_bleed );
         }
         // layers from timebased items
         var layers = generateLayerArrayFromItems( timebasedLayers );
@@ -21737,7 +21760,7 @@ function() {
         });
     }
 
-    function generateSlideshowLayer( imageLayerArray, slideshow_start_slide, slideshow_start_slide_id ) {
+    function generateSlideshowLayer( imageLayerArray, slideshow_start_slide, slideshow_start_slide_id, slides_bleed ) {
         var layerDefaults = {
                 keyboard: false,
                 width: 100,
@@ -21758,6 +21781,7 @@ function() {
             attr: _.defaults({ slides: slides }, layerDefaults ),
             start_slide: parseInt(slideshow_start_slide,10) || 0,
             start_slide_id: parseInt(slideshow_start_slide_id,10) || null,
+            slides_bleed: slides_bleed,
             type: "SlideShow",
             id: 1
         };
@@ -22313,6 +22337,7 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
 
             start_slide: null,
             start_slide_id: null,
+            slides_bleed: true,
 
             /**
             Time to wait after player is ready before playing project

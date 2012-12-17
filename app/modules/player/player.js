@@ -68,6 +68,7 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
 
             start_slide: null,
             start_slide_id: null,
+            slides_bleed: true,
 
             /**
             Time to wait after player is ready before playing project

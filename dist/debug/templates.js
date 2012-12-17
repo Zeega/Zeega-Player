@@ -75,7 +75,31 @@ __p+='<a href=\'#\' class=\'slideshow-arrow arrow-left slideshow-control-prev di
 ( (100 / attr.slides.length) +'%' )+
 ';background:url('+
 ( slide.attr.uri )+
-') no-repeat center center;-webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover;\'></div>\n\t';
+') no-repeat center center;-webkit-background-size: ';
+ if( slides_bleed ) { 
+;__p+='cover';
+ } else { 
+;__p+='contain';
+ } 
+;__p+='; -moz-background-size: ';
+ if( slides_bleed ) { 
+;__p+='cover';
+ } else { 
+;__p+='contain';
+ } 
+;__p+='; -o-background-size: ';
+ if( slides_bleed ) { 
+;__p+='cover';
+ } else { 
+;__p+='contain';
+ } 
+;__p+='; background-size: ';
+ if( slides_bleed ) { 
+;__p+='cover';
+ } else { 
+;__p+='contain';
+ } 
+;__p+=';\'></div>\n\t';
  }) 
 ;__p+='\n</div>';
 }
