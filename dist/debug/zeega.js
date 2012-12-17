@@ -22741,6 +22741,15 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
             }
         },
 
+        // if a next sequence exists, then cue and play it
+        cueNextSequence: function() {
+            var nextSequenceID = this.status.get("current_sequence_model").get("advance_to");
+            
+            if ( nextSequenceID && this.sequences.get( nextSequenceID ) ) {
+                this.cueFrame( this.sequences.get( nextSequenceID ).get("frames")[0] );
+            }
+        },
+
         preloadFramesFrom: function( id ) {
             var _this = this,
                 frame = this.frames.get( id );
