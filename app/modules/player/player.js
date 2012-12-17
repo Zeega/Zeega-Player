@@ -327,7 +327,7 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
         onRendered: function() {
             this.ready = true;
             this._initEvents(); // this should be elsewhere. in an onReady fxn?
-            this.status.emit("ready");
+            this.status.emit( "ready", this );
 
             this.preloadFramesFrom( this.get("start_frame") );
 
@@ -383,7 +383,7 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
                 this._fadeIn();
                 if ( currentFrame ) {
                     this.state = "playing";
-                    this.status.emit("play");
+                    this.status.emit( "play", this );
                     this.status.get("current_frame_model").play();
                 }
 
@@ -468,7 +468,7 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
 
             if ( this.state !== "playing" ) {
                 this.state = "playing";
-                this.status.emit("play");
+                this.status.emit( "play", this );
             }
         },
 
@@ -596,7 +596,7 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
         }
 
         player.initialized = true;
-        player.status.emit("data_loaded");
+        player.status.emit( "data_loaded", player );
 
         // TODO: Investigate why no explicit return
     }

@@ -1,47 +1,57 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <title>Backbone Boilerplate QUnit Test Suite</title>
+    <title>Zeega Player Test Suite</title>
 
-  <!-- QUnit styles -->
-  <link rel="stylesheet" href="vendor/qunit.css">
+    <!-- QUnit styles -->
+    <link rel="stylesheet" href="vendor/qunit.css">
 </head>
 
 <body>
-  <!-- QUnit stucture -->
-  <div class="dataset-test">
-    <h1 id="qunit-header">Backbone Boilerplate QUnit Test Suite</h1>
-    <h2 id="qunit-banner"></h2>
-    <h2 id="qunit-userAgent"></h2>
-    <ol id="qunit-tests"></ol>
-  </div>
+    <!-- QUnit stucture -->
+    <div class="dataset-test">
+        <h1 id="qunit-header">Zeega Player Test Suite</h1>
+        <h2 id="qunit-banner"></h2>
+        <h2 id="qunit-userAgent"></h2>
+        <ol id="qunit-tests"></ol>
+    </div>
 
-  <!-- Testing libs -->
-  <script src="vendor/qunit.js"></script>
+    <div id="qunit-fixture">
+        <!--<iframe id="ex-00" src="fixtures/example_00.html"></iframe>-->
+        <!--<iframe id="ex-01" src="fixtures/example_01.html"></iframe>-->
 
-  <!-- Application libs -->
-  <script src="../../assets/js/libs/jquery.js"></script>
-  <script src="../../assets/js/libs/lodash.js"></script>
-  <script src="../../assets/js/libs/backbone.js"></script>
-  
-  <!-- Load application -->
-  <script data-main="../../app/config"
-    src="../../assets/js/libs/require.js"></script>
+    </div>
 
-  <!-- Declare your test files to be run here -->
-  <script>
-    // Ensure you point to where your tests are, base directory is app/, which
-    // is why ../test is necessary
-    require({ paths: { tests: "../test/qunit/tests" } }, [
+    <iframe id="fx-00" src=""></iframe>
 
-      // Load the example tests, replace this and add your own tests
-      "tests/example"
+    <!-- Testing libs -->
+    <script src="vendor/qunit.js"></script>
 
-    ]);
-  </script>
+    <!-- Application libs -->
+    <script src="../../assets/js/libs/jquery.js"></script>
+    <script src="../../assets/js/libs/lodash.js"></script>
+    <script src="../../assets/js/libs/backbone.js"></script>
+
+    <!-- Load application -->
+    <script data-main="../../app/player_config"
+        src="../../assets/js/libs/require.js"></script>
+
+    <!-- Declare your test files to be run here -->
+    <script>
+        // Ensure you point to where your tests are, base directory is app/, which
+        // is why ../test is necessary
+        require({ paths: { tests: "../test/qunit/tests" } }, [
+
+            // Load the example tests, replace this and add your own tests
+            // "tests/example",
+            "tests/shared",
+            "tests/project-test"
+
+        ]);
+    </script>
 </body>
 </html>

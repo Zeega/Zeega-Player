@@ -121,15 +121,16 @@ function( Zeega, Layer ) {
         },
 
         onFrameReady: function() {
-            this.ready = true;
-            this.state = "ready";
-            this.status.emit("frame_ready", {
+            var data = {
                 frame: this.toJSON(),
                 layers: this.layers.toJSON()
-            });
+            };
+            this.ready = true;
+            this.state = "ready";
+            this.status.emit( "frame_ready", data );
 
             if ( !_.isNull(this.renderOnReady) ) {
-                this.status.emit("can_play");
+                this.status.emit( "can_play", data );
                 this.render( this.renderOnReady );
                 this.renderOnReady = null;
             }
