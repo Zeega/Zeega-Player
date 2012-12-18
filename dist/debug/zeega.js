@@ -20962,7 +20962,7 @@ function( Zeega, _Layer, MediaPlayer ) {
                     duration: this.mediaPlayer.getDuration()
                 };
 
-                this.model.trigger("media_timeupdate", info );
+                this.model.status.emit("media_timeupdate", info );
                 if ( this.mediaPlayer.getCurrentTime() >= out ) {
                     this.onEnded();
                 }
