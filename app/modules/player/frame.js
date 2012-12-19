@@ -384,7 +384,5 @@ function( Zeega, Layer ) {
         }
     });
 
-
-
     return Frame;
 });
