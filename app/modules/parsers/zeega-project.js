@@ -8,7 +8,7 @@ function() {
 
     Parser[ type ].validate = function( response ) {
 
-        if( response.sequences && response.frames && response.layers ) {
+        if ( response.sequences && response.frames && response.layers ) {
             return true;
         }
         return false;

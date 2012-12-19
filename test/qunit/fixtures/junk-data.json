@@ -1,0 +1,102 @@
+{ "date_published" : "",
+  "date_updated" : "1354833404",
+  "description" : "",
+  "frames" : null,
+
+
+  "layers" : [ { "attr" : null
+      },
+      { "attr" : { "archive" : "Flickr",
+            "aspect" : 1.3300000000000001,
+            "attributes" : { "creator_nsid" : "49957505@N00",
+                "farm" : 6,
+                "id" : "5368863938",
+                "secret" : "b834f3dc3d",
+                "server" : "5286",
+                "sizes" : { "Large Square" : { "height" : "150",
+                        "source" : "http://farm6.staticflickr.com/5286/5368863938_b834f3dc3d_q.jpg",
+                        "width" : "150"
+                      },
+                    "Large" : { "height" : "765",
+                        "source" : "http://farm6.staticflickr.com/5286/5368863938_b834f3dc3d_b.jpg",
+                        "width" : "1024"
+                      },
+                    "Medium 640" : { "height" : "478",
+                        "source" : "http://farm6.staticflickr.com/5286/5368863938_b834f3dc3d_z.jpg",
+                        "width" : "640"
+                      },
+                    "Medium" : { "height" : "374",
+                        "source" : "http://farm6.staticflickr.com/5286/5368863938_b834f3dc3d.jpg",
+                        "width" : "500"
+                      },
+                    "Small 320" : { "height" : 239,
+                        "source" : "http://farm6.staticflickr.com/5286/5368863938_b834f3dc3d_n.jpg",
+                        "width" : "320"
+                      },
+                    "Small" : { "height" : "179",
+                        "source" : "http://farm6.staticflickr.com/5286/5368863938_b834f3dc3d_m.jpg",
+                        "width" : "240"
+                      },
+                    "Square" : { "height" : 75,
+                        "source" : "http://farm6.staticflickr.com/5286/5368863938_b834f3dc3d_s.jpg",
+                        "width" : 75
+                      },
+                    "Thumbnail" : { "height" : "75",
+                        "source" : "http://farm6.staticflickr.com/5286/5368863938_b834f3dc3d_t.jpg",
+                        "width" : "100"
+                      }
+                  },
+                "tags" : [  ]
+              },
+            "attribution_uri" : "http://www.flickr.com/photos/italydreams/5368863938/in/photostream/#36",
+            "child_items_count" : 0,
+            "citation" : true,
+            "date_created" : { "date" : "2012-03-08 13:12:52",
+                "timezone" : "UTC",
+                "timezone_type" : 3
+              },
+            "date_updated" : { "date" : "2012-11-13 22:16:37",
+                "timezone" : "UTC",
+                "timezone_type" : 3
+              },
+            "description" : "",
+            "duration" : null,
+            "enabled" : true,
+            "geo_latlng" : null,
+            "height" : 100,
+            "id" : "34786",
+            "id_at_source" : null,
+            "ingested_by" : null,
+            "layer_type" : "Image",
+            "left" : -2.2857142857142998,
+            "license" : "All Rights Reserved",
+            "location" : null,
+            "media_creator_realname" : "",
+            "media_creator_username" : "italydreams",
+            "media_date_created" : { "date" : "2011-01-16 20:27:23",
+                "timezone" : "UTC",
+                "timezone_type" : 3
+              },
+            "media_date_created_end" : null,
+            "media_geo_latitude" : 40.460166999999998,
+            "media_geo_longitude" : -106.786,
+            "media_type" : "Image",
+            "model" : null,
+            "opacity" : 1,
+            "published" : true,
+            "tags" : null,
+            "text" : null,
+            "thumbnail_url" : "http://alpha.zeega.org/images/items/34786_s.jpg",
+            "title" : " ",
+            "top" : -2.0952380952380998,
+            "uri" : "http://farm6.staticflickr.com/5286/5368863938_b834f3dc3d_b.jpg",
+            "url" : "none",
+            "user_id" : 36,
+            "width" : 67.900000000000006
+          },
+        "id" : 61316,
+        "project_id" : "3662",
+        "type" : "Image"
+      }
+    ]
+}
