@@ -519,10 +519,9 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
 
         getFrameData: function() {
             if ( this.status.get("current_frame") ) {
-
                 return _.extend({},
                     this.status.get("current_frame_model").toJSON(),
-                    { layers: _this.status.get("current_frame_model").layers.toJSON() }
+                    { layers: this.status.get("current_frame_model").layers.toJSON() }
                 );
             }
 
