@@ -95,7 +95,7 @@ function( Zeega, Layer ) {
                     this.status.emit("deadend_frame", _.extend({}, this.toJSON() ) );
                 }
 
-               
+
             } else {
                 this.renderOnReady = oldID;
             }
@@ -355,29 +355,20 @@ function( Zeega, Layer ) {
                 var sequenceAhead = sequenceCollection.get( frame.get("_sequence") ) ? sequenceCollection.get( frame.get("_sequence") ).get("advance_to") : false,
                     ahead = frame.get("_next"),
                     behind = frame.get("_prev"),
-                    targets = [
-                        frame.id,
-                        ahead,
-                        behind
-                    ].filter(Boolean);
+                    targets = [ frame.id, ahead, behind ];
 
-                for( var i = 0; i < preloadRadius - 1; i++ ) {
-                    if( ahead ) {
-                        ahead = this.get( ahead ).get("_next") || null;
+                for ( var i = 0; i < preloadRadius - 1; i++ ) {
+                    ahead = ahead ? this.get( ahead ).get("_next") : null;
+                    behind = behind ? this.get( behind ).get("_next") : null;
+
+                    if ( !ahead && !behind ) {
+                        break;
                     }
-                    if( behind ) {
-                        behind = this.get( behind ).get("_next") || null;
-                    }
-                    if( !ahead && !behind ) break;
-                    if( ahead ) {
-                        targets.push( ahead );
-                    }
-                    if( behind ) {
-                        targets.push( behind );
-                    }
+
+                    targets.push( ahead, behind );
                 }
 
-                _.compact(targets);
+                targets = targets.filter( Boolean );
 
                 if( sequenceAhead && sequenceCollection.get( sequenceAhead ) ) {
                     targets.push( sequenceCollection.get( sequenceAhead ).get("frames")[0] );
