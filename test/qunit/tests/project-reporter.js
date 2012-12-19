@@ -1,61 +1,115 @@
-function report( message ) {
-  try {
-    top.postMessage( JSON.stringify(message) , "*");
-  } catch ( e ) {
-    console.log( e.message );
-  }
-}
+var params = Params.from( window.location.search );
 
+$(document).on("ready", function() {
+    console.log( "FIXTURE READY", params.test );
+});
 $(window).bind("zeega_ready", function() {
 
-    var project = new Zeega.player({ window_fit: true });
-
-    /*
-    // uncomment this line to see available zeega events as they fire
-    project.on("all", function(e, obj){ if(e!="media_timeupdate") console.log("1: e:",e,obj);});
-    */
-    project.load({
-        autoplay: true,
-        div_id: "player",
-        next: ".next",
-        prev: ".prev",
-        url: "example-data.json",
-    });
-
-    report({
-        type: "project",
-        payload: {
-            attributes: project.attributes
-        }
-    });
-
-    // debugger;
-    project.on( "all", function( event, data ) {
-
-        // if ( events.indexOf( event ) === -1 ) {
-        //   window.events.push( event );
-        // }
+    var player, a, b, warn, response, payload, sources;
 
 
-        // TODO: Ensure that all events have the second data param
-        // Currently missing from events:
-        // 1. data_loaded
-        // 2. ready
-        // 3. play
-        // 4. can_play
-        //
-        console.log( event, data );
+    console.log( "FIXTURE LOADED", params.test );
 
+    // Each numbered block corresponds to a test unit
 
-        report({
-            type: "event",
-            payload: {
-                event: event,
-                data: data ? data : null
-                // (data.attributes ? data.attributes : null) : null
-            }
+    // 0) Player is initialized with player arguments passed in (or not)
+    if ( params.test === 0 ) {
+        payload = {};
+
+        // Initialize a player w/o args
+        a = new Zeega.player();
+
+        // Initialize a player w/ args
+        b = new Zeega.player({ window_fit: true });
+
+        // Provide loading instructions
+        b.load({
+            autoplay: true,
+            div_id: "player",
+            next: ".next",
+            prev: ".prev",
+            url: "example-data.json"
         });
-    });
 
-    console.dir( "project", project );
+        // Since |b| must load data before it can be analyzed,
+        // commit to reporting the results only after |b| has
+        // fired its can_play event
+        b.on( "can_play", function( type ) {
+            Test.report( params, {
+                type: "player",
+                payload: {
+                    attributes: [
+                        {
+                            player: "a",
+                            attributes: a.attributes
+                        },
+                        {
+                            player: "b",
+                            attributes: b.attributes
+                        }
+                    ]
+                }
+            });
+        });
+    }
+
+    // 1) Fetch data from the |url| attribute if |data| is not defined
+    if ( params.test === 1 ) {
+
+        /*
+            BUG:
+            Making the assumption that we can fetch a |url| if |data| is
+            not defined doesn't address the case where both are missing
+         */
+
+        // Initialize a player w/ args
+        player = new Zeega.player({ window_fit: true });
+        // Provide loading instructions
+        player.load({
+            autoplay: true,
+            div_id: "player",
+            next: ".next",
+            prev: ".prev",
+            url: "example-data.json"
+        });
+
+        // Since |player| must load data before it can be analyzed,
+        // commit to reporting the results only after |player| has
+        // fired its data_loaded event
+        player.on( "data_loaded", function( type ) {
+            Test.report( params, {
+                type: "player",
+                payload: {
+                    attributes: player.attributes
+                }
+            });
+        });
+    }
+
+    // 2) Detect which parser to use based on it's structure
+    if ( params.test === 2 || params.test === 3 ) {
+        payload = {};
+
+        player = new Zeega.player({ window_fit: true });
+
+        player.load({
+            autoplay: true,
+            div_id: "player",
+            next: ".next",
+            prev: ".prev",
+            url: params.url
+        });
+
+        player.on( "data_loaded", function() {
+            Test.report( params, {
+                type: "player",
+                payload: {
+                    actual: player.parser,
+                    expected: params.parser
+                }
+            });
+        });
+
+    }
+
 });
