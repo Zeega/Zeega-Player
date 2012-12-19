@@ -237,7 +237,7 @@ function( Zeega, Layer ) {
         model: FrameModel,
 
         // logic that populates the frame with information about it's connections, state, and position within the project
-        load: function( sequences, layers, loadAheadBy ) {
+        load: function( sequences, layers, preloadRadius ) {
             var _this = this,
             // create a layer collection. this does not need to be saved anywhere
                 layerCollection = new Layer.Collection( layers );
@@ -316,14 +316,6 @@ function( Zeega, Layer ) {
                     layer.status = _this.status;
                 });
 
-/*
-                // listen for layer events and propagate through the frame to the player
-                frame.layers.on("all",function(e,obj){
-                    var info = _.extend({},obj,{frame:frame.id});
-                    _this.status.emit(e, info);
-                });
-*/
-
             });
 
             // another for loop that has to happen after all link layers are populated
@@ -357,18 +349,47 @@ function( Zeega, Layer ) {
             // TODO: Investigate why (formerly preload_ahead) was being passed,
             // despite it not actually being a functional parameter beyond ensuring that
             // this conditional expression evaluated as true
-            // if ( loadAheadBy ) {
+            // if ( preloadRadius ) {
 
             this.each(function( frame ) {
-                var targets = [ frame.get("_prev"), frame.get("_next") ].filter(Boolean);
+                var sequenceAhead = sequenceCollection.get( frame.get("_sequence") ).get("advance_to"),
+                    ahead = frame.get("_next"),
+                    behind = frame.get("_prev"),
+                    targets = [
+                        frame.id,
+                        ahead,
+                        behind
+                    ].filter(Boolean);
+
+                for( var i = 0; i < preloadRadius - 1; i++ ) {
+                    if( ahead ) {
+                        ahead = this.get( ahead ).get("_next") || null;
+                    }
+                    if( behind ) {
+                        behind = this.get( behind ).get("_next") || null;
+                    }
+                    if( !ahead && !behind ) break;
+                    if( ahead ) {
+                        targets.push( ahead );
+                    }
+                    if( behind ) {
+                        targets.push( behind );
+                    }
+                }
+
+                _.compact(targets);
+
+                if( sequenceAhead && sequenceCollection.get( sequenceAhead ) ) {
+                    targets.push( sequenceCollection.get( sequenceAhead ).get("frames")[0] );
+                }
+                console.log('---frames', targets );
 
                 frame.set( "preload_frames",
                     _.union(
-                        [ frame.id ], targets, frame.get("link_to"), frame.get("link_from")
+                        targets, frame.get("link_to"), frame.get("link_from")
                     )
                 );
-            });
-            // }
+            }.bind( this ));
         }
     });
 
