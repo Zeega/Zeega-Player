@@ -13,20 +13,10 @@
 
 <body>
     <!-- QUnit stucture -->
-    <div class="dataset-test">
-        <h1 id="qunit-header">Zeega Player Test Suite</h1>
-        <h2 id="qunit-banner"></h2>
-        <h2 id="qunit-userAgent"></h2>
-        <ol id="qunit-tests"></ol>
-    </div>
+    <div id="qunit"></div>
 
-    <div id="qunit-fixture">
-        <!--<iframe id="ex-00" src="fixtures/example_00.html"></iframe>-->
-        <!--<iframe id="ex-01" src="fixtures/example_01.html"></iframe>-->
+    <div id="zeega-fixture"></div>
 
-    </div>
-
-    <iframe id="fx-00" src=""></iframe>
 
     <!-- Testing libs -->
     <script src="vendor/qunit.js"></script>
@@ -48,7 +38,7 @@
 
             // Load the example tests, replace this and add your own tests
             // "tests/example",
-            "tests/shared",
+            "tests/testinit",
             "tests/project-test"
 
         ]);
