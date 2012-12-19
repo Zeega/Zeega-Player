@@ -91,6 +91,10 @@ function( Zeega, Layer ) {
                     this.startTimer( advance );
                 }
 
+                if ( !this.get("_next") && this.get("link_to").length === 0 ) {
+                    this.status.emit("deadend_frame", _.extend({}, this.toJSON() ) );
+                }
+
                
             } else {
                 this.renderOnReady = oldID;
@@ -181,13 +185,10 @@ function( Zeega, Layer ) {
             });
 
             // set frame timer
-            
             advance = this.get("attr").advance;
             if ( advance ) {
                 this.startTimer( advance - this.elapsed );
             }
-
-
         },
 
         startTimer: function( ms ) {
