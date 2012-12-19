@@ -352,7 +352,7 @@ function( Zeega, Layer ) {
             // if ( preloadRadius ) {
 
             this.each(function( frame ) {
-                var sequenceAhead = sequenceCollection.get( frame.get("_sequence") ).get("advance_to"),
+                var sequenceAhead = sequenceCollection.get( frame.get("_sequence") ) ? sequenceCollection.get( frame.get("_sequence") ).get("advance_to") : false,
                     ahead = frame.get("_next"),
                     behind = frame.get("_prev"),
                     targets = [
@@ -382,7 +382,6 @@ function( Zeega, Layer ) {
                 if( sequenceAhead && sequenceCollection.get( sequenceAhead ) ) {
                     targets.push( sequenceCollection.get( sequenceAhead ).get("frames")[0] );
                 }
-                console.log('---frames', targets );
 
                 frame.set( "preload_frames",
                     _.union(
