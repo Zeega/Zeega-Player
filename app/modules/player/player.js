@@ -46,9 +46,20 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
         complete: false,       // have all layers been preloaded
         initialized: false,    // has the project data been loaded and parsed
         state: "paused",
+        parser: null,
 
         // default settings -  can be overridden by project data
         defaults: {
+            /**
+            Capture the type of parser used.
+
+            @property parser
+            @type String
+            @default true
+            **/
+
+            parser: null,
+
             /**
             Sets the player to play when data is successfully parsed and rendered to the dom
 
@@ -265,10 +276,11 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
                 parsed;
 
             // determine which parser to use
-            _.each( Parser,function( p ) {
+            _.each( Parser, function( p ) {
                 if ( p.validate(res) ) {
                     console.log( "parsed using: " + p.name );
                     // parse the response
+                    _this.parser = p.name;
                     parsed = p.parse( res, _this.toJSON() );
                     return false;
                 }
@@ -279,8 +291,9 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
                 this.set( parsed, { silent: true } );
                 parseProject( this );
                 this._listen();
+            } else {
+              this._onError("4 - no valid parser found");
             }
-            else this._onError("4 - no valid parser found");
         },
 
         _listen: function() {
@@ -327,7 +340,7 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
         onRendered: function() {
             this.ready = true;
             this._initEvents(); // this should be elsewhere. in an onReady fxn?
-            this.status.emit("ready");
+            this.status.emit( "ready", this );
 
             this.preloadFramesFrom( this.get("start_frame") );
 
@@ -383,7 +396,7 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
                 this._fadeIn();
                 if ( currentFrame ) {
                     this.state = "playing";
-                    this.status.emit("play");
+                    this.status.emit( "play", this );
                     this.status.get("current_frame_model").play();
                 }
 
@@ -468,14 +481,14 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
 
             if ( this.state !== "playing" ) {
                 this.state = "playing";
-                this.status.emit("play");
+                this.status.emit( "play", this );
             }
         },
 
         // if a next sequence exists, then cue and play it
         cueNextSequence: function() {
             var nextSequenceID = this.status.get("current_sequence_model").get("advance_to");
-            
+
             if ( nextSequenceID && this.sequences.get( nextSequenceID ) ) {
                 this.cueFrame( this.sequences.get( nextSequenceID ).get("frames")[0] );
             }
@@ -596,7 +609,7 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
         }
 
         player.initialized = true;
-        player.status.emit("data_loaded");
+        player.status.emit( "data_loaded", player );
 
         // TODO: Investigate why no explicit return
     }
