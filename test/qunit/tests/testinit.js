@@ -2,7 +2,7 @@
     var rules, domains, fixtures;
 
     fixtures = [
-        "<iframe id='%%QUERY%%' src='fixtures/index.html%%QUERY%%'></iframe>"
+        "<iframe id='%%KEY%%' src='fixtures/index.html%%QUERY%%'></iframe>"
     ];
 
     domains = {
@@ -57,6 +57,24 @@
             }
         },
 
+        setup: function( properties ) {
+            var params = Params.from( properties || {} ),
+                query = ( params ? "?" + params : "" );
+
+            if ( !Test.reset.fixture ) {
+                Test.reset.fixture = document.getElementById("zeega-fixture");
+            }
+
+
+            Test.reset.fixture.innerHTML += fixtures.reduce(function( html, fixture ) {
+                var interpolated = fixture.replace( /%%QUERY%%/g, query )
+                                        .replace( /%%KEY%%/, params.key );
+
+                return ( html += interpolated, html );
+            }, "");
+
+            return true;
+        },
         reset: function( properties ) {
             var params = Params.from( properties || {} ),
                 query = ( params ? "?" + params : "" );
@@ -65,16 +83,7 @@
                 Test.reset.fixture = document.getElementById("zeega-fixture");
             }
 
-            [].slice.call( Test.reset.fixture.childNodes, function( node ) {
-                Test.reset.fixture.removeChild( node );
-            });
-
-            console.log(Test.reset.fixture);
-            console.info( "FIXTURE RESET (parent)", properties );
-
-            Test.reset.fixture.innerHTML = fixtures.reduce(function( html, fixture ) {
-                return ( html += fixture.replace( /%%QUERY%%/g, query ), html );
-            }, "");
+            Test.reset.fixture.removeChild( document.getElementById( params.key ) )
 
             return true;
         },
@@ -111,6 +120,7 @@
                 pairs[ pair[0] ] = value;
             }
         }
+
         return pairs;
     }
 
@@ -193,6 +203,10 @@ Test.shapes = {
      */
 
     player: {
+        data: Object,
+        frames: Object,
+        layers: Object,
+        sequences: Object,
         parser: String,
         autoplay: Boolean,
         collection_mode: String,
@@ -210,6 +224,7 @@ Test.shapes = {
         start_frame: Number,
         start_slide: Number,
         start_slide_id: Number,
+        slides_bleed: Boolean,
         url: String,
         window_fit: Boolean,
         window_ratio: Number
@@ -234,11 +249,12 @@ function Register( instruct ) {
         if ( this.complete ) {
             this.complete();
         }
+        Test.reset( this.params );
     }.bind(this);
 
     Register.queue[ this.key ] = this;
 
-    Test.reset( this.params );
+    Test.setup( this.params );
 }
 
 Register.queue = {};
