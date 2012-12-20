@@ -17,7 +17,7 @@ handlers = {
         title = "TEST: " + response.test;
 
 
-        if ( response.test === 0 ) {
+        if ( response.test === 1 ) {
 
             /*
                 QUESTION:
@@ -58,7 +58,7 @@ handlers = {
             complete();
         }
 
-        if ( response.test === 1 ) {
+        if ( response.test === 2 ) {
             /*
                 QUESTION/BUG:
 
@@ -96,10 +96,9 @@ handlers = {
             });
         }
 
-        if ( response.test === 2 ) {
-
-            if ( counters[ 2 ] === undefined ) {
-                counters[ 2 ] = 0;
+        if ( response.test === 3 ) {
+            if ( counters[ response.test ] === undefined ) {
+                counters[ response.test ] = 0;
             }
 
             equal(
@@ -107,14 +106,17 @@ handlers = {
                 "'" + payload.actual + "' used for '" + response.url + "'"
             );
 
-            if ( ++counters[ 2 ] === 3 ) {
-                console.log( "test 2 is complete" );
+            if ( ++counters[ response.test ] === 2 ) {
                 complete();
             }
         }
 
-        if ( response.test === 3 ) {
-            console.log( response.test, payload );
+        if ( response.test === 4 ) {
+            equal(
+                payload.actual, true,
+                "Missing data and url throws TypeError"
+            );
+            complete();
         }
 
     },
@@ -189,21 +191,9 @@ handlers = {
 
 module("Player");
 
+// 1
 asyncTest( "Player is initialized with player arguments passed in (or not)", function() {
     expect( 2 );
-
-    Register({
-        params: {
-            test: 0
-        },
-        complete: function() {
-            start();
-        }
-    });
-});
-
-asyncTest( "Fetch data from the |url| attribute if |data| is not defined", function() {
-    expect( 1 );
 
     Register({
         params: {
@@ -215,15 +205,23 @@ asyncTest( "Fetch data from the |url| attribute if |data| is not defined", funct
     });
 });
 
-/*
+// 2
+asyncTest( "Fetch data from the |url| attribute if |data| is not defined", function() {
+    expect( 2 );
 
-TODO:
+    Register({
+        params: {
+            test: 2
+        },
+        complete: function() {
+            start();
+        }
+    });
+});
 
-Make individual Parser tests
-
-*/
+// 3
 asyncTest( "Detect which parser to use based on its structure", function() {
-    expect( 3 );
+    expect( 2 );
 
     [
         {
@@ -233,15 +231,12 @@ asyncTest( "Detect which parser to use based on its structure", function() {
         {
             parser: "flickr",
             url: "http://api.flickr.com/services/feeds/photos_public.gne?tags=puppies&format=json&jsoncallback=?"
-        },
-        {
-            parser: "youtube",
-            url: "http://gdata.youtube.com/feeds/api/playlists/PL70DDAC628461F8E9?v=2&alt=json"
         }
     ].forEach(function( data, k ) {
+
         Register({
             params: {
-                test: 2,
+                test: 3,
                 parser: data.parser,
                 url: data.url
             },
@@ -252,23 +247,19 @@ asyncTest( "Detect which parser to use based on its structure", function() {
     });
 });
 
-/*
-asyncTest( "Matching parser returns valid Zeega data back to the player", function() {
-    expect( 3 );
-
-
-
-
+// 4
+asyncTest( "Player throws when no data is provided (data or url)", function() {
+    expect( 1 );
     Register({
         params: {
-            test: 3
+            test: 4
         },
         complete: function() {
             start();
         }
     });
 });
-*/
+
 /*
 
 * the valid data is then parsed again by the player into `sequences`, `frames` (fames contain `layers`)
