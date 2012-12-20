@@ -12,20 +12,28 @@ $(window).bind("zeega_ready", function() {
 
     // Each numbered block corresponds to a test unit
 
-    // 0) Player is initialized with player arguments passed in (or not)
-    if ( params.test === 0 ) {
+    // 1
+    if ( params.test === 1 ) {
         payload = {};
 
         // Initialize a player w/o args
         a = new Zeega.player();
 
-        // Initialize a player w/ args
-        b = new Zeega.player({ window_fit: true });
-
         // Provide loading instructions
-        b.load({
+        a.load({
             autoplay: true,
-            div_id: "player",
+            // div_id: "player",
+            next: ".next",
+            prev: ".prev",
+            url: "example-data.json"
+        });
+
+
+        // Initialize a player w/ args
+        b = new Zeega.player({
+            window_fit: true,
+            autoplay: true,
+            // div_id: "player",
             next: ".next",
             prev: ".prev",
             url: "example-data.json"
@@ -53,8 +61,8 @@ $(window).bind("zeega_ready", function() {
         });
     }
 
-    // 1) Fetch data from the |url| attribute if |data| is not defined
-    if ( params.test === 1 ) {
+    // 2
+    if ( params.test === 2 ) {
 
         /*
             BUG:
@@ -63,9 +71,8 @@ $(window).bind("zeega_ready", function() {
          */
 
         // Initialize a player w/ args
-        player = new Zeega.player({ window_fit: true });
-        // Provide loading instructions
-        player.load({
+        player = new Zeega.player({
+            window_fit: true,
             autoplay: true,
             div_id: "player",
             next: ".next",
@@ -86,13 +93,12 @@ $(window).bind("zeega_ready", function() {
         });
     }
 
-    // 2) Detect which parser to use based on it's structure
-    if ( params.test === 2 || params.test === 3 ) {
+    // 3
+    if ( params.test === 3 ) {
         payload = {};
 
-        player = new Zeega.player({ window_fit: true });
-
-        player.load({
+        player = new Zeega.player({
+            window_fit: true,
             autoplay: true,
             div_id: "player",
             next: ".next",
@@ -109,7 +115,35 @@ $(window).bind("zeega_ready", function() {
                 }
             });
         });
+    }
 
+    // 4
+    if ( params.test === 4 ) {
+
+        // Initialize a player w/ args: MISSING data and url
+        try {
+            player = new Zeega.player({
+                window_fit: true,
+                autoplay: true,
+                div_id: "player",
+                next: ".next",
+                prev: ".prev"
+            });
+            // This SHOULD NEVER be reached
+            Test.report( params, {
+                type: "player",
+                payload: {
+                    actual: false
+                }
+            });
+        } catch ( e ) {
+            Test.report( params, {
+                type: "player",
+                payload: {
+                    actual: true
+                }
+            });
+        }
     }
 
 });
