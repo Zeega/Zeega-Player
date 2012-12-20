@@ -55,40 +55,51 @@
         }
       ]
     };
-    console.log(testdata)
+    //console.log(testdata)
   </script>
 
 
   <script>
   $(window).bind('zeega_ready', function(){
 
-    var project = new Zeega.player({window_fit:true});
-    project.on('all', function(e, obj){ if(e!='media_timeupdate') console.log('   player event:',e,obj);});
-    project.load({
+    // var project = new Zeega.player({/* project data */},{/* player opts */})
+
+    var project = new Zeega.player({
+        autoplay: true,
+        url: "http://dev.zeega.org/joseph/web/api/projects/2259",
+        window_fit: true
+      }, {
+        div_id: 'main'
+      });
+
+
+/*
+    var project = new Zeega.player({
+      // window_fit: true,
       div_id: 'main',
       autoplay: true,
       window_fit: true,
-      //data : testdata,
-      //url: 'http://alpha.zeega.org/api/projects/3629',
       // url: 'http://dev.zeega.org/joseph/web/api/projects/2259', // zeega project
-      //url : 'http://api.flickr.com/services/feeds/photos_public.gne?tags=massascension&format=json&jsoncallback=?',
-      url: 'http://alpha.zeega.org/api/items/67034', // collection_mode
 
+      data : testdata,
+      // url: 'http://alpha.zeega.org/api/projects/3629',
+      // url : 'http://api.flickr.com/services/feeds/photos_public.gne?tags=massascension&format=json&jsoncallback=?',
+      // url: 'http://alpha.zeega.org/api/items/67034', // collection_mode
       // url: "http://alpha.zeega.org/api/projects/3678", //BGB
-
-      //slideshow_start_frame_order : 4,
-      //start_slide_id: 37575,
-      slides_bleed: false,
-      //url: 'http://planettakeout.org/zeegaapi/items/46075/items?page=1', //dynamic
-      collection_mode: 'slideshow' // standard, slideshow
+      // url: 'http://planettakeout.org/zeegaapi/items/46075/items?page=1', //dynamic
+      // collection_mode: 'slideshow' // standard, slideshow
     });
+*/    
+    project.on('all', function(e, obj){ if(e!='media_timeupdate') console.log('   player event:',e,obj);});
+    
+    //project.load({);
 
     $('#playpause').click(function(){
       project.getFrameData();
       return false;
     });
 
-    console.log('project', project);
+ //   console.log('project', project);
   });
   </script>
 

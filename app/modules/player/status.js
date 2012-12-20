@@ -1,5 +1,5 @@
 /*
-    relay.js
+    status.js
 
     model that keeps track of player state, emits events, and relays commands to the player
 */
@@ -36,8 +36,6 @@ function( Zeega ) {
         initialize: function() {
             this.initTimer = _.once( this._initProjectTimer );
             this.on("change:current_frame", this.onChangeFrame,this);
-            
-            console.log('this', this, this.project);
         },
 
         loadProject: function( project ) {

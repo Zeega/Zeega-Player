@@ -1,6 +1,10 @@
 define([
     "zeega",
+
+    "modules/player/data",
+
     "zeega_dir/player/frame",
+    "zeega_dir/player/layer",
 
     // parsers
     "zeega_dir/parsers/_all",
@@ -11,7 +15,7 @@ define([
     "modules/player/player-layout"
 ],
 
-function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
+function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
     /**
     Player
 
@@ -43,10 +47,13 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
     Player = Zeega.Backbone.Model.extend({
 
         ready: false,          // the player is parsed and in the dom. can call play play. layers have not been preloaded yet
-        complete: false,       // have all layers been preloaded
-        initialized: false,    // has the project data been loaded and parsed
         state: "paused",
+        relay: null,
+        status: null,
 
+        frames: null,
+        sequences: null,
+        Layout: null,
 
         // default settings -  can be overridden by project data
         defaults: {
@@ -118,29 +125,6 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
             **/
             collection_mode: "standard",
 
-            start_slide: null,
-            start_slide_id: null,
-            slides_bleed: true,
-
-            /**
-            Time to wait after player is ready before playing project
-
-            overrides any overlay attributes
-
-            @property delay
-            @type Integer
-            @default 0
-            **/
-            delay: 0,
-
-            /**
-            If there are overlays, do they fade out?
-
-            @property fade_overlays
-            @type Boolean
-            @default true
-            **/
-            fade_overlays: true,
             /**
             ms the player takes to fade in
 
@@ -157,14 +141,7 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
             @default 500
             **/
             fadeOut: 500,
-            /**
-            Sets if the player be set to fullscreen
-
-            @property fullscreenEnable
-            @type Boolean
-            @default true
-            **/
-            fullscreenEnable: true,
+ 
             /**
             Turns the keyboard controls on or off
 
@@ -194,11 +171,11 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
             /**
             The number of frames to attempt preload on
 
-            @property preload_ahead
+            @property preload_radius
             @type Integer
             @default 2
             **/
-            preload_ahead: 2,
+            preload_radius: 2,
 
             /**
             selector of element used to cuePrev the Zeega
@@ -269,100 +246,91 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
         * player.load({data: {<valid data>}})
         */
 
-        initialize: function( obj ) {
+        initialize: function( data, options ) {
             this.relay = new Relay.Model();
             this.status = new Status.Model();
-            this.status.loadProject( this );
-            if ( obj !== undefined ) {
-                this.load( obj ); // allow for load later
-            }
+            this.status.loadProject( this ); // look into this
+            this.data = new Data.Model(data);
+
+            this.set( options );
+            this._load( data, options );
         },
 
-        /**
-        * load
-        * loads the project with data or supplied project_url
-        *
-        * @method load
-        * @param {Object} setup Setup object
-        * @param {String} [setup.project_url] A complete project_url pointing to a valid Zeega project data file.
-        * @param {Object} [setup.data]A valid Zeega project data object.
-        */
-
-        load: function( obj ) {
-            var error, data, url, which,
-                _this = this;
-
-            // Make missing project data a serious crime.
-            if ( obj.data === null && obj.url === null ) {
-                which = obj.data === null ? "data" : "url";
-                throw new TypeError( "`" + which + "` expected non null" );
-            }
-
-            this.off( "data_loaded", this.start ); // cancel previous listeners
-            this.on( "data_loaded", this.start, this ); // make a new listener
-
-            // this if may be able to be replaced by a _.once(**)
-            if ( !this.initialized ) {
-
-                // Set project data to this instance.
-                this.set( obj, { silent: true });
-
-                data = this.get("data");
-                url = this.get("url");
-
-                // For Backbone sync:
-                // Ensure that a url property exists and is NON-NULL
-                this.url = url || "";
-
-                // Has an explicit |data| property
-                if ( _.isObject( data ) ) {
-                    this._dataDetect( data );
-                } else {
-                // Has an explicit |url| property
-                // This requires a remote request
-                    this.fetch({ silent: true })
-                        .success(function( res ) {
-                            _this._dataDetect(res);
-                        })
-                        .error(function() {
-                            _this._onError("3 - fetch error. bad project_url?");
-                        });
-                }
-
+        _load: function( data, options ) {
+            var rawDataModel = new Data.RawModel(); // throw away model. may contain extraneous data
+            if ( data.url ) {
+                rawDataModel.set("url", data.url );
+                rawDataModel.fetch().success(function( response ) {
+                    this._detectAndParseData( response );
+                }.bind( this )).error(function() {
+                    throw new Error("Ajax load fail");
+                });
             } else {
-                this._onError("2 - already loaded");
+                throw new TypeError("`url` expected non null");
             }
-
         },
 
-        _dataDetect: function( res ) {
-            var _this = this,
-                parsed;
+        _detectAndParseData: function( response ) {
+            var parsed;
 
             // determine which parser to use
             _.each( Parser, function( p ) {
-                if ( p.validate(res) ) {
+                if ( p.validate( response ) ) {
                     console.log( "parsed using: " + p.name );
                     // parse the response
-                    _this.parser = p.name;
-                    parsed = p.parse( res, _this.toJSON() );
+                    this.parser = p.name;
+                    parsed = p.parse( response, this.toJSON() );
                     return false;
                 }
-            });
+            }.bind( this ));
 
             if ( parsed !== undefined ) {
                 // continue loading the player
-                this.set( parsed, { silent: true } );
-                parseProject( this );
+                this.data.set( parsed, { silent: true } );
+                this._parseProjectData( parsed );
+                
                 this._listen();
             } else {
-              this._onError("4 - no valid parser found");
+              throw new Error("Valid parser not found");
             }
         },
 
+        _parseProjectData: function( parsed ) {
+            var sequences, frames, layers, startFrame;
+
+            this.data.set( parsed );
+
+            layers = this.data.get("layers");
+            frames = new Frame.Collection( this.data.get("frames") );
+            sequences = new Zeega.Backbone.Collection( this.data.get("sequences") );
+
+            // should be done another way ?
+            _.each(layers, function( layer ) {
+                layer.target_div = this.data.get("div_id");
+            }.bind( this ));
+            frames.relay = this.relay;
+            frames.status = this.status;
+
+            // ugly
+            frames.load( this.data.get("sequences"), layers, this.data.get("preload_radius"), _ );
+
+            // set start frame
+            if ( this.get("startFrame") === null || frames.get( this.get("startFrame") ) === undefined ) {
+                this.set({
+                    start_frame: sequences.at(0).get("frames")[0]
+                }, { silent: true });
+            }
+
+            this.frames = frames;
+            this.sequences = sequences;
+
+            this._render();
+            this.status.emit( "data_loaded", _.extend({}, this.data.toJSON() ) );
+        },
+
+        // attach listeners
         _listen: function() {
             this.on( "cue_frame", this.cueFrame, this );
-
             // relays
             this.relay.on( "change:current_frame", this._remote_cueFrame, this );
         },
@@ -372,13 +340,13 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
         },
 
         // renders the player to the dom // this could be a _.once
-        render: function() {
+        _render: function() {
             var divId = this.get('div_id');
 
             this.Layout = new PlayerLayout.Layout({
                 model: this,
                 attributes: {
-                    id: "ZEEGA-player-" + this.id,
+                    id: "ZEEGA-player-" + this.data.id,
                     "data-projectID": this.id
                 }
             });
@@ -393,7 +361,7 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
             this.Layout.render();
 
             _.delay(function() {
-                this.onRendered();
+                this._onRendered();
             }.bind(this), 100);
         },
 
@@ -401,7 +369,7 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
             this.Layout.$el.fadeTo( "fast", 1 );
         },
 
-        onRendered: function() {
+        _onRendered: function() {
             this.ready = true;
             this._initEvents(); // this should be elsewhere. in an onReady fxn?
             this.status.emit( "ready", this );
@@ -431,10 +399,6 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
                     }
                 });
             }
-        },
-
-        start: function() {
-            this.render();
         },
 
         // if the player is paused, then play the project
@@ -478,7 +442,7 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
                 } else if ( !isCurrentNull ) {
                     // unpause the player
                 } else {
-                    this._onError("3 - could not play");
+                    throw new Error("Valid parser not found");
                 }
             }
         },
@@ -617,73 +581,10 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
         **/
         fitWindow: function() {
             this.Layout.resizeWindow();
-        },
-
-        /**
-        Fired when an error occurs...
-
-        @event onError
-        @param {String} str A description of the error
-        **/
-        _onError: function( str ) {
-            this.status.emit( "error", str );
-            console.log( "Error code: " + str );
-        },
-
-        parse: function( res ) {
-            // parses zeega collections pulled from the library api
-            if ( res.items && res.items[0].child_items ) {
-                res = res.items[0];
-                res.items = res.child_items;
-            }
-            return res;
         }
+
 
     });
-
-    /*
-        parse the project and trigger data_loaded when finished
-
-        private
-    */
-    function parseProject( player ) {
-        var frames,
-            layers = player.get("layers"),
-            startFrame = player.get("start_frame");
-
-        addTargetDivToLayers( layers, player.get("div_id"));
-
-        frames = new Frame.Collection( player.get("frames") );
-
-
-        frames.relay = player.relay;
-        frames.status = player.status;
-
-        frames.load( player.get("sequences"), layers, player.get("preload_ahead"), _ );
-
-        player.sequences = new Zeega.Backbone.Collection(player.get("sequences"));
-        player.frames = frames;
-
-        // set start frame
-        if ( startFrame === null || player.frames.get(startFrame) === undefined ) {
-            player.set({
-                "start_frame": player.get("sequences")[0].frames[0]
-            }, { silent: true });
-        }
-
-        player.initialized = true;
-        player.status.emit( "data_loaded", player );
-
-        // TODO: Investigate why no explicit return
-    }
-
-    function addTargetDivToLayers( layerArray, targetDiv ) {
-        _.each(layerArray, function( layer ) {
-            layer.target_div = targetDiv;
-        });
-
-        // TODO: Investigate why no explicit return
-    }
 
     Zeega.player = Player;
 
