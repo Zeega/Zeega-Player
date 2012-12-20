@@ -46,12 +46,53 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
         complete: false,       // have all layers been preloaded
         initialized: false,    // has the project data been loaded and parsed
         state: "paused",
-        parser: null,
+
 
         // default settings -  can be overridden by project data
         defaults: {
             /**
-            Capture the type of parser used.
+            Instance of a Data.Model
+
+            @property data
+            @type Object
+            @default null
+            **/
+
+            data: null,
+
+            /**
+            Instance of a Frame.Collection
+
+            @property frames
+            @type Collection
+            @default null
+            **/
+
+            frames: null,
+
+            /**
+            Instance of a Layer.Collection
+
+            @property layers
+            @type Collection
+            @default null
+            **/
+
+            layers: null,
+
+            /**
+            Instance of a Sequence.Collection
+
+            @property sequences
+            @type Collection
+            @default null
+            **/
+
+            sequences: null,
+
+            /**
+            Capture the type of parser used. This can _only_ be set correctly by
+            the parser itself during the vaildation phase.
 
             @property parser
             @type String
@@ -184,6 +225,16 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
             @default null
             **/
             div_id: null,
+
+            /**
+            URL of loaded data, optional
+
+            @property url
+            @type String
+            @default null
+            **/
+            url: null,
+
             /**
             Defines whether or not the player is fullscreen or scales to fit the browser.
 
