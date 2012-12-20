@@ -189,7 +189,6 @@
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.75);
 }
 .slideshow-slider ul li.active .slideshow-thumbnail {
-  box-shadow: 0 0 19px orange;
   outline: 3px solid rgba(255, 255, 255, 0.75);
 }
 .slideshow-slider ul li .slideshow-thumbnail {
