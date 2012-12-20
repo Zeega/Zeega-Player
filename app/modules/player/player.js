@@ -289,20 +289,37 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
         */
 
         load: function( obj ) {
-            var _this = this,
-                error;
+            var error, data, url, which,
+                _this = this;
+
+            // Make missing project data a serious crime.
+            if ( obj.data === null && obj.url === null ) {
+                which = obj.data === null ? "data" : "url";
+                throw new TypeError( "`" + which + "` expected non null" );
+            }
 
             this.off( "data_loaded", this.start ); // cancel previous listeners
             this.on( "data_loaded", this.start, this ); // make a new listener
+
             // this if may be able to be replaced by a _.once(**)
             if ( !this.initialized ) {
-                this.set( obj, { silent: true }); // overwrite project settings and add data
 
-                if ( obj && obj.data && _.isObject( obj.data ) ) {
-                    this._dataDetect( obj.data );
-                } else if ( obj && obj.url && _.isString( obj.url ) ) {
-                    // try to load project from project_url
-                    this.url = obj.url;
+                // Set project data to this instance.
+                this.set( obj, { silent: true });
+
+                data = this.get("data");
+                url = this.get("url");
+
+                // For Backbone sync:
+                // Ensure that a url property exists and is NON-NULL
+                this.url = url || "";
+
+                // Has an explicit |data| property
+                if ( _.isObject( data ) ) {
+                    this._dataDetect( data );
+                } else {
+                // Has an explicit |url| property
+                // This requires a remote request
                     this.fetch({ silent: true })
                         .success(function( res ) {
                             _this._dataDetect(res);
@@ -310,16 +327,12 @@ function( Zeega, Frame, Parser, Relay, Status, PlayerLayout ) {
                         .error(function() {
                             _this._onError("3 - fetch error. bad project_url?");
                         });
-                } else {
-                    error = "1 - invalid or missing data. could be setting up player. nonfatal.";
                 }
+
             } else {
-                error = "2 - already loaded";
+                this._onError("2 - already loaded");
             }
 
-            if ( error ) {
-                this._onError( error );
-            }
         },
 
         _dataDetect: function( res ) {
