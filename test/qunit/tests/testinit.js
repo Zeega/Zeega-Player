@@ -218,9 +218,7 @@ Test.shapes = {
         preloadRadius: Number,
         prev: String,
         startFrame: Number,
-        url: String,
-        window_fit: Boolean,
-        window_ratio: Number
+        url: String
     },
     sequence: {
         attr: Array,
