@@ -15,74 +15,27 @@
   <!-- Main container. -->
   <a href='#' id='playpause'>>></a>
   <div id="main" style='height:400px;width:600px;float:left'></div>
-  <!--
-  <div id="secondary" style='height:400px;width:600px;float:left'></div>
--->
-<!-- dev env -->
   
   <script src="assets/js/libs/jquery.js"></script>
   <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
 
   <script>
-    var testdata = 
-    {   
-      "items":[
-        {
-          "child_items" : [{
-
-            "id": 50259,
-            "site_id": 1,
-            "user_id": 1311,
-                    "username" : "austinmusicmap@gmail.com",
-                    "display_name" : "Austin Music Map",
-            "title": "Introducing the Annie Street Arts Collective",
-            "description":"The Annie Street Arts Collective (anniestreetartscollective.com\/) puts on secret shows around Austin\u2014in backyards, under bridges, in abandoned buildings. The goal is to create an atmosphere for careful listening and to encourage people to experience the c...",
-            "text":"",
-            "uri": "_ezJkTBkzD4",
-            "attribution_uri": "http://www.youtube.com/watch?v=_ezJkTBkzD4&amp;amp;feature=youtube_gdata_player",
-            "date_created": "2012-01-02T00:00:00",
-            "media_type": "Video",
-            "layer_type": "Youtube",
-            "thumbnail_url": "http:\/\/static.zeega.org\/community\/items\/0\/50259\/50882eae467a7.jpg",
-            "child_items_count": 0,
-            "media_creator_username": "AustinMusicMap",
-            "media_creator_realname": "Unknown",
-            "archive": "Youtube","media_date_created" : "2012-09-07T12:00:00Z","media_date_created_end" : "2012-01-02T00:00:00","attributes" :"s:6:\"a:0:{}\";","tags" : ["Music","blues","story"],
-            "media_geo_latitude": null,
-            "media_geo_longitude": null,"editable" : false,
-            "published" : false
-          }]
-        }
-      ]
-    };
-    //console.log(testdata)
-  </script>
-
-
-  <script>
   $(window).bind('zeega_ready', function(){
-
-    // var project = new Zeega.player({/* project data */},{/* player opts */})
 
     var project = new Zeega.player({
         divId: "main",
-        url: "http://alpha.zeega.org/api/items/72666" 
+        url: "http://alpha.zeega.org/api/items/72666" // published zeega
+        // url: "http://api.flickr.com/services/feeds/photos_public.gne?tags=massascension&format=json&jsoncallback=?" // flickr tag set
       }, {
         window_fit: true,
         autoplay: true
       });
-
-
-    // project.on('all', function(e, obj){ if(e!='media_timeupdate') console.log('   player event:',e,obj);});
-    
-    //project.load({);
 
     $('#playpause').click(function(){
       project.getFrameData();
       return false;
     });
 
- //   console.log('project', project);
   });
   </script>
 

@@ -21691,6 +21691,30 @@ function() {
     return Parser;
 });
 
+zeega.define('zeega_dir/parsers/zeega-project-published',["lodash"],
+
+function() {
+    var type = "zeega-project-published",
+        Parser = {};
+
+    Parser[ type ] = { name: type };
+
+    Parser[ type ].validate = function( response ) {
+
+        if ( response.items && response.items[0].media_type == "project" ) {
+            return true;
+        }
+        return false;
+    };
+
+    // no op. projects are already formatted
+    Parser[type].parse = function( response, opts ) {
+        return response.items[0].text;
+    };
+
+    return Parser;
+});
+
 zeega.define('zeega_dir/parsers/zeega-collection',[
     "lodash"
 ],
@@ -22022,6 +22046,7 @@ this should be auto generated probably!!
 
 zeega.define('zeega_dir/parsers/_all',[
     "zeega_dir/parsers/zeega-project",
+    "zeega_dir/parsers/zeega-project-published",
     "zeega_dir/parsers/zeega-collection",
     "zeega_dir/parsers/zeega-dynamic-collection",
     "zeega_dir/parsers/flickr",
@@ -22029,6 +22054,7 @@ zeega.define('zeega_dir/parsers/_all',[
 ],
 function(
     zProject,
+    zProjectPublished,
     zCollection,
     zDynamicCollection,
     flickr,
@@ -22040,6 +22066,7 @@ function(
     return _.extend(
         Parsers,
         zProject,
+        zProjectPublished,
         zCollection,
         zDynamicCollection,
         flickr,
