@@ -197,24 +197,8 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             @type String
             @default null
             **/
-            url: null,
+            url: null
 
-            /**
-            Defines whether or not the player is fullscreen or scales to fit the browser.
-
-            @property window_fit
-            @type Boolean
-            @default false
-            **/
-            window_fit: false,
-            /**
-            Defines aspect ratio of the Zeega project
-
-            @property window_ratio
-            @type Float
-            @default 4/3
-            **/
-            window_ratio: 4/3
         },
 
 
