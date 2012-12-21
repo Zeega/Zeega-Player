@@ -39,7 +39,7 @@ function( Zeega ) {
 
         initialize: function() {
             // debounce the resize function so it doesn"t bog down the browser
-            var divId = this.model.get("div_id"),
+            var divId = this.model.get("divId"),
                 lazyResize = _.debounce(function() {
                     this.resizeWindow();
                 }.bind(this), 300);
@@ -92,7 +92,7 @@ function( Zeega ) {
         getWindowSize: function() {
             // TODO: This could be refactored a bit more
             var css = {},
-                divId = this.model.get("div_id"),
+                divId = this.model.get("divId"),
                 windowRatio = this.model.get("window_ratio"),
                 winWidth = divId ? $( "#" + divId ).width(): window.innerWidth,
                 winHeight = divId ? $( "#" + divId ).height(): window.innerHeight,

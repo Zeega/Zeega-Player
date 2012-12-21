@@ -17,27 +17,22 @@ $(window).bind("zeega_ready", function() {
         payload = {};
 
         // Initialize a player w/o args
-        a = new Zeega.player();
-
-        // Provide loading instructions
-        a.load({
-            autoplay: true,
-            // div_id: "player",
-            next: ".next",
-            prev: ".prev",
+        a = new Zeega.player({
             url: "example-data.json"
-        });
+          }, {
+            divId: 'player',
+            next : '.next',
+            prev : '.prev'
+          });
 
-
-        // Initialize a player w/ args
         b = new Zeega.player({
-            window_fit: true,
-            autoplay: true,
-            // div_id: "player",
-            next: ".next",
-            prev: ".prev",
             url: "example-data.json"
-        });
+          }, {
+            divId: 'player',
+            next : '.next',
+            prev : '.prev'
+          });
+
 
         // Since |b| must load data before it can be analyzed,
         // commit to reporting the results only after |b| has
@@ -64,17 +59,11 @@ $(window).bind("zeega_ready", function() {
     // 2
     if ( params.test === 2 ) {
 
-        /*
-            BUG:
-            Making the assumption that we can fetch a |url| if |data| is
-            not defined doesn't address the case where both are missing
-         */
-
         // Initialize a player w/ args
         player = new Zeega.player({
             window_fit: true,
             autoplay: true,
-            div_id: "player",
+            divId: "player",
             next: ".next",
             prev: ".prev",
             url: "example-data.json"
@@ -83,11 +72,11 @@ $(window).bind("zeega_ready", function() {
         // Since |player| must load data before it can be analyzed,
         // commit to reporting the results only after |player| has
         // fired its data_loaded event
-        player.on( "data_loaded", function( type ) {
+         player.on( "data_loaded", function( type ) {
             Test.report( params, {
                 type: "player",
                 payload: {
-                    attributes: player.attributes
+                    attributes: [ player.data.attributes ]
                 }
             });
         });
@@ -100,7 +89,7 @@ $(window).bind("zeega_ready", function() {
         player = new Zeega.player({
             window_fit: true,
             autoplay: true,
-            div_id: "player",
+            divId: "player",
             next: ".next",
             prev: ".prev",
             url: params.url
@@ -125,7 +114,7 @@ $(window).bind("zeega_ready", function() {
             player = new Zeega.player({
                 window_fit: true,
                 autoplay: true,
-                div_id: "player",
+                divId: "player",
                 next: ".next",
                 prev: ".prev"
             });

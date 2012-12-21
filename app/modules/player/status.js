@@ -64,7 +64,7 @@ function( Zeega ) {
                 }, { silent: true });
             }
             /* update the current_frame_model */
-            frame = this.project.frames.get( currentFrame );
+            frame = this.project.get("frames").get( currentFrame );
             sequence = frame.get("_sequence");
 
             this.set({ "current_frame_model": frame }, { silent: true });
@@ -79,7 +79,7 @@ function( Zeega ) {
             if ( this.get("current_sequence") != sequence ) {
                 this.set({
                     current_sequence: sequence,
-                    current_sequence_model: this.project.sequences.get( sequence )
+                    current_sequence_model: this.project.get("sequences").get( sequence )
                 });
 
                 this.emit( "sequence_enter",

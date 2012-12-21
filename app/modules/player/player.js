@@ -51,8 +51,6 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
         relay: null,
         status: null,
 
-        frames: null,
-        sequences: null,
         Layout: null,
 
         // default settings -  can be overridden by project data
@@ -88,6 +86,15 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             layers: null,
 
             /**
+            number
+
+            @property layers
+            @type Collection
+            @default null
+            **/
+            preloadRadius: 2,
+
+            /**
             Instance of a Sequence.Collection
 
             @property sequences
@@ -119,11 +126,11 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             /**
             Sets the collection project playback. "standard", "slideshow"
 
-            @property collection_mode
+            @property collectionMode
             @type String
             @default "standard"
             **/
-            collection_mode: "standard",
+            collectionMode: "standard",
 
             /**
             ms the player takes to fade in
@@ -150,15 +157,6 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             @default true
             **/
             keyboard: true,
-            /**
-            Sets the player mode
-
-            @property mode
-            @type String
-            @default "standalone"
-            @deprecated
-            **/
-            mode:"standalone",
 
             /**
             selector of element used to cueNext the Zeega
@@ -168,14 +166,6 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             @default null
             **/
             next: null,
-            /**
-            The number of frames to attempt preload on
-
-            @property preload_radius
-            @type Integer
-            @default 2
-            **/
-            preload_radius: 2,
 
             /**
             selector of element used to cuePrev the Zeega
@@ -189,11 +179,11 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             /**
             The frame id to start the player
 
-            @property start_frame
+            @property startFrame
             @type Integer
             @default null
             **/
-            start_frame: null,
+            startFrame: null,
             /**
             The id of the target div to draw the player into
 
@@ -201,7 +191,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             @type String
             @default null
             **/
-            div_id: null,
+            divId: null,
 
             /**
             URL of loaded data, optional
@@ -250,16 +240,19 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             this.relay = new Relay.Model();
             this.status = new Status.Model();
             this.status.loadProject( this ); // look into this
-            this.data = new Data.Model(data);
+
+            this.data = new Data.Model( options );
+            this.data.url = data.url;
 
             this.set( options );
             this._load( data, options );
         },
 
         _load: function( data, options ) {
-            var rawDataModel = new Data.RawModel(); // throw away model. may contain extraneous data
+            var rawDataModel = new Zeega.Backbone.Model(); // throw away model. may contain extraneous data
+            
             if ( data.url ) {
-                rawDataModel.set("url", data.url );
+                rawDataModel.url = data.url;
                 rawDataModel.fetch().success(function( response ) {
                     this._detectAndParseData( response );
                 }.bind( this )).error(function() {
@@ -298,31 +291,31 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
         _parseProjectData: function( parsed ) {
             var sequences, frames, layers, startFrame;
 
-            this.data.set( parsed );
-
             layers = this.data.get("layers");
             frames = new Frame.Collection( this.data.get("frames") );
             sequences = new Zeega.Backbone.Collection( this.data.get("sequences") );
 
             // should be done another way ?
             _.each(layers, function( layer ) {
-                layer.target_div = this.data.get("div_id");
+                layer.target_div = this.data.get("divId");
             }.bind( this ));
             frames.relay = this.relay;
             frames.status = this.status;
 
             // ugly
-            frames.load( this.data.get("sequences"), layers, this.data.get("preload_radius"), _ );
+            frames.load( this.data.get("sequences"), layers, this.get("preloadRadius"), _ );
 
             // set start frame
             if ( this.get("startFrame") === null || frames.get( this.get("startFrame") ) === undefined ) {
                 this.set({
-                    start_frame: sequences.at(0).get("frames")[0]
+                    startFrame: sequences.at(0).get("frames")[0]
                 }, { silent: true });
             }
 
-            this.frames = frames;
-            this.sequences = sequences;
+            this.set({
+                frames: frames,
+                sequences: sequences
+            }, { silent: true });
 
             this._render();
             this.status.emit( "data_loaded", _.extend({}, this.data.toJSON() ) );
@@ -341,7 +334,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
 
         // renders the player to the dom // this could be a _.once
         _render: function() {
-            var divId = this.get('div_id');
+            var divId = this.get('divId');
 
             this.Layout = new PlayerLayout.Layout({
                 model: this,
@@ -363,6 +356,8 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             _.delay(function() {
                 this._onRendered();
             }.bind(this), 100);
+
+            console.log('zeega this', this);
         },
 
         _fadeIn: function() {
@@ -374,7 +369,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             this._initEvents(); // this should be elsewhere. in an onReady fxn?
             this.status.emit( "ready", this );
 
-            this.preloadFramesFrom( this.get("start_frame") );
+            this.preloadFramesFrom( this.get("startFrame") );
 
             if ( this.get("autoplay") ) {
                 this.play();
@@ -414,7 +409,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
 
         play: function() {
             var currentFrame = this.status.get("current_frame"),
-                startFrame = this.get("start_frame"),
+                startFrame = this.get("startFrame"),
                 isCurrentNull, isStartNull;
 
             if ( !this.ready ) {
@@ -429,7 +424,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
                 }
 
                 // TODO: Find out what values currentFrame and startFrame could possibly be
-                // eg. current_frame, start_frame
+                // eg. current_frame, startFrame
 
                 isCurrentNull = currentFrame === null;
                 isStartNull = startFrame === null;
@@ -437,7 +432,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
                 // if there is no info on where the player is or where to start go to first frame in project
                 if ( isCurrentNull && isStartNull ) {
                     this.cueFrame( this.get("sequences")[0].frames[0] );
-                } else if ( isCurrentNull && !isStartNull && this.frames.get( startFrame ) ) {
+                } else if ( isCurrentNull && !isStartNull && this.get("frames").get( startFrame ) ) {
                     this.cueFrame( startFrame );
                 } else if ( !isCurrentNull ) {
                     // unpause the player
@@ -477,7 +472,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
         cueFrame: function( id, ms ) {
             ms = ms || 0;
 
-            if ( id !== undefined && this.frames.get(id) !== undefined ) {
+            if ( id !== undefined && this.get("frames").get(id) !== undefined ) {
                 if ( ms > 0 ) {
                     _.delay(function() {
                         this._goToFrame( id );
@@ -524,16 +519,16 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
 
         preloadFramesFrom: function( id ) {
             var _this = this,
-                frame = this.frames.get( id );
+                frame = this.get("frames").get( id );
 
             _.each( frame.get("preload_frames"), function( frameID ) {
-                _this.frames.get( frameID ).preload();
+                _this.get("frames").get( frameID ).preload();
             });
         },
 
         // returns project metadata
         getProjectData: function() {
-            var frames = this.frames.map(function( frame ) {
+            var frames = this.get("frames").map(function( frame ) {
                 return _.extend({},
                     frame.toJSON(),
                     { layers: frame.layers.toJSON() }
@@ -569,7 +564,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
 
             this.Layout.$el.fadeOut( this.get("fadeOut"), function() {
                 // destroy all layers before calling player_destroyed
-                _this.frames.each(function(frame) { frame.destroy(); });
+                _this.get("frames").each(function(frame) { frame.destroy(); });
                 _this.status.emit("player_destroyed");
             });
         },

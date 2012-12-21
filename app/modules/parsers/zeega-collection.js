@@ -18,7 +18,7 @@ function() {
     Parser[ type ].parse = function( response, opts ) {
         var project = {};
 
-        if ( opts.collection_mode == "slideshow" && response.items[0].child_items.length > 0 ) {
+        if ( opts.collectionMode == "slideshow" && response.items[0].child_items.length > 0 ) {
             project = parseSlideshowCollection( response, opts );
         } else {
             project = parseStandardCollection( response, opts );

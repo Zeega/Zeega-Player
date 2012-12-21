@@ -19,32 +19,6 @@ handlers = {
 
         if ( response.test === 1 ) {
 
-            /*
-                QUESTION:
-                Why are instance construction and load separated
-                into different tasks?
-
-                var player = new Zeega.Player();
-                player.load(...)?
-            */
-
-            /*
-                PROBLEM/BUG:
-
-                Validating instance shape is impossible until all player
-                instances have the SAME properties, whether or not they
-                are defined or left null/empty.
-
-                * Seems to be related to the question under
-                  "response.test === 1"
-            */
-
-            /*
-                FAIL:
-
-                Without having a definitive "player-type", there is no way to
-                verify whether or not it was constructed correctly.
-             */
             shape = Object.keys( Test.shapes.player ).sort();
 
             payload.attributes.forEach(function( result, k ) {
@@ -59,37 +33,24 @@ handlers = {
         }
 
         if ( response.test === 2 ) {
-            /*
-                QUESTION/BUG:
-
-                Why is loaded |data| being assigned directly to |player| instances?
-
-                A loaded |data| object should create it's own instance of an internal
-                (or external facing) Data constructor that is then assigned to a
-                specific own property of the |player| instance for which it was loaded.
-
-                Not doing this has created a number of problems that will only get
-                worse over time as Player continues to be developed, its own instance
-                property list will be forever in fear of overwriting by loaded data properties.
-
-            */
-
-            /*
-                FAIL:
-
-                Ideally this would compare our known example-data.json
-                with whatever the Zeega.Player has loaded, but that's
-                basically impossible since all the loaded data properties
-                are just dumped, wholesale, into the player instance.
-            */
+            
             jQuery.ajax({
                 url: "fixtures/example-data.json",
                 type: "get",
                 success: function( data ) {
-                    var shape = Object.keys( data );
+                    var shape = Object.keys( jQuery.parseJSON( data ) ),
+                        payload = response.payload;
+
+                    payload.attributes.forEach(function( result, k ) {
+                        var compare = Object.keys( result ).sort();
+
+                        deepEqual(
+                            compare, shape, "'" + result.player + "' has expected attribute shape"
+                        );
+                    });
 
                     // See "FAIL" above.
-                    ok( false, "There is no way to verify data integrity" );
+                    // ok( false, "There is no way to verify data integrity" );
 
                     complete();
                 }
@@ -185,10 +146,6 @@ handlers = {
 };
 
 
-
-
-
-
 module("Player");
 
 // 1
@@ -207,7 +164,7 @@ asyncTest( "Player is initialized with player arguments passed in (or not)", fun
 
 // 2
 asyncTest( "Fetch data from the |url| attribute if |data| is not defined", function() {
-    expect( 2 );
+    expect( 1 );
 
     Register({
         params: {
