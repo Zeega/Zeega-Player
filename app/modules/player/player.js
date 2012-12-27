@@ -32,10 +32,11 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
     is the only external contact point
 
         // initialize player
-        var player = new Player.Model({ `player attributes` }, { `project attributes` });
+        var player = new Player.Model({ `player attributes` });
 
         // minimum
         var player = new Player.Model({ url: "<valid url>"});
+        var player = new Player.Model({ data: {<valid data>} });
         
     @class Player
     @constructor
@@ -219,7 +220,6 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             this.data.url = attributes.url;
 
             this._load( attributes );
-            console.log('THIS', this);
         },
 
         _load: function( attributes ) {

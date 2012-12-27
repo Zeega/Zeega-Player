@@ -22149,13 +22149,10 @@ function( Zeega ) {
 
         initialize: function() {
             this.initTimer = _.once( this._initProjectTimer );
-            this.on("change:current_frame", this.onChangeFrame,this);
-        },
 
-        loadProject: function( project ) {
-            this.project = project;
-            this.project.on("play", this.onPlay, this );
-            this.project.on("pause", this.onPause, this );
+            this.get("project").on("play", this.onPlay, this );
+            this.get("project").on("pause", this.onPause, this );
+            this.on("change:current_frame", this.onChangeFrame,this);
         },
 
         onChangeFrame: function( info ) {
@@ -22178,7 +22175,7 @@ function( Zeega ) {
                 }, { silent: true });
             }
             /* update the current_frame_model */
-            frame = this.project.get("frames").get( currentFrame );
+            frame = this.get("project").get("frames").get( currentFrame );
             sequence = frame.get("_sequence");
 
             this.set({ "current_frame_model": frame }, { silent: true });
@@ -22193,7 +22190,7 @@ function( Zeega ) {
             if ( this.get("current_sequence") != sequence ) {
                 this.set({
                     current_sequence: sequence,
-                    current_sequence_model: this.project.get("sequences").get( sequence )
+                    current_sequence_model: this.get("project").get("sequences").get( sequence )
                 });
 
                 this.emit( "sequence_enter",
@@ -22208,7 +22205,7 @@ function( Zeega ) {
         */
         emit: function( e, info ) {
             if ( !this.silent ) {
-                this.project.trigger( e, info );
+                this.get("project").trigger( e, info );
             }
         },
 
@@ -22395,10 +22392,11 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
     is the only external contact point
 
         // initialize player
-        var player = new Player.Model({ `player attributes` }, { `project attributes` });
+        var player = new Player.Model({ `player attributes` });
 
         // minimum
         var player = new Player.Model({ url: "<valid url>"});
+        var player = new Player.Model({ data: {<valid data>} });
         
     @class Player
     @constructor
@@ -22576,8 +22574,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
 
         initialize: function( attributes ) {
             this.relay = new Relay.Model();
-            this.status = new Status.Model();
-            this.status.loadProject( this ); // look into this
+            this.status = new Status.Model({ project: this });
 
             this.data = new Data.Model( attributes );
             this.data.url = attributes.url;
