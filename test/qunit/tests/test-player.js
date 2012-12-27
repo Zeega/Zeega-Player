@@ -149,7 +149,7 @@ handlers = {
 module("Player");
 
 // 1
-asyncTest( "Player is initialized with player arguments passed in (or not)", function() {
+asyncTest( "Player is initialized with data or url", function() {
     expect( 2 );
 
     Register({

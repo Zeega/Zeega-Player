@@ -90,11 +90,17 @@ module.exports = function(grunt) {
 		//  until documentation has been written.
 		server: {
 			// Ensure the favicon is mapped correctly.
-			files: { "favicon.ico": "favicon.ico" },
+			files: {
+				"favicon.ico": "favicon.ico",
+				"example-data.js": "example-data.js"
+			},
 
 			debug: {
 				// Ensure the favicon is mapped correctly.
-				files: { "favicon.ico": "favicon.ico" },
+				files: {
+					"favicon.ico": "favicon.ico",
+					"example-data.js": "example-data.js"
+				},
 
 				// Map `server:debug` to `debug` folders.
 				folders: {

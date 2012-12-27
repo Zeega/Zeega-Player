@@ -38,6 +38,15 @@ function( Zeega ) {
             user_id: null
             // window_fit: false,
             // window_ratio: 4/3
+        },
+
+        validate: function( attributes ) {
+            var picked,
+                whitelistedKeys = _.keys( this.defaults );
+
+            picked = _.pick( attributes, whitelistedKeys );
+            this.clear({ silent: true });
+            this.set( picked, { silent: true });
         }
 
     });

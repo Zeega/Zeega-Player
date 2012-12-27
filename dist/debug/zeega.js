@@ -7082,6 +7082,15 @@ function( Zeega ) {
             user_id: null
             // window_fit: false,
             // window_ratio: 4/3
+        },
+
+        validate: function( attributes ) {
+            var picked,
+                whitelistedKeys = _.keys( this.defaults );
+
+            picked = _.pick( attributes, whitelistedKeys );
+            this.clear({ silent: true });
+            this.set( picked, { silent: true });
         }
 
     });
@@ -22565,28 +22574,29 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
         *
         */
 
-        initialize: function( data, options ) {
+        initialize: function( attributes ) {
             this.relay = new Relay.Model();
             this.status = new Status.Model();
             this.status.loadProject( this ); // look into this
 
-            this.data = new Data.Model( options );
-            this.data.url = data.url;
+            this.data = new Data.Model( attributes );
+            this.data.url = attributes.url;
 
-            this.set( options );
-            this._load( data, options );
+            this._load( attributes );
         },
 
-        _load: function( data, options ) {
+        _load: function( attributes ) {
             var rawDataModel = new Zeega.Backbone.Model(); // throw away model. may contain extraneous data
             
-            if ( data.url ) {
-                rawDataModel.url = data.url;
+            if ( attributes.url ) {
+                rawDataModel.url = attributes.url;
                 rawDataModel.fetch().success(function( response ) {
                     this._detectAndParseData( response );
                 }.bind( this )).error(function() {
                     throw new Error("Ajax load fail");
                 });
+            } else if ( attributes.data ) {
+                this._detectAndParseData( attributes.data );
             } else {
                 throw new TypeError("`url` expected non null");
             }
@@ -22608,7 +22618,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
 
             if ( parsed !== undefined ) {
                 // continue loading the player
-                this.data.set( parsed, { silent: true } );
+                this.data.set( parsed );
                 this._parseProjectData( parsed );
                 
                 this._listen();

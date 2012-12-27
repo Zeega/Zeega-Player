@@ -18,16 +18,14 @@ $(window).bind("zeega_ready", function() {
 
         // Initialize a player w/o args
         a = new Zeega.player({
-            url: "example-data.json"
-          }, {
+            url: "example-data.json",
             divId: 'player',
             next : '.next',
             prev : '.prev'
           });
 
         b = new Zeega.player({
-            url: "example-data.json"
-          }, {
+            data: window.exampleData,
             divId: 'player',
             next : '.next',
             prev : '.prev'
