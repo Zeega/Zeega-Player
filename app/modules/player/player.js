@@ -213,13 +213,13 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
 
         initialize: function( attributes ) {
             this.relay = new Relay.Model();
-            this.status = new Status.Model();
-            this.status.loadProject( this ); // look into this
+            this.status = new Status.Model({ project: this });
 
             this.data = new Data.Model( attributes );
             this.data.url = attributes.url;
 
             this._load( attributes );
+            console.log('THIS', this);
         },
 
         _load: function( attributes ) {
