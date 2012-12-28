@@ -192,14 +192,15 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             @default null
             **/
             startFrame: null,
-            /**
-            The id of the target div to draw the player into
 
-            @property div
-            @type String
+            /**
+            The selector or node of target div
+
+            @property target
+            @type String or Node
             @default null
             **/
-            divId: null,
+            target: null,
 
             /**
             URL of loaded data, optional
@@ -229,6 +230,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             this.data = new Data.Model( attributes );
             this.data.url = attributes.url;
 
+            this._setTargetNode();
             this._load( attributes );
         },
 
@@ -247,6 +249,19 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             } else {
                 throw new TypeError("`url` expected non null");
             }
+        },
+
+        _setTargetNode: function() {
+            var target;
+
+            if ( this.get("target") && typeof this.get("target") == "string" && $( this.get("target") ) ) {
+                target = $( this.get("target") ).length ? $( this.get("target") )[0] : $( this.get("target") );
+            } else if ( this.get("target") && typeof this.get("target") == "object" && $( this.get("target") ).get(0).tagName == 'DIV' ) {
+                target = this.get("target");
+            } else {
+                target = $("body");
+            }
+            this.set({ target: target }, { silent: true });
         },
 
         _detectAndParseData: function( response ) {
@@ -282,7 +297,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
 
             // should be done another way ?
             _.each(layers, function( layer ) {
-                layer.target_div = this.data.get("divId");
+                layer._target = this.get("target");
             }.bind( this ));
             frames.relay = this.relay;
             frames.status = this.status;
@@ -319,7 +334,6 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
 
         // renders the player to the dom // this could be a _.once
         _render: function() {
-            var divId = this.get('divId');
 
             this.Layout = new PlayerLayout.Layout({
                 model: this,
@@ -328,12 +342,13 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
                     "data-projectID": this.id
                 }
             });
+
             // draw the player in to the target div if defined. or append to the body
-            if ( divId ) {
-                $("#" + divId ).css( "position", "relative" ).html( this.Layout.el );
+            if ( $( this.get('target') ).get(0).nodeName != "BODY" ) {
+                $( this.get('target') ).css( "position", "relative" ).html( this.Layout.el );
             }
             else {
-                $("body").append( this.Layout.el );
+                $( this.get('target') ).append( this.Layout.el );
             }
 
             this.Layout.render();
