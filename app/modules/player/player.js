@@ -495,8 +495,8 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
         cueNextSequence: function() {
             var nextSequenceID = this.status.get("current_sequence_model").get("advance_to");
 
-            if ( nextSequenceID && this.sequences.get( nextSequenceID ) ) {
-                this.cueFrame( this.sequences.get( nextSequenceID ).get("frames")[0] );
+            if ( nextSequenceID && this.get("sequences").get( nextSequenceID ) ) {
+                this.cueFrame( this.get("sequences").get( nextSequenceID ).get("frames")[0] );
             }
         },
 

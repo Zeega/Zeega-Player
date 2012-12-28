@@ -29,8 +29,9 @@
         // data: window.exampleData,
         divId: "main",
         // url: "http://alpha.zeega.org/api/items/72666", // published zeega
+        url: "http://dev.zeega.org/joseph/web/api/projects/4028", // project sequence test
         // url: "http://api.flickr.com/services/feeds/photos_public.gne?tags=massascension&format=json&jsoncallback=?" // flickr tag set
-        url: "http://alpha.zeega.org/api/items/67060/items", // BGB collection
+        // url: "http://alpha.zeega.org/api/items/67060/items", // BGB collection
         window_fit: true,
         autoplay: true,
 
@@ -42,11 +43,11 @@
             bleed: false
           }
         }
-        
+
       });
 
     $('#playpause').click(function(){
-      project.getFrameData();
+      project.cueNextSequence();
       return false;
     });
 
