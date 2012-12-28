@@ -84,6 +84,16 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             layers: null,
 
             /**
+            Layer options object
+
+            @property layerOptions
+            @type object
+            @default {}
+            **/
+
+            layerOptions: {},
+            
+            /**
             number
 
             @property layers
@@ -254,7 +264,6 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             }.bind( this ));
 
             if ( parsed !== undefined ) {
-                // continue loading the player
                 this.data.set( parsed );
                 this._parseProjectData( parsed );
                 
@@ -332,8 +341,6 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             _.delay(function() {
                 this._onRendered();
             }.bind(this), 100);
-
-            console.log('zeega this', this);
         },
 
         _fadeIn: function() {
@@ -496,7 +503,6 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
         preloadFramesFrom: function( id ) {
             var _this = this,
                 frame = this.get("frames").get( id );
-
             _.each( frame.get("preload_frames"), function( frameID ) {
                 _this.get("frames").get( frameID ).preload();
             });

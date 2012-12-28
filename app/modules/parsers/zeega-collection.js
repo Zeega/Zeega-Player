@@ -8,7 +8,7 @@ function() {
     Parser[ type ] = { name: type };
 
     Parser[ type ].validate = function( response ) {
-
+        // TODO: this works, but may not be valid with new API!!
         if ( response.items && response.items[0] && response.items[0].child_items ) {
             return true;
         }
@@ -17,8 +17,7 @@ function() {
 
     Parser[ type ].parse = function( response, opts ) {
         var project = {};
-
-        if ( opts.collectionMode == "slideshow" && response.items[0].child_items.length > 0 ) {
+        if ( opts.layerOptions && opts.layerOptions.slideshow && opts.layerOptions.slideshow.display && response.items.length > 0 ) {
             project = parseSlideshowCollection( response, opts );
         } else {
             project = parseStandardCollection( response, opts );
@@ -28,8 +27,8 @@ function() {
 
     var parseStandardCollection = function( response, opts ) {
         // layers from timebased items
-        var layers = generateLayerArrayFromItems( response.items[0].child_items ),
-            frames = generateFrameArrayFromItems( response.items[0].child_items ),
+        var layers = generateLayerArrayFromItems( response.items ),
+            frames = generateFrameArrayFromItems( response.items ),
             sequence = {
                 id: 0,
                 title: "collection",
@@ -50,9 +49,7 @@ function() {
         var frames,slideshowLayer,
             imageLayers = [],
             timebasedLayers = [];
-
-        _.each( response.items[0].child_items, function( item ) {
-
+        _.each( response.items, function( item ) {
             if ( item.layer_type == "Image" ) {
                 imageLayers.push(item);
             } else if ( item.layer_type == "Audio" || item.media_type == "Video" ) {
@@ -61,7 +58,7 @@ function() {
         });
         // slideshow layer from image items
         if ( imageLayers.length ) {
-            slideshowLayer = generateSlideshowLayer( imageLayers, opts.start_slide, opts.start_slide_id, opts.slides_bleed );
+            slideshowLayer = generateSlideshowLayer( imageLayers, opts.layerOptions.slideshow.start, opts.layerOptions.slideshow.start_id, opts.layerOptions.slideshow.bleed );
         }
         // layers from timebased items
         var layers = generateLayerArrayFromItems( timebasedLayers );
@@ -141,8 +138,6 @@ function() {
                     id: item.id
                 };
             });
-
-            console.log('parser', slideshow_start_slide);
 
         return {
             attr: _.defaults({ slides: slides }, layerDefaults ),

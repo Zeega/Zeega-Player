@@ -28,10 +28,21 @@
     var project = new Zeega.player({
         // data: window.exampleData,
         divId: "main",
-        url: "http://alpha.zeega.org/api/items/72666", // published zeega
+        // url: "http://alpha.zeega.org/api/items/72666", // published zeega
         // url: "http://api.flickr.com/services/feeds/photos_public.gne?tags=massascension&format=json&jsoncallback=?" // flickr tag set
+        url: "http://alpha.zeega.org/api/items/67060/items", // BGB collection
         window_fit: true,
-        autoplay: true
+        autoplay: true,
+
+        layerOptions: {
+          slideshow: {
+            display: true,
+            start: null,
+            start_id: null,
+            bleed: false
+          }
+        }
+        
       });
 
     $('#playpause').click(function(){
