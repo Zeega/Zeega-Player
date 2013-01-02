@@ -45,7 +45,7 @@ function( Zeega ) {
                 }.bind(this), 300);
 
             // attempt to detect if the parent container is being resized
-            $( divId ? "#" + divId : window ).resize( lazyResize );
+            $( window ).resize( lazyResize );
         },
 
         serialize: function() {
@@ -88,14 +88,13 @@ function( Zeega ) {
         },
 
         // calculate and return the correct window size for the player window
-        // uses the player"s window_ratio attribute
+        // uses the player"s window_ratio a || 4/3ttribute
         getWindowSize: function() {
             // TODO: This could be refactored a bit more
             var css = {},
-                divId = this.model.get("divId"),
-                windowRatio = this.model.get("window_ratio"),
-                winWidth = divId ? $( "#" + divId ).width(): window.innerWidth,
-                winHeight = divId ? $( "#" + divId ).height(): window.innerHeight,
+                windowRatio = this.model.get("window_ratio") || 4/3,
+                winWidth = $( this.model.get("target") ).find(".ZEEGA-player").width(),
+                winHeight = $( this.model.get("target") ).find(".ZEEGA-player").height(),
                 actualRatio = winWidth / winHeight;
 
             if ( this.model.get("window_fit") ) {
@@ -115,6 +114,8 @@ function( Zeega ) {
                     css.height = winWidth / windowRatio;
                 }
             }
+
+            css.fontSize = ( css.width / 520 ) +'em';
 
             // Append unit to calculated value
             css.width += "px";
