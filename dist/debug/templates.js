@@ -59,11 +59,19 @@ return __p;
 this["JST"]["app/templates/plugins/popup.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<a\n  href="#"\n  class="ZEEGA-popup-click-target"\n  style="\n    background: url('+
+__p+='<a\n  href="#"\n  class="ZEEGA-popup-click-target"\n  style="\n    background: url(';
+ if ( attr.popup_target ) { 
+;__p+=''+
 ( attr.popup_target.uri )+
-') no-repeat center center;\n    -webkit-background-size: cover;\n    -moz-background-size: cover;\n    -o-background-size: cover;\n    background-size: cover;\n  "\n  data-caption="'+
+'';
+ } 
+;__p+=') no-repeat center center;\n    -webkit-background-size: cover;\n    -moz-background-size: cover;\n    -o-background-size: cover;\n    background-size: cover;\n  "\n  data-caption="';
+ if ( attr.popup_content ) { 
+;__p+=''+
 ( attr.popup_content.title )+
-'"\n  ></a>';
+'';
+ } 
+;__p+='"\n  ></a>';
 }
 return __p;
 };

@@ -66,11 +66,19 @@ return __p;
 this["JST"]["app/templates/plugins/popup.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<a\n  href="#"\n  class="ZEEGA-popup-click-target"\n  style="\n    background: url('+
+__p+='<a\n  href="#"\n  class="ZEEGA-popup-click-target"\n  style="\n    background: url(';
+ if ( attr.popup_target ) { 
+;__p+=''+
 ( attr.popup_target.uri )+
-') no-repeat center center;\n    -webkit-background-size: cover;\n    -moz-background-size: cover;\n    -o-background-size: cover;\n    background-size: cover;\n  "\n  data-caption="'+
+'';
+ } 
+;__p+=') no-repeat center center;\n    -webkit-background-size: cover;\n    -moz-background-size: cover;\n    -o-background-size: cover;\n    background-size: cover;\n  "\n  data-caption="';
+ if ( attr.popup_content ) { 
+;__p+=''+
 ( attr.popup_content.title )+
-'"\n  ></a>';
+'';
+ } 
+;__p+='"\n  ></a>';
 }
 return __p;
 };
@@ -21262,16 +21270,18 @@ function( Zeega, _Layer, MediaPlayer ) {
         },
 
         popLayer: function() {
-            this.popup = new PopupOverlay({
-                model: this.model,
-                template: "plugins/popup-" + this.model.get("attr").popup_content.media_type.toLowerCase()
-            });
-            // append to the player layout because the popup needs to live inside the player but also above all layers
-            this.model.status.get("project").Layout.$el.append( this.popup.el );
-            this.popup.render();
-            this.model.on("popup_remove", this.popupClosed, this );
-            // pause the player
-            this.model.status.get("project").pause();
+            if ( this.model.get("attr").popup_content ) {
+                this.popup = new PopupOverlay({
+                    model: this.model,
+                    template: "plugins/popup-" + this.model.get("attr").popup_content.media_type.toLowerCase()
+                });
+                // append to the player layout because the popup needs to live inside the player but also above all layers
+                this.model.status.get("project").Layout.$el.append( this.popup.el );
+                this.popup.render();
+                this.model.on("popup_remove", this.popupClosed, this );
+                // pause the player
+                this.model.status.get("project").pause();
+            }
         },
 
         popupClosed: function() {
