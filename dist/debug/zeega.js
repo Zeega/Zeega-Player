@@ -45,6 +45,36 @@ __p+='<a href=\'#\' class=\'ZEEGA-link-inner\'>\n  ';
 return __p;
 };
 
+this["JST"]["app/templates/plugins/popup-image.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div class=\'ZEEGA-popup-click-content popup-image\' style="\n  background: url('+
+( attr.popup_content.uri )+
+') no-repeat center center;\n  -webkit-background-size: contain;\n  -moz-background-size: contain;\n  -o-background-size: contain;\n  background-size: contain;\n"></a>';
+}
+return __p;
+};
+
+this["JST"]["app/templates/plugins/popup-video.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div class=\'ZEEGA-popup-click-content popup-video\' ></a>';
+}
+return __p;
+};
+
+this["JST"]["app/templates/plugins/popup.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<a\n  href="#"\n  class="ZEEGA-popup-click-target"\n  style="\n    background: url('+
+( attr.popup_target.uri )+
+') no-repeat center center;\n    -webkit-background-size: cover;\n    -moz-background-size: cover;\n    -o-background-size: cover;\n    background-size: cover;\n  "\n  data-caption="'+
+( attr.popup_content.title )+
+'"\n  ></a>';
+}
+return __p;
+};
+
 this["JST"]["app/templates/plugins/rectangle.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
@@ -125,6 +155,16 @@ __p+='<div class=\'slideshow-thumb-wrapper\'>\n    <ul>\n        ';
 '"></a>\n                </div>\n            </li>\n        ';
  });
 ;__p+='\n    </ul>\n</div>';
+}
+return __p;
+};
+
+this["JST"]["app/templates/plugins/text.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+=''+
+( attr.content )+
+'';
 }
 return __p;
 };
@@ -7175,12 +7215,14 @@ function( Zeega ) {
 
         beforePlayerRender: function() {},
         beforeRender: function() {
-            var target = $( this.model.get("_target") ).find(".ZEEGA-player-window");
+            var target = this.model.get("target_div"),
+                selector = (target ? "#" + target + " " : "") +
+                    ".ZEEGA-player-window";
 
             this.className = this._className + " " + this.className;
             this.beforePlayerRender();
 
-            $( target ).append( this.el );
+            $( selector ).append( this.el );
 
             this.$el.addClass( "visual-element-" + this.model.get("type").toLowerCase() );
             this.moveOffStage();
@@ -21136,6 +21178,163 @@ function( Zeega, _Layer ) {
   return Layer;
 });
 
+zeega.define('zeega_dir/plugins/layers/text/text',[
+    "zeega",
+    "zeega_dir/plugins/layers/_layer/_layer"
+],
+function( Zeega, _Layer ) {
+
+    var Layer = Zeega.module();
+
+    Layer.Text = _Layer.extend({
+        // TODO: is the redundant naming necessary? If this program knows
+        // this is a Layer, wouldn't "type" be sufficient?
+        layerType: "Text",
+
+        defaultAttributes: {
+            "citation": false,
+            "default_controls": true,
+            "left": 30,
+            "opacity": 1,
+            "title": "Text Layer",
+            "top": 40,
+            "width": 25
+        }
+    });
+
+    Layer.Text.Visual = _Layer.Visual.extend({
+
+        template: "plugins/text",
+
+        serialize: function() {
+            return this.model.toJSON();
+        },
+
+        onRender: function() {
+
+            // using jquery because it provides a few vendor prefix styles
+            this.$el.css({
+                color: this.model.get("attr").color,
+                fontSize: this.model.get("attr").fontSize + "%"
+            });
+        }
+  });
+
+  return Layer;
+});
+
+zeega.define('zeega_dir/plugins/layers/popup/popup',[
+    "zeega",
+    "zeega_dir/plugins/layers/_layer/_layer",
+    "zeega_dir/plugins/media-player/media-player"
+
+],
+function( Zeega, _Layer, MediaPlayer ) {
+
+    var Layer = Zeega.module();
+
+    Layer.Popup = _Layer.extend({
+
+        layerType: "Popup",
+
+        defaultAttributes: {
+            citation: false,
+            default_controls: true,
+            left: 30,
+            opacity: 1,
+            pauses_player: true,
+            title: "Popup Layer",
+            top: 40,
+            width: 25
+        }
+    });
+
+    Layer.Popup.Visual = _Layer.Visual.extend({
+
+        template: "plugins/popup",
+
+        serialize: function() {
+            return this.model.toJSON();
+        },
+
+        events: {
+            "click .ZEEGA-popup-click-target": "popLayer"
+        },
+
+        popLayer: function() {
+            this.popup = new PopupOverlay({
+                model: this.model,
+                template: "plugins/popup-" + this.model.get("attr").popup_content.media_type.toLowerCase()
+            });
+            // append to the player layout because the popup needs to live inside the player but also above all layers
+            this.model.status.get("project").Layout.$el.append( this.popup.el );
+            this.popup.render();
+            this.model.on("popup_remove", this.popupClosed, this );
+            // pause the player
+            this.model.status.get("project").pause();
+        },
+
+        popupClosed: function() {
+            this.model.status.get("project").play();
+        },
+
+        onExit: function() {
+            if ( this.popup ) {
+                this.popup.removePopup();
+            }
+        }
+
+    });
+
+
+    var PopupOverlay = _Layer.LayoutView.extend({
+
+        className: "ZEEGA-popup-overlay",
+
+        serialize: function() {
+            return this.model.toJSON();
+        },
+
+        afterRender: function() {
+            if ( this.model.get("attr").popup_content.media_type == "Video" ) {
+                var modelAttr = _.extend({}, this.model.toJSON().attr.popup_content, { attr: this.model.toJSON().attr.popup_content } ),
+                    model = new Zeega.Backbone.Model( modelAttr );
+                this.mediaPlayer = new MediaPlayer.Views.Player({
+                    model: model,
+                    control_mode: "none"
+                });
+                this.$(".popup-video").append( this.mediaPlayer.el );
+                this.mediaPlayer.render();
+                this.mediaPlayer.placePlayer();
+
+                // autoplay
+                model.on("visual_ready", function() {
+                    this.mediaPlayer.play();
+                }.bind( this ));
+            }
+        },
+
+        events: {
+            "click": "closeOverlay"
+        },
+
+        closeOverlay: function() {
+            this.removePopup();
+            this.model.trigger("popup_remove");
+        },
+
+        removePopup: function() {
+            if( this.mediaPlayer ) {
+                this.mediaPlayer.destroy();
+            }
+            this.remove();
+        }
+
+    });
+
+  return Layer;
+});
+
 /*
 
 plugin/layer manifest file
@@ -21150,7 +21349,9 @@ zeega.define('zeega_dir/plugins/layers/_all',[
     "zeega_dir/plugins/layers/slideshow/slideshow",
     "zeega_dir/plugins/layers/video/video",
     "zeega_dir/plugins/layers/audio/audio",
-    "zeega_dir/plugins/layers/rectangle/rectangle"
+    "zeega_dir/plugins/layers/rectangle/rectangle",
+    "zeega_dir/plugins/layers/text/text",
+    "zeega_dir/plugins/layers/popup/popup"
 ],
 function(
     image,
@@ -21158,7 +21359,9 @@ function(
     slideshow,
     video,
     audio,
-    rectangle
+    rectangle,
+    text,
+    popup
 ) {
     var Plugins = {};
     // extend the plugin object with all the layers
@@ -21169,7 +21372,9 @@ function(
         slideshow,
         video,
         audio,
-        rectangle
+        rectangle,
+        text,
+        popup
     );
 });
 
@@ -21196,15 +21401,18 @@ function( Zeega, Plugin ) {
 
             // init link layer type inside here
             if ( plugin ) {
+                var _this = this;
                 this.layerClass = new plugin();
                 this.set( _.defaults( this.toJSON(), this.layerClass.defaults ) );
 
                 // create and store the layerClass
                 this.visualElement = new plugin.Visual({
                     model: this,
-                    attributes: {
-                        "id": "visual-element-" + this.id,
-                        "data-layer_id": this.id
+                    attributes: function() {
+                        return _.extend( {}, _.result( this, "domAttributes" ), {
+                            id: "visual-element-" + _this.id,
+                            "data-layer_id": _this.id
+                        });
                     }
                 });
                 // listen to visual element events
@@ -22269,7 +22477,7 @@ function( Zeega ) {
                 }.bind(this), 300);
 
             // attempt to detect if the parent container is being resized
-            $( divId ? "#" + divId : window ).resize( lazyResize );
+            $( window ).resize( lazyResize );
         },
 
         serialize: function() {
@@ -22312,14 +22520,13 @@ function( Zeega ) {
         },
 
         // calculate and return the correct window size for the player window
-        // uses the player"s window_ratio attribute
+        // uses the player"s window_ratio a || 4/3ttribute
         getWindowSize: function() {
             // TODO: This could be refactored a bit more
             var css = {},
-                divId = this.model.get("divId"),
-                windowRatio = this.model.get("window_ratio"),
-                winWidth = divId ? $( "#" + divId ).width(): window.innerWidth,
-                winHeight = divId ? $( "#" + divId ).height(): window.innerHeight,
+                windowRatio = this.model.get("window_ratio") || 4/3,
+                winWidth = $( this.model.get("target") ).find(".ZEEGA-player").width(),
+                winHeight = $( this.model.get("target") ).find(".ZEEGA-player").height(),
                 actualRatio = winWidth / winHeight;
 
             if ( this.model.get("window_fit") ) {
@@ -22339,6 +22546,8 @@ function( Zeega ) {
                     css.height = winWidth / windowRatio;
                 }
             }
+
+            css.fontSize = ( css.width / 520 ) +'em';
 
             // Append unit to calculated value
             css.width += "px";
