@@ -50,7 +50,7 @@ var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='<div class=\'ZEEGA-popup-click-content popup-image\' style="\n  background: url('+
 ( attr.popup_content.uri )+
-') no-repeat center center;\n  -webkit-background-size: contain;\n  -moz-background-size: contain;\n  -o-background-size: contain;\n  background-size: contain;\n"></a>';
+') no-repeat center center;\n  -webkit-background-size: contain;\n  -moz-background-size: contain;\n  -o-background-size: contain;\n  background-size: contain;\n">\n  <a href="#" class="popup-close">close</a>\n</div>\n';
 }
 return __p;
 };
@@ -58,7 +58,7 @@ return __p;
 this["JST"]["app/templates/plugins/popup-video.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<div class=\'ZEEGA-popup-click-content popup-video\' ></a>';
+__p+='<div class=\'ZEEGA-popup-click-content popup-video\' >\n  <a href="#" class="popup-close">close</a>\n</div>\n';
 }
 return __p;
 };
@@ -21329,12 +21329,14 @@ function( Zeega, _Layer, MediaPlayer ) {
         },
 
         events: {
-            "click": "closeOverlay"
+            "click": "closeOverlay",
+            "click a": "closeOverlay"
         },
 
         closeOverlay: function() {
             this.removePopup();
             this.model.trigger("popup_remove");
+            return false;
         },
 
         removePopup: function() {

@@ -31,6 +31,14 @@
   width: 80%;
   height: 80%;
   margin: 1% auto;
+  position: relative;
+}
+.ZEEGA-popup-overlay .ZEEGA-popup-click-content .popup-close {
+  color: white;
+  font-weight: bold;
+  left: 101%;
+  position: absolute;
+  text-decoration: none;
 }
 
 .visual-element-rectangle {
