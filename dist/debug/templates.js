@@ -71,7 +71,13 @@ __p+='<a\n  href="#"\n  class="ZEEGA-popup-click-target"\n  style="\n    backgro
 ( attr.popup_content.title )+
 '';
  } 
-;__p+='"\n  ></a>';
+;__p+='"\n  >\n  ';
+ if ( attr.popup_content ) { 
+;__p+='<span class="popup-title" style=\'display:none\'>'+
+( attr.popup_content.title )+
+'</span>';
+ } 
+;__p+='\n</a>';
 }
 return __p;
 };
