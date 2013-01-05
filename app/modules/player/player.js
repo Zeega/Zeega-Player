@@ -37,7 +37,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
         // minimum
         var player = new Player.Model({ url: "<valid url>"});
         var player = new Player.Model({ data: {<valid data>} });
-        
+
     @class Player
     @constructor
     */
@@ -92,7 +92,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             **/
 
             layerOptions: {},
-            
+
             /**
             number
 
@@ -156,7 +156,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             @default 500
             **/
             fadeOut: 500,
- 
+
             /**
             Turns the keyboard controls on or off
 
@@ -236,7 +236,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
 
         _load: function( attributes ) {
             var rawDataModel = new Zeega.Backbone.Model(); // throw away model. may contain extraneous data
-            
+
             if ( attributes.url ) {
                 rawDataModel.url = attributes.url;
                 rawDataModel.fetch().success(function( response ) {
@@ -252,15 +252,13 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
         },
 
         _setTargetNode: function() {
-            var target;
+            var target = this.get("target");
 
-            if ( this.get("target") && typeof this.get("target") == "string" && $( this.get("target") ) ) {
-                target = $( this.get("target") ).length ? $( this.get("target") )[0] : $( this.get("target") );
-            } else if ( this.get("target") && typeof this.get("target") == "object" && $( this.get("target") ).get(0).tagName == 'DIV' ) {
-                target = this.get("target");
-            } else {
-                target = $("body");
-            }
+            // The target was a Selector, Node or jQuery object,
+            // jQuery will figure out which one it was and
+            // return the correct thing.
+            target = $( target ? target : document.body );
+
             this.set({ target: target }, { silent: true });
         },
 
@@ -281,7 +279,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             if ( parsed !== undefined ) {
                 this.data.set( parsed );
                 this._parseProjectData( parsed );
-                
+
                 this._listen();
             } else {
               throw new Error("Valid parser not found");
@@ -334,6 +332,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
 
         // renders the player to the dom // this could be a _.once
         _render: function() {
+            var target = this.get("target");
 
             this.Layout = new PlayerLayout.Layout({
                 model: this,
@@ -344,11 +343,11 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             });
 
             // draw the player in to the target div if defined. or append to the body
-            if ( $( this.get('target') ).get(0).nodeName != "BODY" ) {
-                $( this.get('target') ).css( "position", "relative" ).html( this.Layout.el );
+            if ( target.is("body") ) {
+                target.css( "position", "relative" ).html( this.Layout.el );
             }
             else {
-                $( this.get('target') ).append( this.Layout.el );
+                target.append( this.Layout.el );
             }
 
             this.Layout.render();
