@@ -19,16 +19,16 @@ $(window).bind("zeega_ready", function() {
         // Initialize a player w/o args
         a = new Zeega.player({
             url: "example-data.json",
-            divId: 'player',
-            next : '.next',
-            prev : '.prev'
+            divId: "player",
+            next : ".next",
+            prev : ".prev"
           });
 
         b = new Zeega.player({
             data: window.exampleData,
-            divId: 'player',
-            next : '.next',
-            prev : '.prev'
+            divId: "player",
+            next : ".next",
+            prev : ".prev"
           });
 
 
@@ -131,6 +131,51 @@ $(window).bind("zeega_ready", function() {
                 }
             });
         }
+    }
+
+    // 5
+    if ( params.test === 5 ) {
+
+        payload = true;
+
+        // Empty
+        player = new Zeega.player({
+            url: "example-data.json"
+        });
+
+        payload = player.get("target")[0] === $("body")[0];
+
+        // Selector
+        player = new Zeega.player({
+            url: "example-data.json",
+            target: "#zeega-fixture"
+        });
+
+        payload = player.get("target")[0] === $("#zeega-fixture")[0];
+
+        // Node
+        player = new Zeega.player({
+            url: "example-data.json",
+            target: document.querySelector("#zeega-fixture")
+        });
+
+        payload = player.get("target")[0] === $("#zeega-fixture")[0];
+
+        // jQuery
+        player = new Zeega.player({
+            url: "example-data.json",
+            target: $("#zeega-fixture")
+        });
+
+        payload = player.get("target")[0] === $("#zeega-fixture")[0];
+
+        // Submit the report!
+        Test.report( params, {
+            type: "player",
+            payload: {
+                actual: payload
+            }
+        });
     }
 
 });
