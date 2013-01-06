@@ -33,7 +33,7 @@ handlers = {
         }
 
         if ( response.test === 2 ) {
-            
+
             jQuery.ajax({
                 url: "fixtures/example-data.json",
                 type: "get",
@@ -76,6 +76,14 @@ handlers = {
             equal(
                 payload.actual, true,
                 "Missing data and url throws TypeError"
+            );
+            complete();
+        }
+
+        if ( response.test === 5 ) {
+            equal(
+                payload.actual, true,
+                "Supported targets: empty, Node, jQuery"
             );
             complete();
         }
@@ -216,6 +224,22 @@ asyncTest( "Player throws when no data is provided (data or url)", function() {
         }
     });
 });
+
+
+// 5
+asyncTest( "Player target: blank target defaults to body", function() {
+    expect( 1 );
+    Register({
+        params: {
+            test: 5
+        },
+        complete: function() {
+            start();
+        }
+    });
+
+});
+
 
 /*
 
