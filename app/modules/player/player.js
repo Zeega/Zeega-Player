@@ -258,7 +258,6 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             // jQuery will figure out which one it was and
             // return the correct thing.
             target = $( target ? target : document.body );
-
             this.set({ target: target }, { silent: true });
         },
 
@@ -342,13 +341,11 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
                 }
             });
 
-            // draw the player in to the target div if defined. or append to the body
-            if ( target.is("body") ) {
-                target.css( "position", "relative" ).html( this.Layout.el );
+            // do not apply relative style if the zeega is in appended to the body
+            if ( target[0].nodeName != "BODY" ) {
+                target.css( "position", "relative" );
             }
-            else {
-                target.append( this.Layout.el );
-            }
+            target.append( this.Layout.el );
 
             this.Layout.render();
 
