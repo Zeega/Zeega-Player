@@ -515,6 +515,16 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             }
         },
 
+        // if a prev sequence exists, then cue and play it
+        cuePrevSequence: function() {
+            var seqHist = this.status.get("sequenceHistory"),
+                prevSequenceID = seqHist[ seqHist.length - 2 ];
+
+            if ( prevSequenceID ) {
+                this.cueFrame( this.get("sequences").get( prevSequenceID ).get("frames")[0] );
+            }
+        },
+
         preloadFramesFrom: function( id ) {
             var _this = this,
                 frame = this.get("frames").get( id );
