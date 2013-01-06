@@ -68,7 +68,7 @@ function( Zeega ) {
             frame = this.get("project").get("frames").get( currentFrame );
             sequence = frame.get("_sequence");
 
-            fHist = this.get("frameHistory")
+            fHist = this.get("frameHistory");
             fHist.push( frame.id );
             this.set({
                 "current_frame_model": frame,
