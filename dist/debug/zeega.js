@@ -22363,7 +22363,11 @@ function( Zeega ) {
             current_sequence: null,
             current_sequence_model: null,
 
-            current_layers: []
+            current_layers: [],
+
+            // actual navigation history of ids
+            frameHistory: [],
+            sequenceHistory: []
         },
 
         initialize: function() {
@@ -22375,7 +22379,7 @@ function( Zeega ) {
         },
 
         onChangeFrame: function( info ) {
-            var frame, sequence,
+            var frame, sequence, fHist, seqHist,
                 currentFrame = this.get("current_frame"),
                 currentFrameModel = this.get("current_frame_model");
 
@@ -22384,7 +22388,7 @@ function( Zeega ) {
             // initialize the player timer // only happens once
             this.initTimer();
             // udpate the  the timestamp
-             this.frameTimestamp = new Date().getTime();
+            this.frameTimestamp = new Date().getTime();
 
             /* update the previous frame data */
             if ( currentFrame ) {
@@ -22397,7 +22401,12 @@ function( Zeega ) {
             frame = this.get("project").get("frames").get( currentFrame );
             sequence = frame.get("_sequence");
 
-            this.set({ "current_frame_model": frame }, { silent: true });
+            fHist = this.get("frameHistory");
+            fHist.push( frame.id );
+            this.set({
+                "current_frame_model": frame,
+                frameHistory: fHist
+            }, { silent: true });
             this.emit( "frame_rendered",
                 _.extend({}, frame.toJSON(), {
                     layers: frame.layers.toJSON()
@@ -22407,16 +22416,18 @@ function( Zeega ) {
             /* check to see if the sequence entered is new */
             // TODO: Investigate value of "sequence"
             if ( this.get("current_sequence") != sequence ) {
+                seqHist = this.get("sequenceHistory");
+                seqHist.push( sequence );
                 this.set({
                     current_sequence: sequence,
-                    current_sequence_model: this.get("project").get("sequences").get( sequence )
+                    current_sequence_model: this.get("project").get("sequences").get( sequence ),
+                    sequenceHistory: seqHist
                 });
 
                 this.emit( "sequence_enter",
                     _.extend({}, this.get("current_sequence_model").toJSON() )
                 );
             }
-
         },
 
         /*
@@ -22617,7 +22628,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
         // minimum
         var player = new Player.Model({ url: "<valid url>"});
         var player = new Player.Model({ data: {<valid data>} });
-        
+
     @class Player
     @constructor
     */
@@ -22672,7 +22683,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             **/
 
             layerOptions: {},
-            
+
             /**
             number
 
@@ -22736,7 +22747,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             @default 500
             **/
             fadeOut: 500,
- 
+
             /**
             Turns the keyboard controls on or off
 
@@ -22816,7 +22827,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
 
         _load: function( attributes ) {
             var rawDataModel = new Zeega.Backbone.Model(); // throw away model. may contain extraneous data
-            
+
             if ( attributes.url ) {
                 rawDataModel.url = attributes.url;
                 rawDataModel.fetch().success(function( response ) {
@@ -22832,15 +22843,12 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
         },
 
         _setTargetNode: function() {
-            var target;
+            var target = this.get("target");
 
-            if ( this.get("target") && typeof this.get("target") == "string" && $( this.get("target") ) ) {
-                target = $( this.get("target") ).length ? $( this.get("target") )[0] : $( this.get("target") );
-            } else if ( this.get("target") && typeof this.get("target") == "object" && $( this.get("target") ).get(0).tagName == 'DIV' ) {
-                target = this.get("target");
-            } else {
-                target = $("body");
-            }
+            // The target was a Selector, Node or jQuery object,
+            // jQuery will figure out which one it was and
+            // return the correct thing.
+            target = $( target ? target : document.body );
             this.set({ target: target }, { silent: true });
         },
 
@@ -22861,7 +22869,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             if ( parsed !== undefined ) {
                 this.data.set( parsed );
                 this._parseProjectData( parsed );
-                
+
                 this._listen();
             } else {
               throw new Error("Valid parser not found");
@@ -22914,6 +22922,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
 
         // renders the player to the dom // this could be a _.once
         _render: function() {
+            var target = this.get("target");
 
             this.Layout = new PlayerLayout.Layout({
                 model: this,
@@ -22923,13 +22932,11 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
                 }
             });
 
-            // draw the player in to the target div if defined. or append to the body
-            if ( $( this.get('target') ).get(0).nodeName != "BODY" ) {
-                $( this.get('target') ).css( "position", "relative" ).html( this.Layout.el );
+            // do not apply relative style if the zeega is in appended to the body
+            if ( target[0].nodeName != "BODY" ) {
+                target.css( "position", "relative" );
             }
-            else {
-                $( this.get('target') ).append( this.Layout.el );
-            }
+            target.append( this.Layout.el );
 
             this.Layout.render();
 
@@ -23092,6 +23099,16 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
 
             if ( nextSequenceID && this.get("sequences").get( nextSequenceID ) ) {
                 this.cueFrame( this.get("sequences").get( nextSequenceID ).get("frames")[0] );
+            }
+        },
+
+        // if a prev sequence exists, then cue and play it
+        cuePrevSequence: function() {
+            var seqHist = this.status.get("sequenceHistory"),
+                prevSequenceID = seqHist[ seqHist.length - 2 ];
+
+            if ( prevSequenceID ) {
+                this.cueFrame( this.get("sequences").get( prevSequenceID ).get("frames")[0] );
             }
         },
 

@@ -30,7 +30,11 @@ function( Zeega ) {
             current_sequence: null,
             current_sequence_model: null,
 
-            current_layers: []
+            current_layers: [],
+
+            // actual navigation history of ids
+            frameHistory: [],
+            sequenceHistory: []
         },
 
         initialize: function() {
@@ -42,7 +46,7 @@ function( Zeega ) {
         },
 
         onChangeFrame: function( info ) {
-            var frame, sequence,
+            var frame, sequence, fHist, seqHist,
                 currentFrame = this.get("current_frame"),
                 currentFrameModel = this.get("current_frame_model");
 
@@ -51,7 +55,7 @@ function( Zeega ) {
             // initialize the player timer // only happens once
             this.initTimer();
             // udpate the  the timestamp
-             this.frameTimestamp = new Date().getTime();
+            this.frameTimestamp = new Date().getTime();
 
             /* update the previous frame data */
             if ( currentFrame ) {
@@ -64,7 +68,12 @@ function( Zeega ) {
             frame = this.get("project").get("frames").get( currentFrame );
             sequence = frame.get("_sequence");
 
-            this.set({ "current_frame_model": frame }, { silent: true });
+            fHist = this.get("frameHistory");
+            fHist.push( frame.id );
+            this.set({
+                "current_frame_model": frame,
+                frameHistory: fHist
+            }, { silent: true });
             this.emit( "frame_rendered",
                 _.extend({}, frame.toJSON(), {
                     layers: frame.layers.toJSON()
@@ -74,16 +83,18 @@ function( Zeega ) {
             /* check to see if the sequence entered is new */
             // TODO: Investigate value of "sequence"
             if ( this.get("current_sequence") != sequence ) {
+                seqHist = this.get("sequenceHistory");
+                seqHist.push( sequence );
                 this.set({
                     current_sequence: sequence,
-                    current_sequence_model: this.get("project").get("sequences").get( sequence )
+                    current_sequence_model: this.get("project").get("sequences").get( sequence ),
+                    sequenceHistory: seqHist
                 });
 
                 this.emit( "sequence_enter",
                     _.extend({}, this.get("current_sequence_model").toJSON() )
                 );
             }
-
         },
 
         /*
