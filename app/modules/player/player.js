@@ -489,7 +489,11 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             }
             // unrender current frame
             // swap out current frame with new one
+            // Use |set| to ensure that a "change" event is triggered
+            // from this.status
             this.status.set( "current_frame", id );
+            // Use |put| to ensure that NO "change" event is triggered
+            // from this.relay
             this.relay.put( "current_frame", id );
 
             // render current frame // should trigger a frame rendered event when successful
