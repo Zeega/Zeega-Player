@@ -341,7 +341,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             });
 
             // do not apply relative style if the zeega is in appended to the body
-            if ( target[0].nodeName != "BODY" ) {
+            if ( !target.is("body") ) {
                 target.css( "position", "relative" );
             }
             target.append( this.Layout.el );
