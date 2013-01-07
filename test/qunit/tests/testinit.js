@@ -22,15 +22,39 @@
     };
 
     global.Abstract = {
-        mixin: function( target, source ) {
-            return Object.keys( source ).reduce(function( target, key ) {
-                return (target[ key ] = source[ key ], target);
-            }, target );
+        // [[Put]] props from dictionary onto |this|
+        // MUST BE CALLED FROM WITHIN A CONSTRUCTOR:
+        //  Abstract.put.call( this, dictionary );
+        put: function( dictionary ) {
+            // For each own property of src, let key be the property key
+            // and desc be the property descriptor of the property.
+            Object.getOwnPropertyNames( dictionary ).forEach(function( key ) {
+                this[ key ] = dictionary[ key ];
+            }, this);
         },
-        combine: function() {
-            return [].slice.call( arguments ).reduce( Abstract.mixin, {} );
+        merge: function() {
+            return [].slice.call( arguments ).reduce(function( initial, obj ) {
+                return Abstract.assign( initial, obj );
+            }, {});
+        },
+        // Shims ES6 Object.assign()
+        assign: function( O, dictionary ) {
+            Abstract.put.call( O, dictionary );
+
+            return O;
+        },
+        // Shims ES6 Object.mixin()
+        mixin: function( receiver, supplier ) {
+            return Object.keys( supplier ).reduce(function( receiver, property ) {
+                return Object.defineProperty(
+                    receiver, property, Object.getOwnPropertyDescriptor( supplier, property )
+                );
+            }, receiver );
         }
     };
+
+    Abstract.combine = Abstract.merge;
+
 
     global.Test = {
         // Get the "domain" by event type
@@ -53,7 +77,9 @@
             try {
                 top.postMessage( JSON.stringify(message) , "*");
             } catch ( e ) {
-                console.log( e.message );
+                console.log(
+                    e.message, [ params, response ]
+                );
             }
         },
 
@@ -206,11 +232,12 @@ Test.shapes = {
         data: Object,
         frames: Object,
         layers: Object,
+        layerOptions: Object,
         sequences: Object,
         parser: String,
         autoplay: Boolean,
         collectionMode: String,
-        divId: String,
+        target: Object,
         fadeIn: Number,
         fadeOut: Number,
         keyboard: Boolean,
@@ -259,7 +286,9 @@ if ( window === top ) {
         handler = handlers[ response.type ];
         cleanup = function() {
             delete Register.queue[ response.key ];
-            instruct.cleanup();
+            if ( instruct ) {
+                instruct.cleanup();
+            }
         };
 
         if ( handler ) {

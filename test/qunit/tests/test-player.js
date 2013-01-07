@@ -22,7 +22,7 @@ handlers = {
             shape = Object.keys( Test.shapes.player ).sort();
 
             payload.attributes.forEach(function( result, k ) {
-                var compare = Object.keys( result.attributes ).sort();
+                var compare = result.keys.sort();
 
                 deepEqual(
                     compare, shape, "'" + result.player + "' has expected attribute shape"
@@ -38,19 +38,13 @@ handlers = {
                 url: "fixtures/example-data.json",
                 type: "get",
                 success: function( data ) {
-                    var shape = Object.keys( jQuery.parseJSON( data ) ),
-                        payload = response.payload;
 
-                    payload.attributes.forEach(function( result, k ) {
-                        var compare = Object.keys( result ).sort();
+                    var shape = Object.keys( data ).sort(),
+                        payload = response.payload.sort();
 
-                        deepEqual(
-                            compare, shape, "'" + result.player + "' has expected attribute shape"
-                        );
-                    });
-
-                    // See "FAIL" above.
-                    // ok( false, "There is no way to verify data integrity" );
+                    deepEqual(
+                        payload, shape, "player.data has expected attribute shape"
+                     );
 
                     complete();
                 }
