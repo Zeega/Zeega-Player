@@ -59,10 +59,10 @@ function( Zeega ) {
 
             /* update the previous frame data */
             if ( currentFrame ) {
-                this.set({
+                this.put({
                     previous_frame: currentFrame,
                     previous_frame_model: currentFrameModel
-                }, { silent: true });
+                });
             }
             /* update the current_frame_model */
             frame = this.get("project").get("frames").get( currentFrame );
@@ -70,10 +70,10 @@ function( Zeega ) {
 
             fHist = this.get("frameHistory");
             fHist.push( frame.id );
-            this.set({
-                "current_frame_model": frame,
+            this.put({
+                current_frame_model: frame,
                 frameHistory: fHist
-            }, { silent: true });
+            });
             this.emit( "frame_rendered",
                 _.extend({}, frame.toJSON(), {
                     layers: frame.layers.toJSON()
