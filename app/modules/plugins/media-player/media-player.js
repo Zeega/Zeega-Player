@@ -553,6 +553,7 @@ function(Zeega) {
             this.popcorn.on( "ended", function() { _this.onEnded(); });
             this.popcorn.on( "playing", function() { _this.onPlaying(); });
             this.popcorn.on( "pause", function() { _this.onPause(); });
+            this.popcorn.on( "timeupdate", function() { _this.updateElapsed(); });
         },
 
         events: {
@@ -571,7 +572,7 @@ function(Zeega) {
         initScrubber: function() {
             var _this = this;
 
-            this.$el.find(".media-scrubber").slider({
+            this.$(".media-scrubber").slider({
                 range: "min",
                 min: 0,
                 max: this.duration,
@@ -587,12 +588,13 @@ function(Zeega) {
 
         updateDuration: function() {
             this.duration = this.popcorn.duration();
-            this.$el.find(".media-time-duration").html( convertTime(this.duration) );
+            this.$(".media-time-duration").html( convertTime(this.duration) );
         },
         updateElapsed: function() {
             var elapsed = this.popcorn.currentTime();
-            this.$el.find(".media-time-elapsed").html( convertTime( elapsed ) );
-            this.$el.find(".media-scrubber").slider("value", elapsed);
+            console.log('update', elapsed);
+            this.$(".media-time-elapsed").html( convertTime( elapsed ) );
+            this.$(".media-scrubber").slider("value", elapsed);
         },
 
         scrub: function( time ) {
@@ -674,8 +676,8 @@ function(Zeega) {
         },
         updateElapsed: function() {
             var elapsed = this.popcorn.currentTime();
-            this.$el.find(".media-time-elapsed").html( convertTime( elapsed ) );
-            this.$el.find(".media-scrubber").slider("value", elapsed);
+            this.$(".media-time-elapsed").html( convertTime( elapsed ) );
+            this.$(".media-scrubber").slider("value", elapsed);
             if (elapsed >= this.cueOut) this.popcorn.pause();
         },
 

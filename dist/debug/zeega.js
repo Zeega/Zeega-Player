@@ -66,13 +66,13 @@ return __p;
 this["JST"]["app/templates/plugins/popup.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<a\n  href="#"\n  class="ZEEGA-popup-click-target"\n  style="\n    background: url(';
+__p+='<a\n  href="#"\n  class="ZEEGA-popup-click-target"\n  ';
  if ( attr.popup_target ) { 
-;__p+=''+
+;__p+='\n  style="\n    background: url('+
 ( attr.popup_target.uri )+
-'';
+') no-repeat center center;\n    -webkit-background-size: cover;\n    -moz-background-size: cover;\n    -o-background-size: cover;\n    background-size: cover;\n  "\n  ';
  } 
-;__p+=') no-repeat center center;\n    -webkit-background-size: cover;\n    -moz-background-size: cover;\n    -o-background-size: cover;\n    background-size: cover;\n  "\n  data-caption="';
+;__p+='\n  data-caption="';
  if ( attr.popup_content ) { 
 ;__p+=''+
 ( attr.popup_content.title )+
@@ -20645,6 +20645,7 @@ function(Zeega) {
             this.popcorn.on( "ended", function() { _this.onEnded(); });
             this.popcorn.on( "playing", function() { _this.onPlaying(); });
             this.popcorn.on( "pause", function() { _this.onPause(); });
+            this.popcorn.on( "timeupdate", function() { _this.updateElapsed(); });
         },
 
         events: {
@@ -20663,7 +20664,7 @@ function(Zeega) {
         initScrubber: function() {
             var _this = this;
 
-            this.$el.find(".media-scrubber").slider({
+            this.$(".media-scrubber").slider({
                 range: "min",
                 min: 0,
                 max: this.duration,
@@ -20679,12 +20680,13 @@ function(Zeega) {
 
         updateDuration: function() {
             this.duration = this.popcorn.duration();
-            this.$el.find(".media-time-duration").html( convertTime(this.duration) );
+            this.$(".media-time-duration").html( convertTime(this.duration) );
         },
         updateElapsed: function() {
             var elapsed = this.popcorn.currentTime();
-            this.$el.find(".media-time-elapsed").html( convertTime( elapsed ) );
-            this.$el.find(".media-scrubber").slider("value", elapsed);
+            console.log('update', elapsed);
+            this.$(".media-time-elapsed").html( convertTime( elapsed ) );
+            this.$(".media-scrubber").slider("value", elapsed);
         },
 
         scrub: function( time ) {
@@ -20766,8 +20768,8 @@ function(Zeega) {
         },
         updateElapsed: function() {
             var elapsed = this.popcorn.currentTime();
-            this.$el.find(".media-time-elapsed").html( convertTime( elapsed ) );
-            this.$el.find(".media-scrubber").slider("value", elapsed);
+            this.$(".media-time-elapsed").html( convertTime( elapsed ) );
+            this.$(".media-scrubber").slider("value", elapsed);
             if (elapsed >= this.cueOut) this.popcorn.pause();
         },
 
@@ -21315,7 +21317,7 @@ function( Zeega, _Layer, MediaPlayer ) {
                     model = new Zeega.Backbone.Model( modelAttr );
                 this.mediaPlayer = new MediaPlayer.Views.Player({
                     model: model,
-                    control_mode: "none"
+                    control_mode: "standard"
                 });
                 this.$(".popup-video").append( this.mediaPlayer.el );
                 this.mediaPlayer.render();

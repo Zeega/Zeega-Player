@@ -179,6 +179,7 @@ module.exports = function(grunt) {
 		less: {
 			main: {
 				files: {
+					'assets/css/less/_combined-layers.less' : 'assets/css/less/layers/*.less',
 					'assets/css/zeega.css' : 'assets/css/less/**/*.less'
 				}
 			}
