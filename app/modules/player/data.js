@@ -41,14 +41,12 @@ function( Zeega ) {
         },
 
         validate: function( attributes ) {
-            var picked,
-                whitelistedKeys = _.keys( this.defaults );
-
-            picked = _.pick( attributes, whitelistedKeys );
             this.clear({ silent: true });
-            this.set( picked, { silent: true });
-        }
 
+            this.put(
+                _.pick( attributes, _.keys( this.defaults ) )
+            );
+        }
     });
 
     return Data;

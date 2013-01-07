@@ -235,6 +235,31 @@ asyncTest( "Player target: blank target defaults to body", function() {
 });
 
 
+
+module("Zeega.Backbone")
+
+test( "Zeega.Backbone.Model.prototype.put (|set| curried w/ silent: true option)", 3, function() {
+    var Foo, foo;
+
+    Foo = Zeega.Backbone.Model.extend({});
+
+    ok( Zeega.Backbone.Model.prototype.put, "|put| exists" );
+    equal( typeof Zeega.Backbone.Model.prototype.put, "function", "|put| is a function" );
+
+    foo = new Foo();
+
+    // "change" event trap:
+    // If this is triggered, then |put| is not actually silent.
+    // The unexpected assertion will cause the unit to fail.
+    foo.on("change", function() {
+        ok( false, "change event should not be fired for |put|" );
+    });
+
+    foo.put("a", "alpha");
+
+    equal( foo.get("a"), "alpha", "|put| correctly delegates to |set|" );
+});
+
 /*
 
 * the valid data is then parsed again by the player into `sequences`, `frames` (fames contain `layers`)
