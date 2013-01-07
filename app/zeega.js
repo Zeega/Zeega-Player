@@ -16,6 +16,13 @@ function( Backbone ) {
 
     var zeegaBackbone = Backbone.noConflict();
 
+    // Curry the |set| method with a { silent: true } version
+    // to avoid repetitious boilerplate code throughout project
+    zeegaBackbone.Model.prototype.put = function() {
+        var args = [].slice.call( arguments ).concat([ { silent: true } ]);
+        return this.set.apply( this, args );
+    };
+
     // Mix Backbone.Events, modules, and layout management into the app object.
     return _.extend(app, {
         // Create a custom object with a nested Views object.

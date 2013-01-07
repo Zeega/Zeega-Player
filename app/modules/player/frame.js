@@ -197,9 +197,9 @@ function( Zeega, Layer ) {
                 clearTimeout( this.timer );
             }
             this.timer = setTimeout(function() {
-                this.relay.set({
+                this.relay.put({
                     current_frame: this.get("_next")
-                },{silent:false});
+                });
             }.bind(this), ms );
         },
 

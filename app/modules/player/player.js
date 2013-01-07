@@ -252,12 +252,12 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
         },
 
         _setTarget: function() {
-            this.set({
+            this.put({
                 // |target| may be a Selector, Node or jQuery object.
                 // If no |target| was provided, default to |document.body|
                 target: $( this.get("target") || document.body )
 
-            }, { silent: true });
+            });
         },
 
         _detectAndParseData: function( response ) {
@@ -303,15 +303,15 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
 
             // set start frame
             if ( this.get("startFrame") === null || frames.get( this.get("startFrame") ) === undefined ) {
-                this.set({
+                this.put({
                     startFrame: sequences.at(0).get("frames")[0]
-                }, { silent: true });
+                });
             }
 
-            this.set({
+            this.put({
                 frames: frames,
                 sequences: sequences
-            }, { silent: true });
+            });
 
             this._render();
             this.status.emit( "data_loaded", _.extend({}, this.data.toJSON() ) );
@@ -490,7 +490,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             // unrender current frame
             // swap out current frame with new one
             this.status.set( "current_frame", id );
-            this.relay.set({"current_frame": id}, { silent: true });
+            this.relay.put( "current_frame", id );
 
             // render current frame // should trigger a frame rendered event when successful
             this.status.get("current_frame_model").render( oldID );
