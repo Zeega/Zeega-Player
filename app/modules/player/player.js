@@ -230,7 +230,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             this.data = new Data.Model( attributes );
             this.data.url = attributes.url;
 
-            this._setTargetNode();
+            this._setTarget();
             this._load( attributes );
         },
 
@@ -251,14 +251,13 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             }
         },
 
-        _setTargetNode: function() {
-            var target = this.get("target");
+        _setTarget: function() {
+            this.set({
+                // |target| may be a Selector, Node or jQuery object.
+                // If no |target| was provided, default to |document.body|
+                target: $( this.get("target") || document.body )
 
-            // The target was a Selector, Node or jQuery object,
-            // jQuery will figure out which one it was and
-            // return the correct thing.
-            target = $( target ? target : document.body );
-            this.set({ target: target }, { silent: true });
+            }, { silent: true });
         },
 
         _detectAndParseData: function( response ) {
