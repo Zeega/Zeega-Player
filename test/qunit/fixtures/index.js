@@ -19,16 +19,16 @@ $(window).bind("zeega_ready", function() {
         // Initialize a player w/o args
         a = new Zeega.player({
             url: "example-data.json",
-            divId: "player",
-            next : ".next",
-            prev : ".prev"
+            target: "#player",
+            next: ".next",
+            prev: ".prev"
           });
 
         b = new Zeega.player({
             data: window.exampleData,
-            divId: "player",
-            next : ".next",
-            prev : ".prev"
+            target: "#player",
+            next: ".next",
+            prev: ".prev"
           });
 
 
@@ -42,11 +42,11 @@ $(window).bind("zeega_ready", function() {
                     attributes: [
                         {
                             player: "a",
-                            attributes: a.attributes
+                            keys: Object.keys( a.attributes )
                         },
                         {
                             player: "b",
-                            attributes: b.attributes
+                            keys: Object.keys( b.attributes )
                         }
                     ]
                 }
@@ -61,7 +61,7 @@ $(window).bind("zeega_ready", function() {
         player = new Zeega.player({
             window_fit: true,
             autoplay: true,
-            divId: "player",
+            target: "#player",
             next: ".next",
             prev: ".prev",
             url: "example-data.json"
@@ -70,12 +70,13 @@ $(window).bind("zeega_ready", function() {
         // Since |player| must load data before it can be analyzed,
         // commit to reporting the results only after |player| has
         // fired its data_loaded event
-         player.on( "data_loaded", function( type ) {
+        player.on( "data_loaded", function( type ) {
+
+            // payload = Object.keys( Abstract.assign( {}, player.data.attributes ) );
+            //
             Test.report( params, {
                 type: "player",
-                payload: {
-                    attributes: [ player.data.attributes ]
-                }
+                payload: Object.keys( Abstract.assign( {}, player.data.attributes ) )
             });
         });
     }
@@ -87,7 +88,7 @@ $(window).bind("zeega_ready", function() {
         player = new Zeega.player({
             window_fit: true,
             autoplay: true,
-            divId: "player",
+            target: "#player",
             next: ".next",
             prev: ".prev",
             url: params.url
@@ -112,7 +113,7 @@ $(window).bind("zeega_ready", function() {
             player = new Zeega.player({
                 window_fit: true,
                 autoplay: true,
-                divId: "player",
+                target: "#player",
                 next: ".next",
                 prev: ".prev"
             });
@@ -148,26 +149,26 @@ $(window).bind("zeega_ready", function() {
         // Selector
         player = new Zeega.player({
             url: "example-data.json",
-            target: "#zeega-fixture"
+            target: "#player"
         });
 
-        payload = player.get("target")[0] === $("#zeega-fixture")[0];
+        payload = player.get("target")[0] === $("#player")[0];
 
         // Node
         player = new Zeega.player({
             url: "example-data.json",
-            target: document.querySelector("#zeega-fixture")
+            target: document.querySelector("#player")
         });
 
-        payload = player.get("target")[0] === $("#zeega-fixture")[0];
+        payload = player.get("target")[0] === $("#player")[0];
 
         // jQuery
         player = new Zeega.player({
             url: "example-data.json",
-            target: $("#zeega-fixture")
+            target: $("#player")
         });
 
-        payload = player.get("target")[0] === $("#zeega-fixture")[0];
+        payload = player.get("target")[0] === $("#player")[0];
 
         // Submit the report!
         Test.report( params, {
