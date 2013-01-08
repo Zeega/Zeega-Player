@@ -24642,8 +24642,11 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
         // if a prev sequence exists, then cue and play it
         cuePrevSequence: function() {
             var seqHist = this.status.get("sequenceHistory"),
-                prevSequenceID = seqHist[ seqHist.length - 2 ];
+                prevSequenceID;
 
+            seqHist.pop();
+            this.status.set("sequenceHistory", seqHist );
+            prevSequenceID = seqHist[ seqHist.length - 1 ];
             if ( prevSequenceID ) {
                 this.cueFrame( this.get("sequences").get( prevSequenceID ).get("frames")[0] );
             }
