@@ -7083,6 +7083,13 @@ function( Backbone ) {
 
     var zeegaBackbone = Backbone.noConflict();
 
+    // Curry the |set| method with a { silent: true } version
+    // to avoid repetitious boilerplate code throughout project
+    zeegaBackbone.Model.prototype.put = function() {
+        var args = [].slice.call( arguments ).concat([ { silent: true } ]);
+        return this.set.apply( this, args );
+    };
+
     // Mix Backbone.Events, modules, and layout management into the app object.
     return _.extend(app, {
         // Create a custom object with a nested Views object.
@@ -7139,14 +7146,12 @@ function( Zeega ) {
         },
 
         validate: function( attributes ) {
-            var picked,
-                whitelistedKeys = _.keys( this.defaults );
-
-            picked = _.pick( attributes, whitelistedKeys );
             this.clear({ silent: true });
-            this.set( picked, { silent: true });
-        }
 
+            this.put(
+                _.pick( attributes, _.keys( this.defaults ) )
+            );
+        }
     });
 
     return Data;
@@ -22846,7 +22851,7 @@ function( Zeega, _Layer, MediaPlayer ) {
                     model = new Zeega.Backbone.Model( modelAttr );
                 this.mediaPlayer = new MediaPlayer.Views.Player({
                     model: model,
-                    control_mode: "standard"
+                    control_mode: "none"
                 });
                 this.$(".popup-video").append( this.mediaPlayer.el );
                 this.mediaPlayer.render();
@@ -23239,9 +23244,9 @@ function( Zeega, Layer ) {
                 clearTimeout( this.timer );
             }
             this.timer = setTimeout(function() {
-                this.relay.set({
+                this.relay.put({
                     current_frame: this.get("_next")
-                },{silent:false});
+                });
             }.bind(this), ms );
         },
 
@@ -23921,10 +23926,10 @@ function( Zeega ) {
 
             /* update the previous frame data */
             if ( currentFrame ) {
-                this.set({
+                this.put({
                     previous_frame: currentFrame,
                     previous_frame_model: currentFrameModel
-                }, { silent: true });
+                });
             }
             /* update the current_frame_model */
             frame = this.get("project").get("frames").get( currentFrame );
@@ -23932,10 +23937,10 @@ function( Zeega ) {
 
             fHist = this.get("frameHistory");
             fHist.push( frame.id );
-            this.set({
-                "current_frame_model": frame,
+            this.put({
+                current_frame_model: frame,
                 frameHistory: fHist
-            }, { silent: true });
+            });
             this.emit( "frame_rendered",
                 _.extend({}, frame.toJSON(), {
                     layers: frame.layers.toJSON()
@@ -24372,12 +24377,12 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
         },
 
         _setTarget: function() {
-            this.set({
+            this.put({
                 // |target| may be a Selector, Node or jQuery object.
                 // If no |target| was provided, default to |document.body|
                 target: $( this.get("target") || document.body )
 
-            }, { silent: true });
+            });
         },
 
         _detectAndParseData: function( response ) {
@@ -24423,15 +24428,15 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
 
             // set start frame
             if ( this.get("startFrame") === null || frames.get( this.get("startFrame") ) === undefined ) {
-                this.set({
+                this.put({
                     startFrame: sequences.at(0).get("frames")[0]
-                }, { silent: true });
+                });
             }
 
-            this.set({
+            this.put({
                 frames: frames,
                 sequences: sequences
-            }, { silent: true });
+            });
 
             this._render();
             this.status.emit( "data_loaded", _.extend({}, this.data.toJSON() ) );
@@ -24609,8 +24614,12 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             }
             // unrender current frame
             // swap out current frame with new one
+            // Use |set| to ensure that a "change" event is triggered
+            // from this.status
             this.status.set( "current_frame", id );
-            this.relay.set({"current_frame": id}, { silent: true });
+            // Use |put| to ensure that NO "change" event is triggered
+            // from this.relay
+            this.relay.put( "current_frame", id );
 
             // render current frame // should trigger a frame rendered event when successful
             this.status.get("current_frame_model").render( oldID );
