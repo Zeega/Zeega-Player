@@ -255,7 +255,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             this.put({
                 // |target| may be a Selector, Node or jQuery object.
                 // If no |target| was provided, default to |document.body|
-                target: $( this.get("target") || document.body )
+                target: Zeega.$( this.get("target") || document.body )
 
             });
         },
@@ -373,7 +373,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             var _this = this;
 
             if ( this.get("keyboard") ) {
-                $(window).keyup(function( event ) {
+                Zeega.$(window).keyup(function( event ) {
                     switch( event.which ) {
                         case 37: // left arrow
                             _this.cuePrev();

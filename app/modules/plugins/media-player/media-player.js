@@ -83,7 +83,7 @@ function(Zeega) {
             if ( _.isNull(this.settings.controls_target) ) {
                 this.$el.append( this.controls.render().el );
             } else {
-                $( this.settings.controls_target ).html( this.controls.render().el );
+                Zeega.$( this.settings.controls_target ).html( this.controls.render().el );
             }
 
             return this;
@@ -705,15 +705,15 @@ function(Zeega) {
                 // TODO: This needs refactoring
                 if ( (e.which >= 48 && e.which <= 58) || e.which == 13 ) {
                     if ( e.which == 13 ) {
-                        sec = _this.convertToSeconds( $(this).text() );
+                        sec = _this.convertToSeconds( Zeega.$(this).text() );
 
                         if ( sec === false ) {
-                            $(this).text( convertTime(_this.model.get("cue_in")) );
+                            Zeega.$(this).text( convertTime(_this.model.get("cue_in")) );
                         } else {
 
                             sec = sec < 0 ? 0: sec;
                             sec = sec > _this.model.get("cue_out") ? _this.model.get("cue_out"): sec;
-                            $(this).text( convertTime(sec) );
+                            Zeega.$(this).text( convertTime(sec) );
                             _this.$el.find(".crop-slider").slider("values",0, sec );
                             _this.cueIn =sec;
                             _this.model.update({ "cue_in": sec });
@@ -730,14 +730,14 @@ function(Zeega) {
 
                 if ( (e.which >= 48 && e.which <= 58) || e.which == 13 ) {
                     if ( e.which == 13 ) {
-                        sec = _this.convertToSeconds( $(this).text() );
+                        sec = _this.convertToSeconds( Zeega.$(this).text() );
 
                         if ( sec === false ) {
-                            $(this).text( convertTime(_this.model.get("cue_out")) );
+                            Zeega.$(this).text( convertTime(_this.model.get("cue_out")) );
                         } else {
                             sec = sec > _this.duration ? _this.duration: sec;
                             sec = sec < _this.model.get("cue_in") ? _this.model.get("cue_in"): sec;
-                            $(this).text( convertTime(sec) );
+                            Zeega.$(this).text( convertTime(sec) );
                             _this.$el.find(".crop-slider").slider("values",1, sec );
                             _this.cueOut = sec;
                             _this.seek( Math.max(sec-5,_this.cueIn) );
@@ -752,8 +752,8 @@ function(Zeega) {
             });
 
             //Temp fix, this should be removed
-            $(".time").mousedown(function() {
-                $(this).focus();
+            Zeega.$(".time").mousedown(function() {
+                Zeega.$(this).focus();
             });
         },
 
