@@ -28,7 +28,7 @@ function( Zeega ) {
                 done = this.async();
 
                 // Seek out the template asynchronously.
-                return $.ajax({ url: Zeega.root + path }).then(function(contents) {
+                return Zeega.$.ajax({ url: Zeega.root + path }).then(function(contents) {
                     done( JST[path] = _.template(contents) );
                 });
             }
@@ -45,7 +45,7 @@ function( Zeega ) {
                 }.bind(this), 300);
 
             // attempt to detect if the parent container is being resized
-            $( window ).resize( lazyResize );
+            Zeega.$( window ).resize( lazyResize );
         },
 
         serialize: function() {
@@ -66,13 +66,13 @@ function( Zeega ) {
                 _this = this;
 
             if ( next && next.length ) {
-                $( next ).click(function() {
+                Zeega.$( next ).click(function() {
                     _this.model.cueNext();
                     return false;
                 });
             }
             if ( prev && prev.length ) {
-                $( prev ).click(function() {
+                Zeega.$( prev ).click(function() {
                     _this.model.cuePrev();
                     return false;
                 });
@@ -93,8 +93,8 @@ function( Zeega ) {
             // TODO: This could be refactored a bit more
             var css = {},
                 windowRatio = this.model.get("window_ratio") || 4/3,
-                winWidth = $( this.model.get("target") ).find(".ZEEGA-player").width(),
-                winHeight = $( this.model.get("target") ).find(".ZEEGA-player").height(),
+                winWidth = Zeega.$( this.model.get("target") ).find(".ZEEGA-player").width(),
+                winHeight = Zeega.$( this.model.get("target") ).find(".ZEEGA-player").height(),
                 actualRatio = winWidth / winHeight;
 
             if ( this.model.get("window_fit") ) {

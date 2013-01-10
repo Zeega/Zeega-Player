@@ -12,17 +12,27 @@ require.config({
         zeega_dir: "../app/modules",
 
         // Libraries.
-        //jquery: "../assets/js/libs/jquery",
+        jquery: "../assets/js/libs/jquery",
+        jqueryUI: "../assets/js/plugins/jquery-ui",
         lodash: "../assets/js/libs/lodash",
         backbone: "../assets/js/libs/backbone"
+
+        // Plugins
+        //imagesLoaded: "../assets/js/plugins/jquery/imagesloaded.min.js",
+        //cycle: "../assets/js/plugins/jquery/cycle.js"
 
     },
     shim: {
         // Backbone library depends on lodash and jQuery.
         backbone: {
-            deps: [ "lodash" ],
+            deps: [ "lodash", "jquery" ],
             exports: "Backbone"
         },
+
+        // Plugins
+        jqueryUI: ["jquery"],
+        "plugins/imagesloaded.min": ["jquery"],
+        "plugins/cycle": ["jquery"],
 
         // Backbone.LayoutManager depends on Backbone.
         "plugins/backbone.layoutmanager": [ "backbone" ]
