@@ -1,9 +1,11 @@
 define([
     "backbone",
+    "jquery",
+    "jqueryUI",
     "plugins/backbone.layoutmanager"
 ],
 
-function( Backbone ) {
+function( Backbone, jquery ) {
     // Provide a global location to place configuration settings and module
     // creation.
     var app = {
@@ -14,7 +16,10 @@ function( Backbone ) {
     // Localize or create a new JavaScript Template object.
     var JST = window.JST = window.JST || {};
 
-    var zeegaBackbone = Backbone.noConflict();
+    var zeegaJQuery = jquery;
+    $.noConflict(); // return $ to prev owner
+    var zeegaBackbone = Backbone.noConflict(); // return backbone
+    zeegaBackbone.$ = zeegaJQuery; // set backbone jquery
 
     // Curry the |set| method with a { silent: true } version
     // to avoid repetitious boilerplate code throughout project
@@ -30,7 +35,8 @@ function( Backbone ) {
             return _.extend({ Views: {} }, additionalProps);
         },
 
-        Backbone: zeegaBackbone
+        Backbone: zeegaBackbone,
+        $: zeegaJQuery
 
     }, zeegaBackbone.Events );
 

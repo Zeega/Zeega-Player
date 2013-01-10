@@ -4,7 +4,7 @@
 
 ##Dependencies
 
-* jquery 1.8+
+* NONE
 
 ## tasks
 
