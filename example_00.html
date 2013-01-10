@@ -47,11 +47,9 @@ This requires you to run on a server or localhost (ie MAMP, WAMP)
         <a href='#' class='next'>next</a>
     </div>
 
-    <!-- load jquery first -->
-    <script src="assets/js/libs/jquery.js"></script>
     <!-- load the Zeega player -->
-    <script src="dist/debug/zeega.js"></script> <!-- debug -->
-    <!--<script src="dist/release/zeega.js"></script>--> <!-- release -->
+    <!--<script src="dist/debug/zeega.js"></script>--> <!-- debug -->
+    <script src="dist/release/zeega.js"></script> <!-- release -->
 
     <script>
     $(window).bind('zeega_ready', function(){
@@ -59,19 +57,19 @@ This requires you to run on a server or localhost (ie MAMP, WAMP)
         var project = new Zeega.player({
             autoplay: true,
             url: "http://dev.zeega.org/joseph/web/api/projects/2259",
-          }, {
+        }, {
             divId: 'player',
             next : '.next',
             prev : '.prev',
-          });
+        });
 
         /*
         // uncomment this line to see available zeega events as they fire
         project.on('all', function(e, obj){ if(e!='media_timeupdate') console.log('1: e:',e,obj);});
         */
-        $('#playpause').click(function(){
-            project.playPause();
-        });
+        // $('#playpause').click(function(){
+        //     project.playPause();
+        // });
     });
     </script>
 
