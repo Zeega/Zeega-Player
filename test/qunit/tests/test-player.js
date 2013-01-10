@@ -39,7 +39,7 @@ handlers = {
                 type: "get",
                 success: function( data ) {
 
-                    var shape = Object.keys( data ).sort(),
+                    var shape = Object.keys( $.parseJSON( data ) ).sort(),
                         payload = response.payload.sort();
 
                     deepEqual(
