@@ -9,6 +9,7 @@ this should be auto generated probably!!
 define([
     "zeega_dir/parsers/zeega-project",
     "zeega_dir/parsers/zeega-project-published",
+    "zeega_dir/parsers/zeega-project-collection",
     "zeega_dir/parsers/zeega-collection",
     "zeega_dir/parsers/zeega-dynamic-collection",
     "zeega_dir/parsers/flickr",
@@ -17,6 +18,7 @@ define([
 function(
     zProject,
     zProjectPublished,
+    zProjectCollection,
     zCollection,
     zDynamicCollection,
     flickr,
@@ -29,6 +31,7 @@ function(
         Parsers,
         zProject,
         zProjectPublished,
+        zProjectCollection,
         zCollection,
         zDynamicCollection,
         flickr,
