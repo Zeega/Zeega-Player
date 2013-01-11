@@ -8,7 +8,7 @@ function() {
 
     Parser[ type ].validate = function( response ) {
 
-        if ( response.items && response.items[0].media_type == "project" ) {
+        if ( response.items && response.items[0].media_type == "project"&& response.items.length==1) {
             return true;
         }
         return false;
