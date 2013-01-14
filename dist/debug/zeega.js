@@ -23549,7 +23549,7 @@ function( Backbone, jquery ) {
 
     var zeegaJQuery = jquery;
     $.noConflict(); // return $ to prev owner
-    var zeegaBackbone = Backbone.noConflict(); // return backbone
+    var zeegaBackbone = Backbone.noConflict( true ); // return backbone
     zeegaBackbone.$ = zeegaJQuery; // set backbone jquery
 
     // Curry the |set| method with a { silent: true } version
