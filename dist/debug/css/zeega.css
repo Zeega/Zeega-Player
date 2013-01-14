@@ -179,8 +179,10 @@
   text-shadow: 1px 2px 4px black;
 }
 .slideshow-slider .slide-metadata .attribution-link {
+  color: white;
   position: absolute;
   right: 10px;
+  font-size: 10px;
   bottom: 10px;
 }
 .slideshow-slider .slide-metadata .slide-description {
@@ -652,8 +654,10 @@
   text-shadow: 1px 2px 4px black;
 }
 .slideshow-slider .slide-metadata .attribution-link {
+  color: white;
   position: absolute;
   right: 10px;
+  font-size: 10px;
   bottom: 10px;
 }
 .slideshow-slider .slide-metadata .slide-description {
@@ -992,8 +996,10 @@
   text-shadow: 1px 2px 4px black;
 }
 .slideshow-slider .slide-metadata .attribution-link {
+  color: white;
   position: absolute;
   right: 10px;
+  font-size: 10px;
   bottom: 10px;
 }
 .slideshow-slider .slide-metadata .slide-description {

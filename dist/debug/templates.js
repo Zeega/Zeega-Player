@@ -99,7 +99,9 @@ __p+='<div class=\'slide-title\'>'+
 ( description )+
 '</div>\n<a href="'+
 ( attribution_uri )+
-'" target=\'blank\' class=\'attribution-link\'>\n    <i class=\'slideshow-icon-'+
+'" target=\'blank\' class=\'attribution-link\'>\n    '+
+( media_creator_username )+
+'\n    <i class=\'slideshow-icon-'+
 ( archive.toLowerCase() )+
 ' ssarchive\'></i>\n</a>\n';
 }
