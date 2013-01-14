@@ -56,11 +56,18 @@ This requires you to run on a server or localhost (ie MAMP, WAMP)
 
         var project = new Zeega.player({
             autoplay: true,
-            url: "http://dev.zeega.org/joseph/web/api/projects/2259",
-        }, {
-            divId: 'player',
-            next : '.next',
-            prev : '.prev',
+            url: "http://alpha.zeega.org/api/items/67060/items", // BGB collection
+
+//            url: "http://dev.zeega.org/joseph/web/api/projects/2259",
+            target: "#player",
+            layerOptions: {
+              slideshow: {
+                display: true,
+                start: null,
+                start_id: null,
+                bleed: false
+              }
+            }
         });
 
         /*
