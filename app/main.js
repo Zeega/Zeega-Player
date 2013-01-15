@@ -22,4 +22,7 @@ function( Zeega ) {
     } else {
         window.fireEvent("on" + event.eventType, event);
     }
+
+    $.noConflict( true ); // return $ to prev owner
+
 });

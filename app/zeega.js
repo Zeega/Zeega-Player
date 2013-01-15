@@ -17,7 +17,6 @@ function( Backbone, jquery ) {
     var JST = window.JST = window.JST || {};
 
     var zeegaJQuery = jquery;
-    $.noConflict(); // return $ to prev owner
     var zeegaBackbone = Backbone.noConflict(); // return backbone
     zeegaBackbone.$ = zeegaJQuery; // set backbone jquery
 

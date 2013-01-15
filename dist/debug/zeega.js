@@ -23546,7 +23546,6 @@ function( Backbone, jquery ) {
     var JST = window.JST = window.JST || {};
 
     var zeegaJQuery = jquery;
-    $.noConflict(); // return $ to prev owner
     var zeegaBackbone = Backbone.noConflict(); // return backbone
     zeegaBackbone.$ = zeegaJQuery; // set backbone jquery
 
@@ -41266,6 +41265,9 @@ function( Zeega ) {
     } else {
         window.fireEvent("on" + event.eventType, event);
     }
+
+    $.noConflict( true ); // return $ to prev owner
+
 });
 
 zeega.define("main", function(){});
