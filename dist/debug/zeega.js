@@ -25827,8 +25827,8 @@ function( Zeega, _Layer, SSSlider ) {
             this.emitSlideData( this.slide );
             this.positionArrows();
 
-
-            this.$(".slideshow-container").cycle({
+            // investigate why this is needed
+            Zeega.$( this.$(".slideshow-container")[0] ).cycle({
                 timeout: 0,
                 fx: "scrollHorz"
             });
@@ -25860,7 +25860,7 @@ function( Zeega, _Layer, SSSlider ) {
 
         onExit: function() {
             this.killKeyboard();
-            this.$(".slideshow-container").cycle("destroy");
+            Zeega.$( this.$(".slideshow-container")[0] ).cycle("destroy");
         },
 
         events: {
@@ -25887,7 +25887,7 @@ function( Zeega, _Layer, SSSlider ) {
         scrollTo: function( slideNo ) {
             this.slide = slideNo;
             this.hideArrows();
-            this.$(".slideshow-container").cycle( slideNo );
+            Zeega.$( this.$(".slideshow-container")[0] ).cycle( slideNo );
 
             this.updateTitle( slideNo );
             this.emitSlideData( slideNo );
