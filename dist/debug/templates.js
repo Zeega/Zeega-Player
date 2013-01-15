@@ -111,41 +111,37 @@ return __p;
 this["JST"]["app/templates/plugins/slideshow.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<a href=\'#\' class=\'slideshow-arrow arrow-left slideshow-control-prev disabled\'></a>\n<a href=\'#\' class=\'slideshow-arrow arrow-right slideshow-control-next\'></a>\n\n<div class=\'slideshow-container\' style=\'width:'+
-( (attr.slides.length *100) +'%' )+
-'\'>\n\t';
+__p+='<a href=\'#\' class=\'slideshow-arrow arrow-left slideshow-control-prev disabled\'></a>\n<a href=\'#\' class=\'slideshow-arrow arrow-right slideshow-control-next\'></a>\n\n<div class=\'slideshow-container\'>\n\t';
  _.each( attr.slides, function(slide,i){ 
 ;__p+='\n\t\t<div class=\'slideshow-slide slideshow-slide-'+
 ( i )+
-'\' style=\'width:'+
-( (100 / attr.slides.length) +'%' )+
-';background:url('+
+'\' style=\'\n      background:url('+
 ( slide.attr.uri )+
-') no-repeat center center;-webkit-background-size: ';
+') no-repeat center center;\n      -webkit-background-size: ';
  if( slides_bleed ) { 
 ;__p+='cover';
  } else { 
 ;__p+='contain';
  } 
-;__p+='; -moz-background-size: ';
+;__p+=';\n      -moz-background-size: ';
  if( slides_bleed ) { 
 ;__p+='cover';
  } else { 
 ;__p+='contain';
  } 
-;__p+='; -o-background-size: ';
+;__p+=';\n      -o-background-size: ';
  if( slides_bleed ) { 
 ;__p+='cover';
  } else { 
 ;__p+='contain';
  } 
-;__p+='; background-size: ';
+;__p+=';\n      background-size: ';
  if( slides_bleed ) { 
 ;__p+='cover';
  } else { 
 ;__p+='contain';
  } 
-;__p+=';\'></div>\n\t';
+;__p+=';\n    \'></div>\n\t';
  }) 
 ;__p+='\n</div>';
 }
