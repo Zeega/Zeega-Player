@@ -16,9 +16,8 @@
   <a href='#' id='playpause'>>></a>
   <div id="main" style='height:400px;width:600px;float:left'></div>
   
-<!--
   <script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
-  <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+<!--  <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
 -->
 
   <script src="../example-data.js"></script>
@@ -41,9 +40,9 @@
         target: "#main",
         // target: $("#main"),
         // url: "http://alpha.zeega.org/api/items/72666", // example published zeega
-        // url: "http://dev.zeega.org/joseph/web/api/projects/4295", // auto advance test
+        url: "http://dev.zeega.org/joseph/web/api/projects/4332", // auto advance test
         // url: "http://api.flickr.com/services/feeds/photos_public.gne?tags=massascension&format=json&jsoncallback=?", // flickr tag set
-        url: "http://alpha.zeega.org/api/items/67060/items", // BGB collection
+        // url: "http://alpha.zeega.org/api/items/67060/items", // BGB collection
         window_fit: true,
         autoplay: true,
 
@@ -58,10 +57,11 @@
 
       });
 
-    // $('#playpause').click(function(){
-    //   project.cuePrevSequence();
-    //   return false;
-    // });
+    $('#playpause').click(function(){
+      console.log(' go do this', project.getFrameData() )
+      project.getFrameData();
+      return false;
+    });
 
   });
   </script>
