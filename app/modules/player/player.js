@@ -48,6 +48,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
         state: "paused",
         relay: null,
         status: null,
+        gmapAPI: "waiting",
 
         Layout: null,
 

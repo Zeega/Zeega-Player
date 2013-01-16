@@ -10,7 +10,8 @@ function( Backbone, jquery ) {
     // creation.
     var app = {
         // The root path to run the application.
-        root: "/"
+        root: "/",
+        gmapAPI: "waiting"
     };
 
     // Localize or create a new JavaScript Template object.
