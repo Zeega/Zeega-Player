@@ -16,6 +16,14 @@ __p+='';
 return __p;
 };
 
+this["JST"]["app/templates/plugins/geo.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='';
+}
+return __p;
+};
+
 this["JST"]["app/templates/plugins/image.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
