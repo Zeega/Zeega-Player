@@ -499,7 +499,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
 
             // render current frame // should trigger a frame rendered event when successful
             this.status.get("current_frame_model").render( oldID );
-
+console.log( this.status.get("current_frame_model") )
             if ( this.state !== "playing" ) {
                 this.state = "playing";
                 this.status.emit( "play", this );
