@@ -23643,7 +23643,7 @@ function( Zeega ) {
 
         controls: [],
 
-        defaults: {
+        defaultAttr: {
             citation: true,
             default_controls: true,
             draggable: true,
@@ -23653,10 +23653,11 @@ function( Zeega ) {
             resizable: false
         },
 
-        defaultAttributes: {},
+        attr: {},
 
         initialize: function() {
-            this.defaults = _.extend({}, this.defaults, this.defaultAttributes );
+            var attr = _.extend({}, this.defaultAttr, this.attr );
+            this.set( "attr", attr );
             this.init();
         },
 
@@ -23719,7 +23720,7 @@ function( Zeega ) {
 
             this.$el.addClass( "visual-element-" + this.model.get("type").toLowerCase() );
             this.moveOffStage();
-            this.applySize();
+            this.applyStyles();
         },
 
         afterRender: function() {
@@ -23729,10 +23730,11 @@ function( Zeega ) {
 
         onRender: function() {},
 
-        applySize: function() {
+        applyStyles: function() {
             this.$el.css({
                 height: this.getAttr("height") + "%", // photos need a height!
-                width: this.getAttr("width") + "%"
+                width: this.getAttr("width") + "%",
+                opacity: this.getAttr("opacity") || 1
             });
         },
 
@@ -23749,6 +23751,9 @@ function( Zeega ) {
         },
 
         player_onPlay: function() {
+            if ( this.getAttr("blink_on_start") ) {
+                this.glowOnFrameStart();
+            }
             this.onPlay();
         },
 
@@ -23769,6 +23774,14 @@ function( Zeega ) {
         onPlay: function() {},
         onPause: function() {},
         onExit: function() {},
+
+
+        glowOnFrameStart: function() {
+            this.model.visualElement.$el.addClass("glow-blink");
+            _.delay(function() {
+                this.model.visualElement.$el.removeClass("glow-blink");
+            }.bind( this ), 1000 );
+        },
 
         /*
         TODO: Why is this special cased?
@@ -23895,7 +23908,7 @@ function( Zeega, _Layer ){
 
         layerType: "Image",
 
-        defaultAttributes: {
+        attr: {
             "title": "Image Layer",
             "url": "none",
             "left": 0,
@@ -23968,22 +23981,23 @@ function( Zeega, _Layer ) {
 
         layerType: "Link",
 
-        defaultAttributes: {
-            "title": "Link Layer",
-            "from_sequence": null,
-            "to_frame": null,
-            "from_frame": null,
-            "left": 25,
-            "top": 25,
-            "height": 50,
-            "width": 50,
-            "opacity": 1,
-            "opacity_hover": 1,
-            "blink_on_start": true,
-            "glow_on_hover": true,
-            "citation": false,
-            "linkable": false,
-            "default_controls": false
+        attr: {
+            title: "Poop Layer",
+            from_sequence: null,
+            to_frame: null,
+            from_frame: null,
+            left: 25,
+            top: 25,
+            height: 50,
+            width: 50,
+            opacity: 1,
+            opacity_hover: 1,
+            blink_on_start: true,
+            glow_on_hover: true,
+            citation: false,
+            link_type: "default",
+            linkable: false,
+            default_controls: false
         }
     });
 
@@ -23992,7 +24006,6 @@ function( Zeega, _Layer ) {
     template: "plugins/link",
 
     serialize: function() {
-        console.log("link layer", this.model);
         return this.model.toJSON();
     },
 
@@ -24007,6 +24020,9 @@ function( Zeega, _Layer ) {
         };
 
       this.$el.attr("data-glowOnHover", this.getAttr("glow_on_hover") );
+
+      console.log("link", this, this.getAttr("link_type") )
+      this.$el.addClass("link-type-" + this.getAttr("link_type") );
 /*
       this.$el.removeClass("link-arrow-right link-arrow-down link-arrow-up link-arrow-left");
 
@@ -25784,7 +25800,7 @@ function( Zeega, _Layer, SSSlider ) {
 
         layerType: "SlideShow",
 
-        defaultAttributes: {
+        attr: {
             arrows: true, // turns on/off visual arrow controls
             keyboard: false, // turns on/off keyboard controls
             thumbnail_slider: true, // turns on/off thumbnail drawer
@@ -38938,7 +38954,7 @@ function( Zeega, _Layer, MediaPlayer ) {
 
         layerType: "Video",
 
-        defaultAttributes: {
+        attr: {
             "title": "Video Layer",
             "url": "none",
             "left": 0,
@@ -38975,13 +38991,11 @@ function( Zeega, _Layer, MediaPlayer ) {
         },
 
         onPlay: function() {
-
             this.ended = false;
             this.mediaPlayer.play();
         },
 
         onPause: function() {
-
             this.mediaPlayer.pause();
         },
 
@@ -39052,7 +39066,6 @@ function( Zeega, _Layer, MediaPlayer ) {
                 // TODO: the missing else statement leads me to believe
                 // that this entire condition tree could be refactored
 
-
                 // send updates to the player. must include the layer
                 // info incase there are > 1 media layers on a single frame
                 var info = {
@@ -39064,9 +39077,8 @@ function( Zeega, _Layer, MediaPlayer ) {
                     current_time: this.mediaPlayer.getCurrentTime(),
                     duration: this.mediaPlayer.getDuration()
                 };
-
                 this.model.status.emit("media_timeupdate", info );
-                if ( this.mediaPlayer.getCurrentTime() >= out ) {
+                if ( info.current_time >= out - 1 ) {
                     this.onEnded();
                 }
             }
@@ -39074,9 +39086,10 @@ function( Zeega, _Layer, MediaPlayer ) {
 
         onEnded: function() {
             this.playbackCount++;
-            this.model.trigger("playback_ended", this.model.toJSON() );
+            //this.model.trigger("playback_ended", this.model.toJSON() );
+            this.model.status.emit( "ended", this.model.toJSON() );
             if ( this.getAttr("loop") ) {
-                this.mediaPlayer.currentTime( this.getAttr("cue_in") );
+                this.mediaPlayer.setCurrentTime( this.getAttr("cue_in") );
                 this.mediaPlayer.play();
             } else {
                 this.ended = true;
@@ -39107,7 +39120,7 @@ function( Zeega, _Layer, VideoLayer ){
 
         layerType: "Audio",
 
-        defaultAttributes: {
+        attr: {
             "title": "Audio Layer",
             "url": "none",
             "left": 0,
@@ -39144,7 +39157,7 @@ function( Zeega, _Layer ) {
         // this is a Layer, wouldn't "type" be sufficient?
         layerType: "Rectangle",
 
-        defaultAttributes: {
+        attr: {
             "citation": false,
             "default_controls": false,
             "height": 50,
@@ -39196,7 +39209,7 @@ function( Zeega, _Layer ) {
         // this is a Layer, wouldn't "type" be sufficient?
         layerType: "Text",
 
-        defaultAttributes: {
+        attr: {
             "citation": false,
             "default_controls": true,
             "left": 30,
@@ -39242,7 +39255,7 @@ function( Zeega, _Layer, MediaPlayer ) {
 
         layerType: "Popup",
 
-        defaultAttributes: {
+        attr: {
             citation: false,
             default_controls: true,
             left: 30,
@@ -39359,7 +39372,7 @@ function( Zeega, _Layer ){
 
         layerType: "Geo",
 
-        defaultAttributes: {
+        attr: {
             title: "Streetview Layer",
             url: null,
             left: 0,
@@ -39542,19 +39555,22 @@ function( Zeega, Plugin ) {
 
             // init link layer type inside here
             if ( plugin ) {
-                var _this = this;
+                var newAttr;
+
                 this.layerClass = new plugin();
-                this.set( _.defaults( this.toJSON(), this.layerClass.defaults ) );
+
+                newAttr = _.defaults( this.toJSON().attr, this.layerClass.attr );
+                this.set({ attr: newAttr });
 
                 // create and store the layerClass
                 this.visualElement = new plugin.Visual({
                     model: this,
                     attributes: function() {
                         return _.extend( {}, _.result( this, "domAttributes" ), {
-                            id: "visual-element-" + _this.id,
-                            "data-layer_id": _this.id
+                            id: "visual-element-" + this.id,
+                            "data-layer_id": this.id
                         });
-                    }
+                    }.bind( this )
                 });
                 // listen to visual element events
                 this.on( "visual_ready", this.onVisualReady, this );

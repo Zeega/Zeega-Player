@@ -11,6 +11,30 @@
   width: 100%;
   height: 100%;
 }
+.visual-element-link .centerBackground {
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.visual-element-link.link-type-arrow_right {
+  background: url("../img/layers/link_arrow-right.png");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.visual-element-link.link-type-arrow_left {
+  background: url("../img/layers/link_arrow-right.png");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.visual-element-link.link-type-arrow_up {
+  background: url("../img/layers/link_arrow-right.png");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.visual-element-link.link-type-arrow_down {
+  background: url("../img/layers/link_arrow-right.png");
+  background-repeat: no-repeat;
+  background-position: center;
+}
 .ZEEGA-popup-click-target {
   display: block;
   height: 100%;
@@ -515,6 +539,30 @@
   width: 100%;
   height: 100%;
 }
+.visual-element-link .centerBackground {
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.visual-element-link.link-type-arrow_right {
+  background: url("../img/layers/link_arrow-right.png");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.visual-element-link.link-type-arrow_left {
+  background: url("../img/layers/link_arrow-right.png");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.visual-element-link.link-type-arrow_up {
+  background: url("../img/layers/link_arrow-right.png");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.visual-element-link.link-type-arrow_down {
+  background: url("../img/layers/link_arrow-right.png");
+  background-repeat: no-repeat;
+  background-position: center;
+}
 .ZEEGA-popup-click-target {
   display: block;
   height: 100%;
@@ -858,6 +906,30 @@
   position: absolute;
   width: 100%;
   height: 100%;
+}
+.visual-element-link .centerBackground {
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.visual-element-link.link-type-arrow_right {
+  background: url("../img/layers/link_arrow-right.png");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.visual-element-link.link-type-arrow_left {
+  background: url("../img/layers/link_arrow-right.png");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.visual-element-link.link-type-arrow_up {
+  background: url("../img/layers/link_arrow-right.png");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.visual-element-link.link-type-arrow_down {
+  background: url("../img/layers/link_arrow-right.png");
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .ZEEGA-popup-click-target {
