@@ -26,6 +26,19 @@
     position: absolute;
     top:0;
     left:0;
+    box-shadow: 0 0 10px transparent;
+    transition: box-shadow 0.5s;
+    -moz-transition: box-shadow 0.5s; /* Firefox 4 */
+    -webkit-transition: box-shadow 0.5s; /* Safari and Chrome */
+    -o-transition: box-shadow 0.5s; /* Opera */
+
+    &.glow-blink {
+      box-shadow: 0 0 10px white;
+      transition: box-shadow 0.5s;
+      -moz-transition: box-shadow 0.5s; /* Firefox 4 */
+      -webkit-transition: box-shadow 0.5s; /* Safari and Chrome */
+      -o-transition: box-shadow 0.5s; /* Opera */
+    }
   }
 }
 

@@ -29,8 +29,12 @@
 .ZEEGA-popup-overlay .ZEEGA-popup-click-content {
   width: 80%;
   height: 80%;
-  margin: 1% auto;
-  position: relative;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
 }
 .ZEEGA-popup-overlay .ZEEGA-popup-click-content .popup-close {
   color: white;
@@ -360,6 +364,30 @@
   position: absolute;
   top: 0;
   left: 0;
+  box-shadow: 0 0 10px transparent;
+  transition: box-shadow 0.5s;
+  -moz-transition: box-shadow 0.5s;
+  /* Firefox 4 */
+
+  -webkit-transition: box-shadow 0.5s;
+  /* Safari and Chrome */
+
+  -o-transition: box-shadow 0.5s;
+  /* Opera */
+
+}
+.ZEEGA-player-window > .visual-element.glow-blink {
+  box-shadow: 0 0 10px white;
+  transition: box-shadow 0.5s;
+  -moz-transition: box-shadow 0.5s;
+  /* Firefox 4 */
+
+  -webkit-transition: box-shadow 0.5s;
+  /* Safari and Chrome */
+
+  -o-transition: box-shadow 0.5s;
+  /* Opera */
+
 }
 [data-glowOnHover=true] {
   box-shadow: 0 0 10px transparent;
@@ -505,8 +533,12 @@
 .ZEEGA-popup-overlay .ZEEGA-popup-click-content {
   width: 80%;
   height: 80%;
-  margin: 1% auto;
-  position: relative;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
 }
 .ZEEGA-popup-overlay .ZEEGA-popup-click-content .popup-close {
   color: white;
@@ -846,8 +878,12 @@
 .ZEEGA-popup-overlay .ZEEGA-popup-click-content {
   width: 80%;
   height: 80%;
-  margin: 1% auto;
-  position: relative;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
 }
 .ZEEGA-popup-overlay .ZEEGA-popup-click-content .popup-close {
   color: white;
@@ -1267,6 +1303,30 @@
   position: absolute;
   top: 0;
   left: 0;
+  box-shadow: 0 0 10px transparent;
+  transition: box-shadow 0.5s;
+  -moz-transition: box-shadow 0.5s;
+  /* Firefox 4 */
+
+  -webkit-transition: box-shadow 0.5s;
+  /* Safari and Chrome */
+
+  -o-transition: box-shadow 0.5s;
+  /* Opera */
+
+}
+.ZEEGA-player-window > .visual-element.glow-blink {
+  box-shadow: 0 0 10px white;
+  transition: box-shadow 0.5s;
+  -moz-transition: box-shadow 0.5s;
+  /* Firefox 4 */
+
+  -webkit-transition: box-shadow 0.5s;
+  /* Safari and Chrome */
+
+  -o-transition: box-shadow 0.5s;
+  /* Opera */
+
 }
 [data-glowOnHover=true] {
   box-shadow: 0 0 10px transparent;

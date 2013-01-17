@@ -21,19 +21,22 @@ function( Zeega, Plugin ) {
 
             // init link layer type inside here
             if ( plugin ) {
-                var _this = this;
+                var newAttr;
+
                 this.layerClass = new plugin();
-                this.set( _.defaults( this.toJSON(), this.layerClass.defaults ) );
+
+                newAttr = _.defaults( this.toJSON().attr, this.layerClass.attr );
+                this.set({ attr: newAttr });
 
                 // create and store the layerClass
                 this.visualElement = new plugin.Visual({
                     model: this,
                     attributes: function() {
                         return _.extend( {}, _.result( this, "domAttributes" ), {
-                            id: "visual-element-" + _this.id,
-                            "data-layer_id": _this.id
+                            id: "visual-element-" + this.id,
+                            "data-layer_id": this.id
                         });
-                    }
+                    }.bind( this )
                 });
                 // listen to visual element events
                 this.on( "visual_ready", this.onVisualReady, this );
