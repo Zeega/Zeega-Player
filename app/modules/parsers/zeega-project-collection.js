@@ -21,9 +21,11 @@ function() {
 
     Parser[ type ].parse = function( response, opts ) {
         
+
+
         var project = {
 
-            title : "Project Collection",
+            title : response.request.query.tags,
             sequences : [],
             frames : [],
             layers : []
