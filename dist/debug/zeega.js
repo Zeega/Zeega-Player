@@ -39913,6 +39913,8 @@ function( Zeega, Layer ) {
                             next = frames[ index +1 ];
                         } else if ( advance && sequenceCollection.get( advance ) ) {
                             next = sequenceCollection.get( advance ).get("frames")[0];
+                        } else if ( frame.get("attr").advance ) {
+                            next = sequenceCollection.get( sequence.id ).get("frames")[0];
                         }
 
                         frame.set({
@@ -41267,7 +41269,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
 
             // render current frame // should trigger a frame rendered event when successful
             this.status.get("current_frame_model").render( oldID );
-
+console.log( this.status.get("current_frame_model") )
             if ( this.state !== "playing" ) {
                 this.state = "playing";
                 this.status.emit( "play", this );
