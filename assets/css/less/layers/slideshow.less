@@ -34,7 +34,6 @@
 
 .slideshow-container {
   height: 100%;
-  width: 100%;
   position: absolute;
   .slideshow-slide {
     float: left;
@@ -71,14 +70,13 @@
     text-shadow: 1px 2px 4px black;
 
     .attribution-link {
-      color: white;
       position: absolute;
       right: 10px;
-      font-size: 10px;
       bottom: 10px;
     }
 
     .slide-title {
+
     }
 
     .slide-description {
@@ -169,7 +167,8 @@
 
 
 
-.nav-arrow ( @height:30px, @thickness: 10px, @color:#fff, @colorHover:orange, @opacity: 0.5, @opacityHover: 1 ) {
+.nav-arrow ( @height:30px, @thickness: 10px, @color:#fff, @colorHover:orange, @opacity: 0.5, @opacityHover: 1 )
+{
   display: inline-block;
   height: @height;
   border-left: @thickness solid;

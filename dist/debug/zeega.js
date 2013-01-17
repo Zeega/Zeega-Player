@@ -23,14 +23,6 @@ __p+='';
 return __p;
 };
 
-this["JST"]["app/templates/plugins/geo.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='';
-}
-return __p;
-};
-
 this["JST"]["app/templates/plugins/image.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
@@ -114,9 +106,7 @@ __p+='<div class=\'slide-title\'>'+
 ( description )+
 '</div>\n<a href="'+
 ( attribution_uri )+
-'" target=\'blank\' class=\'attribution-link\'>\n    '+
-( media_creator_username )+
-'\n    <i class=\'slideshow-icon-'+
+'" target=\'blank\' class=\'attribution-link\'>\n    <i class=\'slideshow-icon-'+
 ( archive.toLowerCase() )+
 ' ssarchive\'></i>\n</a>\n';
 }
@@ -126,37 +116,41 @@ return __p;
 this["JST"]["app/templates/plugins/slideshow.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<a href=\'#\' class=\'slideshow-arrow arrow-left slideshow-control-prev disabled\'></a>\n<a href=\'#\' class=\'slideshow-arrow arrow-right slideshow-control-next\'></a>\n\n<div class=\'slideshow-container\'>\n\t';
+__p+='<a href=\'#\' class=\'slideshow-arrow arrow-left slideshow-control-prev disabled\'></a>\n<a href=\'#\' class=\'slideshow-arrow arrow-right slideshow-control-next\'></a>\n\n<div class=\'slideshow-container\' style=\'width:'+
+( (attr.slides.length *100) +'%' )+
+'\'>\n\t';
  _.each( attr.slides, function(slide,i){ 
 ;__p+='\n\t\t<div class=\'slideshow-slide slideshow-slide-'+
 ( i )+
-'\' style=\'\n      background:url('+
+'\' style=\'width:'+
+( (100 / attr.slides.length) +'%' )+
+';background:url('+
 ( slide.attr.uri )+
-') no-repeat center center;\n      -webkit-background-size: ';
+') no-repeat center center;-webkit-background-size: ';
  if( slides_bleed ) { 
 ;__p+='cover';
  } else { 
 ;__p+='contain';
  } 
-;__p+=';\n      -moz-background-size: ';
+;__p+='; -moz-background-size: ';
  if( slides_bleed ) { 
 ;__p+='cover';
  } else { 
 ;__p+='contain';
  } 
-;__p+=';\n      -o-background-size: ';
+;__p+='; -o-background-size: ';
  if( slides_bleed ) { 
 ;__p+='cover';
  } else { 
 ;__p+='contain';
  } 
-;__p+=';\n      background-size: ';
+;__p+='; background-size: ';
  if( slides_bleed ) { 
 ;__p+='cover';
  } else { 
 ;__p+='contain';
  } 
-;__p+=';\n    \'></div>\n\t';
+;__p+=';\'></div>\n\t';
  }) 
 ;__p+='\n</div>';
 }
@@ -23656,7 +23650,7 @@ function( Zeega ) {
         defaultAttributes: {},
 
         initialize: function() {
-            this.defaults = _.extend({}, this.defaults, this.defaultAttributes );
+            this.defaults = _.extend( this.defaults, this.defaultAttributes );
             this.init();
         },
 
@@ -23940,7 +23934,7 @@ function( Zeega, _Layer ){
         },
 
         verifyReady: function() {
-            var img = Zeega.$( this.$el ).imagesLoaded();
+            var img = this.$el.imagesLoaded();
 
             img.done(function() {
                 this.model.trigger( "visual_ready", this.model.id );
@@ -25784,23 +25778,26 @@ function( Zeega, _Layer, SSSlider ) {
 
         layerType: "SlideShow",
 
+        // TODO: Invetigate rationale for quoting property names
+        // as strings...
+        // (appears throughout both Zeega-Player and Zeega-Layers)
         defaultAttributes: {
-            arrows: true, // turns on/off visual arrow controls
-            keyboard: false, // turns on/off keyboard controls
-            thumbnail_slider: true, // turns on/off thumbnail drawer
+            "arrows": true, // turns on/off visual arrow controls
+            "keyboard": false, // turns on/off keyboard controls
+            "thumbnail_slider": true, // turns on/off thumbnail drawer
 
-            start_slide: null,
-            start_slide_id: null,
-            slides_bleed: true,
+            "start_slide": null,
+            "start_slide_id": null,
+            "slides_bleed": true,
 
-            title: "Slideshow Layer",
-            url: "none",
-            left: 0,
-            top: 0,
-            height: 100,
-            width: 100,
-            opacity: 1,
-            aspect: 1.33
+            "title": "Slideshow Layer",
+            "url": "none",
+            "left": 0,
+            "top": 0,
+            "height": 100,
+            "width": 100,
+            "opacity": 1,
+            "aspect": 1.33
         }
     });
 
@@ -25817,7 +25814,6 @@ function( Zeega, _Layer, SSSlider ) {
         },
 
         serialize: function() {
-            console.log( this.model.toJSON() );
             return this.model.toJSON();
         },
 
@@ -25832,13 +25828,28 @@ function( Zeega, _Layer, SSSlider ) {
             this.emitSlideData( this.slide );
             this.positionArrows();
 
-            // investigate why this is needed
-            Zeega.$( this.$(".slideshow-container")[0] ).cycle({
+
+            this.$(".slideshow-container").cycle({
                 timeout: 0,
-                fx: "scrollHorz",
-                startingSlide: this.slide
+                fx: "scrollHorz"
             });
 
+            // // Specifically test for null to avoid false positives
+            // // when startSlide is zero
+            // if ( startSlide !== null ) {
+
+            //     this.scrollTo( startSlide );
+            //     this.model.set({ "start_slide": null }, { silent: true });
+
+            // } else if ( startSlideId !== null ) {
+
+            //     index = this.model.get("attr").slides.map(function( slide ) {
+            //         return +slide.id;
+            //     }).indexOf( startSlideId );
+
+            //     this.scrollTo( index );
+            //     this.model.set({ "start_slide_id": null }, { silent: true });
+            // }
         },
 
         onRender: function() {
@@ -25850,7 +25861,7 @@ function( Zeega, _Layer, SSSlider ) {
 
         onExit: function() {
             this.killKeyboard();
-            Zeega.$( this.$(".slideshow-container")[0] ).cycle("destroy");
+            this.$(".slideshow-container").cycle("destroy");
         },
 
         events: {
@@ -25877,7 +25888,7 @@ function( Zeega, _Layer, SSSlider ) {
         scrollTo: function( slideNo ) {
             this.slide = slideNo;
             this.hideArrows();
-            Zeega.$( this.$(".slideshow-container")[0] ).cycle( slideNo );
+            this.$(".slideshow-container").cycle( slideNo );
 
             this.updateTitle( slideNo );
             this.emitSlideData( slideNo );
@@ -39344,135 +39355,6 @@ function( Zeega, _Layer, MediaPlayer ) {
   return Layer;
 });
 
-zeega.define('zeega_dir/plugins/layers/geo/geo',[
-    "zeega",
-    "zeega_dir/plugins/layers/_layer/_layer",
-    //plugins
-    "plugins/jquery.imagesloaded.min"
-],
-
-function( Zeega, _Layer ){
-
-    var Layer = Zeega.module();
-
-    Layer.Geo = _Layer.extend({
-
-        layerType: "Geo",
-
-        defaultAttributes: {
-            title: "Streetview Layer",
-            url: null,
-            left: 0,
-            top: 0,
-            height: 100,
-            width: 100,
-            opacity: 1,
-            aspect: 1.33,
-
-            // streetview specific
-            lat: 42.373613,
-            lng: -71.119146,
-            zoom: 10,
-            streetZoom: 1,
-            heading: -235,
-            pitch: 17.79,
-            mapType: 'satellite'
-        },
-
-        controls: []
-    });
-
-    Layer.Geo.Visual = _Layer.Visual.extend({
-
-        streetview: null,
-
-        template: "plugins/geo",
-
-        // dynamically load the google maps api only once!
-        initialize: function() {
-            if ( Zeega.gmapAPI == "waiting" ) {
-                Zeega.gmapAPI = "loading";
-
-                window._gmapAPIReady = function() {
-                    Zeega.gmapAPI = "loaded";
-                    Zeega.trigger("gmaps_loaded");
-                }.bind( this );
-
-                var script = document.createElement("script");
-                script.type = "text/javascript";
-                script.src = "http://maps.googleapis.com/maps/api/js?sensor=false&callback=_gmapAPIReady";
-                document.body.appendChild(script);
-            }
-        },
-
-        serialize: function() {
-            return this.model.toJSON();
-        },
-
-        verifyReady: function() {
-            if ( Zeega.gmapAPI == "loaded" ) {
-                this.renderStreetView();
-                this.model.trigger( "visual_ready", this.model.id );
-            } else {
-                Zeega.on("gmaps_loaded", function() {
-                    Zeega.off("gmaps_loaded");
-                    this.renderStreetView();
-                    this.model.trigger( "visual_ready", this.model.id );
-                }.bind( this ));
-            }
-        },
-
-        renderStreetView: function() {
-            var center = new google.maps.LatLng( this.model.get("attr").lat, this.model.get("attr").lng ),
-                panoOptions = {
-                    addressControl : false,
-                    disableDoubleClickZoom : false,
-                    panControl : false,
-                    panControlOptions : false,
-                    position : center,
-                    pov : {
-                        heading: this.model.get("attr").heading,
-                        pitch: this.model.get("attr").pitch,
-                        zoom: this.model.get("attr").streetZoom
-                    },
-                    zoomControl :false
-                };
-            
-            this.streetview = new google.maps.StreetViewPanorama( this.$el[0], panoOptions );
-            //this.initMapListeners(); // not needed for the player. EDITOR ONLY !!
-        },
-
-        initMapListeners: function() {
-            google.maps.event.addListener( this.streetview, "position_changed", function(){
-                delayedUpdate();
-            });
-
-            google.maps.event.addListener( this.streetview, "pov_changed", function(){
-                delayedUpdate();
-            });
-
-            // need this so we don't spam the servers
-            var delayedUpdate = _.debounce( function(){
-                var a = this.model.get("attr");
-                
-                if ( a.heading != this.streetview.getPov().heading || a.pitch != this.streetview.getPov().pitch || a.streetZoom != this.streetview.getPov().zoom || Math.floor( a.lat * 1000 ) != Math.floor( this.streetview.getPosition().lat() * 1000 ) || Math.floor( a.lng * 1000 ) != Math.floor( this.streetview.getPosition().lng() * 1000 ) ) {
-                    this.model.update({
-                        heading: this.streetview.getPov().heading,
-                        pitch: this.streetview.getPov().pitch,
-                        streetZoom: Math.floor( this.streetview.getPov().zoom ),
-                        lat: this.streetview.getPosition().lat(),
-                        lng: this.streetview.getPosition().lng()
-                    }, true );
-                }
-                
-            }.bind( this ) , 1000);
-        }
-
-    });
-
-    return Layer;
-});
-
 /*
 
 plugin/layer manifest file
@@ -39489,8 +39371,7 @@ zeega.define('zeega_dir/plugins/layers/_all',[
     "zeega_dir/plugins/layers/audio/audio",
     "zeega_dir/plugins/layers/rectangle/rectangle",
     "zeega_dir/plugins/layers/text/text",
-    "zeega_dir/plugins/layers/popup/popup",
-    "zeega_dir/plugins/layers/geo/geo"
+    "zeega_dir/plugins/layers/popup/popup"
 ],
 function(
     image,
@@ -39500,8 +39381,7 @@ function(
     audio,
     rectangle,
     text,
-    popup,
-    geo
+    popup
 ) {
     var Plugins = {};
     // extend the plugin object with all the layers
@@ -39514,8 +39394,7 @@ function(
         audio,
         rectangle,
         text,
-        popup,
-        geo
+        popup
     );
 });
 
@@ -40096,9 +39975,11 @@ function() {
 
     Parser[ type ].parse = function( response, opts ) {
         
+        
+
         var project = {
 
-            title : "Project Collection",
+            title : response.request.tags,
             sequences : [],
             frames : [],
             layers : []
