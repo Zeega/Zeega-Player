@@ -21,11 +21,11 @@ function() {
 
     Parser[ type ].parse = function( response, opts ) {
         
-        
+
 
         var project = {
 
-            title : response.request.tags,
+            title : response.request.query.tags,
             sequences : [],
             frames : [],
             layers : []
