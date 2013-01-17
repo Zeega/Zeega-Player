@@ -21,13 +21,13 @@ function() {
 
     Parser[ type ].parse = function( response, opts ) {
         var project = {
-            title : response.request.query.tags,
-            sequences : [],
-            frames : [],
-            layers : []
+            title: response.request.query.tags,
+            sequences: [],
+            frames: [],
+            layers: []
         };
         
-        _.each( response.items, function( item ){
+        _.each( response.items, function( item ) {
             project.layers = _.union( project.layers, item.text.layers );
             project.frames = _.union( project.frames, item.text.frames );
             if( project.sequences.length > 0 ) {
