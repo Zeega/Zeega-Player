@@ -101,7 +101,9 @@ function( Zeega ) {
             emit the state change to the external api
         */
         emit: function( e, info ) {
-            console.log( e, info )
+            if ( this.get("project").get("debugEvents") ) {
+                console.log( e, info );
+            }
             if ( !this.silent ) {
                 this.get("project").trigger( e, info );
             }

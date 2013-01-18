@@ -65,6 +65,16 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             data: null,
 
             /**
+            Turns on verbose console logs of player events
+
+            @property debugEvents
+            @type Boolean
+            @default false
+            **/
+
+            debugEvents: false,
+
+            /**
             Instance of a Frame.Collection
 
             @property frames
@@ -225,6 +235,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
         */
 
         initialize: function( attributes ) {
+            this._mergeAttributes( attributes );
             this.relay = new Relay.Model();
             this.status = new Status.Model({ project: this });
 
@@ -233,6 +244,11 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
 
             this._setTarget();
             this._load( attributes );
+        },
+
+        _mergeAttributes: function( attributes ) {
+            var attr = _.pick( attributes, _.keys( this.defaults ) );
+            this.set( attr, { silent: true });
         },
 
         _load: function( attributes ) {
