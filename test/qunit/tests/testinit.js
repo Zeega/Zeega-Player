@@ -220,14 +220,7 @@ Test.shapes = {
         url: String,
         width: Number
     },
-    /*
-        PROBLEM:
-
-        Validating instance shape is impossible until all player
-        instances have the SAME properties, whether or not they
-        are defined or left null/empty.
-     */
-
+    
     player: {
         data: Object,
         debugEvents: Boolean,

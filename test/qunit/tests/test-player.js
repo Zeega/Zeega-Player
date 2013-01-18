@@ -35,7 +35,7 @@ handlers = {
         if ( response.test === 2 ) {
 
             jQuery.ajax({
-                url: "fixtures/example-data.json",
+                url: "fixtures/example-data/project-editor.json",
                 type: "get",
                 success: function( data ) {
 
@@ -61,7 +61,7 @@ handlers = {
                 "'" + payload.actual + "' used for '" + response.url + "'"
             );
 
-            if ( ++counters[ response.test ] === 2 ) {
+            if ( ++counters[ response.test ] === response.testCount ) {
                 complete();
             }
         }
@@ -180,24 +180,39 @@ asyncTest( "Fetch data from the |url| attribute if |data| is not defined", funct
 
 // 3
 asyncTest( "Detect which parser to use based on its structure", function() {
-    expect( 2 );
-
-    [
+    var parseTests = [
         {
             parser: "zeega-project",
-            url: "example-data.json"
+            url: "example-data/project-editor.json"
+        },
+        {
+            parser: "zeega-project-published",
+            url: "example-data/project-item-published.json"
+        },
+        {
+            parser: "zeega-collection",
+            url: "example-data/zeega-collection.json"
+        },
+        {
+            parser: "zeega-collection",
+            url: "example-data/zeega-dynamic-collection.json"
         },
         {
             parser: "flickr",
-            url: "http://api.flickr.com/services/feeds/photos_public.gne?tags=puppies&format=json&jsoncallback=?"
+            url: "example-data/flickr-search.json"
         }
-    ].forEach(function( data, k ) {
+    ];
+
+    expect( parseTests.length );
+
+    parseTests.forEach(function( data, k ) {
 
         Register({
             params: {
                 test: 3,
                 parser: data.parser,
-                url: data.url
+                url: data.url,
+                testCount: parseTests.length
             },
             complete: function() {
                 start();
@@ -231,13 +246,12 @@ asyncTest( "Player target: blank target defaults to body", function() {
             start();
         }
     });
-
 });
-
 
 
 module("Zeega.Backbone")
 
+//7
 test( "Zeega.Backbone.Model.prototype.put (|set| curried w/ silent: true option)", 3, function() {
     var Foo, foo;
 
@@ -259,6 +273,8 @@ test( "Zeega.Backbone.Model.prototype.put (|set| curried w/ silent: true option)
 
     equal( foo.get("a"), "alpha", "|put| correctly delegates to |set|" );
 });
+
+
 
 /*
 

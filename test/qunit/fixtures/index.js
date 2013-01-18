@@ -18,7 +18,7 @@ $(window).bind("zeega_ready", function() {
 
         // Initialize a player w/o args
         a = new Zeega.player({
-            url: "example-data.json",
+            url: "example-data/project-editor.json",
             target: "#player",
             next: ".next",
             prev: ".prev"
@@ -64,7 +64,7 @@ $(window).bind("zeega_ready", function() {
             target: "#player",
             next: ".next",
             prev: ".prev",
-            url: "example-data.json"
+            url: "example-data/project-editor.json"
         });
 
         // Since |player| must load data before it can be analyzed,
@@ -86,11 +86,6 @@ $(window).bind("zeega_ready", function() {
         payload = {};
 
         player = new Zeega.player({
-            window_fit: true,
-            autoplay: true,
-            target: "#player",
-            next: ".next",
-            prev: ".prev",
             url: params.url
         });
 
@@ -141,14 +136,14 @@ $(window).bind("zeega_ready", function() {
 
         // Empty
         player = new Zeega.player({
-            url: "example-data.json"
+            url: "example-data/project-editor.json"
         });
 
         payload = player.get("target")[0] === $("body")[0];
 
         // Selector
         player = new Zeega.player({
-            url: "example-data.json",
+            url: "example-data/project-editor.json",
             target: "#player"
         });
 
@@ -156,7 +151,7 @@ $(window).bind("zeega_ready", function() {
 
         // Node
         player = new Zeega.player({
-            url: "example-data.json",
+            url: "example-data/project-editor.json",
             target: document.querySelector("#player")
         });
 
@@ -164,7 +159,7 @@ $(window).bind("zeega_ready", function() {
 
         // jQuery
         player = new Zeega.player({
-            url: "example-data.json",
+            url: "example-data/project-editor.json",
             target: $("#player")
         });
 
@@ -178,5 +173,7 @@ $(window).bind("zeega_ready", function() {
             }
         });
     }
+
+
 
 });

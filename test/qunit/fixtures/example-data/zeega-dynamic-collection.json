@@ -1,0 +1,132 @@
+{
+  "request":{
+    "query":{
+      "user":36,
+      "tags":"dynamictest",
+      "limit":100,
+      "enabled":1,
+      "result_type":"plain",
+      "page":0
+    }
+  },
+  "items":[
+    {
+      "id":50,
+      "user_id":36,
+      "username":"joseph@zeega.org",
+      "display_name":"Joseph Bergen",
+      "title":"Suffrage tug, Jersey City (LOC)",
+      "description":"Bain News Service,, publisher.\n\nSuffrage tug, Jersey City\n\n[between ca. 1910 and ca. 1915]\n\n1 negative : glass ; 5 x 7 in. or smaller.\n\n<b>Notes:\n<\/b> Title from unverified data provided by the Bain News Service on the negatives or caption cards.\nForms pa",
+      "text":"",
+      "uri":"http:\/\/farm8.staticflickr.com\/7009\/6830342821_5932b42a05_b.jpg",
+      "attribution_uri":"http:\/\/www.flickr.com\/photos\/library_of_congress\/6830342821\/in\/contacts\/#36",
+      "date_created":"2012-02-08 11:12:53",
+      "media_type":"Image",
+      "layer_type":"Image",
+      "archive":"Flickr",
+      "thumbnail_url":"http:\/\/static.zeega.org\/community\/items\/2f\/8a\/2f8af40013cad441cf26daca88e8843f.png",
+      "media_geo_latitude":null,
+      "media_geo_longitude":null,
+      "media_date_created":"1910-01-01 12:00:00",
+      "media_creator_username":"Joseph Bergen",
+      "media_creator_realname":null,
+      "child_items_count":0,
+      "attributes":{
+        "farm":8,
+        "server":"7009",
+        "id":"6830342821",
+        "secret":"5932b42a05",
+        "originalsecret":"daf1e72d89",
+        "sizes":{
+          "Square":{
+            "width":75,
+            "height":75,
+            "source":"http:\/\/farm8.staticflickr.com\/7009\/6830342821_5932b42a05_s.jpg"
+          },
+          "Thumbnail":{
+            "width":"100",
+            "height":"73",
+            "source":"http:\/\/farm8.staticflickr.com\/7009\/6830342821_5932b42a05_t.jpg"
+          },
+          "Small":{
+            "width":"240",
+            "height":"175",
+            "source":"http:\/\/farm8.staticflickr.com\/7009\/6830342821_5932b42a05_m.jpg"
+          },
+          "Medium":{
+            "width":"500",
+            "height":"364",
+            "source":"http:\/\/farm8.staticflickr.com\/7009\/6830342821_5932b42a05.jpg"
+          },
+          "Medium 640":{
+            "width":"640",
+            "height":"466",
+            "source":"http:\/\/farm8.staticflickr.com\/7009\/6830342821_5932b42a05_z.jpg"
+          },
+          "Large":{
+            "width":"1024",
+            "height":"746",
+            "source":"http:\/\/farm8.staticflickr.com\/7009\/6830342821_5932b42a05_b.jpg"
+          },
+          "Original":{
+            "width":"1024",
+            "height":"746",
+            "source":"http:\/\/farm8.staticflickr.com\/7009\/6830342821_daf1e72d89_o.jpg"
+          }
+        },
+        "creator_nsid":"8623220@N02"
+      },
+      "child_items":[
+
+      ],
+      "tags":[
+        "dynamictest"
+      ],
+      "editable":false,
+      "published":true,
+      "enabled":true
+    },
+    {
+      "id":37575,
+      "user_id":36,
+      "username":"joseph@zeega.org",
+      "display_name":"Joseph Bergen",
+      "title":"Moonset over New York City",
+      "description":"",
+      "text":"",
+      "uri":"http:\/\/farm5.staticflickr.com\/4043\/4490338975_03fff4548a_b.jpg",
+      "attribution_uri":"http:\/\/www.flickr.com\/photos\/jbergen\/4490338975\/",
+      "date_created":"2012-05-03 12:34:30",
+      "media_type":"Image",
+      "layer_type":"Image",
+      "archive":"Flickr",
+      "thumbnail_url":"http:\/\/static.zeega.org\/community\/items\/c6\/13\/c6137b07f74c4ba87cf1737815beb7c0.png",
+      "media_geo_latitude":null,
+      "media_geo_longitude":null,
+      "media_date_created":"2013-01-18 07:34:55",
+      "media_creator_username":"Joseph Bergen",
+      "media_creator_realname":null,
+      "child_items_count":0,
+      "attributes":[
+
+      ],
+      "child_items":[
+
+      ],
+      "tags":[
+        "postcard",
+        "postcards",
+        "nyc",
+        "new york city",
+        "city",
+        "moon",
+        "dynamictest"
+      ],
+      "editable":false,
+      "published":true,
+      "enabled":true
+    }
+  ],
+  "returned_items_count":2,
+  "items_count":2
+}
