@@ -51,6 +51,7 @@ function( Zeega, Layer ) {
                 next = this.get("_next");
 
             this.set( "connections",
+                this.get('attr').advance ? "none" :
                 prev & next ? "lr" :
                 prev ? "l" :
                 next ? "r" : "none"
