@@ -230,6 +230,7 @@ Test.shapes = {
 
     player: {
         data: Object,
+        debugEvents: Boolean,
         frames: Object,
         layers: Object,
         layerOptions: Object,
