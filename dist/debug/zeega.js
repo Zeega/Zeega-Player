@@ -40034,7 +40034,7 @@ function( Zeega, Layer ) {
     return Frame;
 });
 
-zeega.define('zeega_dir/parsers/zeega-project',["lodash"],
+zeega.define('zeega_dir/data-parsers/zeega-project',["lodash"],
 
 function() {
     var type = "zeega-project",
@@ -40058,7 +40058,7 @@ function() {
     return Parser;
 });
 
-zeega.define('zeega_dir/parsers/zeega-project-published',["lodash"],
+zeega.define('zeega_dir/data-parsers/zeega-project-published',["lodash"],
 
 function() {
     var type = "zeega-project-published",
@@ -40082,7 +40082,7 @@ function() {
     return Parser;
 });
 
-zeega.define('zeega_dir/parsers/zeega-project-collection',[
+zeega.define('zeega_dir/data-parsers/zeega-project-collection',[
     "lodash"
 ],
 function() {
@@ -40130,7 +40130,7 @@ function() {
     return Parser;
 });
 
-zeega.define('zeega_dir/parsers/zeega-collection',[
+zeega.define('zeega_dir/data-parsers/zeega-collection',[
     "lodash"
 ],
 function() {
@@ -40287,7 +40287,7 @@ function() {
     return Parser;
 });
 
-zeega.define('zeega_dir/parsers/flickr',[
+zeega.define('zeega_dir/data-parsers/flickr',[
     "lodash"
 ],
 function() {
@@ -40358,7 +40358,7 @@ function() {
     return Parser;
 });
 
-zeega.define('zeega_dir/parsers/youtube',[
+zeega.define('zeega_dir/data-parsers/youtube',[
     "lodash"
 ],
 function() {
@@ -40454,13 +40454,13 @@ this should be auto generated probably!!
 
 */
 
-zeega.define('zeega_dir/parsers/_all',[
-    "zeega_dir/parsers/zeega-project",
-    "zeega_dir/parsers/zeega-project-published",
-    "zeega_dir/parsers/zeega-project-collection",
-    "zeega_dir/parsers/zeega-collection",
-    "zeega_dir/parsers/flickr",
-    "zeega_dir/parsers/youtube"
+zeega.define('zeega_dir/data-parsers/_all',[
+    "zeega_dir/data-parsers/zeega-project",
+    "zeega_dir/data-parsers/zeega-project-published",
+    "zeega_dir/data-parsers/zeega-project-collection",
+    "zeega_dir/data-parsers/zeega-collection",
+    "zeega_dir/data-parsers/flickr",
+    "zeega_dir/data-parsers/youtube"
 ],
 function(
     zProject,
@@ -40783,7 +40783,7 @@ zeega.define('modules/player/player',[
     "zeega_dir/player/layer",
 
     // parsers
-    "zeega_dir/parsers/_all",
+    "zeega_dir/data-parsers/_all",
 
     "modules/player/relay",
     "modules/player/status",
