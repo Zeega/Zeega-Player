@@ -24010,41 +24010,18 @@ function( Zeega, _Layer ) {
     },
 
     beforePlayerRender: function() {
-        var _this = this,
-        style = {
-            "border-radius": "0",
-            "height": this.getAttr("height") + "%",
-            "background": this.getAttr("backgroundColor"),
-            "opacity": this.getAttr("opacity"),
-            "box-shadow": "0 0 10px rgba(255,255,255,"+ this.getAttr("opacity") +")"
-        };
+      style = {
+          "border-radius": "0",
+          "height": this.getAttr("height") + "%",
+          "background": this.getAttr("backgroundColor"),
+          "opacity": this.getAttr("opacity"),
+          "box-shadow": "0 0 10px rgba(255,255,255,"+ this.getAttr("opacity") + ")"
+      };
 
       this.$el.attr("data-glowOnHover", this.getAttr("glow_on_hover") );
 
       this.$el.addClass("link-type-" + this.getAttr("link_type") );
-/*
-      this.$el.removeClass("link-arrow-right link-arrow-down link-arrow-up link-arrow-left");
-
-      if( this.preview ) this.delegateEvents({"click":"goClick"});
-
-      if(this.model.get("attr").link_type == "arrow_left")
-        this.$el.html( this.getTemplate() ).css( style ).addClass("link-arrow-left");
-      else if(this.model.get("attr").link_type == "arrow_right")
-        this.$el.html( this.getTemplate() ).css( style ).addClass("link-arrow-right");
-      else if(this.model.get("attr").link_type == "arrow_up")
-        this.$el.html( this.getTemplate() ).css( style ).addClass("link-arrow-up");
-
-      if( this.model.get("attr").glow_on_hover ) this.$el.addClass("linked-layer-glow");
-
-      if( this.getAttr("mode") == "editor" )
-      {
-        _.extend( style, {
-          "border": "2px dashed orangered",
-          "border-radius": "6px"
-        });
-      }
-*/
-        this.$(".ZEEGA-link-inner").css( style );
+      this.$(".ZEEGA-link-inner").css( style );
     },
 
     events: {
@@ -24066,28 +24043,10 @@ function( Zeega, _Layer ) {
         return false;
     }
 
-    /*
-    player_onPlay: function()
-    {
-      this.render();
-      this.delegateEvents({
-        "click":"goClick",
-        "mouseover": "onMouseOver",
-        "mouseout": "onMouseOut"
-      });
-      var _this = this;
-      this.$el.animate({opacity:1},1000,function(){
-        _this.$el.animate({opacity:0},1000);
-      });
-    }
-    */
-
-
-    });
+  });
 
     return Layer;
 });
-
 zeega.define('zeega_dir/plugins/layers/slideshow/slideshow-metadata',[
     "zeega",
     "zeega_dir/plugins/layers/_layer/_layer"
@@ -25784,6 +25743,40 @@ $.fn.cycle.transitions.wipe = function($cont, $slides, opts) {
 })(jQuery);
 zeega.define("plugins/cycle", function(){});
 
+/*
+    possible transitions: [via http://jquery.malsup.com/cycle/browser.html]
+
+    blindX
+    blindY
+    blindZ
+    cover
+    curtainX
+    curtainY
+    fade
+    fadeZoom
+    growX
+    growY
+    none
+    scrollUp
+    scrollDown
+    scrollLeft
+    scrollRight
+    scrollHorz
+    scrollVert
+    shuffle
+    slideX
+    slideY
+    toss
+    turnUp
+    turnDown
+    turnLeft
+    turnRight
+    uncover
+    wipe
+    zoom
+
+*/
+
 zeega.define('zeega_dir/plugins/layers/slideshow/slideshow',[
     "zeega",
     "zeega_dir/plugins/layers/_layer/_layer",
@@ -25832,7 +25825,6 @@ function( Zeega, _Layer, SSSlider ) {
         },
 
         serialize: function() {
-            console.log( this.model.toJSON() );
             return this.model.toJSON();
         },
 
@@ -25850,7 +25842,8 @@ function( Zeega, _Layer, SSSlider ) {
             // investigate why this is needed
             Zeega.$( this.$(".slideshow-container")[0] ).cycle({
                 timeout: 0,
-                fx: "scrollHorz",
+                fx: this.model.get("transition") || "scrollHorz",
+                speed: this.model.get("speed") || 1000,
                 startingSlide: this.slide
             });
 
@@ -25915,8 +25908,8 @@ function( Zeega, _Layer, SSSlider ) {
         positionArrows: function() {
             this.$(".slideshow-arrow").css({
                 top: (this.$el.closest(".ZEEGA-player").height() / 2 - 50) + "px",
-                height: (this.$el.closest(".ZEEGA-player").height() / 10 )+ "px",
-                width: (this.$el.closest(".ZEEGA-player").height() / 10 )+ "px"
+                height: (this.$el.closest(".ZEEGA-player").height() / 10 ) + "px",
+                width: (this.$el.closest(".ZEEGA-player").height() / 10 ) + "px"
             });
         },
 
@@ -25937,7 +25930,7 @@ function( Zeega, _Layer, SSSlider ) {
         initKeyboard: function() {
             if ( this.getAttr("keyboard") ) {
 
-                Zeega.$(window).on("keyup.slideshow", function( e ) {
+                Zeega.$( window ).on("keyup.slideshow", function( e ) {
                     switch( e.which ) {
                         case 37: // left arrow
                             _this.goLeft();
@@ -25952,7 +25945,7 @@ function( Zeega, _Layer, SSSlider ) {
 
         killKeyboard: function() {
             if ( this.getAttr("keyboard") ) {
-                Zeega.$(window).off("keyup.slideshow");
+                Zeega.$( window ).off("keyup.slideshow");
             }
         }
     });
@@ -39702,6 +39695,7 @@ function( Zeega, Layer ) {
                 next = this.get("_next");
 
             this.set( "connections",
+                this.get('attr').advance ? "none" :
                 prev & next ? "lr" :
                 prev ? "l" :
                 next ? "r" : "none"
@@ -40098,41 +40092,33 @@ function() {
     Parser[ type ] = { name: type };
 
     Parser[ type ].validate = function( response ) {
-        if ( response.items && response.items.length>1 ) {
-            _.each(response.items,function(item){
-                if(item.media_type!="project"){
-                    return false;
-                }
-            });
-            return true;
+        if ( response.items && response.items.length > 1 ) {
+            var mediaTypes = _.pluck( response.items, "media_type" );
+                containsAllProjects = _.contains( mediaTypes, "project" );
+
+            if ( containsAllProjects ) {
+                return true;
+            }
         }
         return false;
     };
 
     Parser[ type ].parse = function( response, opts ) {
-        
-
-
         var project = {
-
-            title : response.request.query.tags,
-            sequences : [],
-            frames : [],
-            layers : []
+            title: response.request.query.tags,
+            sequences: [],
+            frames: [],
+            layers: []
         };
-
-        _.each(response.items, function(item){
-            project.layers = _.union(project.layers,item.text.layers);
-            project.frames = _.union(project.frames,item.text.frames);
-            if(project.sequences.length>0){
-                console.log(item);
-                project.sequences[project.sequences.length-1].advance_to=item.text.sequences[0].id;
+        
+        _.each( response.items, function( item ) {
+            project.layers = _.union( project.layers, item.text.layers );
+            project.frames = _.union( project.frames, item.text.frames );
+            if( project.sequences.length > 0 ) {
+                project.sequences[ project.sequences.length - 1 ].advance_to = item.text.sequences[0].id;
             }
-            project.sequences = _.union(project.sequences,item.text.sequences);
-
+            project.sequences = _.union( project.sequences, item.text.sequences );
         });
-
-        console.log("PROJECT",project);
         return project;
     };
 
@@ -40192,6 +40178,7 @@ function() {
         var frames,slideshowLayer,
             imageLayers = [],
             timebasedLayers = [];
+
         _.each( response.items, function( item ) {
             if ( item.layer_type == "Image" ) {
                 imageLayers.push(item);
@@ -40201,7 +40188,7 @@ function() {
         });
         // slideshow layer from image items
         if ( imageLayers.length ) {
-            slideshowLayer = generateSlideshowLayer( imageLayers, opts.layerOptions.slideshow.start, opts.layerOptions.slideshow.start_id, opts.layerOptions.slideshow.bleed );
+            slideshowLayer = generateSlideshowLayer( imageLayers, opts.layerOptions );
         }
         // layers from timebased items
         var layers = generateLayerArrayFromItems( timebasedLayers );
@@ -40267,7 +40254,7 @@ function() {
         });
     }
 
-    function generateSlideshowLayer( imageLayerArray, slideshow_start_slide, slideshow_start_slide_id, slides_bleed ) {
+    function generateSlideshowLayer( imageLayerArray, layerOptions ) {
         var layerDefaults = {
                 keyboard: false,
                 width: 100,
@@ -40284,9 +40271,11 @@ function() {
 
         return {
             attr: _.defaults({ slides: slides }, layerDefaults ),
-            start_slide: parseInt(slideshow_start_slide,10) || 0,
-            start_slide_id: parseInt(slideshow_start_slide_id,10) || null,
-            slides_bleed: slides_bleed,
+            start_slide: parseInt( layerOptions.slideshow.start, 10 ) || 0,
+            start_slide_id: parseInt( layerOptions.slideshow.start_id, 10 ) || null,
+            slides_bleed: layerOptions.slideshow.bleed,
+            transition: layerOptions.slideshow.transition,
+            speed: layerOptions.slideshow.speed,
             type: "SlideShow",
             id: 1
         };
@@ -40630,6 +40619,9 @@ function( Zeega ) {
             emit the state change to the external api
         */
         emit: function( e, info ) {
+            if ( this.get("project").get("debugEvents") && e != "media_timeupdate") {
+                console.log( e, info );
+            }
             if ( !this.silent ) {
                 this.get("project").trigger( e, info );
             }
@@ -40852,6 +40844,16 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             data: null,
 
             /**
+            Turns on verbose console logs of player events
+
+            @property debugEvents
+            @type Boolean
+            @default false
+            **/
+
+            debugEvents: false,
+
+            /**
             Instance of a Frame.Collection
 
             @property frames
@@ -41012,6 +41014,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
         */
 
         initialize: function( attributes ) {
+            this._mergeAttributes( attributes );
             this.relay = new Relay.Model();
             this.status = new Status.Model({ project: this });
 
@@ -41020,6 +41023,11 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
 
             this._setTarget();
             this._load( attributes );
+        },
+
+        _mergeAttributes: function( attributes ) {
+            var attr = _.pick( attributes, _.keys( this.defaults ) );
+            this.set( attr, { silent: true });
         },
 
         _load: function( attributes ) {
