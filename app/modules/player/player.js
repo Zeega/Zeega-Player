@@ -7,7 +7,7 @@ define([
     "zeega_dir/player/layer",
 
     // parsers
-    "zeega_dir/parsers/_all",
+    "zeega_dir/data-parsers/_all",
 
     "modules/player/relay",
     "modules/player/status",
