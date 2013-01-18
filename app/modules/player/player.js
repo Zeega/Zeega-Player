@@ -283,7 +283,9 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             // determine which parser to use
             _.each( Parser, function( p ) {
                 if ( p.validate( response ) ) {
-                    console.log( "parsed using: " + p.name );
+                    if ( this.get("debugEvents") ) {
+                        console.log( "parsed using: " + p.name );
+                    }
                     // parse the response
                     this.parser = p.name;
                     parsed = p.parse( response, this.toJSON() );
@@ -307,7 +309,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             layers = this.data.get("layers");
             frames = new Frame.Collection( this.data.get("frames") );
             sequences = new Zeega.Backbone.Collection( this.data.get("sequences") );
-console.log('parse layers', layers)
+
             // should be done another way ?
             _.each( layers, function( layer ) {
                 layer._target = this.get("target");

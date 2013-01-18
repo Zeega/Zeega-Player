@@ -40094,9 +40094,9 @@ function() {
     Parser[ type ].validate = function( response ) {
         if ( response.items && response.items.length > 1 ) {
             var mediaTypes = _.pluck( response.items, "media_type" );
-                containsAllProjects = _.contains( mediaTypes, "project" );
+                nonProjects = _.without( mediaTypes, "project");
 
-            if ( containsAllProjects ) {
+            if ( nonProjects.length === 0 ) {
                 return true;
             }
         }
@@ -40112,13 +40112,16 @@ function() {
         };
         
         _.each( response.items, function( item ) {
-            project.layers = _.union( project.layers, item.text.layers );
-            project.frames = _.union( project.frames, item.text.frames );
-            if( project.sequences.length > 0 ) {
-                project.sequences[ project.sequences.length - 1 ].advance_to = item.text.sequences[0].id;
+            if ( item.text !== "" ) {
+                project.layers = _.union( project.layers, item.text.layers );
+                project.frames = _.union( project.frames, item.text.frames );
+                if ( project.sequences.length > 0 ) {
+                    project.sequences[ project.sequences.length - 1 ].advance_to = item.text.sequences[0].id;
+                }
+                project.sequences = _.union( project.sequences, item.text.sequences );
             }
-            project.sequences = _.union( project.sequences, item.text.sequences );
         });
+
         return project;
     };
 
@@ -40283,9 +40286,6 @@ function() {
 
     return Parser;
 });
-
-// parsers.zeega-dynamic-collection;
-zeega.define("zeega_dir/parsers/zeega-dynamic-collection", function(){});
 
 zeega.define('zeega_dir/parsers/flickr',[
     "lodash"
@@ -40459,7 +40459,6 @@ zeega.define('zeega_dir/parsers/_all',[
     "zeega_dir/parsers/zeega-project-published",
     "zeega_dir/parsers/zeega-project-collection",
     "zeega_dir/parsers/zeega-collection",
-    "zeega_dir/parsers/zeega-dynamic-collection",
     "zeega_dir/parsers/flickr",
     "zeega_dir/parsers/youtube"
 ],
@@ -40468,7 +40467,6 @@ function(
     zProjectPublished,
     zProjectCollection,
     zCollection,
-    zDynamicCollection,
     flickr,
     youtube
 ) {
@@ -40481,7 +40479,6 @@ function(
         zProjectPublished,
         zProjectCollection,
         zCollection,
-        zDynamicCollection,
         flickr,
         youtube
     );
@@ -41062,7 +41059,9 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             // determine which parser to use
             _.each( Parser, function( p ) {
                 if ( p.validate( response ) ) {
-                    console.log( "parsed using: " + p.name );
+                    if ( this.get("debugEvents") ) {
+                        console.log( "parsed using: " + p.name );
+                    }
                     // parse the response
                     this.parser = p.name;
                     parsed = p.parse( response, this.toJSON() );
@@ -41088,7 +41087,7 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             sequences = new Zeega.Backbone.Collection( this.data.get("sequences") );
 
             // should be done another way ?
-            _.each(layers, function( layer ) {
+            _.each( layers, function( layer ) {
                 layer._target = this.get("target");
             }.bind( this ));
             frames.relay = this.relay;

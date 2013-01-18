@@ -38,7 +38,6 @@ function() {
             }
         });
 
-        console.log('project', project)
         return project;
     };
 
