@@ -208,7 +208,6 @@ asyncTest( "Detect which parser to use based on its structure", function() {
     ];
 
     expect( parseTests.length );
-
     parseTests.forEach(function( data, k ) {
 
         Register({
@@ -228,6 +227,7 @@ asyncTest( "Detect which parser to use based on its structure", function() {
 // 4
 asyncTest( "Player throws when no data is provided (data or url)", function() {
     expect( 1 );
+    //stop();
     Register({
         params: {
             test: 4
@@ -255,7 +255,7 @@ asyncTest( "Player target: blank target defaults to body", function() {
 
 module("Zeega.Backbone")
 
-//7
+//6
 test( "Zeega.Backbone.Model.prototype.put (|set| curried w/ silent: true option)", 3, function() {
     var Foo, foo;
 

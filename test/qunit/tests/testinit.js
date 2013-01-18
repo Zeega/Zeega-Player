@@ -109,8 +109,10 @@
                 Test.reset.fixture = document.getElementById("zeega-fixture");
             }
 
-            Test.reset.fixture.removeChild( document.getElementById( params.key ) )
-
+            //Test.reset.fixture.removeChild( document.getElementById( params.key ) )
+            // reset fixture to empty ?
+            Test.reset.fixture.innerHTML = "";
+            
             return true;
         },
 
