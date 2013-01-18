@@ -49,6 +49,7 @@ function() {
         var frames,slideshowLayer,
             imageLayers = [],
             timebasedLayers = [];
+
         _.each( response.items, function( item ) {
             if ( item.layer_type == "Image" ) {
                 imageLayers.push(item);
@@ -58,7 +59,7 @@ function() {
         });
         // slideshow layer from image items
         if ( imageLayers.length ) {
-            slideshowLayer = generateSlideshowLayer( imageLayers, opts.layerOptions.slideshow.start, opts.layerOptions.slideshow.start_id, opts.layerOptions.slideshow.bleed );
+            slideshowLayer = generateSlideshowLayer( imageLayers, opts.layerOptions );
         }
         // layers from timebased items
         var layers = generateLayerArrayFromItems( timebasedLayers );
@@ -124,7 +125,7 @@ function() {
         });
     }
 
-    function generateSlideshowLayer( imageLayerArray, slideshow_start_slide, slideshow_start_slide_id, slides_bleed ) {
+    function generateSlideshowLayer( imageLayerArray, layerOptions ) {
         var layerDefaults = {
                 keyboard: false,
                 width: 100,
@@ -141,9 +142,11 @@ function() {
 
         return {
             attr: _.defaults({ slides: slides }, layerDefaults ),
-            start_slide: parseInt(slideshow_start_slide,10) || 0,
-            start_slide_id: parseInt(slideshow_start_slide_id,10) || null,
-            slides_bleed: slides_bleed,
+            start_slide: parseInt( layerOptions.slideshow.start, 10 ) || 0,
+            start_slide_id: parseInt( layerOptions.slideshow.start_id, 10 ) || null,
+            slides_bleed: layerOptions.slideshow.bleed,
+            transition: layerOptions.slideshow.transition,
+            speed: layerOptions.slideshow.speed,
             type: "SlideShow",
             id: 1
         };
