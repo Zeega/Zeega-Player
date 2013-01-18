@@ -198,6 +198,10 @@ asyncTest( "Detect which parser to use based on its structure", function() {
             url: "example-data/zeega-dynamic-collection.json"
         },
         {
+            parser: "zeega-project-collection",
+            url: "example-data/zeega-project-collection.json"
+        },
+        {
             parser: "flickr",
             url: "example-data/flickr-search.json"
         }

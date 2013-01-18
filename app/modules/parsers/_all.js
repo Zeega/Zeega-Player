@@ -11,7 +11,6 @@ define([
     "zeega_dir/parsers/zeega-project-published",
     "zeega_dir/parsers/zeega-project-collection",
     "zeega_dir/parsers/zeega-collection",
-    "zeega_dir/parsers/zeega-dynamic-collection",
     "zeega_dir/parsers/flickr",
     "zeega_dir/parsers/youtube"
 ],
@@ -20,7 +19,6 @@ function(
     zProjectPublished,
     zProjectCollection,
     zCollection,
-    zDynamicCollection,
     flickr,
     youtube
 ) {
@@ -33,7 +31,6 @@ function(
         zProjectPublished,
         zProjectCollection,
         zCollection,
-        zDynamicCollection,
         flickr,
         youtube
     );

@@ -10,9 +10,9 @@ function() {
     Parser[ type ].validate = function( response ) {
         if ( response.items && response.items.length > 1 ) {
             var mediaTypes = _.pluck( response.items, "media_type" );
-                containsAllProjects = _.contains( mediaTypes, "project" );
+                nonProjects = _.without( mediaTypes, "project");
 
-            if ( containsAllProjects ) {
+            if ( nonProjects.length === 0 ) {
                 return true;
             }
         }
@@ -28,13 +28,17 @@ function() {
         };
         
         _.each( response.items, function( item ) {
-            project.layers = _.union( project.layers, item.text.layers );
-            project.frames = _.union( project.frames, item.text.frames );
-            if( project.sequences.length > 0 ) {
-                project.sequences[ project.sequences.length - 1 ].advance_to = item.text.sequences[0].id;
+            if ( item.text !== "" ) {
+                project.layers = _.union( project.layers, item.text.layers );
+                project.frames = _.union( project.frames, item.text.frames );
+                if ( project.sequences.length > 0 ) {
+                    project.sequences[ project.sequences.length - 1 ].advance_to = item.text.sequences[0].id;
+                }
+                project.sequences = _.union( project.sequences, item.text.sequences );
             }
-            project.sequences = _.union( project.sequences, item.text.sequences );
         });
+
+        console.log('project', project)
         return project;
     };
 
