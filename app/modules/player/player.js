@@ -1,6 +1,7 @@
 define([
     "zeega",
 
+    "modules/zeega-parser/parser",
     "modules/player/data",
 
     "zeega_dir/player/frame",
@@ -15,7 +16,7 @@ define([
     "modules/player/player-layout"
 ],
 
-function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
+function( Zeega, ZeegaParser, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
     /**
     Player
 
@@ -296,6 +297,8 @@ function( Zeega, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
             if ( parsed !== undefined ) {
                 this.data.set( parsed );
                 this._parseProjectData( parsed );
+
+console.log( new ZeegaParser( parsed, this.toJSON(), { relay: this.relay, status: this.status } ) );
 
                 this._listen();
             } else {
