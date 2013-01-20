@@ -3,16 +3,12 @@ define([
 
     "modules/zeega-parser/parser",
 
-    // parsers
-    "zeega_dir/data-parsers/_all",
-
     "modules/player/relay",
     "modules/player/status",
-
     "modules/player/player-layout"
 ],
 
-function( Zeega, ZeegaParser, DataParser, Relay, Status, PlayerLayout ) {
+function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
     /**
     Player
 
@@ -251,12 +247,12 @@ function( Zeega, ZeegaParser, DataParser, Relay, Status, PlayerLayout ) {
             if ( attributes.url ) {
                 rawDataModel.url = attributes.url;
                 rawDataModel.fetch().success(function( response ) {
-                    this._detectAndParseData( response );
+                    this._parseData( response );
                 }.bind( this )).error(function() {
                     throw new Error("Ajax load fail");
                 });
             } else if ( attributes.data ) {
-                this._detectAndParseData( attributes.data );
+                this._parseData( attributes.data );
             } else {
                 throw new TypeError("`url` expected non null");
             }
@@ -273,31 +269,8 @@ function( Zeega, ZeegaParser, DataParser, Relay, Status, PlayerLayout ) {
             });
         },
 
-        _detectAndParseData: function( response ) {
-            var parsed;
-
-            // determine which parser to use
-            _.each( DataParser, function( p ) {
-                if ( p.validate( response ) ) {
-                    if ( this.get("debugEvents") ) {
-                        console.log( "parsed using: " + p.name );
-                    }
-                    // parse the response
-                    this.parser = p.name;
-                    parsed = p.parse( response, this.toJSON() );
-                    return false;
-                }
-            }.bind( this ));
-
-            if ( parsed !== undefined ) {
-                this._parseProjectData( parsed );
-            } else {
-                throw new Error("Valid parser not found");
-            }
-        },
-
-        _parseProjectData: function( parsed ) {
-            this.project = new ZeegaParser( parsed,
+        _parseData: function( response ) {
+            this.project = new ZeegaParser( response,
                 _.extend({},
                     this.toJSON(),
                     {
@@ -483,7 +456,7 @@ function( Zeega, ZeegaParser, DataParser, Relay, Status, PlayerLayout ) {
 
         // should this live in the cueFrame method so it"s not exposed?
         _goToFrame:function( id ) {
-            var oldID;
+            var oldID ;
 
             this.preloadFramesFrom( id );
 
