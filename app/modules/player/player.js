@@ -2,10 +2,6 @@ define([
     "zeega",
 
     "modules/zeega-parser/parser",
-    "modules/player/data",
-
-    "zeega_dir/player/frame",
-    "zeega_dir/player/layer",
 
     // parsers
     "zeega_dir/data-parsers/_all",
@@ -16,7 +12,7 @@ define([
     "modules/player/player-layout"
 ],
 
-function( Zeega, ZeegaParser, Data, Frame, Layer, Parser, Relay, Status, PlayerLayout ) {
+function( Zeega, ZeegaParser, DataParser, Relay, Status, PlayerLayout ) {
     /**
     Player
 
@@ -240,9 +236,6 @@ function( Zeega, ZeegaParser, Data, Frame, Layer, Parser, Relay, Status, PlayerL
             this.relay = new Relay.Model();
             this.status = new Status.Model({ project: this });
 
-            this.data = new Data.Model( attributes );
-            this.data.url = attributes.url;
-
             this._setTarget();
             this._load( attributes );
         },
@@ -274,7 +267,6 @@ function( Zeega, ZeegaParser, Data, Frame, Layer, Parser, Relay, Status, PlayerL
                 // |target| may be a Selector, Node or jQuery object.
                 // If no |target| was provided, default to |document.body|
                 target: Zeega.$( this.get("target") || document.body )
-
             });
         },
 
@@ -282,7 +274,7 @@ function( Zeega, ZeegaParser, Data, Frame, Layer, Parser, Relay, Status, PlayerL
             var parsed;
 
             // determine which parser to use
-            _.each( Parser, function( p ) {
+            _.each( DataParser, function( p ) {
                 if ( p.validate( response ) ) {
                     if ( this.get("debugEvents") ) {
                         console.log( "parsed using: " + p.name );
@@ -295,48 +287,37 @@ function( Zeega, ZeegaParser, Data, Frame, Layer, Parser, Relay, Status, PlayerL
             }.bind( this ));
 
             if ( parsed !== undefined ) {
-                this.data.set( parsed );
                 this._parseProjectData( parsed );
-
-console.log( new ZeegaParser( parsed, this.toJSON(), { relay: this.relay, status: this.status } ) );
-
-                this._listen();
             } else {
-              throw new Error("Valid parser not found");
+                throw new Error("Valid parser not found");
             }
         },
 
         _parseProjectData: function( parsed ) {
-            var sequences, frames, layers, startFrame;
+            this.project = new ZeegaParser( parsed,
+                _.extend({},
+                    this.toJSON(),
+                    {
+                        attach: {
+                            status: this.status,
+                            relay: this.relay
+                        }
+                    })
+                );
 
-            layers = this.data.get("layers");
-            frames = new Frame.Collection( this.data.get("frames") );
-            sequences = new Zeega.Backbone.Collection( this.data.get("sequences") );
+            this._setStartFrame();
 
-            // should be done another way ?
-            _.each( layers, function( layer ) {
-                layer._target = this.get("target");
-            }.bind( this ));
-            frames.relay = this.relay;
-            frames.status = this.status;
+            this.status.emit( "data_loaded", _.extend({}, this.project.toJSON() ) );
+            this._render();
+            this._listen();
+        },
 
-            // ugly
-            frames.load( this.data.get("sequences"), layers, this.get("preloadRadius"), _ );
-
-            // set start frame
-            if ( this.get("startFrame") === null || frames.get( this.get("startFrame") ) === undefined ) {
+        _setStartFrame: function() {
+            if ( this.get("startFrame") === null || project.getFrame( this.get("startFrame") ) === undefined ) {
                 this.put({
-                    startFrame: sequences.at(0).get("frames")[0]
+                    startFrame: this.project.sequences.at(0).get("frames")[0]
                 });
             }
-
-            this.put({
-                frames: frames,
-                sequences: sequences
-            });
-
-            this._render();
-            this.status.emit( "data_loaded", _.extend({}, this.data.toJSON() ) );
         },
 
         // attach listeners
@@ -357,7 +338,7 @@ console.log( new ZeegaParser( parsed, this.toJSON(), { relay: this.relay, status
             this.Layout = new PlayerLayout.Layout({
                 model: this,
                 attributes: {
-                    id: "ZEEGA-player-" + this.data.id,
+//                    id: "ZEEGA-player-" + this.data.id,
                     "data-projectID": this.id
                 }
             });
@@ -440,14 +421,14 @@ console.log( new ZeegaParser( parsed, this.toJSON(), { relay: this.relay, status
 
                 // TODO: Find out what values currentFrame and startFrame could possibly be
                 // eg. current_frame, startFrame
-
+console.log( this, this.get("startFrame"))
                 isCurrentNull = currentFrame === null;
                 isStartNull = startFrame === null;
 
                 // if there is no info on where the player is or where to start go to first frame in project
                 if ( isCurrentNull && isStartNull ) {
-                    this.cueFrame( this.get("sequences")[0].frames[0] );
-                } else if ( isCurrentNull && !isStartNull && this.get("frames").get( startFrame ) ) {
+                    this.cueFrame( this.project.sequences.get("sequences")[0].frames[0] );
+                } else if ( isCurrentNull && !isStartNull && this.project.getFrame( startFrame ) ) {
                     this.cueFrame( startFrame );
                 } else if ( !isCurrentNull ) {
                     // unpause the player
@@ -487,7 +468,7 @@ console.log( new ZeegaParser( parsed, this.toJSON(), { relay: this.relay, status
         cueFrame: function( id, ms ) {
             ms = ms || 0;
 
-            if ( id !== undefined && this.get("frames").get(id) !== undefined ) {
+            if ( id !== undefined && this.project.getFrame( id ) !== undefined ) {
                 if ( ms > 0 ) {
                     _.delay(function() {
                         this._goToFrame( id );
@@ -549,13 +530,16 @@ console.log( new ZeegaParser( parsed, this.toJSON(), { relay: this.relay, status
         },
 
         preloadFramesFrom: function( id ) {
-            var _this = this,
-                frame = this.get("frames").get( id );
-            _.each( frame.get("preload_frames"), function( frameID ) {
-                _this.get("frames").get( frameID ).preload();
-            });
+            if ( id ) {
+                var frame = this.project.getFrame( id );
+
+                _.each( frame.get("preload_frames"), function( frameID ) {
+                    this.project.getFrame( frameID ).preload();
+                }, this );
+            }
         },
 
+        // TODO: update this
         // returns project metadata
         getProjectData: function() {
             var frames = this.get("frames").map(function( frame ) {
