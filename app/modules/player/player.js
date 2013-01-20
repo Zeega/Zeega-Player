@@ -270,7 +270,7 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
         },
 
         _parseData: function( response ) {
-            this.project = new ZeegaParser( response,
+            this.project = new ZeegaParser.parse( response,
                 _.extend({},
                     this.toJSON(),
                     {
