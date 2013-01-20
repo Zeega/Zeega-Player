@@ -151,12 +151,6 @@ module.exports = function(grunt) {
             all: ["test/qunit/*.html"]
         },
 
-        // The headless Jasmine testing is provided by grunt-jasmine-task. Simply
-        // point the configuration to your test directory.
-        jasmine: {
-            all: ["test/jasmine/*.html"]
-        },
-
         // The watch task can be used to monitor the filesystem and execute
         // specific tasks when files are modified.  By default, the watch task is
         // available to compile stylus templates if you are unable to use the
@@ -183,22 +177,32 @@ module.exports = function(grunt) {
         },
 
         copy: {
+
+            layers: {
+                options: {
+                    flatten: true
+                },
+                files: {
+                    "assets/css/less/layers/" : "app/modules/zeega-parser/plugins/layers/**/*.less",
+                    "assets/img/layers/" : "app/modules/zeega-parser/plugins/layers/**/img/*",
+                    "app/templates/plugins/": "app/modules/zeega-parser/plugins/**/*.html"
+                }
+            },
+
             dist: {
+                options: {
+                    flatten: true
+                },
                 files: {
                     // copy plugin template html files into the template folder
                     // to : from
-                    "app/templates/plugins/": "app/modules/plugins/**/*.html",
-                    "assets/img/layers/" : "app/modules/plugins/layers/**/img/*",
                     "dist/release/img/" : "assets/img/*",
-                    "assets/css/less/layers/" : "app/modules/plugins/layers/**/*.less",
-
-                    "dist/release/img/layers/" : "assets/img/layers/**",
 
                     "dist/debug/css/" : "assets/css/zeega.css",
                     "dist/release/css/" : "assets/css/zeega.css"
-                },
-                options : { flatten: true }
+                }
             }
+            
         },
 
         yuidoc: {
@@ -216,7 +220,7 @@ module.exports = function(grunt) {
 
     });
 
-    grunt.registerTask('comp', 'copy less');
+    grunt.registerTask('comp', 'copy:layers less');
     // The debug task will remove all contents inside the dist/ folder, lint
     // all your code, precompile all the underscore templates into
     // dist/debug/templates.js, compile all the application code into
