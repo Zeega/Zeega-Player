@@ -262,11 +262,14 @@ function( Zeega, ZeegaParser, DataParser, Relay, Status, PlayerLayout ) {
             }
         },
 
+        // |target| may be a Selector, Node or jQuery object.
+        // If no |target| was provided, default to |document.body|
         _setTarget: function() {
+            var target = Zeega.$( this.get("target") || document.body );
+
+            this.status.target = target;
             this.put({
-                // |target| may be a Selector, Node or jQuery object.
-                // If no |target| was provided, default to |document.body|
-                target: Zeega.$( this.get("target") || document.body )
+                target: target
             });
         },
 
@@ -410,8 +413,7 @@ function( Zeega, ZeegaParser, DataParser, Relay, Status, PlayerLayout ) {
 
             if ( !this.ready ) {
                 this.render(); // render the player first!
-            }
-            else if ( this.state == "paused" ) {
+            } else if ( this.state == "paused" ) {
                 this._fadeIn();
                 if ( currentFrame ) {
                     this.state = "playing";
@@ -421,7 +423,6 @@ function( Zeega, ZeegaParser, DataParser, Relay, Status, PlayerLayout ) {
 
                 // TODO: Find out what values currentFrame and startFrame could possibly be
                 // eg. current_frame, startFrame
-console.log( this, this.get("startFrame"))
                 isCurrentNull = currentFrame === null;
                 isStartNull = startFrame === null;
 
@@ -486,10 +487,11 @@ console.log( this, this.get("startFrame"))
 
             this.preloadFramesFrom( id );
 
-            if (this.status.get("current_frame")) {
+            if ( this.status.get("current_frame") ) {
                 this.status.get("current_frame_model").exit( id );
                 oldID = this.status.get("current_frame_model").id;
             }
+
             // unrender current frame
             // swap out current frame with new one
             // Use |set| to ensure that a "change" event is triggered
@@ -498,7 +500,6 @@ console.log( this, this.get("startFrame"))
             // Use |put| to ensure that NO "change" event is triggered
             // from this.relay
             this.relay.put( "current_frame", id );
-
             // render current frame // should trigger a frame rendered event when successful
             this.status.get("current_frame_model").render( oldID );
             if ( this.state !== "playing" ) {
