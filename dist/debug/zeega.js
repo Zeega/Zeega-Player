@@ -39797,6 +39797,7 @@ function( Zeega, LayerPlugin ) {
         onVisualReady: function() {
             this.ready = true;
             this.state = "ready";
+            this.status.emit("layer_ready", this.toJSON() );
             this.trigger("layer_ready", this.toJSON());
         },
 
@@ -40730,7 +40731,7 @@ function( Zeega ) {
         */
         emit: function( e, info ) {
             if ( this.get("project").get("debugEvents") && e != "media_timeupdate") {
-                console.log( e, info );
+                console.log( "--player event: ",e, info );
             }
             if ( !this.silent ) {
                 this.get("project").trigger( e, info );
