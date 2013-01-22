@@ -40077,14 +40077,13 @@ function( Zeega, SequenceCollection ) {
                         return frame.get( value );
                     });
 
-                    linkedFrames = _.flatten( linkedFrames );
+                    linkedFrames = _.compact( _.flatten( linkedFrames ) );
 
                     _.each( _.uniq( linkedFrames ), function( frameID ) {
                         var targetFrame = this.getFrame( frameID );
                         
                         commonLayers[ frameID ] = _.intersection( targetFrame.get("layers"), frame.get("layers") );
                     }, this );
-
                     frame.put("common_layers", commonLayers );
                 }, this );
             }, this );
