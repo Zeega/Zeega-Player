@@ -37,7 +37,7 @@
 
     var project = new Zeega.player({
         // data: window.exampleData,
-        debugEvents: true,
+        // debugEvents: true,
         target: "#main",
         // target: $("#main"),
 
@@ -66,7 +66,7 @@
       });
 
     $('#playpause').click(function(){
-      project.getFrameData();
+      console.log('project:', project)
       return false;
     });
 

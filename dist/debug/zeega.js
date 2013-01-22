@@ -39945,6 +39945,7 @@ function( Zeega, SequenceCollection ) {
 
         initialize: function( data, options ) {
             this.options = _.defaults( options, this.defaultOptions );
+            this.parser = options.parser;
             this.parseSequences();
         },
 
