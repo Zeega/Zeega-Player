@@ -289,7 +289,7 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
         },
 
         _setStartFrame: function() {
-            if ( this.get("startFrame") === null || project.getFrame( this.get("startFrame") ) === undefined ) {
+            if ( this.get("startFrame") === null || this.project.getFrame( this.get("startFrame") ) === undefined ) {
                 this.put({
                     startFrame: this.project.sequences.at(0).get("frames")[0]
                 });
