@@ -50,24 +50,27 @@ This requires you to run on a server or localhost (ie MAMP, WAMP)
 
     <!-- load the Zeega player -->
     <!--<script src="dist/debug/zeega.js"></script>--> <!-- debug -->
-    <script src="dist/release/zeega.js"></script> <!-- release -->
+    <script src="dist/release/zeega.js"></script><!-- release -->
 
     <script>
     $(window).bind('zeega_ready', function(){
 
         var project = new Zeega.player({
+            // debugEvents: true,
             autoplay: true,
             url: "http://alpha.zeega.org/api/items/67060/items", // BGB collection
 
 //            url: "http://dev.zeega.org/joseph/web/api/projects/2259",
             target: "#player",
             layerOptions: {
-              slideshow: {
+            slideshow: {
                 display: true,
                 start: null,
                 start_id: null,
-                bleed: false
-              }
+                bleed: false,
+    //            transition: "shuffle",
+                speed: 500
+                }
             }
         });
 

@@ -23659,8 +23659,8 @@ function( Zeega ) {
             if ( !this.ready ) {
                 this.layers.each(function( layer ) {
                     if ( layer.state === "waiting" || layer.state === "loading" ) {
-                        layer.render();
                         layer.on( "layer_ready", this.onLayerReady, this );
+                        layer.render();
                     }
                 }, this );
             }
@@ -23690,7 +23690,7 @@ function( Zeega ) {
                     this.startTimer( advance );
                 }
 
-                if ( !this.get("_next") && this.get("link_to").length === 0 ) {
+                if ( !this.get("_next") && this.get("linksTo").length === 0 ) {
                     this.status.emit("deadend_frame", _.extend({}, this.toJSON() ) );
                 }
 
@@ -24183,7 +24183,7 @@ function( Zeega, _Layer ) {
 
         attr: {
             title: "Link Layer",
-            from_sequence: null,
+            to_sequence: null,
             to_frame: null,
             from_frame: null,
             from_sequence: null,
