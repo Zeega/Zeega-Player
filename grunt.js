@@ -183,9 +183,9 @@ module.exports = function(grunt) {
                     flatten: true
                 },
                 files: {
-                    "assets/css/less/layers/" : "app/modules/zeega-parser/plugins/layers/**/*.less",
-                    "assets/img/layers/" : "app/modules/zeega-parser/plugins/layers/**/img/*",
-                    "app/templates/plugins/": "app/modules/zeega-parser/plugins/**/*.html"
+                    "assets/css/less/layers/" : "app/zeega-parser/plugins/layers/**/*.less",
+                    "assets/img/layers/" : "app/zeega-parser/plugins/layers/**/img/*",
+                    "app/templates/plugins/": "app/zeega-parser/plugins/**/*.html"
                 }
             },
 

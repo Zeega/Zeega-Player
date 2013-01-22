@@ -1,11 +1,11 @@
 define([
     "zeega",
 
-    "modules/zeega-parser/parser",
+    "zeega_parser/parser",
 
-    "modules/player/relay",
-    "modules/player/status",
-    "modules/player/player-layout"
+    "modules/relay",
+    "modules/status",
+    "modules/player-layout"
 ],
 
 function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {

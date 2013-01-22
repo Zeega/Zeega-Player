@@ -10,7 +10,7 @@ require.config({
         plugins: "../assets/js/plugins",
         vendor: "../assets/vendor",
         zeega_dir: "../app/modules",
-        zeega_parser: "../app/modules/zeega-parser",
+        zeega_parser: "../app/zeega-parser",
 
         // Libraries.
         jquery: "../assets/js/libs/jquery",
