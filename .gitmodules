@@ -1,6 +1,6 @@
 [submodule "assets/vendor/popcorn"]
 	path = assets/vendor/popcorn
 	url = git@github.com:Zeega/popcorn-js.git
-[submodule "app/modules/zeega-parser"]
-	path = app/modules/zeega-parser
+[submodule "app/zeega-parser"]
+	path = app/zeega-parser
 	url = git@github.com:Zeega/Zeega-Parser.git
