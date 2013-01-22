@@ -23671,7 +23671,6 @@ function( Zeega ) {
             var commonLayers;
             // if frame is completely loaded, then just render it
             // else try preloading the layers
-
            if ( this.ready ) {
                 // only render non-common layers. allows for persistent layers
                 commonLayers = this.get("common_layers")[ oldID ] || [];
@@ -23697,12 +23696,10 @@ function( Zeega ) {
             } else {
                 this.renderOnReady = oldID;
             }
-
             /* determines the z-index of the layer in relation to other layers on the frame */
-            this.layers.each(function(layer, i){
-                layer.updateZIndex( i );
-            });
-
+            _.each( this.get("layers"), function( layerID, i ) {
+                this.layers.get( layerID ).updateZIndex( i );
+            }, this );
         },
 
         onLayerReady: function( layer ) {
@@ -39876,6 +39873,9 @@ function( Zeega, FrameModel, LayerCollection ) {
                 });
 
                 frame.layers = new LayerCollection( frameLayers );
+                frame.layers.each(function( frame ) {
+                    frame.collection = frame.layers;
+                });
             });
         }
     });
@@ -39885,23 +39885,25 @@ function( Zeega, FrameModel, LayerCollection ) {
 zeega.define('zeega_parser/modules/sequence.collection',[
     "zeega",
     "zeega_parser/modules/sequence.model",
-    "zeega_parser/modules/frame.collection"
+    "zeega_parser/modules/frame.collection",
+    "zeega_parser/modules/layer.collection"
 ],
 
-function( Zeega, SequenceModel, FrameCollection ) {
+function( Zeega, SequenceModel, FrameCollection, LayerCollection ) {
 
     return Zeega.Backbone.Collection.extend({
         model: SequenceModel,
 
         initFrames: function( options ) {
             this.each(function( sequence ) {
+                var layerCollection = new LayerCollection( options.layers );
                 var seqFrames = options.frames.filter(function( frame ) {
                     return _.contains( sequence.get("frames"), frame.id );
                 });
 
                 sequence.frames = new FrameCollection( seqFrames );
                 sequence.frames.sequence = sequence;
-                sequence.frames.initLayers( options.layers );
+                sequence.frames.initLayers( layerCollection );
             });
             // at this point, all frames should be loaded with layers and layer classes
         }
@@ -39959,6 +39961,7 @@ function( Zeega, SequenceCollection ) {
             this._setSequenceToSequenceConnections();
             this._setLinkConnections();
             this._setFramePreloadArrays();
+            this._setFrameCommonLayers();
             this._attach();
         },
 
@@ -39988,13 +39991,19 @@ function( Zeega, SequenceCollection ) {
 
         _setSequenceToSequenceConnections: function() {
             this.sequences.each(function( sequence, i ) {
-                var advanceTo = sequence.get("advance_to"),
+                var a,b,
+                    advanceTo = sequence.get("advance_to"),
                     followingSequence = this.sequences.get( advanceTo );
 
                 if ( advanceTo && followingSequence ) {
-                    var a = sequence.frames.last(),
-                        b = followingSequence.frames.at( 0 );
+                    a = sequence.frames.last();
+                    b = followingSequence.frames.at( 0 );
 
+                    a.put({ _next: b.id });
+                    b.put({ _prev: a.id });
+                } else if( !advanceTo && sequence.frames.last().get('attr').advance ) {
+                    a = sequence.frames.last();
+                    b = sequence.frames.first();
                     a.put({ _next: b.id });
                     b.put({ _prev: a.id });
                 }
@@ -40058,6 +40067,27 @@ function( Zeega, SequenceCollection ) {
                 }, this );
             }, this );
 
+        },
+
+        _setFrameCommonLayers: function() {
+            this.sequences.each(function( sequence ) {
+                sequence.frames.each(function( frame ) {
+                    var commonLayers = {},
+                        linkedFrames = [ "_prev", "_next", "linksTo", "linksFrom" ].map(function( value ) {
+                        return frame.get( value );
+                    });
+
+                    linkedFrames = _.flatten( linkedFrames );
+
+                    _.each( _.uniq( linkedFrames ), function( frameID ) {
+                        var targetFrame = this.getFrame( frameID );
+                        
+                        commonLayers[ frameID ] = _.intersection( targetFrame.get("layers"), frame.get("layers") );
+                    }, this );
+
+                    frame.put("common_layers", commonLayers );
+                }, this );
+            }, this );
         },
 
         _attach: function() {
