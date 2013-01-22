@@ -14,11 +14,16 @@ module.exports = function(grunt) {
         // options for this task, by reading this:
         // https://github.com/cowboy/grunt/blob/master/docs/task_lint.md
         lint: {
-            files: [
-                "build/config.js",
-                "app/**/*.js",
-                "app/modules/plugins/*.js"
-            ]
+            files: {
+                src: [
+                    "app/modules/**/*.js",
+                    // all these to avoid linting the test folder :(
+                    "app/zeega-parser/parser.js",
+                    "app/zeega-parser/data-parsers/**/*.js",
+                    "app/zeega-parser/modules/**/*.js",
+                    "app/zeega-parser/plugins/**/*.js"
+                ]
+            }
         },
 
         // The jshint option for scripturl is set to lax, because the anchor
@@ -189,17 +194,15 @@ module.exports = function(grunt) {
                 }
             },
 
-            dist: {
-                options: {
-                    flatten: true
-                },
+            debug: {
                 files: {
-                    // copy plugin template html files into the template folder
-                    // to : from
-                    "dist/release/img/" : "assets/img/*",
-
-                    "dist/debug/css/" : "assets/css/zeega.css",
-                    "dist/release/css/" : "assets/css/zeega.css"
+                    "dist/debug/css/" : "assets/css/zeega.css"
+                }
+            },
+            release: {
+                files: {
+                    "dist/release/css/" : "assets/css/zeega.css",
+                    "dist/release/img/" : "assets/img/**/*"
                 }
             }
             
@@ -226,10 +229,10 @@ module.exports = function(grunt) {
     // dist/debug/templates.js, compile all the application code into
     // dist/debug/require.js, and then concatenate the require/define shim
     // almond.js and dist/debug/templates.js into the require.js file.
-    grunt.registerTask("debug", "clean comp lint jst requirejs concat");
+    grunt.registerTask("debug", "clean comp copy:debug lint jst requirejs concat");
 
     // The release task will run the debug tasks and then minify the
     // dist/debug/require.js file and CSS files.
-    grunt.registerTask("release", "debug min mincss");
+    grunt.registerTask("release", "debug copy:release min mincss");
 
 };
