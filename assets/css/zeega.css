@@ -561,6 +561,9 @@
   /* Opera */
 
 }
+.visual-element-text {
+  line-height: 100%;
+}
 .ZEEGA-player {
   background-color: #000000;
   font-family: "Helvetica Neue", Helvetica, sans-serif;
@@ -1088,6 +1091,9 @@
   -o-transition: opacity 0.5s;
   /* Opera */
 
+}
+.visual-element-text {
+  line-height: 100%;
 }
 
 /*********************************************
@@ -1657,6 +1663,10 @@
   -o-transition: opacity 0.5s;
   /* Opera */
 
+}
+
+.visual-element-text {
+  line-height: 100%;
 }
 
 /******************************
