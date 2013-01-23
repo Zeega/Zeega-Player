@@ -23613,6 +23613,7 @@ function( Zeega ) {
         renderOnReady: null,
 
         defaults: {
+            _order: 0,
             attr: { advance: 0 },
             // ids of frames and their common layers for loading
             common_layers: {},
@@ -23930,8 +23931,7 @@ function( Zeega ) {
         applyStyles: function() {
             this.$el.css({
                 height: this.getAttr("height") + "%", // photos need a height!
-                width: this.getAttr("width") + "%",
-                opacity: this.getAttr("opacity") || 1
+                width: this.getAttr("width") + "%"
             });
         },
 
@@ -24029,8 +24029,14 @@ function( Zeega ) {
         moveOnStage: function() {
             this.$el.css({
                 top: this.getAttr("top") + "%",
-                left: this.getAttr("left") + "%"
+                left: this.getAttr("left") + "%",
+                opacity: this.getAttr("opacity") || 1,
+                display: this.getAttr("dissolve") ? "none" : "block"
             });
+            if ( this.getAttr("dissolve") ) {
+                this.$el.fadeIn();
+            }
+
         },
 
         play: function() {
@@ -39734,6 +39740,8 @@ function( Zeega, LayerPlugin ) {
         ready: false,
         state: "waiting", // waiting, loading, ready, destroyed, error
 
+        order: [],
+
         defaults: {
             attr: {},
             id: null,
@@ -39774,7 +39782,6 @@ function( Zeega, LayerPlugin ) {
             }
         },
 
-        
         render: function() {
             // make sure the layer class is loaded or fail gracefully
             if ( this.visualElement ) {
@@ -39849,7 +39856,15 @@ zeega.define('zeega_parser/modules/layer.collection',[
 function( Zeega, LayerModel ) {
 
     return Zeega.Backbone.Collection.extend({
-        model: LayerModel
+        model: LayerModel,
+
+        frame: null,
+
+        comparator: function( layer ) {
+            if ( this.frame ) {
+                return layer.order[ this.frame.id ];
+            }
+        }
     });
     
 });
@@ -39869,24 +39884,37 @@ function( Zeega, FrameModel, LayerCollection ) {
         initLayers: function( layerCollection ) {
             this.each(function( frame ) {
                 var frameLayers = layerCollection.filter(function( layer ) {
-                    var contains = _.contains( frame.get("layers"), layer.id ),
-                        invalidLink = layer.get("type") == "Link" && layer.get("attr").to_frame == frame.id;
+                    var invalidLink, index;
 
-                    // remove invalid link ids from frames. this kind of sucks
-                    // have filipe rm these from the data??
+                    invalidLink = layer.get("type") == "Link" && layer.get("attr").to_frame == frame.id;
+                    index = _.indexOf( frame.get("layers"), layer.id );
+
                     if ( invalidLink ) {
+                        // remove invalid link ids from frames. this kind of sucks
+                        // have filipe rm these from the data??
                         frame.put("layers", _.without( frame.get("layers"), layer.id ) );
+                        return false;
+                    } else if ( index > -1 ) {
+                        //console.log( layer, frame, index )
+                        layer.order[ frame.id ] = index;
+                        return true;
                     }
-
-                    return contains && !invalidLink;
+                    return false;
                 });
 
 
                 frame.layers = new LayerCollection( frameLayers );
-                frame.layers.each(function( frame ) {
-                    frame.collection = frame.layers;
+                frame.layers.frame = frame;
+                frame.layers.sort({ silent: true });
+                // update the layer collection attribute
+                frame.layers.each(function( layer ) {
+                    layer.collection = frame.layers;
                 });
             });
+        },
+
+        comparator: function( frame ) {
+            return frame.get("_order");
         }
     });
 
@@ -39905,10 +39933,19 @@ function( Zeega, SequenceModel, FrameCollection, LayerCollection ) {
         model: SequenceModel,
 
         initFrames: function( options ) {
+            var layerCollection = new LayerCollection( options.layers );
+
             this.each(function( sequence ) {
-                var layerCollection = new LayerCollection( options.layers );
-                var seqFrames = options.frames.filter(function( frame ) {
-                    return _.contains( sequence.get("frames"), frame.id );
+                var seqFrames;
+
+                seqFrames = options.frames.filter(function( frame ) {
+                    var index = _.indexOf( sequence.get("frames"), frame.id );
+
+                    if ( index > -1 ) {
+                        frame._order = index;
+                        return true;
+                    }
+                    return false;
                 });
 
                 sequence.frames = new FrameCollection( seqFrames );
