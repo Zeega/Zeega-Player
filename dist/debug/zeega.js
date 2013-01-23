@@ -26818,7 +26818,7 @@ window.Modernizr = (function( window, document, undefined ) {
 zeega.define("libs/modernizr", function(){});
 
 /*
- * popcorn.js version fe02796
+ * popcorn.js version 99dc749
  * http://popcornjs.org
  *
  * Copyright 2011, Mozilla Foundation
@@ -26919,7 +26919,7 @@ zeega.define("libs/modernizr", function(){});
   };
 
   //  Popcorn API version, automatically inserted via build system.
-  Popcorn.version = "fe02796";
+  Popcorn.version = "99dc749";
 
   //  Boolean flag allowing a client to determine if Popcorn can be supported
   Popcorn.isSupported = true;
@@ -38079,7 +38079,9 @@ Popcorn.player( "flashvideo", {
 
           media.dispatchEvent( "playing" );
           timeupdate();
-          media.youtubeObject.playVideo();
+          if ( media.youtubeObject.playVideo ) {
+            media.youtubeObject.playVideo();
+          }
         };
 
         media.pause = function()
@@ -39901,7 +39903,6 @@ function( Zeega, FrameModel, LayerCollection ) {
                     }
                     return false;
                 });
-
 
                 frame.layers = new LayerCollection( frameLayers );
                 frame.layers.frame = frame;
