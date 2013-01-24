@@ -441,8 +441,7 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
         // goes to specified frame after n ms
         cueFrame: function( id, ms ) {
             ms = ms || 0;
-
-            if ( id !== undefined && this.project.getFrame( id ) !== undefined ) {
+            if ( id !== undefined && id !== null && this.project.getFrame( id ) !== undefined ) {
                 if ( ms > 0 ) {
                     _.delay(function() {
                         this._goToFrame( id );
