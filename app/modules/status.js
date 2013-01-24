@@ -101,7 +101,9 @@ function( Zeega ) {
             emit the state change to the external api
         */
         emit: function( e, info ) {
-            if ( this.get("project").get("debugEvents") && e != "media_timeupdate") {
+            if ( this.get("project").get("debugEvents") === true && e != "media_timeupdate") {
+                console.log( "--player event: ",e, info );
+            } else if ( this.get("project").get("debugEvents") == e ) {
                 console.log( "--player event: ",e, info );
             }
             if ( !this.silent ) {
