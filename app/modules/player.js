@@ -358,13 +358,15 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
                             _this.cuePrev();
                             break;
                         case 39: // right arrow
-                            _this.cueNext();
+                            if ( this.status.get("current_frame_model").get("attr").advance === 0 ) {
+                                _this.cueNext();
+                            }
                             break;
                         case 32: // spacebar
                             _this.playPause();
                             break;
                     }
-                });
+                }.bind( this ));
             }
         },
 
