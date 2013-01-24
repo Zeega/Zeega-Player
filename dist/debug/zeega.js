@@ -23617,6 +23617,7 @@ function( Zeega ) {
             attr: { advance: 0 },
             // ids of frames and their common layers for loading
             common_layers: {},
+            _connections: "none",
             controllable: true,
             id: null,
             // ids of layers contained on frame
