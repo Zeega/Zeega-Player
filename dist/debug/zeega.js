@@ -40955,30 +40955,54 @@ function( Zeega ) {
         },
 
         // calculate and return the correct window size for the player window
-        // uses the player"s window_ratio a || 4/3ttribute
         getWindowSize: function() {
-            // TODO: This could be refactored a bit more
-            var css = {},
-                windowRatio = this.model.get("window_ratio") || 4/3,
-                winWidth = Zeega.$( this.model.get("target") ).find(".ZEEGA-player").width(),
-                winHeight = Zeega.$( this.model.get("target") ).find(".ZEEGA-player").height(),
-                actualRatio = winWidth / winHeight;
+            var windowRatio, winWidth, winHeight, actualRatio,
+                css = {
+                    width: 0,
+                    height: 0,
+                    top: 0,
+                    left: 0
+                };
 
-            if ( this.model.get("window_fit") ) {
-                if ( actualRatio > windowRatio ) {
+            windowRatio = this.model.get("windowRatio");
+            winWidth = Zeega.$( this.model.get("target") ).find(".ZEEGA-player").width();
+            winHeight = Zeega.$( this.model.get("target") ).find(".ZEEGA-player").height();
+            actualRatio = winWidth / winHeight;
+
+            if ( this.model.get("cover") === true ) {
+                if ( actualRatio > windowRatio ) { // width > height // fit left & right
                     css.width = winWidth;
                     css.height = winWidth / windowRatio;
-                } else {
+                    css.top = (winHeight - css.height) / 2;
+                } else if ( this.model.get("cover") == "vertical" ) {
                     css.width = winHeight * windowRatio;
                     css.height = winHeight;
+                    css.left = (winWidth - css.width) / 2;
+                } else { // width < height
+                    css.width = winHeight * windowRatio;
+                    css.height = winHeight;
+                    css.left = (winWidth - css.width) / 2;
+                }
+            } else if ( this.model.get("cover") === false ) {
+                if ( actualRatio > windowRatio ) { // width > height
+                    css.width = winHeight * windowRatio;
+                    css.height = winHeight;
+                } else { // width < height
+                    css.width = winWidth;
+                    css.height = winWidth / windowRatio;
+                    css.top = (winHeight - css.height) / 2;
                 }
             } else {
-                if ( actualRatio > windowRatio ) {
-                    css.width = winHeight * windowRatio;
-                    css.height = winHeight;
-                } else {
+                if ( this.model.get("cover") == "horizontal" ) { // width > height // fit left & right
                     css.width = winWidth;
                     css.height = winWidth / windowRatio;
+                    css.top = (winHeight - css.height) / 2;
+                } else if ( this.model.get("cover") == "vertical" ) {
+                    var left = ( winWidth - winHeight * windowRatio ) / 2;
+
+                    css.width = winHeight * windowRatio;
+                    css.height = winHeight;
+                    css.left = left < 0 ? left : 0;
                 }
             }
 
@@ -41044,6 +41068,16 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
 
         // default settings -  can be overridden by project data
         defaults: {
+            
+            /**
+            Tells the player how to handle extra space around the player. Can be true, false, "horizontal", or "vertical"
+            @property cover
+            @type mixed
+            @default false
+            **/
+
+            cover: false,
+
             /**
             Instance of a Data.Model
 
@@ -41184,6 +41218,15 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
             @default null
             **/
             prev: null,
+
+            /**
+            The aspect ratio that the zeega should be played in (width/height)
+
+            @property windowRatio
+            @type Float
+            @default 4/3
+            **/
+            windowRatio: 4/3,
 
             /**
             The frame id to start the player
