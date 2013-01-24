@@ -47,6 +47,16 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
 
         // default settings -  can be overridden by project data
         defaults: {
+            
+            /**
+            Tells the player how to handle extra space around the player. Can be true, false, "horizontal", or "vertical"
+            @property cover
+            @type mixed
+            @default false
+            **/
+
+            cover: false,
+
             /**
             Instance of a Data.Model
 
@@ -187,6 +197,15 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
             @default null
             **/
             prev: null,
+
+            /**
+            The aspect ratio that the zeega should be played in (width/height)
+
+            @property windowRatio
+            @type Float
+            @default 4/3
+            **/
+            windowRatio: 4/3,
 
             /**
             The frame id to start the player
