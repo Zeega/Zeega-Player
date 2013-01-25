@@ -40293,10 +40293,63 @@ function() {
     return Parser;
 });
 
-zeega.define('zeega_parser/data-parsers/zeega-collection',[
+/*
+
+    generates a valid slideshow layer from a set of images
+
+    pass in an array of image layers and it outputs a valid layer object
+
+*/
+zeega.define('zeega_parser/plugins/layers/slideshow/parser',[
     "lodash"
 ],
-function() {
+
+function( _ ) {
+
+    var Slideshow = {};
+
+    Slideshow.parse = function( layers, options ) {
+        var defaults, slides;
+
+        defaults = {
+            keyboard: false,
+            width: 100,
+            top: 0,
+            left: 0
+        };
+        
+        slides = _.filter( layers, function( layer ) {
+            if ( layer.layer_type == "Image" ) {
+                _.extend( layer, {
+                    attr: layer,
+                    type: layer.layer_type,
+                    id: layer.id
+                });
+                return true;
+            }
+            return false;
+        });
+
+        return {
+            attr: _.defaults({ slides: slides }, defaults ),
+            start_slide: parseInt( options.slideshow.start, 10 ) || 0,
+            start_slide_id: parseInt( options.slideshow.start_id, 10 ) || null,
+            slides_bleed: options.slideshow.bleed,
+            transition: options.slideshow.transition,
+            speed: options.slideshow.speed,
+            type: "SlideShow",
+            id: 1
+        };
+    };
+
+    return Slideshow;
+});
+
+zeega.define('zeega_parser/data-parsers/zeega-collection',[
+    "lodash",
+    "zeega_parser/plugins/layers/slideshow/parser"
+],
+function( _, Slideshow ) {
     var type = "zeega-collection",
         Parser = {};
 
@@ -40311,20 +40364,20 @@ function() {
     };
 
     Parser[ type ].parse = function( response, opts ) {
-        var project = {};
         if ( opts.layerOptions && opts.layerOptions.slideshow && opts.layerOptions.slideshow.display && response.items.length > 0 ) {
-            project = parseSlideshowCollection( response, opts );
+            return parseSlideshowCollection( response, opts );
         } else {
-            project = parseStandardCollection( response, opts );
+            return parseStandardCollection( response, opts );
         }
-        return project;
     };
 
-    var parseStandardCollection = function( response, opts ) {
+    function parseStandardCollection( response, opts ) {
+        var sequence, frames, layers;
+
         // layers from timebased items
-        var layers = generateLayerArrayFromItems( response.items ),
-            frames = generateFrameArrayFromItems( response.items ),
-            sequence = {
+        layers = generateLayerArrayFromItems( response.items );
+        frames = generateFrameArrayFromItems( response.items );
+        sequence = {
                 id: 0,
                 title: "collection",
                 persistent_layers: [],
@@ -40338,26 +40391,19 @@ function() {
                 frames: frames,
                 layers: layers
             });
-    };
+    }
 
     function parseSlideshowCollection( response, opts ) {
-        var frames,slideshowLayer,
-            imageLayers = [],
-            timebasedLayers = [];
+        var sequence, frames, layers, slideshowLayer, timebasedLayers;
 
-        _.each( response.items, function( item ) {
-            if ( item.layer_type == "Image" ) {
-                imageLayers.push(item);
-            } else if ( item.layer_type == "Audio" || item.media_type == "Video" ) {
-                timebasedLayers.push(item);
-            }
+        timebasedLayers = _.filter( response.items, function( item ) {
+            return item.layer_type == "Audio" || item.media_type == "Video";
         });
-        // slideshow layer from image items
-        if ( imageLayers.length ) {
-            slideshowLayer = generateSlideshowLayer( imageLayers, opts.layerOptions );
-        }
+
+        slideshowLayer = Slideshow.parse( response.items, opts.layerOptions );
         // layers from timebased items
-        var layers = generateLayerArrayFromItems( timebasedLayers );
+        layers = generateLayerArrayFromItems( timebasedLayers );
+        
         if ( slideshowLayer ) {
             layers.push( slideshowLayer );
         }
@@ -40373,7 +40419,7 @@ function() {
             }];
         }
 
-        var sequence = {
+        sequence = {
             id: 0,
             title: "collection",
             persistent_layers: slideshowLayer ? [ slideshowLayer.id ] : [],
@@ -40418,33 +40464,6 @@ function() {
                 attr: { advance : 0 }
             };
         });
-    }
-
-    function generateSlideshowLayer( imageLayerArray, layerOptions ) {
-        var layerDefaults = {
-                keyboard: false,
-                width: 100,
-                top: 0,
-                left: 0
-            },
-            slides = _.map( imageLayerArray, function( item ) {
-                return {
-                    attr: item,
-                    type: item.layer_type,
-                    id: item.id
-                };
-            });
-
-        return {
-            attr: _.defaults({ slides: slides }, layerDefaults ),
-            start_slide: parseInt( layerOptions.slideshow.start, 10 ) || 0,
-            start_slide_id: parseInt( layerOptions.slideshow.start_id, 10 ) || null,
-            slides_bleed: layerOptions.slideshow.bleed,
-            transition: layerOptions.slideshow.transition,
-            speed: layerOptions.slideshow.speed,
-            type: "SlideShow",
-            id: 1
-        };
     }
 
     return Parser;
