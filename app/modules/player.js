@@ -323,7 +323,7 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
         },
 
         _remote_cueFrame: function( info, id ) {
-            this.cueFrame(id);
+            this.cueFrame( id );
         },
 
         // renders the player to the dom // this could be a _.once
