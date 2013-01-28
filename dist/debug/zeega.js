@@ -39347,12 +39347,12 @@ function( Zeega, _Layer ) {
             citation: false,
             default_controls: false,
             height: 50,
-            left: 25,
+            left: 0,
             linkable: false,
             opacity: 1,
             opacity_hover: 1,
             title: "Rectangle Layer",
-            top: 25,
+            top: 0,
             width: 50
         }
     });
