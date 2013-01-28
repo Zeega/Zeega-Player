@@ -24097,14 +24097,14 @@ function( Zeega, _Layer ){
         layerType: "Image",
 
         attr: {
-            "title": "Image Layer",
-            "url": "none",
-            "left": 0,
-            "top": 0,
-            "height": 100,
-            "width": 100,
-            "opacity": 1,
-            "aspect": 1.33
+            title: "Image Layer",
+            url: "none",
+            left: 0,
+            top: 0,
+            height: 100,
+            width: 100,
+            opacity: 1,
+            aspect: 1.33
         },
 
         controls: [
@@ -39138,22 +39138,22 @@ function( Zeega, _Layer, MediaPlayer ) {
         layerType: "Video",
 
         attr: {
-            "title": "Video Layer",
-            "url": "none",
-            "left": 0,
-            "top": 0,
-            "height": 100,
-            "width": 100,
-            "volume": 0.5,
-            "cue_in": 0,
-            "cue_out": null,
-            "fade_in": 0,
-            "fade_out": 0,
-            "dissolve": false,
-            "loop": false,
-            "opacity": 1,
-            "dimension": 1.5,
-            "citation": true
+            title: "Video Layer",
+            url: "none",
+            left: 0,
+            top: 0,
+            height: 100,
+            width: 100,
+            volume: 0.5,
+            cue_in: 0,
+            cue_out: null,
+            fade_in: 0,
+            fade_out: 0,
+            dissolve: false,
+            loop: false,
+            opacity: 1,
+            dimension: 1.5,
+            citation: true
         }
     });
 
@@ -39305,19 +39305,19 @@ function( Zeega, _Layer, VideoLayer ){
         layerType: "Audio",
 
         attr: {
-            "title": "Audio Layer",
-            "url": "none",
-            "left": 0,
-            "top": 0,
-            "height": 0,
-            "width": 0,
-            "volume": 0.5,
-            "cue_in": 0,
-            "cue_out": null,
-            "fade_in": 0,
-            "fade_out": 0,
-            "opacity": 0,
-            "citation": true
+            title: "Audio Layer",
+            url: "none",
+            left: 0,
+            top: 0,
+            height: 0,
+            width: 0,
+            volume: 0.5,
+            cue_in: 0,
+            cue_out: null,
+            fade_in: 0,
+            fade_out: 0,
+            opacity: 0,
+            citation: true
         }
     });
 
@@ -39342,16 +39342,16 @@ function( Zeega, _Layer ) {
         layerType: "Rectangle",
 
         attr: {
-            "citation": false,
-            "default_controls": false,
-            "height": 50,
-            "left": 25,
-            "linkable": false,
-            "opacity": 1,
-            "opacity_hover": 1,
-            "title": "Rectangle Layer",
-            "top": 25,
-            "width": 50
+            citation: false,
+            default_controls: false,
+            height: 50,
+            left: 25,
+            linkable: false,
+            opacity: 1,
+            opacity_hover: 1,
+            title: "Rectangle Layer",
+            top: 25,
+            width: 50
         }
     });
 
@@ -39394,13 +39394,13 @@ function( Zeega, _Layer ) {
         layerType: "Text",
 
         attr: {
-            "citation": false,
-            "default_controls": true,
-            "left": 30,
-            "opacity": 1,
-            "title": "Text Layer",
-            "top": 40,
-            "width": 25
+            citation: false,
+            default_controls: true,
+            left: 30,
+            opacity: 1,
+            title: "Text Layer",
+            top: 40,
+            width: 25
         }
     });
 
@@ -39573,7 +39573,7 @@ function( Zeega, _Layer ){
             streetZoom: 1,
             heading: -235,
             pitch: 17.79,
-            mapType: 'satellite'
+            mapType: "satellite"
         },
 
         controls: []
