@@ -96,6 +96,7 @@ module.exports = function(grunt) {
         server: {
             files: {
                 "favicon.ico": "favicon.ico",
+                "testdata/test.json": "testdata/textfade.json",
                 "example-data.js": "example-data.js"
             },
 

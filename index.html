@@ -37,14 +37,19 @@
 
     var project = new Zeega.player({
         // data: window.exampleData,
-        debugEvents: "frame_rendered",
+        // debugEvents: "frame_rendered",
         target: "#main",
         //windowRatio: 16/9,
         // target: $("#main"),
 
         // url: "http://alpha.zeega.org/api/items/search?tags=makingof&media_type=project&page=1&limit=100&sort=desc", // example published zeega
         // url: "http://dev.zeega.org/joseph/web/api/projects/4708", // video loading test
-        url: "http://alpha.zeega.org/api/items/72666", // example published zeega
+
+        // url: "http://staging.zeega.org/api/projects/4776", // fade in test
+        url: " testdata/test.json", // test json data. update the grunt SERVER task to change which it points to
+        // url: "http://staging.zeega.org/api/items/74504", // how I got to Boston
+
+        //url: "http://alpha.zeega.org/api/items/72666", // example published zeega
         // url: "http://dev.zeega.org/joseph/web/api/projects/4521", // auto advance test
         // url: "http://alpha.zeega.org/api/items/76998/items", // dynamic zeega collection
         // url: "http://alpha.zeega.org/api/items/76999/items", // dynamic zeega project collection
@@ -54,6 +59,7 @@
         // url: "http://alpha.zeega.org/api/items/74868", // reinvention
         //url: "http://alpha.zeega.org/api/items/67060/items", // BGB collection
         // cover: "vertical", // true/false || "vertical", "horizontal"
+
         autoplay: true,
 
         layerOptions: {
