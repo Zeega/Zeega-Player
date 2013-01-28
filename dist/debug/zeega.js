@@ -23620,6 +23620,8 @@ function( Zeega ) {
             _connections: "none",
             controllable: true,
             id: null,
+            // id of frame before current
+            _last: null,
             // ids of layers contained on frame
             layers: [],
             // ids of frames this frame can lead to
@@ -23630,7 +23632,7 @@ function( Zeega ) {
             preload_frames: [],
             // id of the next frame
             _next: null,
-            // id of the previous frame
+            // id of frame to be navigated to the left
             _prev: null,
             thumbnail_url: null
         },
@@ -40024,6 +40026,7 @@ function( Zeega, SequenceCollection ) {
 
                         frame.put({
                             _next: frames.at( j + 1 ) ? frames.at( j + 1 ).id : null,
+                            _last: frames.at( j - 1 ) ? frames.at( j - 1 ).id : null,
                             _prev: animationStart && lastStart === null && frames.at( j - 1 ) ? frames.at( j - 1 ).id :
                                 animationStart ? animationStart :
                                 animationStart === null && lastStart !== null ? lastStart :
@@ -40136,7 +40139,7 @@ function( Zeega, SequenceCollection ) {
             this.sequences.each(function( sequence ) {
                 sequence.frames.each(function( frame ) {
                     var commonLayers = {},
-                        linkedFrames = [ "_prev", "_next", "linksTo", "linksFrom" ].map(function( value ) {
+                        linkedFrames = [ "_prev", "_last", "_next", "linksTo", "linksFrom" ].map(function( value ) {
                         return frame.get( value );
                     });
 
@@ -41289,6 +41292,7 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
 
         _load: function( attributes ) {
             var rawDataModel = new Zeega.Backbone.Model(); // throw away model. may contain extraneous data
+console.log(attributes.url);
 
             if ( attributes.url ) {
                 rawDataModel.url = attributes.url;
