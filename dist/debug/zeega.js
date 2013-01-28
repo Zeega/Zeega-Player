@@ -41292,7 +41292,6 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
 
         _load: function( attributes ) {
             var rawDataModel = new Zeega.Backbone.Model(); // throw away model. may contain extraneous data
-console.log(attributes.url);
 
             if ( attributes.url ) {
                 rawDataModel.url = attributes.url;
