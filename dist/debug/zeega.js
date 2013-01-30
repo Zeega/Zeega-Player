@@ -18,7 +18,11 @@ return __p;
 this["JST"]["app/templates/plugins/audio.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='';
+__p+='<audio id="audio-el-'+
+(id )+
+'" src="'+
+( attr.uri )+
+'" autoplay></audio>';
 }
 return __p;
 };
@@ -23910,8 +23914,8 @@ function( Zeega ) {
         },
 
         afterRender: function() {
-            this.verifyReady();
             this.onRender();
+            this.verifyReady();
         },
 
         onRender: function() {},
@@ -39323,8 +39327,38 @@ function( Zeega, _Layer, VideoLayer ){
         }
     });
 
-    Layer.Audio.Visual = VideoLayer.Video.Visual.extend({
-        template: "plugins/audio"
+    Layer.Audio.Visual = _Layer.Visual.extend({
+        template: "plugins/audio",
+
+        audio: null,
+        ended: false,
+        playbackCount: 0,
+
+        serialize: function() {
+            return this.model.toJSON();
+        },
+
+        onPlay: function() {
+            this.ended = false;
+            this.audio.play();
+        },
+
+        onPause: function() {
+            this.audio.pause();
+        },
+
+        onExit: function() {
+            this.audio.pause();
+        },
+
+        verifyReady: function() {
+            this.audio = document.getElementById("audio-el-" + this.model.id );
+            this.$('audio').on("canplay", function() {
+                this.audio.pause();
+                this.model.trigger( "visual_ready", this.model.id );
+            }.bind( this ));
+        }
+
     });
 
     return Layer;

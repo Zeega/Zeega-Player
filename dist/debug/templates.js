@@ -11,7 +11,11 @@ return __p;
 this["JST"]["app/templates/plugins/audio.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='';
+__p+='<audio id="audio-el-'+
+(id )+
+'" src="'+
+( attr.uri )+
+'" autoplay></audio>';
 }
 return __p;
 };
