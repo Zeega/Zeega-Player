@@ -18,10 +18,6 @@ require.config({
         lodash: "../assets/js/libs/lodash",
         backbone: "../assets/js/libs/backbone"
 
-        // Plugins
-        //imagesLoaded: "../assets/js/plugins/jquery/imagesloaded.min.js",
-        //cycle: "../assets/js/plugins/jquery/cycle.js"
-
     },
     shim: {
         // Backbone library depends on lodash and jQuery.
