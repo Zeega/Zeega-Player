@@ -46,10 +46,10 @@
         // url: "http://dev.zeega.org/joseph/web/api/projects/4708", // video loading test
 
         // url: "http://staging.zeega.org/api/projects/4776", // fade in test
-        url: " testdata/test.json", // test json data. update the grunt SERVER task to change which it points to
+        // url: " testdata/test.json", // test json data. update the grunt SERVER task to change which it points to
         // url: "http://staging.zeega.org/api/items/74504", // how I got to Boston
 
-        //url: "http://alpha.zeega.org/api/items/72666", // example published zeega
+        url: "http://alpha.zeega.org/api/items/72666", // example published zeega
         // url: "http://dev.zeega.org/joseph/web/api/projects/4521", // auto advance test
         // url: "http://alpha.zeega.org/api/items/76998/items", // dynamic zeega collection
         // url: "http://alpha.zeega.org/api/items/76999/items", // dynamic zeega project collection
@@ -76,7 +76,7 @@
       });
 
     $('#playpause').click(function(){
-      console.log('project:', project)
+      console.log('project:', project.getProjectData() );
       return false;
     });
 

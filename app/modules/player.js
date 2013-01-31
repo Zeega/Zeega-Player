@@ -536,12 +536,19 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
         // TODO: update this
         // returns project metadata
         getProjectData: function() {
-            var frames = this.get("frames").map(function( frame ) {
-                return _.extend({},
-                    frame.toJSON(),
-                    { layers: frame.layers.toJSON() }
-                );
+            var frames = [];
+
+            this.project.sequences.each(function( sequence ) {
+                sequence.frames.each(function( frame ) {
+                    var f = _.extend({},
+                        frame.toJSON(),
+                        { layers: frame.layers.toJSON() }
+                    );
+
+                    frames.push( f );
+                });
             });
+
             return _.extend({},
                 this.toJSON(),
                 { frames: frames }
