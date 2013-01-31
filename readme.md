@@ -34,7 +34,7 @@ the player constructor can take the following optional attributes:
 * `prev` - selector of element used to cuePrev the Zeega. Default: `null`.
 * `startFrame` - The ID of the frame to start the Zeega on. Default: `null`.
 * `target` - The element that the player should render to. Accepts Selector or jQuery. Default: `null`.
-* `url` - The url to a data source to be parsed
+* `url` - The url to a data source to be parsed. Default: `null`.
 
 ### Events
 
@@ -47,9 +47,8 @@ the player constructor can take the following optional attributes:
 * `can_play` - the project is ready and should be able to play.
 * `ended` - a time based layer has ended.
 * `sequence_enter` - a new sequence has started.
-## tasks
 
-## Developer
+## Developer Tasks
 
 ### update submodules
 
