@@ -4,6 +4,20 @@
 
 This is the chromeless player which is at the heart of anything that playsback a Zeega
 
+## Load Files
+
+Two files must be loaded into your page for the player to work correctly.
+
+CSS
+```html
+<link rel="stylesheet" href="css/zeega.css">
+```
+
+Zeega player script
+```html
+<script src="js/zeega.js"></script>
+```
+
 ## Constructor
 
 with a url datasource:
