@@ -39177,7 +39177,9 @@ function( Zeega, _Layer, MediaPlayer ) {
 
         onPlay: function() {
             this.ended = false;
-            this.mediaPlayer.play();
+            _.defer(function() {
+                this.mediaPlayer.play();
+            }.bind( this ));
         },
 
         onPause: function() {
@@ -41347,9 +41349,9 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
 
         // attach listeners
         _listen: function() {
-            this.on( "cue_frame", this.cueFrame, this );
+            this.on("cue_frame", this.cueFrame, this );
             // relays
-            this.relay.on( "change:current_frame", this._remote_cueFrame, this );
+            this.relay.on("change:current_frame", this._remote_cueFrame, this );
         },
 
         _remote_cueFrame: function( info, id ) {
@@ -41434,7 +41436,6 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
             var currentFrame = this.status.get("current_frame"),
                 startFrame = this.get("startFrame"),
                 isCurrentNull, isStartNull;
-
             if ( !this.ready ) {
                 this.render(); // render the player first!
             } else if ( this.state == "paused" ) {
