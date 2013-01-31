@@ -13,15 +13,8 @@
 
 <body>
   <!-- Main container. -->
-  <a href='#' id='playpause'>>></a>
+  <button id='button'>do!</button>
   <div id="main" style='height:400px;width:500px;float:left'></div>
-  
-  <script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
-<!--  <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
--->
-
-  <script src="../example-data.js"></script>
-
 <script>
 
 
@@ -37,7 +30,7 @@
 
     var project = new Zeega.player({
         // data: window.exampleData,
-        debugEvents: true,
+        // debugEvents: true,
         target: "#main",
         //windowRatio: 16/9,
         // target: $("#main"),
@@ -68,14 +61,13 @@
             start: null,
             start_id: null,
             bleed: false,
-//            transition: "shuffle",
             speed: 500
           }
         }
 
       });
 
-    $('#playpause').click(function(){
+    $('#button').click(function(){
       console.log('project:', project.getProjectData() );
       return false;
     });
