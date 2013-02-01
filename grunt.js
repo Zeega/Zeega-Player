@@ -14,11 +14,16 @@ module.exports = function(grunt) {
         // options for this task, by reading this:
         // https://github.com/cowboy/grunt/blob/master/docs/task_lint.md
         lint: {
-            files: [
-                "build/config.js",
-                "app/**/*.js",
-                "app/modules/plugins/*.js"
-            ]
+            files: {
+                src: [
+                    "app/modules/**/*.js",
+                    // all these to avoid linting the test folder :(
+                    "app/zeega-parser/parser.js",
+                    "app/zeega-parser/data-parsers/**/*.js",
+                    "app/zeega-parser/modules/**/*.js",
+                    "app/zeega-parser/plugins/**/*.js"
+                ]
+            }
         },
 
         // The jshint option for scripturl is set to lax, because the anchor
@@ -91,6 +96,7 @@ module.exports = function(grunt) {
         server: {
             files: {
                 "favicon.ico": "favicon.ico",
+                "testdata/test.json": "testdata/46384.json",
                 "example-data.js": "example-data.js"
             },
 
@@ -151,12 +157,6 @@ module.exports = function(grunt) {
             all: ["test/qunit/*.html"]
         },
 
-        // The headless Jasmine testing is provided by grunt-jasmine-task. Simply
-        // point the configuration to your test directory.
-        jasmine: {
-            all: ["test/jasmine/*.html"]
-        },
-
         // The watch task can be used to monitor the filesystem and execute
         // specific tasks when files are modified.  By default, the watch task is
         // available to compile stylus templates if you are unable to use the
@@ -183,22 +183,30 @@ module.exports = function(grunt) {
         },
 
         copy: {
-            dist: {
-                files: {
-                    // copy plugin template html files into the template folder
-                    // to : from
-                    "app/templates/plugins/": "app/modules/plugins/**/*.html",
-                    "assets/img/layers/" : "app/modules/plugins/layers/**/img/*",
-                    "dist/release/img/" : "assets/img/*",
-                    "assets/css/less/layers/" : "app/modules/plugins/layers/**/*.less",
 
-                    "dist/release/img/layers/" : "assets/img/layers/**",
-
-                    "dist/debug/css/" : "assets/css/zeega.css",
-                    "dist/release/css/" : "assets/css/zeega.css"
+            layers: {
+                options: {
+                    flatten: true
                 },
-                options : { flatten: true }
+                files: {
+                    "assets/css/less/layers/" : "app/zeega-parser/plugins/layers/**/*.less",
+                    "assets/img/layers/" : "app/zeega-parser/plugins/layers/**/img/*",
+                    "app/templates/plugins/": "app/zeega-parser/plugins/**/*.html"
+                }
+            },
+
+            debug: {
+                files: {
+                    "dist/debug/css/" : "assets/css/zeega.css"
+                }
+            },
+            release: {
+                files: {
+                    "dist/release/css/" : "assets/css/zeega.css",
+                    "dist/release/img/" : "assets/img/**/*"
+                }
             }
+            
         },
 
         yuidoc: {
@@ -216,16 +224,16 @@ module.exports = function(grunt) {
 
     });
 
-    grunt.registerTask('comp', 'copy less');
+    grunt.registerTask('comp', 'copy:layers less');
     // The debug task will remove all contents inside the dist/ folder, lint
     // all your code, precompile all the underscore templates into
     // dist/debug/templates.js, compile all the application code into
     // dist/debug/require.js, and then concatenate the require/define shim
     // almond.js and dist/debug/templates.js into the require.js file.
-    grunt.registerTask("debug", "clean comp lint jst requirejs concat");
+    grunt.registerTask("debug", "clean comp copy:debug lint jst requirejs concat");
 
     // The release task will run the debug tasks and then minify the
     // dist/debug/require.js file and CSS files.
-    grunt.registerTask("release", "debug min mincss");
+    grunt.registerTask("release", "debug copy:release min mincss");
 
 };

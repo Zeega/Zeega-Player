@@ -1,6 +1,6 @@
 require([
     // Application.
-    "modules/player/player"
+    "modules/player"
 ],
 function( Zeega ) {
     window.Zeega = Zeega;

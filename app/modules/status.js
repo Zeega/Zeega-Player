@@ -65,8 +65,8 @@ function( Zeega ) {
                 });
             }
             /* update the current_frame_model */
-            frame = this.get("project").get("frames").get( currentFrame );
-            sequence = frame.get("_sequence");
+            frame = this.get("project").project.getFrame( currentFrame );
+            sequence = frame.collection.sequence;
 
             fHist = this.get("frameHistory");
             fHist.push( frame.id );
@@ -82,12 +82,12 @@ function( Zeega ) {
 
             /* check to see if the sequence entered is new */
             // TODO: Investigate value of "sequence"
-            if ( this.get("current_sequence") != sequence ) {
+            if ( this.get("current_sequence") != sequence.id ) {
                 seqHist = this.get("sequenceHistory");
-                seqHist.push( sequence );
+                seqHist.push( sequence.id );
                 this.set({
-                    current_sequence: sequence,
-                    current_sequence_model: this.get("project").get("sequences").get( sequence ),
+                    current_sequence: sequence.id,
+                    current_sequence_model: sequence,
                     sequenceHistory: seqHist
                 });
 
@@ -101,8 +101,10 @@ function( Zeega ) {
             emit the state change to the external api
         */
         emit: function( e, info ) {
-            if ( this.get("project").get("debugEvents") && e != "media_timeupdate") {
-                console.log( e, info );
+            if ( this.get("project").get("debugEvents") === true && e != "media_timeupdate") {
+                console.log( "--player event: ",e, info );
+            } else if ( this.get("project").get("debugEvents") == e ) {
+                console.log( "--player event: ",e, info );
             }
             if ( !this.silent ) {
                 this.get("project").trigger( e, info );
