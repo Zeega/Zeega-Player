@@ -76,7 +76,7 @@ $(window).bind("zeega_ready", function() {
             //
             Test.report( params, {
                 type: "player",
-                payload: Object.keys( Abstract.assign( {}, player.data.attributes ) )
+                payload: Object.keys( Abstract.assign( {}, player.project.attributes ) )
             });
         });
     }
@@ -88,12 +88,12 @@ $(window).bind("zeega_ready", function() {
         player = new Zeega.player({
             url: params.url
         });
-
         player.on( "data_loaded", function() {
+
             Test.report( params, {
                 type: "player",
                 payload: {
-                    actual: player.parser,
+                    actual: player.project.parser,
                     expected: params.parser
                 }
             });
