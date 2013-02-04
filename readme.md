@@ -55,12 +55,14 @@ the player constructor can take the following optional attributes:
 * `data_loaded` - data is loaded and parsed.
 * `ready` - player is rendered into the dom.
 * `layer_loading` - layer has been called to preload.
-* `layer_ready` - layer is in the dom and media has preloaded and accounted for.
-* `frame_ready` - frame and all it's layers have been preloaded and are staged but has not started to play.
+* `layer_preloaded` - layer is in the dom and media has preloaded and accounted for.
+* `frame_preloaded` - frame and all it's layers have been preloaded and are staged but has not started to play.
 * `frame_rendered` - frame is in view and has started to play.
-* `can_play` - the project is ready and should be able to play.
+* `canplay` - the project is ready and should be able to play.
 * `ended` - a time based layer has ended.
 * `sequence_enter` - a new sequence has started.
+* `play` - the Zeega has started to play.
+* `pause` - the Zeega has paused.
 
 ## Developer Tasks
 

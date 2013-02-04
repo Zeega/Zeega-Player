@@ -74,7 +74,7 @@ function( Zeega ) {
                 current_frame_model: frame,
                 frameHistory: fHist
             });
-            this.emit( "frame_rendered",
+            this.emit( "frame_play",
                 _.extend({}, frame.toJSON(), {
                     layers: frame.layers.toJSON()
                 })
