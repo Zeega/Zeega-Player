@@ -5,10 +5,11 @@ define([
 
     "modules/relay",
     "modules/status",
-    "modules/player-layout"
+    "modules/player-layout",
+    "modules/parse"
 ],
 
-function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
+function( Zeega, ZeegaParser, Relay, Status, PlayerLayout, Parse ) {
     /**
     Player
 
@@ -257,19 +258,27 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
 
         _mergeAttributes: function( attributes ) {
             var attr = _.pick( attributes, _.keys( this.defaults ) );
+
             this.set( attr, { silent: true });
         },
 
         _load: function( attributes ) {
-            var rawDataModel = new Zeega.Backbone.Model(); // throw away model. may contain extraneous data
-
             if ( attributes.url ) {
+                var rawDataModel = new Zeega.Backbone.Model();
+
                 rawDataModel.url = attributes.url;
                 rawDataModel.fetch().success(function( response ) {
                     this._parseData( response );
                 }.bind( this )).error(function() {
                     throw new Error("Ajax load fail");
                 });
+            } else if ( attributes.data && attributes.data.parser !== null ) {
+                attributes.data.attach({
+                    status: this.status,
+                    relay: this.relay
+                });
+                this.project = attributes.data;
+                this._afterParse();
             } else if ( attributes.data ) {
                 this._parseData( attributes.data );
             } else {
@@ -300,8 +309,11 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
                     })
                 );
 
-            this._setStartFrame();
+            this._afterParse();
+        },
 
+        _afterParse: function() {
+            this._setStartFrame();
             this.status.emit( "data_loaded", _.extend({}, this.project.toJSON() ) );
             this._render();
             this._listen();
@@ -589,6 +601,7 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
 
     });
 
+    Zeega.parse = Parse;
     Zeega.player = Player;
 
     return Zeega;

@@ -35,6 +35,32 @@
   
     bindEvent(window, "zeega_ready", function() {
 
+      var goDo = function( parsed ) {
+        var project = new Zeega.player({
+          debugEvents: true,
+          data: parsed,
+          target: "#main"
+        });
+      }
+
+      Zeega.parse({
+        // url: "http://alpha.zeega.org/api/items/67060/items", // bgb
+        url: "http://staging.zeega.org/api/projects/4938",
+        callback: function( parsed, data ) {
+          goDo( parsed );
+        },
+        layerOptions: {
+          slideshow: {
+            display: true,
+            start: null,
+            start_id: null,
+            bleed: false,
+            speed: 500
+          }
+        }
+      });
+
+/*
     var project = new Zeega.player({
         // data: window.exampleData,
         debugEvents: true,
@@ -47,7 +73,7 @@
 
         // url: "http://staging.zeega.org/api/projects/4776", // fade in test
         // url: " testdata/test.json", // test json data. update the grunt SERVER task to change which it points to
-        url: "http://staging.zeega.org/api/projects/4931", // mobile test
+        // url: "http://staging.zeega.org/api/projects/4931", // mobile test
         // url: "http://staging.zeega.org/api/items/74504", // how I got to Boston
 
         //url: "http://alpha.zeega.org/api/items/72666", // example published zeega
@@ -58,7 +84,7 @@
         //url: "http://staging.zeega.org/api/projects/4709", // 16/9 test project
         // url: "http://staging.zeega.org/api/projects/2707", // ASHLAND
         // url: "http://alpha.zeega.org/api/items/74868", // reinvention
-        //url: "http://alpha.zeega.org/api/items/67060/items", // BGB collection
+        url: "http://alpha.zeega.org/api/items/67060/items", // BGB collection
         // cover: "vertical", // true/false || "vertical", "horizontal"
 
         autoplay: true,
@@ -80,7 +106,7 @@
       console.log('project:', project)
       return false;
     });
-
+*/
   });
   </script>
 

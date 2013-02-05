@@ -172,6 +172,18 @@ __p+='<div class=\'slideshow-thumb-wrapper\'>\n    <ul>\n        ';
 return __p;
 };
 
+this["JST"]["app/templates/plugins/text-link.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<a href="http://'+
+( attr.link )+
+'" data-bypass="true" target="blank">\n    '+
+( attr.content )+
+'\n</a>';
+}
+return __p;
+};
+
 this["JST"]["app/templates/plugins/text.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){

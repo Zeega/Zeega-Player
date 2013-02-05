@@ -179,6 +179,18 @@ __p+='<div class=\'slideshow-thumb-wrapper\'>\n    <ul>\n        ';
 return __p;
 };
 
+this["JST"]["app/templates/plugins/text-link.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<a href="http://'+
+( attr.link )+
+'" data-bypass="true" target="blank">\n    '+
+( attr.content )+
+'\n</a>';
+}
+return __p;
+};
+
 this["JST"]["app/templates/plugins/text.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
@@ -23671,7 +23683,7 @@ function( Zeega ) {
             } else if ( !this.ready && !isFrameReady ) {
                 this.layers.each(function( layer ) {
                     if ( layer.state === "waiting" || layer.state === "loading" ) {
-                        layer.on( "layer_ready", this.onLayerReady, this );
+                        layer.on( "layer_preloaded", this.onLayerReady, this );
                         layer.render();
                     }
                 }, this );
@@ -23729,10 +23741,10 @@ function( Zeega ) {
 
             this.ready = true;
             this.state = "ready";
-            this.status.emit( "frame_ready", data );
+            this.status.emit( "frame_preloaded", data );
             if ( !_.isNull( this.renderOnReady ) ) {
 
-                this.status.emit( "can_play", data );
+                this.status.emit( "canplay", data );
                 this.render( this.renderOnReady );
                 this.renderOnReady = null;
             }
@@ -24022,7 +24034,7 @@ function( Zeega ) {
             this.$el.css({
                 top: this.getAttr("top") + "%",
                 left: this.getAttr("left") + "%",
-                opacity: this.getAttr("dissolve") ? 0 : this.getAttr("opacity") || 1
+                opacity: this.getAttr("dissolve") ? 0 : this.getAttr("opacity")
             });
             if ( this.getAttr("dissolve") ) {
                 this.$el.animate({ "opacity": this.getAttr("opacity") }, 500 );
@@ -24374,12 +24386,13 @@ function( Zeega, _Layer, Metadata ) {
             this.slide = num;
             $li.removeClass("active");
             $active.addClass("active");
+            if ( $active.length ) {
+                leftPosition = playerWidth / 2 - $active.position().left;
 
-            leftPosition = playerWidth / 2 - $active.position().left;
-
-            this.$(".slideshow-thumb-wrapper ul").stop().animate({
-                left: leftPosition
-            }, 250);
+                this.$(".slideshow-thumb-wrapper ul").stop().animate({
+                    left: leftPosition
+                }, 250);
+            }
         }
   });
 
@@ -26028,7 +26041,7 @@ function( Zeega, _Layer, SSSlider ) {
                 startSlide = this.model.get("start_slide"),
                 startSlideId = this.model.get("start_slide_id");
 
-            this.$el.css({ "height": this.$el.closest(".ZEEGA-player").height() + "px" });
+            this.$el.css({ "height": this.$el.closest(".ZEEGA-player-window").height() + "px" });
             this.hideArrows();
             this.initKeyboard();
             this.emitSlideData( this.slide );
@@ -26974,13 +26987,13 @@ function(Zeega) {
 
                 if ( _this.settings.cue_in !== 0 ) {
                     this.on( "seeked", function() {
-                        model.can_play = true;
+                        model.canplay = true;
                         model.trigger( "visual_ready", _this.model.id );
                     });
                     _this.setCurrentTime( _this.settings.cue_in );
                 }
                 else {
-                    model.can_play = true;
+                    model.canplay = true;
                     model.trigger( "visual_ready", _this.model.id );
                 }
             });
@@ -27003,7 +27016,7 @@ function(Zeega) {
                 _this.popcorn.play();
                 _this.popcorn.pause();
 
-                model.can_play = true;
+                model.canplay = true;
                 model.trigger( "visual_ready", _this.model.id );
 
                 if ( model.get("attr").fade_in === 0 ) {
@@ -27027,7 +27040,7 @@ function(Zeega) {
             this.popcorn.on( "loadeddata",function() {
                 //_this.$el.spin(false);
 
-                model.can_play = true;
+                model.canplay = true;
                 model.trigger( "visual_ready", _this.model.id );
 
                 if ( model.get("attr").fade_in === 0 ) {
@@ -27702,7 +27715,9 @@ function( Zeega, _Layer, MediaPlayer ) {
 
         onPlay: function() {
             this.ended = false;
-            this.mediaPlayer.play();
+            _.defer(function() {
+                this.mediaPlayer.play();
+            }.bind( this ));
         },
 
         onPause: function() {
@@ -27819,11 +27834,10 @@ function( Zeega, _Layer, MediaPlayer ) {
 
 zeega.define('zeega_parser/plugins/layers/audio/audio',[
     "zeega",
-    "zeega_parser/plugins/layers/_layer/_layer",
-    "zeega_parser/plugins/layers/video/video"
+    "zeega_parser/plugins/layers/_layer/_layer"
 ],
 
-function( Zeega, _Layer, VideoLayer ){
+function( Zeega, _Layer ){
 
     var Layer = Zeega.module();
 
@@ -27964,6 +27978,12 @@ function( Zeega, _Layer ) {
     Layer.Text.Visual = _Layer.Visual.extend({
 
         template: "plugins/text",
+
+        init: function() {
+            if ( this.model.get("attr").link ) {
+                this.template = "plugins/text-link";
+            }
+        },
 
         serialize: function() {
             return this.model.toJSON();
@@ -28346,8 +28366,8 @@ function( Zeega, LayerPlugin ) {
         onVisualReady: function() {
             this.ready = true;
             this.state = "ready";
-            this.status.emit("layer_ready", this.toJSON() );
-            this.trigger("layer_ready", this.toJSON());
+            this.status.emit("layer_preloaded", this.toJSON() );
+            this.trigger("layer_preloaded", this.toJSON());
         },
 
         onVisualError: function() {
@@ -28440,7 +28460,6 @@ function( Zeega, FrameModel, LayerCollection ) {
                         frame.put("layers", _.without( frame.get("layers"), layer.id ) );
                         return false;
                     } else if ( index > -1 ) {
-                        //console.log( layer, frame, index )
                         layer.order[ frame.id ] = index;
                         return true;
                     }
@@ -28553,7 +28572,7 @@ function( Zeega, SequenceCollection ) {
             this._setLinkConnections();
             this._setFramePreloadArrays();
             this._setFrameCommonLayers();
-            this._attach();
+            this.attach( this.options.attach );
         },
 
         _generateFrameSequenceKey: function() {
@@ -28710,13 +28729,13 @@ function( Zeega, SequenceCollection ) {
             }, this );
         },
 
-        _attach: function() {
+        attach: function( attachments ) {
             this.sequences.each(function( sequence ) {
-                _.extend( sequence, this.options.attach );
+                _.extend( sequence, attachments );
                 sequence.frames.each(function( frame ) {
-                    _.extend( frame, this.options.attach );
+                    _.extend( frame, attachments );
                     frame.layers.each(function( layer ) {
-                        _.extend( layer, this.options.attach );
+                        _.extend( layer, attachments );
                     }, this );
                 }, this );
             }, this );
@@ -28734,121 +28753,106 @@ zeega.define('zeega_parser/data-parsers/zeega-project-model',[
 ],
 
 function( ProjectModel ) {
-    var type = "zeega-project-model",
-        Parser = {};
 
-    Parser[ type ] = { name: type };
+    return {
 
-    Parser[ type ].validate = function( response ) {
+        name: "zeega-project-model",
+        
+        validate: function( response ) {
+            if ( response.sequences && ( response instanceof ProjectModel ) ) {
+                return true;
+            }
+            return false;
+        },
 
-        if ( response.sequences && ( response instanceof ProjectModel ) ) {
-            return true;
+        parse: function( response, opts ) {
+            return response;
         }
-        return false;
     };
 
-    // no op. projects are already formatted
-    Parser[type].parse = function( response, opts ) {
-        return response;
-    };
-
-    return Parser;
 });
 
 zeega.define('zeega_parser/data-parsers/zeega-project',["lodash"],
 
 function() {
-    var type = "zeega-project",
-        Parser = {};
+    return {
+        name: "zeega-project",
+        
+        validate: function( response ) {
 
-    Parser[ type ] = { name: type };
-
-    Parser[ type ].validate = function( response ) {
-
-        if ( response.sequences && response.frames && response.layers ) {
-            return true;
+            if ( response.sequences && response.frames && response.layers ) {
+                return true;
+            }
+            return false;
+        },
+        
+        parse: function( response, opts ) {
+            return response;
         }
-        return false;
     };
-
-    // no op. projects are already formatted
-    Parser[type].parse = function( response, opts ) {
-        return response;
-    };
-
-    return Parser;
 });
 
 zeega.define('zeega_parser/data-parsers/zeega-project-published',["lodash"],
 
 function() {
-    var type = "zeega-project-published",
-        Parser = {};
 
-    Parser[ type ] = { name: type };
+    return {
+        name: "zeega-project-published",
 
-    Parser[ type ].validate = function( response ) {
+        validate: function( response ) {
+            if ( response.items && response.items[0].media_type == "project"&& response.items.length==1) {
+                return true;
+            }
+            return false;
+        },
 
-        if ( response.items && response.items[0].media_type == "project"&& response.items.length==1) {
-            return true;
+        parse: function( response, opts ) {
+            return response.items[0].text;
         }
-        return false;
     };
-
-    // no op. projects are already formatted
-    Parser[type].parse = function( response, opts ) {
-        return response.items[0].text;
-    };
-
-    return Parser;
 });
 
 zeega.define('zeega_parser/data-parsers/zeega-project-collection',[
     "lodash"
 ],
 function() {
-    var type = "zeega-project-collection",
-        Parser = {};
+    return {
+        name: "zeega-project-collection",
 
-    Parser[ type ] = { name: type };
+        validate: function( response ) {
+            if ( response.items && response.items.length > 1 ) {
+                var mediaTypes = _.pluck( response.items, "media_type" );
+                    nonProjects = _.without( mediaTypes, "project");
 
-    Parser[ type ].validate = function( response ) {
-        if ( response.items && response.items.length > 1 ) {
-            var mediaTypes = _.pluck( response.items, "media_type" );
-                nonProjects = _.without( mediaTypes, "project");
-
-            if ( nonProjects.length === 0 ) {
-                return true;
-            }
-        }
-        return false;
-    };
-
-    Parser[ type ].parse = function( response, opts ) {
-        var project = {
-            title: response.request.query.tags,
-            sequences: [],
-            frames: [],
-            layers: []
-        };
-        
-        _.each( response.items, function( item ) {
-            if ( item.text !== "" ) {
-                project.layers = _.union( project.layers, item.text.layers );
-                project.frames = _.union( project.frames, item.text.frames );
-                if ( project.sequences.length > 0 ) {
-                    project.sequences[ project.sequences.length - 1 ].advance_to = item.text.sequences[0].id;
+                if ( nonProjects.length === 0 ) {
+                    return true;
                 }
-                project.sequences = _.union( project.sequences, item.text.sequences );
             }
-        });
+            return false;
+        },
 
-        return project;
+        parse: function( response, opts ) {
+            var project = {
+                title: response.request.query.tags,
+                sequences: [],
+                frames: [],
+                layers: []
+            };
+            
+            _.each( response.items, function( item ) {
+                if ( item.text !== "" ) {
+                    project.layers = _.union( project.layers, item.text.layers );
+                    project.frames = _.union( project.frames, item.text.frames );
+                    if ( project.sequences.length > 0 ) {
+                        project.sequences[ project.sequences.length - 1 ].advance_to = item.text.sequences[0].id;
+                    }
+                    project.sequences = _.union( project.sequences, item.text.sequences );
+                }
+            });
+
+            return project;
+        }
     };
-
-
-
-    return Parser;
 });
 
 /*
@@ -28908,26 +28912,6 @@ zeega.define('zeega_parser/data-parsers/zeega-collection',[
     "zeega_parser/plugins/layers/slideshow/parser"
 ],
 function( _, Slideshow ) {
-    var type = "zeega-collection",
-        Parser = {};
-
-    Parser[ type ] = { name: type };
-
-    Parser[ type ].validate = function( response ) {
-        // TODO: this works, but may not be valid with new API!!
-        if ( response.items && response.items[0] && response.items[0].child_items ) {
-            return true;
-        }
-        return false;
-    };
-
-    Parser[ type ].parse = function( response, opts ) {
-        if ( opts.layerOptions && opts.layerOptions.slideshow && opts.layerOptions.slideshow.display && response.items.length > 0 ) {
-            return parseSlideshowCollection( response, opts );
-        } else {
-            return parseStandardCollection( response, opts );
-        }
-    };
 
     function parseStandardCollection( response, opts ) {
         var sequence, frames, layers;
@@ -29024,48 +29008,31 @@ function( _, Slideshow ) {
         });
     }
 
-    return Parser;
+    return {
+        name: "zeega-collection",
+
+        validate: function( response ) {
+            // TODO: this works, but may not be valid with new API!!
+            if ( response.items && response.items[0] && response.items[0].child_items ) {
+                return true;
+            }
+            return false;
+        },
+
+        parse: function( response, opts ) {
+            if ( opts.layerOptions && opts.layerOptions.slideshow && opts.layerOptions.slideshow.display && response.items.length > 0 ) {
+                return parseSlideshowCollection( response, opts );
+            } else {
+                return parseStandardCollection( response, opts );
+            }
+        }
+    };
 });
 
 zeega.define('zeega_parser/data-parsers/flickr',[
     "lodash"
 ],
 function() {
-    var type = "flickr",
-        Parser = {};
-
-    Parser[ type ] = { name: type };
-
-    // parser validation. returns true if data conforms to parameters
-    Parser[ type ].validate = function( response ) {
-
-        if ( response.generator && response.generator == "http://www.flickr.com/" ) {
-            return true;
-        }
-        return false;
-    };
-
-    // parser returns valid Zeega data object
-    Parser[ type ].parse = function( response, opts ) {
-
-        // layers and frames from timebased items
-        var layers = generateLayerArrayFromItems( response.items ),
-            frames = generateFrameArrayFromItems( response.items ),
-            sequence = {
-                id: 0,
-                title: "flickr collection",
-                persistent_layers: [],
-                frames: _.pluck( frames, "id")
-            };
-
-        return _.extend(
-            response,
-            {
-                sequences: [ sequence ],
-                frames: frames,
-                layers: layers
-            });
-    };
 
     function generateLayerArrayFromItems( itemsArray ) {
         var layerDefaults = {
@@ -29095,45 +29062,45 @@ function() {
         });
     }
 
-    return Parser;
+    return {
+        name: "flickr",
+
+        validate: function( response ) {
+
+            if ( response.generator && response.generator == "http://www.flickr.com/" ) {
+                return true;
+            }
+            return false;
+        },
+
+        parse: function( response, opts ) {
+
+            // layers and frames from timebased items
+            var layers = generateLayerArrayFromItems( response.items ),
+                frames = generateFrameArrayFromItems( response.items ),
+                sequence = {
+                    id: 0,
+                    title: "flickr collection",
+                    persistent_layers: [],
+                    frames: _.pluck( frames, "id")
+                };
+
+            return _.extend(
+                response,
+                {
+                    sequences: [ sequence ],
+                    frames: frames,
+                    layers: layers
+                });
+        }
+    };
+
 });
 
 zeega.define('zeega_parser/data-parsers/youtube',[
     "lodash"
 ],
 function() {
-    var type = "youtube",
-        Parser = {};
-
-    Parser[ type ] = { name: type };
-
-    Parser[ type ].validate = function( res ) {
-        if ( res.generator && res.generator == "http://gdata.youtube.com/" ) {
-            return true;
-        }
-        return true;
-    };
-
-    Parser[ type ].parse = function( res, opts ) {
-        // layers and frames from timebased items
-        var layers = generateLayerArrayFromItems( res.feed.entry ),
-            frames = generateFrameArrayFromItems( res.feed.entry ),
-            sequence = {
-                id: 0,
-                title: "youtube playlist",
-                persistent_layers: [],
-                frames: _.pluck( frames, "id" )
-            },
-            project = _.extend(
-            res,
-            {
-                sequences: [ sequence ],
-                frames: frames,
-                layers: layers
-            });
-        return project;
-    };
-
 
     function generateUniqueId( string ) {
         var k = 0,
@@ -29183,7 +29150,38 @@ function() {
         });
     }
 
-    return Parser;
+    return {
+        name: "youtube",
+
+        validate: function( res ) {
+            if ( res.generator && res.generator == "http://gdata.youtube.com/" ) {
+                return true;
+            }
+            return true;
+        },
+
+        parse: function( res, opts ) {
+            // layers and frames from timebased items
+            var layers = generateLayerArrayFromItems( res.feed.entry ),
+                frames = generateFrameArrayFromItems( res.feed.entry ),
+                sequence = {
+                    id: 0,
+                    title: "youtube playlist",
+                    persistent_layers: [],
+                    frames: _.pluck( frames, "id" )
+                },
+                project = _.extend(
+                res,
+                {
+                    sequences: [ sequence ],
+                    frames: frames,
+                    layers: layers
+                });
+            return project;
+        }
+
+    };
+
 });
 
 /*
@@ -29213,10 +29211,9 @@ function(
     youtube
 ) {
     // extend the plugin object with all the layers
-    var Parsers = {};
+//    var Parsers = {};
 
-    return _.extend(
-        Parsers,
+    return [
         zProjectModel,
         zProject,
         zProjectPublished,
@@ -29224,7 +29221,7 @@ function(
         zCollection,
         flickr,
         youtube
-    );
+    ];
 });
 
 // parser.js
@@ -29583,6 +29580,50 @@ function( Zeega ) {
     return Player;
 });
 
+zeega.define('modules/parse',[
+    "zeega",
+    "zeega_parser/parser"
+
+],
+function( Zeega, ZeegaParser ) {
+
+
+    return function( attributes ) {
+        var parseThis, parsed;
+
+        parseThis = function( response ) {
+            return new ZeegaParser.parse( response, attributes );
+        };
+
+        if ( attributes.url ) {
+            var rawDataModel = new Zeega.Backbone.Model();
+
+            rawDataModel.url = attributes.url;
+            rawDataModel.fetch().success(function( response ) {
+                parsed = parseThis( response );
+                if ( attributes.callback ) {
+                    attributes.callback( parsed, response );
+                }
+                return parsed;
+
+            }.bind( this )).error(function() {
+                throw new Error("Ajax load fail");
+            });
+        } else if ( attributes.data ) {
+            parsed = parseThis( attributes.data );
+
+            if ( attributes.callback ) {
+                attributes.callback( parsed, response );
+            }
+
+            return data;
+        } else {
+            throw new TypeError("`url` expected non null");
+        }
+    };
+
+});
+
 zeega.define('modules/player',[
     "zeega",
 
@@ -29590,10 +29631,11 @@ zeega.define('modules/player',[
 
     "modules/relay",
     "modules/status",
-    "modules/player-layout"
+    "modules/player-layout",
+    "modules/parse"
 ],
 
-function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
+function( Zeega, ZeegaParser, Relay, Status, PlayerLayout, Parse ) {
     /**
     Player
 
@@ -29842,19 +29884,27 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
 
         _mergeAttributes: function( attributes ) {
             var attr = _.pick( attributes, _.keys( this.defaults ) );
+
             this.set( attr, { silent: true });
         },
 
         _load: function( attributes ) {
-            var rawDataModel = new Zeega.Backbone.Model(); // throw away model. may contain extraneous data
-
             if ( attributes.url ) {
+                var rawDataModel = new Zeega.Backbone.Model();
+
                 rawDataModel.url = attributes.url;
                 rawDataModel.fetch().success(function( response ) {
                     this._parseData( response );
                 }.bind( this )).error(function() {
                     throw new Error("Ajax load fail");
                 });
+            } else if ( attributes.data && attributes.data.parser !== null ) {
+                attributes.data.attach({
+                    status: this.status,
+                    relay: this.relay
+                });
+                this.project = attributes.data;
+                this._afterParse();
             } else if ( attributes.data ) {
                 this._parseData( attributes.data );
             } else {
@@ -29885,8 +29935,11 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
                     })
                 );
 
-            this._setStartFrame();
+            this._afterParse();
+        },
 
+        _afterParse: function() {
+            this._setStartFrame();
             this.status.emit( "data_loaded", _.extend({}, this.project.toJSON() ) );
             this._render();
             this._listen();
@@ -30174,6 +30227,7 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
 
     });
 
+    Zeega.parse = Parse;
     Zeega.player = Player;
 
     return Zeega;
