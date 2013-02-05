@@ -29967,13 +29967,13 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout, Parse ) {
                 }.bind( this )).error(function() {
                     throw new Error("Ajax load fail");
                 });
-            // } else if ( attributes.data && attributes.data.parser !== null ) {
-            //     attributes.data.attach({
-            //         status: this.status,
-            //         relay: this.relay
-            //     });
-            //     this.project = attributes.data;
-            //     this._afterParse();
+            } else if ( attributes.data && attributes.data.parser && attributes.data.parser !== null ) {
+                attributes.data.attach({
+                    status: this.status,
+                    relay: this.relay
+                });
+                this.project = attributes.data;
+                this._afterParse();
             } else if ( attributes.data ) {
                 this._parseData( attributes.data );
             } else {
