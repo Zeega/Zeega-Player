@@ -329,9 +329,9 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout, Parse ) {
 
         // attach listeners
         _listen: function() {
-            this.on( "cue_frame", this.cueFrame, this );
+            this.on("cue_frame", this.cueFrame, this );
             // relays
-            this.relay.on( "change:current_frame", this._remote_cueFrame, this );
+            this.relay.on("change:current_frame", this._remote_cueFrame, this );
         },
 
         _remote_cueFrame: function( info, id ) {
@@ -416,7 +416,6 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout, Parse ) {
             var currentFrame = this.status.get("current_frame"),
                 startFrame = this.get("startFrame"),
                 isCurrentNull, isStartNull;
-
             if ( !this.ready ) {
                 this.render(); // render the player first!
             } else if ( this.state == "paused" ) {
@@ -548,12 +547,19 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout, Parse ) {
         // TODO: update this
         // returns project metadata
         getProjectData: function() {
-            var frames = this.get("frames").map(function( frame ) {
-                return _.extend({},
-                    frame.toJSON(),
-                    { layers: frame.layers.toJSON() }
-                );
+            var frames = [];
+
+            this.project.sequences.each(function( sequence ) {
+                sequence.frames.each(function( frame ) {
+                    var f = _.extend({},
+                        frame.toJSON(),
+                        { layers: frame.layers.toJSON() }
+                    );
+
+                    frames.push( f );
+                });
             });
+
             return _.extend({},
                 this.toJSON(),
                 { frames: frames }
