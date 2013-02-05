@@ -320,9 +320,7 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout, Parse ) {
         },
 
         _setStartFrame: function() {
-            console.log('before')
             if ( this.get("startFrame") === null || !this.project.getFrame( this.get("startFrame") ) ) {
-            console.log('after')
                 this.put({
                     startFrame: this.project.sequences.at(0).get("frames")[0]
                 });

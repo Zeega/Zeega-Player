@@ -28808,7 +28808,10 @@ function( Zeega, SequenceCollection ) {
         },
 
         getFrame: function( frameID ) {
-            return this.sequences.get( this.frameKey[ frameID ] ).frames.get( frameID );
+            if ( this.frameKey[ frameID ] ) {
+                return this.sequences.get( this.frameKey[ frameID ] ).frames.get( frameID );
+            }
+            return false;
         }
 
     });
@@ -30012,7 +30015,7 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout, Parse ) {
         },
 
         _setStartFrame: function() {
-            if ( this.get("startFrame") === null || this.project.getFrame( this.get("startFrame") ) === undefined ) {
+            if ( this.get("startFrame") === null || !this.project.getFrame( this.get("startFrame") ) ) {
                 this.put({
                     startFrame: this.project.sequences.at(0).get("frames")[0]
                 });
