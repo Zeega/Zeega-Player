@@ -1,7 +1,8 @@
-<% if ( close ) { %>
+<% if ( close && close === true  ) { %>
     <a href="#" class="close">&times;</a>
 <% } %>
-<% if ( arrows ) { %>
+<% if ( arrows && arrows === true
+ ) { %>
     <a href="#" class="prev controls-arrow arrow-left"></a>
     <a href="#" class="next controls-arrow arrow-right"></a>
 <% } %>

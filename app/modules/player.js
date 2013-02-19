@@ -589,15 +589,19 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
 
         // completely obliterate the player. triggers event
         destroy: function() {
-            // TODO: Investigate whether or not this-alias can be safely
-            // replaced by bind(this)
-            var _this = this;
 
             this.Layout.$el.fadeOut( this.get("fadeOut"), function() {
                 // destroy all layers before calling player_destroyed
-                _this.get("frames").each(function(frame) { frame.destroy(); });
-                _this.status.emit("player_destroyed");
-            });
+                this.project.sequences.each(function( sequence ) {
+                    sequence.frames.each(function( frame ) {
+                        frame.destroy();
+                        frame.layers.each(function( layer ) {
+                            layer.destroy();
+                        });
+                    });
+                });
+                this.status.emit("player_destroyed");
+            }.bind( this ));
         },
 
         /**
