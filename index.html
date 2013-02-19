@@ -29,8 +29,14 @@
     bindEvent(window, "zeega_ready", function() {
 
     var project = new Zeega.player({
+
+        controls: {
+          arrows: true,
+          close: true
+        },
+
         // data: window.exampleData,
-        debugEvents: true,
+        // debugEvents: true,
         target: "#main",
         //windowRatio: 16/9,
         // target: $("#main"),

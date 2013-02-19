@@ -1,0 +1,118 @@
+@largeArrowColor: #fff;
+@largeArrowHoverColor: orange;
+@largeArrowOpacity: 0.85;
+@largeArrowHoverOpacity: 1;
+@largeArrowThickness: 10px;
+@largeArrowSize: 60px;
+
+
+.ZEEGA-basic-controls {
+
+    a {
+        z-index: 99999;
+        text-decoration: none;
+    }
+
+    a.close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        color: white;
+        font-weight: bold;
+        font-size: 2em;
+        display: block;
+        .transition( color, 0.5s )
+
+        &:hover {
+            color: orangered;
+            .transition( color, 0.5s )
+        }
+    }
+}
+
+.transition( @property, @sec ) {
+    transition: @property @sec;
+    -webkit-transition: @property @sec;
+}
+
+
+.controls-arrow {
+
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    display: none;
+
+  .nav-arrow ( @largeArrowSize, @largeArrowThickness, @largeArrowColor, @largeArrowHoverColor, @largeArrowOpacity, @largeArrowHoverOpacity );
+  
+  &.disabled {
+    opacity: 0.0;
+    transition: opacity 0.5s;
+    -moz-transition: opacity 0.5s; /* Firefox 4 */
+    -webkit-transition: opacity 0.5s; /* Safari and Chrome */
+    -o-transition: opacity 0.5s; /* Opera */
+  }
+}
+
+
+
+.nav-arrow ( @height:30px, @thickness: 10px, @color:#fff, @colorHover:orange, @opacity: 0.5, @opacityHover: 1 ) {
+  height: @height;
+  border-left: @thickness solid;
+  border-top: @thickness solid;
+  border-color: @color;
+  box-shadow: 0 0 50px transparent;
+  opacity: @opacity;
+  position: absolute;
+  transition: opacity 0.5s;
+  -moz-transition: opacity 0.5s; /* Firefox 4 */
+  -webkit-transition: opacity 0.5s; /* Safari and Chrome */
+  -o-transition: opacity 0.5s; /* Opera */
+  transition: border-color 0.5s;
+  -moz-transition: border-color 0.5s; /* Firefox 4 */
+  -webkit-transition: border-color 0.5s; /* Safari and Chrome */
+  -o-transition: border-color 0.5s; /* Opera */
+  width:@height;
+  z-index:100;
+
+  &.arrow-left {
+    left:15px;
+    transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg); /* IE 9 */
+    -moz-transform: rotate(-45deg); /* Firefox */
+    -webkit-transform: rotate(-45deg); /* Safari and Chrome */
+    -o-transform: rotate(-45deg); /* Opera */
+    -webkit-filter: drop-shadow(-4px 4px 4px rgba(0,0,0,0.5));
+
+    &:hover {
+      -webkit-filter: drop-shadow(-8px 8px 6px rgba(0,0,0,0.5));
+    }
+  }
+
+  &.arrow-right {
+    right: 15px;
+    transform: rotate(135deg);
+    -ms-transform: rotate(135deg); /* IE 9 */
+    -moz-transform: rotate(135deg); /* Firefox */
+    -webkit-transform: rotate(135deg); /* Safari and Chrome */
+    -o-transform: rotate(135deg); /* Opera */
+
+    -webkit-filter: drop-shadow(4px -4px 4px rgba(0,0,0,0.5));
+    &:hover {
+      -webkit-filter: drop-shadow(8px -8px 6px rgba(0,0,0,0.5));
+    }
+  }
+
+  &:hover {
+    border-color: @colorHover;
+    transition: border-color 0.5s;
+    -moz-transition: border-color 0.5s; /* Firefox 4 */
+    -webkit-transition: border-color 0.5s; /* Safari and Chrome */
+    -o-transition: border-color 0.5s; /* Opera */
+    opacity: @opacityHover;
+    transition: opacity 0.5s;
+    -moz-transition: opacity 0.5s; /* Firefox 4 */
+    -webkit-transition: opacity 0.5s; /* Safari and Chrome */
+    -o-transition: opacity 0.5s; /* Opera */
+  }
+}

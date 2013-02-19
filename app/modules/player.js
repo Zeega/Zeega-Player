@@ -42,19 +42,25 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
         relay: null,
         status: null,
         gmapAPI: "waiting",
-
         Layout: null,
 
         // default settings -  can be overridden by project data
         defaults: {
-            
+
+             /**
+            sets the default visual controls. "none" or object with desired controls { arrows: true, close: false }
+            @property controls
+            @type Mixed
+            @default "none"
+            **/
+            controls: "none",
+
             /**
             Tells the player how to handle extra space around the player. Can be true, false, "horizontal", or "vertical"
             @property cover
             @type mixed
             @default false
             **/
-
             cover: false,
 
             /**
@@ -505,7 +511,6 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
             // render current frame // should trigger a frame rendered event when successful
             this.status.get("current_frame_model").render( oldID );
 
-            console.log("       render frame", this.status.get("current_frame_model") );
             if ( this.state !== "playing" ) {
                 this.state = "playing";
                 this.status.emit( "play", this );

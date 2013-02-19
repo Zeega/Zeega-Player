@@ -1,7 +1,8 @@
 define([
-    "zeega"
+    "zeega",
+    "modules/controls-view"
 ],
-function( Zeega ) {
+function( Zeega, ControlsView ) {
     /*
         the player layout
 
@@ -55,10 +56,12 @@ function( Zeega ) {
         afterRender: function() {
             // correctly size the player window
             this.$(".ZEEGA-player-window").css( this.getWindowSize() );
-            this.setControls();
+            this.setPrevNext();
+
+            this.renderControls();
         },
 
-        setControls: function() {
+        setPrevNext: function() {
             // TODO: Investigate whether or not this-alias can be safely
             // replaced by bind(this)
             var next = this.model.get("next"),
@@ -76,6 +79,17 @@ function( Zeega ) {
                     _this.model.cuePrev();
                     return false;
                 });
+            }
+        },
+
+        renderControls: function() {
+            var controlSettings = this.model.get("controls");
+
+            if ( _.isObject( controlSettings ) ) {
+                this.controls = new ControlsView({ model: this.model, settings: controlSettings });
+
+                this.$el.prepend( this.controls.el );
+                this.controls.render();
             }
         },
 
