@@ -732,6 +732,124 @@
   height: 16px;
   box-shadow: none;
 }
+.ZEEGA-basic-controls a {
+  z-index: 99999;
+  text-decoration: none;
+}
+.ZEEGA-basic-controls a.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: white;
+  font-weight: bold;
+  font-size: 2em;
+  display: block;
+}
+.transition( color, 0.5s ) .ZEEGA-basic-controls a.close:hover {
+  color: orangered;
+  transition: color 0.5s;
+  -webkit-transition: color 0.5s;
+}
+.controls-arrow {
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  display: none;
+  height: 60px;
+  border-left: 10px solid;
+  border-top: 10px solid;
+  border-color: #ffffff;
+  box-shadow: 0 0 50px transparent;
+  opacity: 0.85;
+  position: absolute;
+  transition: opacity 0.5s;
+  -moz-transition: opacity 0.5s;
+  -webkit-transition: opacity 0.5s;
+  -o-transition: opacity 0.5s;
+  transition: border-color 0.5s;
+  -moz-transition: border-color 0.5s;
+  /* Firefox 4 */
+
+  -webkit-transition: border-color 0.5s;
+  /* Safari and Chrome */
+
+  -o-transition: border-color 0.5s;
+  /* Opera */
+
+  width: 60px;
+  z-index: 100;
+}
+.controls-arrow.arrow-left {
+  left: 15px;
+  transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  /* IE 9 */
+
+  -moz-transform: rotate(-45deg);
+  /* Firefox */
+
+  -webkit-transform: rotate(-45deg);
+  /* Safari and Chrome */
+
+  -o-transform: rotate(-45deg);
+  /* Opera */
+
+  -webkit-filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.5));
+}
+.controls-arrow.arrow-left:hover {
+  -webkit-filter: drop-shadow(-8px 8px 6px rgba(0, 0, 0, 0.5));
+}
+.controls-arrow.arrow-right {
+  right: 15px;
+  transform: rotate(135deg);
+  -ms-transform: rotate(135deg);
+  /* IE 9 */
+
+  -moz-transform: rotate(135deg);
+  /* Firefox */
+
+  -webkit-transform: rotate(135deg);
+  /* Safari and Chrome */
+
+  -o-transform: rotate(135deg);
+  /* Opera */
+
+  -webkit-filter: drop-shadow(4px -4px 4px rgba(0, 0, 0, 0.5));
+}
+.controls-arrow.arrow-right:hover {
+  -webkit-filter: drop-shadow(8px -8px 6px rgba(0, 0, 0, 0.5));
+}
+.controls-arrow:hover {
+  border-color: #ffa500;
+  transition: border-color 0.5s;
+  -moz-transition: border-color 0.5s;
+  -webkit-transition: border-color 0.5s;
+  -o-transition: border-color 0.5s;
+  opacity: 1;
+  transition: opacity 0.5s;
+  -moz-transition: opacity 0.5s;
+  /* Firefox 4 */
+
+  -webkit-transition: opacity 0.5s;
+  /* Safari and Chrome */
+
+  -o-transition: opacity 0.5s;
+  /* Opera */
+
+}
+.controls-arrow.disabled {
+  opacity: 0.0;
+  transition: opacity 0.5s;
+  -moz-transition: opacity 0.5s;
+  /* Firefox 4 */
+
+  -webkit-transition: opacity 0.5s;
+  /* Safari and Chrome */
+
+  -o-transition: opacity 0.5s;
+  /* Opera */
+
+}
 
 .visual-element-audio {
   width: 0px !important;
@@ -1108,6 +1226,125 @@
 .visual-element-text a:active {
   color: inherit;
   text-decoration: none;
+}
+
+.ZEEGA-basic-controls a {
+  z-index: 99999;
+  text-decoration: none;
+}
+.ZEEGA-basic-controls a.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: white;
+  font-weight: bold;
+  font-size: 2em;
+  display: block;
+}
+.transition( color, 0.5s ) .ZEEGA-basic-controls a.close:hover {
+  color: orangered;
+  transition: color 0.5s;
+  -webkit-transition: color 0.5s;
+}
+.controls-arrow {
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  display: none;
+  height: 60px;
+  border-left: 10px solid;
+  border-top: 10px solid;
+  border-color: #ffffff;
+  box-shadow: 0 0 50px transparent;
+  opacity: 0.85;
+  position: absolute;
+  transition: opacity 0.5s;
+  -moz-transition: opacity 0.5s;
+  -webkit-transition: opacity 0.5s;
+  -o-transition: opacity 0.5s;
+  transition: border-color 0.5s;
+  -moz-transition: border-color 0.5s;
+  /* Firefox 4 */
+
+  -webkit-transition: border-color 0.5s;
+  /* Safari and Chrome */
+
+  -o-transition: border-color 0.5s;
+  /* Opera */
+
+  width: 60px;
+  z-index: 100;
+}
+.controls-arrow.arrow-left {
+  left: 15px;
+  transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  /* IE 9 */
+
+  -moz-transform: rotate(-45deg);
+  /* Firefox */
+
+  -webkit-transform: rotate(-45deg);
+  /* Safari and Chrome */
+
+  -o-transform: rotate(-45deg);
+  /* Opera */
+
+  -webkit-filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.5));
+}
+.controls-arrow.arrow-left:hover {
+  -webkit-filter: drop-shadow(-8px 8px 6px rgba(0, 0, 0, 0.5));
+}
+.controls-arrow.arrow-right {
+  right: 15px;
+  transform: rotate(135deg);
+  -ms-transform: rotate(135deg);
+  /* IE 9 */
+
+  -moz-transform: rotate(135deg);
+  /* Firefox */
+
+  -webkit-transform: rotate(135deg);
+  /* Safari and Chrome */
+
+  -o-transform: rotate(135deg);
+  /* Opera */
+
+  -webkit-filter: drop-shadow(4px -4px 4px rgba(0, 0, 0, 0.5));
+}
+.controls-arrow.arrow-right:hover {
+  -webkit-filter: drop-shadow(8px -8px 6px rgba(0, 0, 0, 0.5));
+}
+.controls-arrow:hover {
+  border-color: #ffa500;
+  transition: border-color 0.5s;
+  -moz-transition: border-color 0.5s;
+  -webkit-transition: border-color 0.5s;
+  -o-transition: border-color 0.5s;
+  opacity: 1;
+  transition: opacity 0.5s;
+  -moz-transition: opacity 0.5s;
+  /* Firefox 4 */
+
+  -webkit-transition: opacity 0.5s;
+  /* Safari and Chrome */
+
+  -o-transition: opacity 0.5s;
+  /* Opera */
+
+}
+.controls-arrow.disabled {
+  opacity: 0.0;
+  transition: opacity 0.5s;
+  -moz-transition: opacity 0.5s;
+  /* Firefox 4 */
+
+  -webkit-transition: opacity 0.5s;
+  /* Safari and Chrome */
+
+  -o-transition: opacity 0.5s;
+  /* Opera */
+
 }
 
 /*********************************************

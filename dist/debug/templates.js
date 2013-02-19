@@ -1,5 +1,22 @@
 this["JST"] = this["JST"] || {};
 
+this["JST"]["app/templates/controls.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='';
+ if ( close && close === true  ) { 
+;__p+='\n    <a href="#" class="close">&times;</a>\n';
+ } 
+;__p+='\n';
+ if ( arrows && arrows === true
+ ) { 
+;__p+='\n    <a href="#" class="prev controls-arrow arrow-left"></a>\n    <a href="#" class="next controls-arrow arrow-right"></a>\n';
+ } 
+;__p+='';
+}
+return __p;
+};
+
 this["JST"]["app/templates/layouts/player-layout.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
