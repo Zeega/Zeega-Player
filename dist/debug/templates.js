@@ -10,7 +10,7 @@ __p+='';
 ;__p+='\n';
  if ( arrows && arrows === true
  ) { 
-;__p+='\n    <a href="#" class="prev controls-arrow arrow-left"></a>\n    <a href="#" class="next controls-arrow arrow-right"></a>\n';
+;__p+='\n    <a href="#" class="prev controls-arrow arrow-left disabled"></a>\n    <a href="#" class="next controls-arrow arrow-right disabled"></a>\n';
  } 
 ;__p+='';
 }

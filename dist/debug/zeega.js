@@ -17,7 +17,7 @@ __p+='';
 ;__p+='\n';
  if ( arrows && arrows === true
  ) { 
-;__p+='\n    <a href="#" class="prev controls-arrow arrow-left"></a>\n    <a href="#" class="next controls-arrow arrow-right"></a>\n';
+;__p+='\n    <a href="#" class="prev controls-arrow arrow-left disabled"></a>\n    <a href="#" class="next controls-arrow arrow-right disabled"></a>\n';
  } 
 ;__p+='';
 }
@@ -41835,6 +41835,7 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
                         });
                     });
                 });
+                this.Layout.remove();
                 this.status.emit("player_destroyed");
             }.bind( this ));
         },
