@@ -600,6 +600,7 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
                         });
                     });
                 });
+                this.Layout.remove();
                 this.status.emit("player_destroyed");
             }.bind( this ));
         },
