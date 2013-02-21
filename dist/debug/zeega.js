@@ -12,12 +12,16 @@ var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='';
  if ( close && close === true  ) { 
-;__p+='\n    <a href="#" class="close">&times;</a>\n';
+;__p+='\n    <a href="#" class="ZEEGA-close">&times;</a>\n';
  } 
 ;__p+='\n';
  if ( arrows && arrows === true
  ) { 
-;__p+='\n    <a href="#" class="prev controls-arrow arrow-left disabled"></a>\n    <a href="#" class="next controls-arrow arrow-right disabled"></a>\n';
+;__p+='\n    <a href="#" class="ZEEGA-prev controls-arrow arrow-left disabled"></a>\n    <a href="#" class="ZEEGA-next controls-arrow arrow-right disabled"></a>\n';
+ } 
+;__p+='\n';
+ if ( playpause && playpause === true  ) { 
+;__p+='\n    <a href="#" class="ZEEGA-playpause pause-zcon"></a>\n';
  } 
 ;__p+='';
 }
@@ -40989,6 +40993,8 @@ function( Zeega ) {
 
         initialize: function( args, options ) {
             this.model.on("frame_play", this.onFramePlay, this );
+            this.model.on("play", this.onPlay, this );
+            this.model.on("pause", this.onPause, this );
         },
 
         serialize: function() {
@@ -40996,9 +41002,10 @@ function( Zeega ) {
         },
 
         events: {
-            "click .close": "close",
-            "click .prev": "prev",
-            "click .next": "next"
+            "click .ZEEGA-close": "close",
+            "click .ZEEGA-prev": "prev",
+            "click .ZEEGA-next": "next",
+            "click .ZEEGA-playpause": "playpause"
         },
 
         close: function() {
@@ -41016,21 +41023,37 @@ function( Zeega ) {
         onFramePlay: function( info ) {
             switch(info._connections) {
                 case "l":
-                    this.activateArrow("prev");
-                    this.disableArrow("next");
+                    this.activateArrow("ZEEGA-prev");
+                    this.disableArrow("ZEEGA-next");
                     break;
                 case "r":
-                    this.disableArrow("prev");
-                    this.activateArrow("next");
+                    this.disableArrow("ZEEGA-prev");
+                    this.activateArrow("ZEEGA-next");
                     break;
                 case "lr":
-                    this.activateArrow("prev");
-                    this.activateArrow("next");
+                    this.activateArrow("ZEEGA-prev");
+                    this.activateArrow("ZEEGA-next");
                     break;
                 default:
-                    this.disableArrow("prev");
-                    this.disableArrow("next");
+                    this.disableArrow("ZEEGA-prev");
+                    this.disableArrow("ZEEGA-next");
             }
+        },
+
+        onPlay: function() {
+            this.$(".ZEEGA-playpause")
+                .addClass("pause-zcon")
+                .removeClass("play-zcon");
+        },
+        
+        onPause: function() {
+            this.$(".ZEEGA-playpause")
+                .addClass("play-zcon")
+                .removeClass("pause-zcon");
+        },
+
+        playpause: function() {
+            this.model.playPause();
         },
 
         activateArrow: function(className) {

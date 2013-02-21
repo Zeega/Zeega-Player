@@ -736,7 +736,7 @@
   z-index: 99999;
   text-decoration: none;
 }
-.ZEEGA-basic-controls a.close {
+.ZEEGA-basic-controls a.ZEEGA-close {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -745,10 +745,27 @@
   font-size: 2em;
   display: block;
 }
-.transition( color, 0.5s ) .ZEEGA-basic-controls a.close:hover {
+.transition( color, 0.5s ) .ZEEGA-basic-controls a.ZEEGA-close:hover {
   color: orangered;
   transition: color 0.5s;
   -webkit-transition: color 0.5s;
+}
+.ZEEGA-basic-controls .play-zcon,
+.ZEEGA-basic-controls .pause-zcon {
+  background-image: url('../img/playpause.png');
+  background-position: 0px 0px;
+  background-repeat: no-repeat;
+  display: inline-block;
+  height: 25px;
+  width: 25px;
+}
+.ZEEGA-basic-controls .pause-zcon {
+  background-position: -25px 0px;
+}
+.ZEEGA-basic-controls .ZEEGA-playpause {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
 }
 .controls-arrow {
   top: 0;
@@ -1232,7 +1249,7 @@
   z-index: 99999;
   text-decoration: none;
 }
-.ZEEGA-basic-controls a.close {
+.ZEEGA-basic-controls a.ZEEGA-close {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -1241,10 +1258,27 @@
   font-size: 2em;
   display: block;
 }
-.transition( color, 0.5s ) .ZEEGA-basic-controls a.close:hover {
+.transition( color, 0.5s ) .ZEEGA-basic-controls a.ZEEGA-close:hover {
   color: orangered;
   transition: color 0.5s;
   -webkit-transition: color 0.5s;
+}
+.ZEEGA-basic-controls .play-zcon,
+.ZEEGA-basic-controls .pause-zcon {
+  background-image: url('../img/playpause.png');
+  background-position: 0px 0px;
+  background-repeat: no-repeat;
+  display: inline-block;
+  height: 25px;
+  width: 25px;
+}
+.ZEEGA-basic-controls .pause-zcon {
+  background-position: -25px 0px;
+}
+.ZEEGA-basic-controls .ZEEGA-playpause {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
 }
 .controls-arrow {
   top: 0;
