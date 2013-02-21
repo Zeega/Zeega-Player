@@ -38662,7 +38662,7 @@ function(Zeega) {
             // pause if player gets to the cue out point
 
             if ( cueOut === 0 ) {
-                this.settings.cue_out = cueOut = his.getDuration();
+                this.settings.cue_out = cueOut = this.getDuration();
             }
 
             if ( cueOut !== null && this.popcorn.currentTime() >= cueOut ) {
@@ -40349,7 +40349,7 @@ function() {
 
     // no op. projects are already formatted
     Parser[type].parse = function( response, opts ) {
-        return response.items[0].text;
+        return response.items[0].text.project || response.items[0].text;
     };
 
     return Parser;
@@ -40805,6 +40805,7 @@ function( Zeega, _, ProjectModel, DataParser ) {
 
                 // parse the data
                 parsed = p.parse( data, options );
+
                 return false;
             }
         }, this );
