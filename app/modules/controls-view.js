@@ -15,7 +15,11 @@ function( Zeega ) {
         },
 
         serialize: function() {
-            return this.options.settings;
+            return _.defaults( this.options.settings, {
+                arrows: true,
+                close: true,
+                playpause: true
+            });
         },
 
         events: {

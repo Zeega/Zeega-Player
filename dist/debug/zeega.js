@@ -11,16 +11,15 @@ this["JST"]["app/templates/controls.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='';
- if ( close && close === true  ) { 
+ if ( close === true  ) { 
 ;__p+='\n    <a href="#" class="ZEEGA-close">&times;</a>\n';
  } 
 ;__p+='\n';
- if ( arrows && arrows === true
- ) { 
+ if ( arrows === true ) { 
 ;__p+='\n    <a href="#" class="ZEEGA-prev controls-arrow arrow-left disabled"></a>\n    <a href="#" class="ZEEGA-next controls-arrow arrow-right disabled"></a>\n';
  } 
 ;__p+='\n';
- if ( playpause && playpause === true  ) { 
+ if ( playpause === true  ) { 
 ;__p+='\n    <a href="#" class="ZEEGA-playpause pause-zcon"></a>\n';
  } 
 ;__p+='';
@@ -40999,7 +40998,11 @@ function( Zeega ) {
         },
 
         serialize: function() {
-            return this.options.settings;
+            return _.defaults( this.options.settings, {
+                arrows: true,
+                close: true,
+                playpause: true
+            });
         },
 
         events: {
