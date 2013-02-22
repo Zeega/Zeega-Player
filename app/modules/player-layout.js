@@ -93,6 +93,12 @@ function( Zeega, ControlsView ) {
                         arrows: true,
                         playpause: true
                     };
+                } else if ( controlSettings === false ) {
+                    controlSettings = {
+                        arrows: false,
+                        close: false,
+                        playpause: falsed
+                    };
                 }
 
                 this.controls = new ControlsView({ model: this.model, settings: controlSettings });
