@@ -1,21 +1,25 @@
 this["JST"] = this["JST"] || {};
 
-this["JST"]["app/templates/controls.html"] = function(obj){
+this["JST"]["app/templates/controls/arrows.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='';
- if ( close === true  ) { 
-;__p+='\n    <a href="#" class="ZEEGA-close">&times;</a>\n';
- } 
-;__p+='\n';
- if ( arrows === true ) { 
-;__p+='\n    <a href="#" class="ZEEGA-prev controls-arrow arrow-left disabled"></a>\n    <a href="#" class="ZEEGA-next controls-arrow arrow-right disabled"></a>\n';
- } 
-;__p+='\n';
- if ( playpause === true  ) { 
-;__p+='\n    <a href="#" class="ZEEGA-playpause pause-zcon"></a>\n';
- } 
-;__p+='';
+__p+='<a href="#" class="ZEEGA-prev controls-arrow arrow-left disabled"></a>\n<a href="#" class="ZEEGA-next controls-arrow arrow-right disabled"></a>';
+}
+return __p;
+};
+
+this["JST"]["app/templates/controls/close.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<a href="#" class="ZEEGA-close">&times;</a>';
+}
+return __p;
+};
+
+this["JST"]["app/templates/controls/playpause.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<a href="#" class="ZEEGA-playpause pause-zcon"></a>';
 }
 return __p;
 };
