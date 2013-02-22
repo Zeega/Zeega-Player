@@ -53,7 +53,7 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
             @type Mixed
             @default "none"
             **/
-            controls: "none",
+            controls: true,
 
             /**
             Tells the player how to handle extra space around the player. Can be true, false, "horizontal", or "vertical"

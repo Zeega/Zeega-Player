@@ -15,6 +15,7 @@ function( Zeega ) {
         },
 
         serialize: function() {
+
             return _.defaults( this.options.settings, {
                 arrows: true,
                 close: true,

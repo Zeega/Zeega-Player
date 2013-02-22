@@ -85,7 +85,16 @@ function( Zeega, ControlsView ) {
         renderControls: function() {
             var controlSettings = this.model.get("controls");
 
-            if ( _.isObject( controlSettings ) ) {
+            if ( _.isObject( controlSettings ) || controlSettings === true ) {
+
+                if ( controlSettings === true ) {
+                    controlSettings = {
+                        close: true,
+                        arrows: true,
+                        playpause: true
+                    };
+                }
+
                 this.controls = new ControlsView({ model: this.model, settings: controlSettings });
 
                 this.$el.prepend( this.controls.el );

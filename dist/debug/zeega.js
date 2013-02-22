@@ -40998,6 +40998,7 @@ function( Zeega ) {
         },
 
         serialize: function() {
+
             return _.defaults( this.options.settings, {
                 arrows: true,
                 close: true,
@@ -41179,7 +41180,16 @@ function( Zeega, ControlsView ) {
         renderControls: function() {
             var controlSettings = this.model.get("controls");
 
-            if ( _.isObject( controlSettings ) ) {
+            if ( _.isObject( controlSettings ) || controlSettings === true ) {
+
+                if ( controlSettings === true ) {
+                    controlSettings = {
+                        close: true,
+                        arrows: true,
+                        playpause: true
+                    };
+                }
+
                 this.controls = new ControlsView({ model: this.model, settings: controlSettings });
 
                 this.$el.prepend( this.controls.el );
@@ -41315,7 +41325,7 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
             @type Mixed
             @default "none"
             **/
-            controls: "none",
+            controls: true,
 
             /**
             Tells the player how to handle extra space around the player. Can be true, false, "horizontal", or "vertical"
