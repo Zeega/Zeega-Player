@@ -1,12 +1,15 @@
 define([
-    "zeega"
+    "zeega",
+    "modules/controls/arrows",
+    "modules/controls/close",
+    "modules/controls/playpause"
 ],
-function( Zeega ) {
+function( Zeega, ArrowView, CloseView, PlayPauseView ) {
 
     return Zeega.Backbone.LayoutView.extend({
 
-        template: "controls",
         className: "ZEEGA-basic-controls",
+        manage: true,
 
         initialize: function( args, options ) {
             this.model.on("frame_play", this.onFramePlay, this );
@@ -14,13 +17,26 @@ function( Zeega ) {
             this.model.on("pause", this.onPause, this );
         },
 
+        beforeRender: function() {
+            if ( this.options.settings.close ) {
+                this.insertView( new CloseView() );
+            }
+            if ( this.options.settings.arrows ) {
+                this.insertView( new ArrowView() );
+            }
+
+            if ( this.options.settings.playpause ) {
+                this.insertView( new PlayPauseView() );
+            }
+        },
+
         serialize: function() {
 
-            return _.defaults( this.options.settings, {
-                arrows: true,
-                close: true,
-                playpause: true
-            });
+            // return _.defaults( this.options.settings, {
+            //     arrows: true,
+            //     close: true,
+            //     playpause: true
+            // });
         },
 
         events: {
@@ -84,28 +100,8 @@ function( Zeega ) {
 
         disableArrow: function(className) {
             this.$("."+ className).addClass("disabled");
-        },
-
-        fetch: function( path ) {
-            // Initialize done for use in async-mode
-            var done;
-
-            // Concatenate the file extension.
-            path = "app/templates/"+ path + ".html";
-
-            // If cached, use the compiled template.
-            if ( JST[ path ] ) {
-                return JST[ path ];
-            } else {
-                // Put fetch into `async-mode`.
-                done = this.async();
-
-                // Seek out the template asynchronously.
-                return Zeega.$.ajax({ url: Zeega.root + path }).then(function(contents) {
-                    done( JST[path] = _.template(contents) );
-                });
-            }
         }
+
     });
 
 });
