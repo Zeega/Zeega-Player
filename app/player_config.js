@@ -14,7 +14,7 @@ require.config({
 
         // Libraries.
         jquery: "../assets/js/libs/jquery",
-        jqueryUI: "../assets/js/plugins/jquery-ui",
+        jqueryUI: "../assets/js/plugins/jquery-ui/js/jquery-ui-1.10.1.custom",
         lodash: "../assets/js/libs/lodash",
         backbone: "../assets/js/libs/backbone"
 
