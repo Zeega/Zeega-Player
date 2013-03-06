@@ -38,6 +38,7 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout, Parse ) {
 
     Player = Zeega.Backbone.Model.extend({
 
+        canplay: false,
         ready: false,          // the player is parsed and in the dom. can call play play. layers have not been preloaded yet
         state: "paused",
         relay: null,
