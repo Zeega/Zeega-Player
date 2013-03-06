@@ -27934,14 +27934,16 @@ function( Zeega, _Layer ){
         audio: null,
         ended: false,
         playbackCount: 0,
+        listening: false,
 
         serialize: function() {
             return this.model.toJSON();
         },
 
         onPlay: function() {
-            this.ended = false;
             this.audio.play();
+            this.ended = false;
+            
         },
 
         onPause: function() {
@@ -27954,20 +27956,25 @@ function( Zeega, _Layer ){
 
         verifyReady: function() {
             this.audio = document.getElementById("audio-el-" + this.model.id );
-            this.$('audio').on("canplay", function() {
-                this.audio.pause();
-                this.audio.currentTime = this.getAttr("cue_in");
 
-                if ( this.getAttr("cue_out") || this.getAttr("loop") ) {
-                    this.listen();
-                }
-                this.model.trigger( "visual_ready", this.model.id );
+            this.audio.load();
+            this.audio.addEventListener("canplaythrough", function() {
+                this.onCanPlay();
             }.bind( this ));
         },
 
-        listen: function() {
+        onCanPlay: _.once(function() {
+            this.audio.pause();
+            this.audio.currentTime = this.getAttr("cue_in");
 
-            this.$("audio").on("timeupdate", function(){
+            if ( this.getAttr("cue_out") || this.getAttr("loop") ) {
+                this.listen();
+            }
+            this.model.trigger( "visual_ready", this.model.id );
+        }),
+
+        listen: _.once(function() {
+            this.audio.addEventListener("timeupdate", function(){
                 var currentTime = this.audio.currentTime;
 
                 if ( currentTime >= this.getAttr("cue_out" ) ) {
@@ -27983,7 +27990,7 @@ function( Zeega, _Layer ){
 
             }.bind( this ));
 
-            this.$("audio").on("ended", function(){
+            this.audio.addEventListener("ended", function(){
                 if ( this.getAttr("loop") ) {
                     this.audio.pause();
                     this.audio.currentTime = this.getAttr("cue_in");
@@ -27993,7 +28000,7 @@ function( Zeega, _Layer ){
                     this.audio.currentTime = this.getAttr("cue_in");
                 }
             }.bind( this ));
-        } 
+        })
 
 
     });
