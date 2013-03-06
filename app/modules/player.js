@@ -330,8 +330,17 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout, Parse ) {
         // attach listeners
         _listen: function() {
             this.on("cue_frame", this.cueFrame, this );
+            this.on("frame_preloaded", this.onInitialFramesPreloaded, this );
             // relays
             this.relay.on("change:current_frame", this._remote_cueFrame, this );
+        },
+
+        onInitialFramesPreloaded: function( info ) {
+            if ( this.get("startFrame") == info.frame.id ) {
+                this.canplay = true;
+                this.status.emit("canplay", this );
+                this.off("frame_preloaded", this.onInitialFramesPreloaded );
+            }
         },
 
         _remote_cueFrame: function( info, id ) {
