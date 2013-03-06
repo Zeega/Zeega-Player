@@ -27956,9 +27956,45 @@ function( Zeega, _Layer ){
             this.audio = document.getElementById("audio-el-" + this.model.id );
             this.$('audio').on("canplay", function() {
                 this.audio.pause();
+                this.audio.currentTime = this.getAttr("cue_in");
+
+                if ( this.getAttr("cue_out") || this.getAttr("loop") ) {
+                    this.listen();
+                }
                 this.model.trigger( "visual_ready", this.model.id );
             }.bind( this ));
-        }
+        },
+
+        listen: function() {
+
+            this.$("audio").on("timeupdate", function(){
+                var currentTime = this.audio.currentTime;
+
+                if ( currentTime >= this.getAttr("cue_out" ) ) {
+                    if ( this.getAttr("loop") ) {
+                        this.audio.pause();
+                        this.audio.currentTime = this.getAttr("cue_in");
+                        this.audio.play();
+                    } else {
+                        this.audio.pause();
+                        this.audio.currentTime = this.getAttr("cue_in");
+                    }
+                }
+
+            }.bind( this ));
+
+            this.$("audio").on("ended", function(){
+                if ( this.getAttr("loop") ) {
+                    this.audio.pause();
+                    this.audio.currentTime = this.getAttr("cue_in");
+                    this.audio.play();
+                } else {
+                    this.audio.pause();
+                    this.audio.currentTime = this.getAttr("cue_in");
+                }
+            }.bind( this ));
+        } 
+
 
     });
 
