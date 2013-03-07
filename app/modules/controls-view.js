@@ -46,15 +46,18 @@ function( Zeega, ArrowView, CloseView, PlayPauseView ) {
             "click .ZEEGA-playpause": "playpause"
         },
 
-        close: function() {
+        close: function( event ) {
+            event.preventDefault();
             this.model.destroy();
         },
 
-        prev: function() {
+        prev: function( event ) {
+            event.preventDefault();
             this.model.cuePrev();
         },
 
-        next: function() {
+        next: function( event ) {
+            event.preventDefault();
             this.model.cueNext();
         },
 
@@ -90,7 +93,8 @@ function( Zeega, ArrowView, CloseView, PlayPauseView ) {
                 .removeClass("pause-zcon");
         },
 
-        playpause: function() {
+        playpause: function( event ) {
+            event.preventDefault();
             this.model.playPause();
         },
 

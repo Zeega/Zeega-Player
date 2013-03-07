@@ -3,7 +3,7 @@ this["JST"] = this["JST"] || {};
 this["JST"]["app/templates/controls/arrows.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<a href="#" class="ZEEGA-prev controls-arrow arrow-left disabled"></a>\n<a href="#" class="ZEEGA-next controls-arrow arrow-right disabled"></a>';
+__p+='<a href="#" class="ZEEGA-prev controls-arrow arrow-left disabled"></a>\r\n<a href="#" class="ZEEGA-next controls-arrow arrow-right disabled"></a>';
 }
 return __p;
 };
@@ -69,9 +69,9 @@ return __p;
 this["JST"]["app/templates/plugins/popup-image.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<div class=\'ZEEGA-popup-click-content popup-image\' style="\n  background: url('+
+__p+='<div class=\'ZEEGA-popup-click-content popup-image\' style="\r\n  background: url('+
 ( attr.popup_content.uri )+
-') no-repeat center center;\n  -webkit-background-size: contain;\n  -moz-background-size: contain;\n  -o-background-size: contain;\n  background-size: contain;\n">\n  <a href="#" class="popup-close">close</a>\n</div>\n';
+') no-repeat center center;\r\n  -webkit-background-size: contain;\r\n  -moz-background-size: contain;\r\n  -o-background-size: contain;\r\n  background-size: contain;\r\n">\r\n  <a href="#" class="popup-close">close</a>\r\n</div>\r\n';
 }
 return __p;
 };
@@ -79,7 +79,7 @@ return __p;
 this["JST"]["app/templates/plugins/popup-video.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<div class=\'ZEEGA-popup-click-content popup-video\' >\n  <a href="#" class="popup-close">close</a>\n</div>\n';
+__p+='<div class=\'ZEEGA-popup-click-content popup-video\' >\r\n  <a href="#" class="popup-close">close</a>\r\n</div>\r\n';
 }
 return __p;
 };
@@ -87,25 +87,25 @@ return __p;
 this["JST"]["app/templates/plugins/popup.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<a\n  href="#"\n  class="ZEEGA-popup-click-target"\n  ';
+__p+='<a\r\n  href="#"\r\n  class="ZEEGA-popup-click-target"\r\n  ';
  if ( attr.popup_target ) { 
-;__p+='\n  style="\n    background: url('+
+;__p+='\r\n  style="\r\n    background: url('+
 ( attr.popup_target.uri )+
-') no-repeat center center;\n    -webkit-background-size: cover;\n    -moz-background-size: cover;\n    -o-background-size: cover;\n    background-size: cover;\n  "\n  ';
+') no-repeat center center;\r\n    -webkit-background-size: cover;\r\n    -moz-background-size: cover;\r\n    -o-background-size: cover;\r\n    background-size: cover;\r\n  "\r\n  ';
  } 
-;__p+='\n  data-caption="';
+;__p+='\r\n  data-caption="';
  if ( attr.popup_content ) { 
 ;__p+=''+
 ( attr.popup_content.title )+
 '';
  } 
-;__p+='"\n  >\n  ';
+;__p+='"\r\n  >\r\n  ';
  if ( attr.popup_content ) { 
 ;__p+='<span class="popup-title" style=\'display:none\'>'+
 ( attr.popup_content.title )+
 '</span>';
  } 
-;__p+='\n</a>';
+;__p+='\r\n</a>';
 }
 return __p;
 };
@@ -123,15 +123,15 @@ var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='<div class=\'slide-title\'>'+
 ( title )+
-'</div>\n<div class=\'slide-description\'>'+
+'</div>\r\n<div class=\'slide-description\'>'+
 ( description )+
-'</div>\n<a href="'+
+'</div>\r\n<a href="'+
 ( attribution_uri )+
-'" target=\'blank\' class=\'attribution-link\'>\n    '+
+'" target=\'blank\' class=\'attribution-link\'>\r\n    '+
 ( media_creator_username )+
-'\n    <i class=\'slideshow-icon-'+
+'\r\n    <i class=\'slideshow-icon-'+
 ( archive.toLowerCase() )+
-' ssarchive\'></i>\n</a>\n';
+' ssarchive\'></i>\r\n</a>\r\n';
 }
 return __p;
 };
@@ -139,39 +139,39 @@ return __p;
 this["JST"]["app/templates/plugins/slideshow.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<a href=\'#\' class=\'slideshow-arrow arrow-left slideshow-control-prev disabled\'></a>\n<a href=\'#\' class=\'slideshow-arrow arrow-right slideshow-control-next\'></a>\n\n<div class=\'slideshow-container\'>\n\t';
+__p+='<a href=\'#\' class=\'slideshow-arrow arrow-left slideshow-control-prev disabled\'></a>\r\n<a href=\'#\' class=\'slideshow-arrow arrow-right slideshow-control-next\'></a>\r\n\r\n<div class=\'slideshow-container\'>\r\n\t';
  _.each( attr.slides, function(slide,i){ 
-;__p+='\n\t\t<div class=\'slideshow-slide slideshow-slide-'+
+;__p+='\r\n\t\t<div class=\'slideshow-slide slideshow-slide-'+
 ( i )+
-'\' style=\'\n      background:url('+
+'\' style=\'\r\n      background:url('+
 ( slide.attr.uri )+
-') no-repeat center center;\n      -webkit-background-size: ';
+') no-repeat center center;\r\n      -webkit-background-size: ';
  if( slides_bleed ) { 
 ;__p+='cover';
  } else { 
 ;__p+='contain';
  } 
-;__p+=';\n      -moz-background-size: ';
+;__p+=';\r\n      -moz-background-size: ';
  if( slides_bleed ) { 
 ;__p+='cover';
  } else { 
 ;__p+='contain';
  } 
-;__p+=';\n      -o-background-size: ';
+;__p+=';\r\n      -o-background-size: ';
  if( slides_bleed ) { 
 ;__p+='cover';
  } else { 
 ;__p+='contain';
  } 
-;__p+=';\n      background-size: ';
+;__p+=';\r\n      background-size: ';
  if( slides_bleed ) { 
 ;__p+='cover';
  } else { 
 ;__p+='contain';
  } 
-;__p+=';\n    \'></div>\n\t';
+;__p+=';\r\n    \'></div>\r\n\t';
  }) 
-;__p+='\n</div>';
+;__p+='\r\n</div>';
 }
 return __p;
 };
@@ -179,15 +179,15 @@ return __p;
 this["JST"]["app/templates/plugins/slideshowthumbslider.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<div class=\'slideshow-thumb-wrapper\'>\n    <ul>\n        ';
+__p+='<div class=\'slideshow-thumb-wrapper\'>\r\n    <ul>\r\n        ';
  _.each(attr.slides, function(slide, i){ 
-;__p+='\n            <li>\n                <div class=\'slideshow-thumbnail\' style="background:url('+
+;__p+='\r\n            <li>\r\n                <div class=\'slideshow-thumbnail\' style="background:url('+
 ( slide.attr.thumbnail_url )+
-'); background-repeat:no-repeat;background-size:100%;background-position:center">\n                    <a href=\'#\' class=\'slider-thumb\' data-slidenum="'+
+'); background-repeat:no-repeat;background-size:100%;background-position:center">\r\n                    <a href=\'#\' class=\'slider-thumb\' data-slidenum="'+
 ( i )+
-'"></a>\n                </div>\n            </li>\n        ';
+'"></a>\r\n                </div>\r\n            </li>\r\n        ';
  });
-;__p+='\n    </ul>\n</div>';
+;__p+='\r\n    </ul>\r\n</div>';
 }
 return __p;
 };
@@ -197,9 +197,9 @@ var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='<a href="http://'+
 ( attr.link )+
-'" data-bypass="true" target="blank">\n    '+
+'" data-bypass="true" target="blank">\r\n    '+
 ( attr.content )+
-'\n</a>';
+'\r\n</a>';
 }
 return __p;
 };
