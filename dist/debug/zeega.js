@@ -31567,7 +31567,7 @@ function( Backbone, jquery ) {
     var JST = window.JST = window.JST || {};
 
     var zeegaJQuery = jquery;
-    var zeegaBackbone = Backbone.noConflict(); // return backbone
+    var zeegaBackbone = Backbone;
     zeegaBackbone.$ = zeegaJQuery; // set backbone jquery
 
     // Curry the |set| method with a { silent: true } version
@@ -49891,7 +49891,7 @@ function( Zeega ) {
     }
 
     $.noConflict(); // return $ to prev owner
-
+    Backbone.noConflict();
 });
 
 zeega.define("main", function(){});
