@@ -24,5 +24,5 @@ function( Zeega ) {
     }
 
     $.noConflict(); // return $ to prev owner
-
+    Backbone.noConflict();
 });
