@@ -23,6 +23,6 @@ function( Zeega ) {
         window.fireEvent("on" + event.eventType, event);
     }
 
-    $.noConflict( true ); // return $ to prev owner
+    $.noConflict(); // return $ to prev owner
 
 });
