@@ -383,7 +383,9 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
                             _this.cuePrev();
                             break;
                         case 39: // right arrow
-                            if ( this.status.get("current_frame_model").get("attr").advance === 0 ) {
+                            var adv = this.status.get("current_frame_model").get("attr").advance;
+                            
+                            if ( adv === 0 || adv === undefined ) {
                                 _this.cueNext();
                             }
                             break;
