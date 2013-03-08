@@ -48169,13 +48169,20 @@ function( Zeega, SequenceCollection ) {
         },
 
         _setConnections: function( frame ) {
-            var prev, next;
+            var prev, next, hasLink = false;
 
             prev = frame.get("_prev"),
             next = frame.get("_next");
 
+            frame.layers.each(function( layer ) {
+                if ( layer.get("type") == "Link" ) {
+                    hasLink = true;
+                    return false;
+                }
+            });
+
             frame.put( "_connections",
-                frame.get('attr').advance ? "none" :
+                frame.get('attr').advance || hasLink ? "none" :
                 prev & next ? "lr" :
                 prev ? "l" :
                 next ? "r" : "none"
@@ -49006,15 +49013,18 @@ function( Zeega, ArrowView, CloseView, PlayPauseView ) {
             "click .ZEEGA-playpause": "playpause"
         },
 
-        close: function() {
+        close: function( event ) {
+            event.preventDefault();
             this.model.destroy();
         },
 
-        prev: function() {
+        prev: function( event ) {
+            event.preventDefault();
             this.model.cuePrev();
         },
 
-        next: function() {
+        next: function( event ) {
+            event.preventDefault();
             this.model.cueNext();
         },
 
@@ -49050,7 +49060,8 @@ function( Zeega, ArrowView, CloseView, PlayPauseView ) {
                 .removeClass("pause-zcon");
         },
 
-        playpause: function() {
+        playpause: function( event ) {
+            event.preventDefault();
             this.model.playPause();
         },
 
@@ -49613,7 +49624,9 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
                             _this.cuePrev();
                             break;
                         case 39: // right arrow
-                            if ( this.status.get("current_frame_model").get("attr").advance === 0 ) {
+                            var adv = this.status.get("current_frame_model").get("attr").advance;
+                            
+                            if ( adv === 0 || adv === undefined ) {
                                 _this.cueNext();
                             }
                             break;
