@@ -27974,21 +27974,23 @@ function( Zeega, _Layer ){
         }),
 
         listen: _.once(function() {
-            this.audio.addEventListener("timeupdate", function(){
-                var currentTime = this.audio.currentTime;
+            // don't need to listen to audio time if there's no cue out!
+            if ( this.getAttr("cue_out") !== null ) {
+                this.audio.addEventListener("timeupdate", function(){
+                    var currentTime = this.audio.currentTime;
 
-                if ( currentTime >= this.getAttr("cue_out" ) ) {
-                    if ( this.getAttr("loop") ) {
-                        this.audio.pause();
-                        this.audio.currentTime = this.getAttr("cue_in");
-                        this.audio.play();
-                    } else {
-                        this.audio.pause();
-                        this.audio.currentTime = this.getAttr("cue_in");
+                    if ( currentTime >= this.getAttr("cue_out" ) ) {
+                        if ( this.getAttr("loop") ) {
+                            this.audio.pause();
+                            this.audio.currentTime = this.getAttr("cue_in");
+                            this.audio.play();
+                        } else {
+                            this.audio.pause();
+                            this.audio.currentTime = this.getAttr("cue_in");
+                        }
                     }
-                }
-
-            }.bind( this ));
+                }.bind( this ));
+            }
 
             this.audio.addEventListener("ended", function(){
                 if ( this.getAttr("loop") ) {
