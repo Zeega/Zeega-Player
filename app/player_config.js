@@ -16,7 +16,8 @@ require.config({
         jquery: "../assets/js/libs/jquery",
         jqueryUI: "../assets/js/plugins/jquery-ui",
         lodash: "../assets/js/libs/lodash",
-        backbone: "../assets/js/libs/backbone"
+        backbone: "../assets/js/libs/backbone",
+        spin: "../assets/js/libs/spin"
 
     },
     shim: {
