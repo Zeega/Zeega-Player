@@ -16,9 +16,10 @@ require.config({
         jquery: "../assets/js/libs/jquery",
         jqueryUI: "../assets/js/plugins/jquery-ui/js/jquery-ui-1.10.1.custom",
         lodash: "../assets/js/libs/lodash",
-        backbone: "../assets/js/libs/backbone"
+        backbone: "../assets/js/libs/backbone",
 
         // Plugins
+        spin: "../assets/js/libs/spin"
         //imagesLoaded: "../assets/js/plugins/jquery/imagesloaded.min.js",
         //cycle: "../assets/js/plugins/jquery/cycle.js"
 
@@ -32,6 +33,7 @@ require.config({
 
         // Plugins
         jqueryUI: ["jquery"],
+        // spin: ["jquery"],
         "plugins/imagesloaded.min": ["jquery"],
         "plugins/cycle": ["jquery"],
 
