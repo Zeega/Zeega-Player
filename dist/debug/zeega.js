@@ -47863,7 +47863,7 @@ function( Zeega, _Layer, MediaPlayer ) {
                 this.popup.render();
                 this.model.on("popup_remove", this.popupClosed, this );
                 // pause the player
-                this.model.status.get("project").pause();
+                this.model.status.get("project").suspend();
             }
         },
 
