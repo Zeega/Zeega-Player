@@ -48525,12 +48525,14 @@ function( Zeega, SequenceCollection ) {
             prev = frame.get("_prev"),
             next = frame.get("_next");
 
+/*
             frame.layers.each(function( layer ) {
                 if ( layer.get("type") == "Link" ) {
-                    hasLink = true;
+                    hasLink = true;d
                     return false;
                 }
             });
+*/
 
             frame.put( "_connections",
                 frame.get('attr').advance || hasLink ? "none" :
