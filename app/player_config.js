@@ -2,7 +2,7 @@
 require.config({
 
     // Initialize the application with the main application file.
-    deps: [ "main" ],
+    deps: [ "main", "../assets/js/libs/spin" ],
 
     paths: {
         // JavaScript folders.
@@ -19,7 +19,7 @@ require.config({
         backbone: "../assets/js/libs/backbone",
 
         // Plugins
-        spin: "../assets/js/libs/spin"
+        // spin: "../assets/js/libs/spin"
         //imagesLoaded: "../assets/js/plugins/jquery/imagesloaded.min.js",
         //cycle: "../assets/js/plugins/jquery/cycle.js"
 
