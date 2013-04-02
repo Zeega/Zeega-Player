@@ -476,6 +476,14 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
             this.cueFrame( this.status.get("current_frame_model").get("_prev"), ms );
         },
 
+        // goes to previous frame in history
+        cueBack: function() {
+            var history = this.status.get("frameHistory");
+            if( history.length > 1 ){
+                this.cueFrame( history [ history.length - 1 ] );
+            }
+        },
+
         // goes to specified frame after n ms
         cueFrame: function( id, ms ) {
             ms = ms || 0;

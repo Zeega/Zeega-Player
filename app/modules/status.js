@@ -69,7 +69,15 @@ function( Zeega ) {
             sequence = frame.collection.sequence;
 
             fHist = this.get("frameHistory");
-            fHist.push( frame.id );
+            
+            if( fHist.length > 0 && fHist[ fHist.length - 1 ] === frame.id ){
+                fHist.pop();
+            } else {
+                fHist.push( frame.id );
+            }
+
+            
+
             this.put({
                 current_frame_model: frame,
                 frameHistory: fHist
