@@ -478,10 +478,13 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
 
         // goes to previous frame in history
         cueBack: function() {
+
+            this.status.onBack();
             var history = this.status.get("frameHistory");
-            if( history.length > 1 ){
+            if( history.length > 0 ){
                 this.cueFrame( history [ history.length - 1 ] );
             }
+
         },
 
         // goes to specified frame after n ms
