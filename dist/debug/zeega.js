@@ -49379,7 +49379,7 @@ function( Zeega, ArrowView, CloseView, PlayPauseView ) {
 
         prev: function( event ) {
             event.preventDefault();
-            this.model.cuePrev();
+            this.model.cueBack();
         },
 
         next: function( event ) {
@@ -49387,23 +49387,20 @@ function( Zeega, ArrowView, CloseView, PlayPauseView ) {
             this.model.cueNext();
         },
 
+       
         onFramePlay: function( info ) {
-            switch(info._connections) {
-                case "l":
-                    this.activateArrow("ZEEGA-prev");
-                    this.disableArrow("ZEEGA-next");
-                    break;
-                case "r":
-                    this.disableArrow("ZEEGA-prev");
-                    this.activateArrow("ZEEGA-next");
-                    break;
-                case "lr":
-                    this.activateArrow("ZEEGA-prev");
-                    this.activateArrow("ZEEGA-next");
-                    break;
-                default:
-                    this.disableArrow("ZEEGA-prev");
-                    this.disableArrow("ZEEGA-next");
+
+            if( this.model.status.get("frameHistory").length > 1 ){
+                this.activateArrow("prev");
+            } else {
+                this.disableArrow("prev");
+            }
+
+
+            if( info._connections == "r" || info._connections == "lr" ){
+                this.activateArrow("next");
+            } else {
+                this.disableArrow("next");
             }
         },
 
