@@ -65,16 +65,16 @@ function( Zeega, ArrowView, CloseView, PlayPauseView ) {
         onFramePlay: function( info ) {
 
             if( this.model.status.get("frameHistory").length > 1 ){
-                this.activateArrow("prev");
+                this.activateArrow("ZEEGA-prev");
             } else {
-                this.disableArrow("prev");
+                this.disableArrow("ZEEGA-prev");
             }
 
 
             if( info._connections == "r" || info._connections == "lr" ){
-                this.activateArrow("next");
+                this.activateArrow("ZEEGA-next");
             } else {
-                this.disableArrow("next");
+                this.disableArrow("ZEEGA-next");
             }
         },
 
