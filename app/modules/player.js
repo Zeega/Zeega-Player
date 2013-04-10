@@ -587,7 +587,10 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout, Parse ) {
 
             return _.extend({},
                 this.toJSON(),
-                { frames: frames }
+                {
+                    sequences: this.project.sequences.toJSON(),
+                    frames: frames
+                }
             );
         },
 

@@ -17,6 +17,7 @@
   <div id="main" style='height:400px;width:500px;float:left'></div>
 <script>
 
+  var project;
 
     function bindEvent(element, type, handler) {
        if(element.addEventListener) {
@@ -29,7 +30,7 @@
     bindEvent(window, "zeega_ready", function() {
 
       var goDo = function( parsed ) {
-        var project = new Zeega.player({
+        project = new Zeega.player({
           // debugEvents: true,
           data: parsed,
           target: "#main"
@@ -37,7 +38,7 @@
       }
 
       Zeega.parse({
-        url: "http://dev.zeega.org/joseph/web/api/projects/7003",
+        url: "http://dev.zeega.org/joseph/web/api/projects/8664",
         // url: "http://alpha.zeega.org/api/items/67060/items", // bgb
         // url: "http://dev.zeega.org/joseph/web/api/projects/5031",
         callback: function( parsed, data ) {
@@ -52,6 +53,10 @@
             speed: 500
           }
         }
+      });
+
+      $("#button").click(function() {
+        console.log("DATA", project.getProjectData() );
       });
 
   });
