@@ -48216,6 +48216,7 @@ function( Zeega, LayerPlugin ) {
         destroy: function() {
             // do not attempt to destroy if the layer is waiting or destroyed
             if ( this.state != "waiting" && this.state != "destroyed" ) {
+                this.exit();
                 this.state = "destroyed";
             }
         }
@@ -48490,6 +48491,7 @@ function( Zeega, SequenceCollection ) {
                     }
 
                     if( nextSequence ) {
+                        console.log(this, nextSequence );
                         preloadTargets.push( this.sequences.get( nextSequence ).get("frames")[0] );
                     }
 
