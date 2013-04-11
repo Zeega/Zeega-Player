@@ -38,7 +38,7 @@
       }
 
       Zeega.parse({
-        url: "http://dev.zeega.org/joseph/web/api/projects/8664",
+        url: "http://dev.zeega.org/joseph/web/api/projects/8409",
         // url: "http://alpha.zeega.org/api/items/67060/items", // bgb
         // url: "http://dev.zeega.org/joseph/web/api/projects/5031",
         callback: function( parsed, data ) {
@@ -56,7 +56,7 @@
       });
 
       $("#button").click(function() {
-        console.log("DATA", project.cueBack() );
+        console.log("DATA", project.getProjectData() );
       });
 
   });
