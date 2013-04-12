@@ -47811,7 +47811,8 @@ function( Zeega, _Layer ) {
             // using jquery because it provides a few vendor prefix styles
             this.$el.css({
                 color: this.model.get("attr").color,
-                fontSize: this.model.get("attr").fontSize + "%"
+                fontSize: this.model.get("attr").fontSize + "%",
+                fontFamily: this.model.get("attr").fontFamily
             });
         }
   });
