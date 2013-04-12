@@ -24359,7 +24359,7 @@ function( Zeega ) {
         },
 
         player_onPlay: function() {
-            if ( this.getAttr("blink_on_start") ) {
+            if ( this.getAttr("blink_on_start") && this.getAttr("link_type") == "default" ) {
                 this.glowOnFrameStart();
             }
             this.onPlay();
@@ -24632,7 +24632,7 @@ function( Zeega, _Layer ) {
           "box-shadow": "0 0 10px rgba(255,255,255,"+ this.getAttr("opacity") + ")"
       };
 
-      if ( this.getAttr("link_type" == "default") ) {
+      if ( this.getAttr("link_type") == "default" ) {
         this.$el.attr("data-glowOnHover", this.getAttr("glow_on_hover") );
       }
       
