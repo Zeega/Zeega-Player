@@ -47778,12 +47778,17 @@ function( Zeega, _Layer ) {
 
         attr: {
             citation: false,
+            color: "#FFF",
+            content: "text",
+            fontSize: 200,
+            fontFamily: "Archivo Black",
             default_controls: true,
             left: 30,
             opacity: 1,
             title: "Text Layer",
             top: 40,
-            width: 25
+            width: 25,
+            dissolve: true
         }
     });
 
