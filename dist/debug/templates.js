@@ -41,7 +41,7 @@ return __p;
 this["JST"]["app/templates/plugins/link.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<div href=\'#\' class=\'ZEEGA-link-inner\'></div>';
+__p+='<div class=\'ZEEGA-link-inner\'></div>';
 }
 return __p;
 };

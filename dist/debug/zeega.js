@@ -48,7 +48,7 @@ return __p;
 this["JST"]["app/templates/plugins/link.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<div href=\'#\' class=\'ZEEGA-link-inner\'></div>';
+__p+='<div class=\'ZEEGA-link-inner\'></div>';
 }
 return __p;
 };
@@ -24632,8 +24632,10 @@ function( Zeega, _Layer ) {
           "box-shadow": "0 0 10px rgba(255,255,255,"+ this.getAttr("opacity") + ")"
       };
 
-      this.$el.attr("data-glowOnHover", this.getAttr("glow_on_hover") );
-
+      if ( this.getAttr("link_type" == "default") ) {
+        this.$el.attr("data-glowOnHover", this.getAttr("glow_on_hover") );
+      }
+      
       this.$el.addClass("link-type-" + this.getAttr("link_type") );
       this.$(".ZEEGA-link-inner").css( style );
     },
