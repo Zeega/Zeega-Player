@@ -201,6 +201,30 @@ __p+=''+
 return __p;
 };
 
+this["JST"]["app/templates/plugins/textmodal.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<a href="#" class="modal-close">&times;</a>\n<div class="modal-content">\n    <div class="modal-title">Edit your text</div>\n    <div class="modal-body">\n\n        <textarea rows="4" cols="59" maxlength="140" >'+
+( attr.content )+
+'</textarea>\n\n        <div class="text-controls clearfix">\n            <div class="color-selector">\n                <input class="simple-color" value="#'+
+( attr.color )+
+'"/>\n            </div>\n            <a href="#" class="btnz btnz-light text-btn-bold"><i class="icon-bold"></i></a>\n            <a href="#" class="btnz btnz-light text-btn-italic"><i class="icon-italic"></i></a>\n            <a href="#" class="btnz btnz-light text-btn-align-left"><i class="icon-align-left"></i></a>\n            <a href="#" class="btnz btnz-light text-btn-align-center"><i class="icon-align-center"></i></a>\n            <a href="#" class="btnz btnz-light text-btn-align-right"><i class="icon-align-right"></i></a>\n\n            <select class="font-list" style=""></select>\n            <select class="size-list" style="">\n                <option value="100">8</option>\n                <option value="125">10</option>\n                <option value="150">12</option>\n                <option value="175">14</option>\n                <option value="200">18</option>\n                <option value="250">24</option>\n                <option value="375">36</option>\n                <option value="500">48</option>\n                <option value="800">72</option>\n                <option value="1600">144</option>\n                <option value="2400">200</option>\n                <option value="3600">300</option>\n            </select>\n            \n        </div>\n\n        <div class="sample-header">sample</div>\n        <div class="text-sample">'+
+( attr.content )+
+'</div>\n\n        <div class="bottom-chooser clearfix">\n            <a href="#" class="submit btnz btnz-submit">OK</a>\n        </div>\n    </div>\n</div>\n';
+}
+return __p;
+};
+
+this["JST"]["app/templates/plugins/textV2.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div class="visual-target">'+
+( attr.content )+
+'</div>\n<div class="controls-inline"></div>';
+}
+return __p;
+};
+
 this["JST"]["app/templates/plugins/video.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
@@ -28701,6 +28725,362 @@ function( Zeega, _Layer ){
     return Layer;
 });
 
+zeega.define('zeega_parser/plugins/layers/text_v2/textmodal',[
+    "zeega"
+],
+
+function( zeega ) {
+
+    return zeega.Backbone.View.extend({
+
+        template: "text_v2/textmodal",
+        serialize: function() {
+            return this.model.toJSON();
+        },
+
+        saveContent: null,
+
+        className: "text-modal overlay-dimmer ZEEGA-modal",
+
+        initialize: function() {
+            this.saveContent = _.debounce(function() {
+                this.model.saveAttr({ content: this.$("textarea").val() });
+                this.updateSample();
+            }, 1000);
+        },
+
+        afterRender: function() {
+            var $colorPicker = this.$(".simple-color");
+
+            $colorPicker
+                .simpleColor({
+                    livePreview: true,
+                    onCellEnter: function( hex ) {
+                        this.$(".text-sample")
+                            .css({
+                                color: "#" + hex,
+                            });
+                    }.bind( this ),
+                    // onClose: function() {
+                    //     this.onChange();
+                    // }.bind( this ),
+                    callback: function( hex ) {
+                        this.onChangeColor( hex );
+                    }.bind( this )
+                });
+
+            $("#main").addClass("modal");
+            this.loadFonts();
+            this.loadSize();
+            this.setButtonStates();
+
+            this.updateSample();
+        },
+
+        events: {
+            "click .modal-close": "closeThis",
+            "click .submit": "submit",
+            "click .text-btn-italic": "toggleItalics",
+            "click .text-btn-bold": "toggleBold",
+
+            "keypress textarea": "onKeypress",
+            "change .size-list": "onChangeSize",
+            "change .font-list": "onChangeFont",
+            "click .text-btn-align-left": "toggleAlignLeft",
+            "click .text-btn-align-center": "toggleAlignCenter",
+            "click .text-btn-align-right": "toggleAlignRight"
+        },
+
+        onChangeColor: function( hex ) {
+            this.model.saveAttr({ color: hex });
+            this.updateSample();
+        },
+
+        onChangeSize: function( e ) {
+            console.log("change size:", $( e.target ).val() );
+            this.model.setAttr({ fontSize: $( e.target ).val() });
+
+            this.model.saveAttr({ fontSize: $( e.target ).val() });
+        },
+
+        onChangeFont: function( e ) {
+            this.model.saveAttr({ fontFamily: $( e.target ).val() });
+            this.updateSample();
+        },
+
+        toggleItalics: function() {
+            var italic = this.model.getAttr("italic");
+
+            this.model.saveAttr({ italic: !italic });
+            this.updateSample();
+            this.setButtonStates();
+        },
+
+        toggleAlignLeft: function() {
+            this.model.saveAttr({ textAlign: "left" });
+            this.updateSample();
+            this.setButtonStates();
+        },
+
+        toggleAlignCenter: function() {
+            this.model.saveAttr({ textAlign: "center" });
+            this.updateSample();
+            this.setButtonStates();
+        },
+
+        toggleAlignRight: function() {
+            this.model.saveAttr({ textAlign: "right" });
+            this.updateSample();
+            this.setButtonStates();
+        },
+
+        toggleBold: function() {
+            var bold = this.model.getAttr("bold");
+
+            this.model.saveAttr({ bold: !bold })
+            this.updateSample();
+            this.setButtonStates();
+        },
+
+        onKeypress: function( e ) {
+            console.log(e.which)
+
+            this.saveContent();
+        },
+
+        closeThis: function() {
+            $("#main").removeClass("modal");
+            this.$el.fadeOut(function() {
+                this.$el.attr("style", "");
+                this.remove();
+            }.bind( this ));
+        },
+
+        submit: function() {
+            if ( this.selectedFrame !== null ) {
+                this.model.saveAttr({ to_frame: this.selectedFrame });
+                this.model.trigger("change:to_frame", this.model, this.selectedFrame );
+            }
+            this.closeThis();
+            this.updateVisualElement();
+        },
+
+        loadFonts: function() {
+            this.$(".font-list").empty();
+            _.each( this.model.fontList, function( fontName ) {
+                this.$(".font-list").append("<option value='" + fontName + "'>" + fontName + "</option>");
+            }, this );
+            this.$(".size-list").val( this.model.getAttr("fontFamily") );
+        },
+
+        loadSize: function() {
+            this.$(".size-list").val( this.model.getAttr("fontSize") );
+        },
+
+        setButtonStates: function() {
+            this.$(".active").removeClass("active");
+
+            this.$(".text-btn-bold").addClass( this.model.getAttr("bold") ? "active" : "" )
+            this.$(".text-btn-italic").addClass( this.model.getAttr("italic") ? "active" : "" )
+            this.$(".text-btn-align-left").addClass( this.model.getAttr("textAlign") == "left" ? "active" : "" )
+            this.$(".text-btn-align-center").addClass( this.model.getAttr("textAlign") == "center" ? "active" : "" )
+            this.$(".text-btn-align-right").addClass( this.model.getAttr("textAlign") == "right" ? "active" : "" )
+        },
+
+        updateSample: function() {
+            this.$(".text-sample")
+                .css({
+                    color: "#" + this.model.getAttr("color"),
+                    fontWeight: this.model.getAttr("bold") ? "bold" : "normal",
+                    fontStyle: this.model.getAttr("italic") ? "italic" : "normal",
+                    fontFamily: this.model.getAttr("fontFamily"),
+                    textAlign: this.model.getAttr("textAlign"),
+                    // fontSize: this.model.getAttr("fontSize") + "%"
+                })
+                .text( this.model.getAttr("content") );
+            this.updateVisualElement();
+        },
+
+        updateVisualElement: function() {
+            this.model.visual.updateStyle();
+        }
+    });
+
+});
+zeega.define('zeega_parser/plugins/layers/text_v2/textV2',[
+    "zeega",
+    "zeega_parser/plugins/layers/_layer/_layer",
+    "zeega_parser/plugins/layers/text_v2/textmodal"
+],
+function( Zeega, _Layer, TextModal ) {
+
+    var Layer = Zeega.module();
+
+    Layer.TextV2 = _Layer.extend({
+        // TODO: is the redundant naming necessary? If this program knows
+        // this is a Layer, wouldn't "type" be sufficient?
+        layerType: "TextV2",
+
+        attr: {
+            citation: false,
+            color: "#FFF",
+            content: "text",
+            fontSize: 200,
+            fontFamily: "Archivo Black",
+            default_controls: true,
+            left: 30,
+            opacity: 1,
+            title: "Text Layer",
+            top: 40,
+            width: 25,
+            dissolve: true,
+
+            bold: false,
+            italic: false,
+            textAlign: "left"
+        },
+
+        controls: [
+            "position",
+            {
+                type: "resize",
+                options: {
+                    aspectRatio: false,
+                    handles: "se"
+                }
+            },
+            { type: "slider",
+                options: {
+                    title: "<i class='icon-eye-open icon-white'></i>",
+                    propertyName: "opacity",
+                    min: 0,
+                    max: 1,
+                    step: 0.001,
+                    css: true
+                }
+            }
+        ],
+
+        fontList: [
+            "Allerta Stencil",
+            "Antic",
+            "Archivo Black",
+            "Arial",
+            "Bilbo Swash Caps",
+            "Cabin Sketch",
+            "Codystar",
+            "Cutive Mono",
+            "Dosis",
+            "Ewert",
+            "Fascinate",
+            "Faster One",
+            "Finger Paint",
+            "Georgia",
+            "Great Vibes",
+            "Londrina Outline",
+            "Londrina Sketch",
+            "Monofett",
+            "Montserrat",
+            "New Rocker",
+            "Nobile",
+            "Nova Mono",
+            "Orbitron",
+            "Sorts Mill Goudy",
+            "Poiret One",
+            "Pontano Sans",
+            "Trocchi",
+            "Ultra",
+            "Verdana",
+            "Wendy One",
+            "Yellowtail"
+        ],
+    });
+
+    Layer.TextV2.Visual = _Layer.Visual.extend({
+
+        textModal: null,
+        transforming: false,
+
+        template: "plugins/textV2",
+
+        visualProperties: [
+            "top",
+            "left",
+            "width",
+            "opacity"
+        ],
+
+        serialize: function() {
+            return this.model.toJSON();
+        },
+
+        saveContent: null,
+
+        onRender: function() {
+            this.updateStyle();
+        },
+
+        updateStyle: function() {
+            this.$(".visual-target").text( this.model.get("attr").content );
+            
+            this.$el.css({
+                    color: "#" + this.model.get("attr").color,
+                    fontWeight: this.model.get("attr").bold ? "bold" : "normal",
+                    fontStyle: this.model.get("attr").italic ? "italic" : "normal",
+                    fontFamily: this.model.get("attr").fontFamily,
+                    fontSize: this.model.get("attr").fontSize + "%",
+                    textAlign: this.model.get("attr").textAlign
+                });
+                
+        },
+
+        afterEditorRender: function() {
+
+            if ( this.textModal === null ) {
+                this.textModal = new TextModal({ model: this.model });
+            }
+
+            this.$el.css({
+                color: "#" + this.model.get("attr").color,
+                fontSize: this.model.get("attr").fontSize + "%",
+                fontFamily: this.model.get("attr").fontFamily
+            });
+
+            this.$el.unbind("mouseup");
+
+            this.$el.bind("mouseup", function() {
+
+                if ( !this.transforming ) {
+                    console.log("launch text modal");
+                    $("body").append( this.textModal.el );
+                    this.textModal.render();
+                }
+
+            }.bind( this ));
+
+            this.on("sync", function() {
+                this.updateStyle();
+            });
+        },
+
+        convertToPercents: function( top, left ) {
+            this.$el.css({
+                top: top + "%",
+                left: left + "%"
+            });
+        },
+
+        lazyUpdate: _.debounce(function( value ) {
+            var attr = {};
+            
+            attr[ this.propertyName ] = value;
+            this.model.saveAttr( attr );
+        }, 500 )
+  });
+
+  return Layer;
+});
+
 /*
 
 plugin/layer manifest file
@@ -28718,7 +29098,8 @@ zeega.define('zeega_parser/plugins/layers/_all',[
     "zeega_parser/plugins/layers/rectangle/rectangle",
     "zeega_parser/plugins/layers/text/text",
     "zeega_parser/plugins/layers/popup/popup",
-    "zeega_parser/plugins/layers/geo/geo"
+    "zeega_parser/plugins/layers/geo/geo",
+    "zeega_parser/plugins/layers/text_v2/textV2"
 ],
 function(
     image,
@@ -28729,7 +29110,8 @@ function(
     rectangle,
     text,
     popup,
-    geo
+    geo,
+    textV2
 ) {
     var Plugins = {};
     // extend the plugin object with all the layers
@@ -28743,7 +29125,8 @@ function(
         rectangle,
         text,
         popup,
-        geo
+        geo,
+        textV2
     );
 });
 
