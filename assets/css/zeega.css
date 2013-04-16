@@ -561,6 +561,16 @@
   /* Opera */
 
 }
+.visual-element-text {
+  line-height: 100%;
+}
+.visual-element-text a:link,
+.visual-element-text a:visited,
+.visual-element-text a:hover,
+.visual-element-text a:active {
+  color: inherit;
+  text-decoration: none;
+}
 .visual-textv2 .visual-element-text {
   line-height: 100%;
 }
@@ -1285,6 +1295,16 @@
   -o-transition: opacity 0.5s;
   /* Opera */
 
+}
+.visual-element-text {
+  line-height: 100%;
+}
+.visual-element-text a:link,
+.visual-element-text a:visited,
+.visual-element-text a:hover,
+.visual-element-text a:active {
+  color: inherit;
+  text-decoration: none;
 }
 .visual-textv2 .visual-element-text {
   line-height: 100%;
@@ -2052,6 +2072,17 @@
   -o-transition: opacity 0.5s;
   /* Opera */
 
+}
+
+.visual-element-text {
+  line-height: 100%;
+}
+.visual-element-text a:link,
+.visual-element-text a:visited,
+.visual-element-text a:hover,
+.visual-element-text a:active {
+  color: inherit;
+  text-decoration: none;
 }
 
 .visual-textv2 .visual-element-text {
