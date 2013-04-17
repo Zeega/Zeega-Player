@@ -380,14 +380,17 @@
   text-decoration: none;
 }
 
-.visual-textv2 .visual-element-text {
+.visual-element-textv2 {
+  white-space: pre;
+}
+.visual-element-textv2 .visual-element-text {
   line-height: 100%;
 }
-.visual-textv2 .visual-target {
+.visual-element-textv2 .visual-target {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.visual-textv2 .ui-resizable-e {
+.visual-element-textv2 .ui-resizable-e {
   background: yellow;
   height: 35px;
   width: 20px;
@@ -397,7 +400,7 @@
   right: -18px;
   border: 1px solid orangered;
 }
-.visual-textv2 .drag-handle {
+.visual-element-textv2 .drag-handle {
   position: absolute;
   background: limegreen;
   height: 17px;
@@ -406,7 +409,7 @@
   padding-top: 0px;
   opacity: 0.25;
 }
-.visual-textv2 .drag-handle:hover {
+.visual-element-textv2 .drag-handle:hover {
   opacity: 1;
 }
 .text-modal .text-controls {
