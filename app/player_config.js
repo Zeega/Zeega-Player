@@ -19,9 +19,12 @@ require.config({
         backbone: "../assets/js/libs/backbone",
 
         // Plugins
+
+        simpleColorPicker: "../vendor/simple-color-picker/src/jquery.simple-color",
+        ddslick: "../assets/js/plugins/jquery.ddslick"
+
         // spin: "../assets/js/libs/spin"
         //imagesLoaded: "../assets/js/plugins/jquery/imagesloaded.min.js",
-        //cycle: "../assets/js/plugins/jquery/cycle.js"
 
     },
     shim: {
