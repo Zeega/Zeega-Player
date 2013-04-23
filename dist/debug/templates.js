@@ -35,15 +35,11 @@ return __p;
 this["JST"]["app/templates/plugins/audio.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='';
-}
-return __p;
-};
-
-this["JST"]["app/templates/plugins/geo.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='';
+__p+='<audio id="audio-el-'+
+(id )+
+'" src="'+
+( attr.uri )+
+'" autoplay></audio>';
 }
 return __p;
 };
@@ -61,51 +57,7 @@ return __p;
 this["JST"]["app/templates/plugins/link.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<a href=\'#\' class=\'ZEEGA-link-inner\'></a>';
-}
-return __p;
-};
-
-this["JST"]["app/templates/plugins/popup-image.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='<div class=\'ZEEGA-popup-click-content popup-image\' style="\n  background: url('+
-( attr.popup_content.uri )+
-') no-repeat center center;\n  -webkit-background-size: contain;\n  -moz-background-size: contain;\n  -o-background-size: contain;\n  background-size: contain;\n">\n  <a href="#" class="popup-close">close</a>\n</div>\n';
-}
-return __p;
-};
-
-this["JST"]["app/templates/plugins/popup-video.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='<div class=\'ZEEGA-popup-click-content popup-video\' >\n  <a href="#" class="popup-close">close</a>\n</div>\n';
-}
-return __p;
-};
-
-this["JST"]["app/templates/plugins/popup.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='<a\n  href="#"\n  class="ZEEGA-popup-click-target"\n  ';
- if ( attr.popup_target ) { 
-;__p+='\n  style="\n    background: url('+
-( attr.popup_target.uri )+
-') no-repeat center center;\n    -webkit-background-size: cover;\n    -moz-background-size: cover;\n    -o-background-size: cover;\n    background-size: cover;\n  "\n  ';
- } 
-;__p+='\n  data-caption="';
- if ( attr.popup_content ) { 
-;__p+=''+
-( attr.popup_content.title )+
-'';
- } 
-;__p+='"\n  >\n  ';
- if ( attr.popup_content ) { 
-;__p+='<span class="popup-title" style=\'display:none\'>'+
-( attr.popup_content.title )+
-'</span>';
- } 
-;__p+='\n</a>';
+__p+='<div class=\'ZEEGA-link-inner\'></div>';
 }
 return __p;
 };
@@ -234,14 +186,6 @@ with(obj||{}){
 __p+='<div class="visual-target">'+
 ( attr.content )+
 '</div>\n<div class="controls-inline"></div>';
-}
-return __p;
-};
-
-this["JST"]["app/templates/plugins/video.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='';
 }
 return __p;
 };
