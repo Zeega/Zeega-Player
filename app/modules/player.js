@@ -565,22 +565,36 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
         // TODO: update this
         // returns project metadata
         getProjectData: function() {
-            var frames = [];
+            var frames = [],
+                layers = [];
 
             this.project.sequences.each(function( sequence ) {
                 sequence.frames.each(function( frame ) {
-                    var f = _.extend({},
+                    var l, f;
+
+                    l = frame.layers.toJSON();
+                    f = _.extend({},
                         frame.toJSON(),
-                        { layers: frame.layers.toJSON() }
+                        { layers: l }
                     );
 
+                    layers.push( l );
                     frames.push( f );
                 });
             });
 
+            layers = _.flatten( layers );
+            layers = _.uniq( layers, function( lay) {
+                return lay.id;
+            });
+
             return _.extend({},
                 this.toJSON(),
-                { frames: frames }
+                {
+                    sequences: this.project.sequences.toJSON(),
+                    frames: frames,
+                    layers: layers
+                }
             );
         },
 
