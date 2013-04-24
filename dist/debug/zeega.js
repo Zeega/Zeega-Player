@@ -34164,15 +34164,19 @@ function( app, _Layer, Visual ){
             }.bind( this ));
         },
 
-        onCanPlay: _.once(function() {
-            this.audio.pause();
-            this.audio.currentTime = this.getAttr("cue_in");
+        init: function() {
+            this.onCanPlay = _.once(function() {
+                this.audio.pause();
+                this.audio.currentTime = this.getAttr("cue_in");
 
-            if ( this.getAttr("cue_out") || this.getAttr("loop") ) {
-                this.listen();
-            }
-            this.model.trigger( "visual_ready", this.model.id );
-        }),
+                if ( this.getAttr("cue_out") || this.getAttr("loop") ) {
+                    this.listen();
+                }
+                this.model.trigger( "visual_ready", this.model.id );
+            });
+        },
+
+        onCanPlay: function() {},
 
         listen: _.once(function() {
             // don't need to listen to audio time if there's no cue out!
