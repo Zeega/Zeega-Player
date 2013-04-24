@@ -48,7 +48,8 @@ module.exports = function(grunt) {
         // remove this, ensure concat is updated accordingly.
         jst: {
             "dist/debug/templates.js": [
-                "app/templates/**/*.html"
+                "app/templates/**/*.html",
+                "app/zeega-parser/plugins/**/*.html"
             ]
         },
 
