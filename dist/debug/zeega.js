@@ -33366,6 +33366,11 @@ function( app, Controls ) {
             // do not attempt to destroy if the layer is waiting or destroyed
             if ( this.state != "waiting" && this.state != "destroyed" ) {
                 this.state = "destroyed";
+
+                if ( this.visual.destroy ) {
+                    this.visual.destroy();
+                }
+
             }
         }
 
@@ -34111,6 +34116,11 @@ function( app, _Layer, Visual ){
             this.audio.pause();
         },
 
+        destroy: function() {
+            this.$("audio").attr("src", "");
+            this.audio = null;
+        },
+
         editor_onLayerEnter: function() {
             // this.render();
         },
@@ -34132,7 +34142,8 @@ function( app, _Layer, Visual ){
 
         setAudio: function() {
             if ( this.audio === null ) {
-                this.audio = document.getElementById("audio-el-" + this.model.id );
+                this.audio = this.$("#audio-el-" + this.model.id )[0];
+                // this.audio = document.getElementById("audio-el-" + this.model.id );
                 this.listen();
                 this.audio.load();
             }
