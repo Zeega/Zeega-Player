@@ -150,7 +150,7 @@ module.exports = function(grunt) {
 
             name : '../assets/js/libs/almond',
             namespace: 'zeega',
-            mainConfigFile: "app/player_config.js",
+            mainConfigFile: "app/config.js",
             out : "dist/debug/zeega.js",
             wrap: true
         },

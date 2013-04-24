@@ -38,164 +38,6 @@ __p+='<div class=\'ZEEGA-player-window\'></div>';
 }
 return __p;
 };
-
-this["JST"]["app/templates/plugins/audio.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='<audio id="audio-el-'+
-(id )+
-'" src="'+
-( attr.uri )+
-'" autoplay></audio>';
-}
-return __p;
-};
-
-this["JST"]["app/templates/plugins/image.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='<img src="'+
-( attr.uri )+
-'" width=\'100%\' />';
-}
-return __p;
-};
-
-this["JST"]["app/templates/plugins/link.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='<div class=\'ZEEGA-link-inner\'></div>';
-}
-return __p;
-};
-
-this["JST"]["app/templates/plugins/rectangle.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='';
-}
-return __p;
-};
-
-this["JST"]["app/templates/plugins/slideshow-metadata.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='<div class=\'slide-title\'>'+
-( title )+
-'</div>\n<div class=\'slide-description\'>'+
-( description )+
-'</div>\n<a href="'+
-( attribution_uri )+
-'" target=\'blank\' class=\'attribution-link\'>\n    '+
-( media_creator_username )+
-'\n    <i class=\'slideshow-icon-'+
-( archive.toLowerCase() )+
-' ssarchive\'></i>\n</a>\n';
-}
-return __p;
-};
-
-this["JST"]["app/templates/plugins/slideshow.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='<a href=\'#\' class=\'slideshow-arrow arrow-left slideshow-control-prev disabled\'></a>\n<a href=\'#\' class=\'slideshow-arrow arrow-right slideshow-control-next\'></a>\n\n<div class=\'slideshow-container\'>\n\t';
- _.each( attr.slides, function(slide,i){ 
-;__p+='\n\t\t<div class=\'slideshow-slide slideshow-slide-'+
-( i )+
-'\' style=\'\n      background:url('+
-( slide.attr.uri )+
-') no-repeat center center;\n      -webkit-background-size: ';
- if( slides_bleed ) { 
-;__p+='cover';
- } else { 
-;__p+='contain';
- } 
-;__p+=';\n      -moz-background-size: ';
- if( slides_bleed ) { 
-;__p+='cover';
- } else { 
-;__p+='contain';
- } 
-;__p+=';\n      -o-background-size: ';
- if( slides_bleed ) { 
-;__p+='cover';
- } else { 
-;__p+='contain';
- } 
-;__p+=';\n      background-size: ';
- if( slides_bleed ) { 
-;__p+='cover';
- } else { 
-;__p+='contain';
- } 
-;__p+=';\n    \'></div>\n\t';
- }) 
-;__p+='\n</div>';
-}
-return __p;
-};
-
-this["JST"]["app/templates/plugins/slideshowthumbslider.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='<div class=\'slideshow-thumb-wrapper\'>\n    <ul>\n        ';
- _.each(attr.slides, function(slide, i){ 
-;__p+='\n            <li>\n                <div class=\'slideshow-thumbnail\' style="background:url('+
-( slide.attr.thumbnail_url )+
-'); background-repeat:no-repeat;background-size:100%;background-position:center">\n                    <a href=\'#\' class=\'slider-thumb\' data-slidenum="'+
-( i )+
-'"></a>\n                </div>\n            </li>\n        ';
- });
-;__p+='\n    </ul>\n</div>';
-}
-return __p;
-};
-
-this["JST"]["app/templates/plugins/text-link.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='<a href="http://'+
-( attr.link )+
-'" data-bypass="true" target="blank">\n    '+
-( attr.content )+
-'\n</a>';
-}
-return __p;
-};
-
-this["JST"]["app/templates/plugins/text.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+=''+
-( attr.content )+
-'';
-}
-return __p;
-};
-
-this["JST"]["app/templates/plugins/textmodal.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='<a href="#" class="modal-close">&times;</a>\n<div class="modal-content">\n    <div class="modal-title">Edit your text</div>\n    <div class="modal-body">\n\n        <textarea rows="4" cols="59" maxlength="140" >'+
-( attr.content )+
-'</textarea>\n\n        <div class="text-controls clearfix">\n            <div class="color-selector">\n                <input class="simple-color" value="#'+
-( attr.color )+
-'"/>\n            </div>\n            <a href="#" class="btnz btnz-light text-btn-bold"><i class="icon-bold"></i></a>\n            <a href="#" class="btnz btnz-light text-btn-italic"><i class="icon-italic"></i></a>\n            <a href="#" class="btnz btnz-light text-btn-align-left"><i class="icon-align-left"></i></a>\n            <a href="#" class="btnz btnz-light text-btn-align-center"><i class="icon-align-center"></i></a>\n            <a href="#" class="btnz btnz-light text-btn-align-right"><i class="icon-align-right"></i></a>\n\n            <select class="font-list" style=""></select>\n            <select class="size-list" style="">\n                <option value="100">8</option>\n                <option value="125">10</option>\n                <option value="150">12</option>\n                <option value="175">14</option>\n                <option value="200">18</option>\n                <option value="250">24</option>\n                <option value="375">36</option>\n                <option value="500">48</option>\n                <option value="800">72</option>\n                <option value="1600">144</option>\n                <option value="2400">200</option>\n                <option value="3600">300</option>\n            </select>\n            \n        </div>\n\n        <div class="sample-header">sample</div>\n        <div class="text-sample">'+
-( attr.content )+
-'</div>\n\n        <div class="bottom-chooser clearfix">\n            <a href="#" class="submit btnz btnz-submit">OK</a>\n        </div>\n    </div>\n</div>\n';
-}
-return __p;
-};
-
-this["JST"]["app/templates/plugins/textV2.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='<div class="visual-target">'+
-( attr.content )+
-'</div>\n<div class="controls-inline"></div>';
-}
-return __p;
-};
 (function () {
 var zeega;(function () { if (typeof zeega === 'undefined') {
 zeega = {};
@@ -31836,7 +31678,7 @@ keys = _.keys(LayoutManager.prototype.options);
 })(this);
 zeega.define("plugins/backbone.layoutmanager", function(){});
 
-zeega.define('zeega',[
+zeega.define('app',[
     "backbone",
     "jquery",
     "../assets/js/libs/spin",
@@ -31850,6 +31692,9 @@ function( Backbone, jquery, Spinner ) {
     var app = {
         // The root path to run the application.
         root: "/",
+
+        parserPath: "app/zeega-parser/",
+
         gmapAPI: "waiting",
         spinner: new Spinner({
             lines: 13, // The number of lines to draw
@@ -31919,306 +31764,115 @@ function( Backbone, jquery, Spinner ) {
 
 });
 
-zeega.define('zeega_parser/modules/sequence.model',[
-    "zeega"
+zeega.define('zeega_parser/modules/control.view',[
+    "app",
+    "jqueryUI"
 ],
 
-function( Zeega ) {
+function( app ) {
 
-    return Zeega.Backbone.Model.extend({
+    return app.Backbone.View.extend({
 
-        defaults: {
-            advance_to: null,
-            attr: {},
-            description: null,
-            frames: [],
-            id: null,
-            persistent_layers: [],
-            title: ""
-        }
 
-    });
+        type: "",
+        parentName: "",
+        propertyName: "",
 
-});
-// frame.js
-zeega.define('zeega_parser/modules/frame.model',[
-    "zeega"
-],
+        _userOptions: {},
 
-function( Zeega ) {
+        $visual: null,
+        $visualContainer: null,
+        $workspace: null,
 
-    return Zeega.Backbone.Model.extend({
-
-        ready: false,
-        // waiting, loading, ready, destroyed
-        state: "waiting",
-        hasPlayed: false,
-        elapsed: 0,
-
-        // frame render as soon as it's loaded. used primarily for the initial frame
-        renderOnReady: null,
-
-        defaults: {
-            _order: 0,
-            attr: { advance: 0 },
-            // ids of frames and their common layers for loading
-            common_layers: {},
-            _connections: "none",
-            controllable: true,
-            id: null,
-            // id of frame before current
-            _last: null,
-            // ids of layers contained on frame
-            layers: [],
-            // ids of frames this frame can lead to
-            linksTo: [],
-            // ids of frames this frame can be accessed from
-            linksFrom: [],
-
-            preload_frames: [],
-            // id of the next frame
-            _next: null,
-            // id of frame to be navigated to the left
-            _prev: null,
-            thumbnail_url: null
-        },
-
-        // for convenience
-        getNext: function() {
-            return this.get("_next");
-        },
-
-        getPrev: function() {
-            return this.get("_prev");
-        },
-
-        // sets the sequence adjacencies as a string
-        setConnections: function() {
-            var prev = this.get("_prev"),
-                next = this.get("_next");
-
-            this.set( "connections",
-                this.get("attr").advance ? "none" :
-                prev & next ? "lr" :
-                prev ? "l" :
-                next ? "r" : "none"
-            );
-        },
-
-        preload: function() {
-            var isFrameReady = this.isFrameReady();
+        className: function() {
+            var className = "control control-" + this.propertyName;
             
-            if ( !this.ready && isFrameReady ) {
-                this.onFrameReady();
-            } else if ( !this.ready && !isFrameReady ) {
-                this.layers.each(function( layer ) {
-                    if ( layer.state === "waiting" || layer.state === "loading" ) {
-                        layer.on( "layer_preloaded", this.onLayerReady, this );
-                        layer.render();
-                    }
-                }, this );
-            }
-        },
-
-        // render from frame.
-        render: function( oldID ) {
-            var commonLayers;
-            // if frame is completely loaded, then just render it
-            // else try preloading the layers
-            if ( this.ready ) {
-                // only render non-common layers. allows for persistent layers
-                commonLayers = this.get("common_layers")[ oldID ] || [];
-                // if the frame is "ready", then just render the layers
-                this.layers.each(function( layer ) {
-                    if ( !_.include(commonLayers, layer.id) ) {
-                        layer.render();
-                    }
-                });
-
-                // update status
-                this.status.set( "current_frame",this.id );
-                // set frame timer
-                advance = this.get("attr").advance;
-
-                if ( advance ) {
-                    this.startTimer( advance );
-                }
-
-                if ( !this.get("_next") && this.get("linksTo").length === 0 ) {
-                    this.status.emit("deadend_frame", _.extend({}, this.toJSON() ) );
-                }
-
-            } else {
-                this.renderOnReady = oldID;
-                Zeega.spinner.spin( Zeega.$(".ZEEGA-player")[0] );
-            }
-            /* determines the z-index of the layer in relation to other layers on the frame */
-            _.each( this.get("layers"), function( layerID, i ) {
-                this.layers.get( layerID ).updateZIndex( i );
-            }, this );
-        },
-
-        onLayerReady: function( layer ) {
-            if ( this.isFrameReady() && !this.ready ) {
-                this.onFrameReady();
-            }
-        },
-
-        onFrameReady: function() {
-            var data = {
-                frame: this.toJSON(),
-                layers: this.layers.toJSON()
-            };
-
-            this.ready = true;
-            this.state = "ready";
-            this.status.emit( "frame_preloaded", data );
-            if ( !_.isNull( this.renderOnReady ) ) {
-                this.status.emit( "canplay", data );
-                Zeega.spinner.stop();
-                this.render( this.renderOnReady );
-                this.renderOnReady = null;
-            }
-        },
-
-        isFrameReady: function() {
-            var states, value;
-
-            states = _.pluck( this.layers.models, "state");
-            value = _.find( states, function( state ) {
-                return state != "ready";
-            });
-
-            return value === undefined;
-        },
-
-        pause: function() {
-
-            // cancel the timer
-            // record the current elapsed time on the frame
-            // the elapsed time will be subtracted from the total advance time when the timer is restarted in play()
-            if( this.timer ) {
-                clearTimeout( this.timer );
-                this.elapsed += ( new Date().getTime() - this.status.playTimestamp );
+            if ( this.parentName !== "" ) {
+                className = className + " control-" + this.parentName;
             }
 
-            this.layers.each(function( layer ) {
-                layer.pause();
-            });
+            return className;
         },
 
-        play: function() {
-            var advance;
+        initialize: function( opt ) {
 
-            this.layers.each(function( layer ) {
-                layer.play();
-            });
+            this._userOptions = _.extend({}, this._userOptions, opt.options );
 
-            // set frame timer
-            advance = this.get("attr").advance;
-            if ( advance ) {
-                this.startTimer( advance - this.elapsed );
+            if ( opt.options && opt.options.propertyName ) {
+                this.propertyName = opt.options.propertyName;
             }
-        },
 
-        startTimer: function( ms ) {
-            if ( this.timer ) {
-                clearTimeout( this.timer );
-            }
-            this.timer = setTimeout(function() {
-                this.relay.set({
-                    current_frame: this.get("_next")
-                });
-            }.bind(this), ms );
-        },
+            this.off( "change:" + this.propertyName );
 
-        exit: function( newID ) {
-            var commonLayers = this.get("common_layers")[ newID ] || [];
-
-            this.elapsed = 0;
-            if( this.timer ) {
-                clearTimeout( this.timer );
-            }
-            this.layers.each(function( layer ) {
-                if ( !_.include(commonLayers, layer.id) ) {
-                    layer.exit();
-                }
-            });
-        },
-
-        unrender: function( newID ) {
-            // not sure I need this
-        },
-
-        // manages the removal of all child layers
-        destroy: function() {
-            // do not attempt to destroy if the layer is waiting or destroyed
-            if ( this.state !== "waiting" && this.state !== "destroyed" ) {
-                this.layers.each(function( layer ) {
-                    layer.destroy();
-                });
-                this.state = "destroyed";
-            }
-        }
-
-    });
-});
-
-zeega.define('zeega_parser/plugins/layers/_layer/_layer',[
-    "zeega"
-],
-
-function( Zeega ) {
-
-    _Layer = Zeega.Backbone.Model.extend({
-
-        layerType: null,
-
-        controls: [],
-
-        defaultAttr: {
-            citation: true,
-            default_controls: true,
-            draggable: true,
-            has_controls: true,
-            linkable: true,
-            mode: "player",
-            resizable: false
-        },
-
-        attr: {},
-
-        initialize: function() {
-            var attr = _.extend({}, this.defaultAttr, this.attr );
-            this.set( "attr", attr );
+            this.stopListening( this.model );
+            this.model.on("change:" + this.propertyName , this.onPropertyUpdate, this );
+            this.model.on("focus", this._onFocus, this );
+            this.model.on("blur", this._onBlur, this );
             this.init();
         },
 
+        afterRender: function() {
+            this.$visual = this.model.visual.$el.find(".visual-target");
+            this.$visualContainer = this.model.visual.$el;
+            this.$workspace = this.model.visual.$el.closest(".ZEEGA-workspace");
+
+            this.create();
+        },
+
+        _onFocus: function() {
+            this.onFocus();
+        },
+
+        _onBlur: function() {
+            this.onBlur();
+        },
+
+        onFocus: function() {},
+        onBlur: function() {},
+
         init: function() {},
+        create: function() {},
+        destroy: function() {},
 
-        player_onPreload: function() {},
-        player_onPlay: function() {},
-        player_onPause: function() {},
-        player_onExit: function() {},
-        player_onUnrender: function() {},
-        player_onRenderError: function() {},
+        update: function( attributes ) {
+            if ( !_.isEmpty( attributes ) ) {
+                var attr = _.extend({}, this.model.get("attr"), attributes );
 
-        editor_onLayerEnter: function() {},
-        editor_onLayerExit: function() {},
-        editor_onControlsOpen: function() {},
-        editor_onControlsClosed: function() {}
-    });
+                this.model.trigger("change:" + this.propertyName, this.model, attributes[ this.propertyName ] );
+                this.model.save("attr", attr );
+            }
+        },
 
-    _Layer.Visual = Zeega.Backbone.LayoutView.extend({
+        lazyUpdate: _.debounce(function( value ) {
+            var attr = {};
+            
+            attr[ this.propertyName ] = value;
+            this.update( attr );
+        }, 500 ),
 
-        className: "visual-element",
-        template: "",
+        updateVisual: function( value ) {
+            this.$visual.css( this.propertyName, value );
+        },
+
+        onPropertyUpdate: function() {},
+
+        // convenience fxn
+        getAttr: function( key ) {
+            return this.model.get("attr")[key];
+        },
+
+        serialize: function() {
+            return _.extend({}, this.model.toJSON(), { _propertyName: !_.isUndefined( this.options.options ) ? this.options.options.title : this.propertyName });
+        },
 
         fetch: function( path ) {
             // Initialize done for use in async-mode
             var done;
             // Concatenate the file extension.
-            path = "app/templates/" + path + ".html";
+            path = app.parserPath + "plugins/controls/" + path + ".html";
+            // remove app/templates/ via regexp // hacky? yes. probably.
+            path = path.replace("app/templates/","");
+
             // If cached, use the compiled template.
             if ( JST[ path ] ) {
                 return JST[ path ];
@@ -32226,42 +31880,1455 @@ function( Zeega ) {
                 // Put fetch into `async-mode`.
                 done = this.async();
                 // Seek out the template asynchronously.
-                return Zeega.$.ajax({ url: Zeega.root + path }).then(function( contents ) {
+                return app.$.ajax({ url: app.root + path }).then(function( contents ) {
                     done(
                       JST[ path ] = _.template( contents )
                     );
                 });
             }
+        }
+
+    });
+
+});
+
+zeega.define('zeega_parser/plugins/controls/position/position',[
+    "app",
+    "zeega_parser/modules/control.view"
+],
+
+function( Zeega, ControlView ) {
+
+    return {
+
+        position: ControlView.extend({
+
+            type: "position",
+            propertyName: "position",
+
+            create: function() {
+                this.makeDraggable();
+                this.$visual.css("cursor", "move");
+            },
+
+            makeDraggable: function() {
+                
+
+                if ( this.model.editorProperties.draggable ) {
+
+                    this.$visualContainer.draggable({
+                        start: function( e, ui ) {
+                            this.model.visual.transforming = true;
+                        }.bind( this ),
+                        stop: function( e, ui ) {
+                            var top, left, workspace;
+
+                            this.model.visual.transforming = false;
+
+                            workspace = this.$visualContainer.closest(".ZEEGA-workspace");
+                            top = ui.position.top / workspace.height() * 100;
+                            left = ui.position.left / workspace.width() * 100;
+                            this.update({
+                                top: top,
+                                left: left
+                            });
+
+                            this.convertToPercents( top, left );
+                        }.bind( this )
+                    });
+                }
+            },
+
+            destroy: function() {
+                this.$visualContainer.draggable( "destroy" );
+            },
+
+            convertToPercents: function( top, left ) {
+                this.$visualContainer.css({
+                    top: top + "%",
+                    left: left + "%"
+                });
+            }
+
+        }) // end control
+    
+    }; // end return
+
+});
+
+zeega.define('zeega_parser/plugins/controls/slider/slider',[
+    "app",
+    "zeega_parser/modules/control.view",
+    "jqueryUI"
+],
+
+function( Zeega, ControlView ) {
+
+    return {
+        slider: ControlView.extend({
+
+            parentName: "slider",
+            template: "slider/slider",
+
+            defaults: {
+                min: 0,
+                max: 100,
+                step: 1,
+                // callbacks
+                onStart: function() {},
+                onSlide: function() {},
+                onStop: function() {}
+            },
+
+            serialize: function() {
+                return _.extend({}, this.model.toJSON(),
+                    { 
+                        title: this._userOptions.title,
+                        _propertyName: this._userOptions.propertyName
+                    });
+            },
+
+            create: function() {
+                var _settings, args, $input = this.$(".text-input");
+
+                _settings = _.defaults( this._userOptions, this.defaults );
+
+                args = {
+                    orientation: "vertical",
+                    range: "min",
+                    value: this.getAttr( this.propertyName ),
+
+                    start: function( e, ui ) {
+                        _settings.onStart( e, ui );
+                    },
+
+                    slide: function( e, ui ) {
+
+                        if ( this._userOptions.css ) {
+                            var value = {};
+
+                            value[ this.propertyName ] = ui.value;
+                            this.$visual.css( value );
+                        }
+                        this.$(".text-input").val( Math.floor( ui.value * 100 ) );
+                        _settings.onSlide( e, ui );
+                    }.bind( this ),
+                    
+                    stop: function( e, ui) {
+                        var value = {};
+
+                        value[ this.propertyName ] = ui.value;
+                        if ( this._userOptions.css ) {
+                            this.$visual.css( value );
+                        }
+
+                        this.update( value );
+                        _settings.onStop( e, ui );
+                    }.bind( this )
+                };
+
+                _.extend( args, _settings );
+
+                this.$(".control-slider").slider( args );
+
+                $input.on("keyup", function( e ) {
+                    var val;
+
+                    if ( e.which == 13 ) { // enter
+                        $input.blur();
+                    } else if ( e.which == 27 ) { // esc
+                        $input.val( Math.floor( this.getAttr( this.propertyName ) * 100 ) );
+                        $input.blur();
+                    } else if ( e.which == 38 ) { // arrow up
+                        val = (parseInt( $input.val(), 10 ) + 1) / 100;
+
+                        if ( val <= this.options.max ) {
+                            this.updateVisual( val );
+                            this.updateSlider( val );
+                            this.lazyUpdate( val );
+                            $input.val( val * 100 );
+                        }
+                    } else if ( e.which == 40 ) { // arrow up
+                        val = ( parseInt( $input.val(), 10 ) - 1 )/ 100;
+
+                        if ( val >= this.options.min ) {
+                            this.updateVisual( val );
+                            this.updateSlider( val );
+                            this.lazyUpdate( val );
+                            $input.val( val * 100 );
+                        }
+                    }
+                }.bind( this ));
+
+                $input.blur(function() {
+                    var value = {};
+
+                    value[ this.propertyName ] = $input.val() / 100;
+                    this.update( value );
+                }.bind( this ));
+
+            },
+
+            updateSlider: function( value ) {
+                this.$(".control-slider").slider("value", value );
+            },
+
+            onPropertyUpdate: function( model, value ) {
+                this.updateVisual( value );
+                this.updateSlider( value );
+            }
+
+        })
+    };
+
+
+});
+
+zeega.define('zeega_parser/plugins/controls/resize/resize',[
+    "app",
+    "zeega_parser/modules/control.view"
+],
+
+function( Zeega, ControlView ) {
+
+    return {
+
+        resize: ControlView.extend({
+
+            type: "resize",
+            propertyName: "resize",
+
+            create: function() {
+                this.makeResizable();
+            },
+
+            makeResizable: function() {
+                var args = {
+                    start: function( e, ui ) {
+                        this.model.visual.transforming = true;
+                        Zeega.status.setCurrentLayer( this.model );
+                    }.bind( this ),
+                    stop: function( e, ui ) {
+                        var attr = {}, width, height;
+
+                        this.model.visual.transforming = false;
+                        attr.width = this.$visualContainer.width() / this.$workspace.width() * 100;
+                        if ( this.options.options != "e" ) {
+                            attr.height = this.$visualContainer.height() / this.$workspace.height() * 100;
+                        }
+                       
+                        this.update( attr );
+                        this.updateCSS( attr );
+                    }.bind( this )
+                };
+
+                this.$visualContainer.resizable( _.extend({}, args, this.options.options ) );
+            },
+
+            destroy: function() {
+                this.$visualContainer.resizable( "destroy" );
+            },
+
+            updateCSS: function( attr ) {
+                var workspace = this.$visualContainer.closest(".ZEEGA-workspace");
+
+                var css = {
+                    top: this.$visualContainer.position().top / workspace.height() * 100 + "%",
+                    left: this.$visualContainer.position().left / workspace.width() * 100 + "%"
+                };
+
+                _.each( attr, function( value, key ) {
+                    css[ key ] = value + "%";
+                });
+
+                this.$visualContainer.css( css );
+            }
+
+        }) // end control
+    
+    }; // end return
+
+});
+
+zeega.define('zeega_parser/plugins/controls/checkbox/checkbox',[
+    "app",
+    "zeega_parser/modules/control.view",
+    "jqueryUI"
+],
+
+function( Zeega, ControlView ) {
+
+    return {
+        checkbox: ControlView.extend({
+
+            //propertyName: "checkbox", // autoset
+            
+            template: "checkbox/checkbox",
+
+            serialize: function() {
+                return _.extend({}, this.model.toJSON(), this._userOptions );
+            },
+
+            create: function() {
+                this.$("input").attr("checked", this.model.getAttr( this.propertyName ) );
+            },
+
+            events: {
+                "change input": "onChange"
+            },
+
+            onChange: function() {
+                var attr = {};
+
+                attr[ this.propertyName ] = this.$("input").is(":checked");
+                this.update( attr );
+            }
+
+        })
+    };
+
+
+});
+
+/*
+ * jQuery simple-color plugin
+ * @requires jQuery v1.4.2 or later
+ *
+ * See http://recursive-design.com/projects/jquery-simple-color/
+ *
+ * Licensed under the MIT license:
+ *   http://www.opensource.org/licenses/mit-license.php
+ *
+ * Version: 1.1.3 (201304080141)
+ */
+ (function($) {
+/**
+ * simpleColor() provides a mechanism for displaying simple color-pickers.
+ *
+ * If an options Object is provided, the following attributes are supported:
+ *
+ *  defaultColor:       Default (initially selected) color.
+ *                      Default value: '#FFF'
+ *
+ *  border:             CSS border properties.
+ *                      Default value: '1px solid #000'
+ *
+ *  cellWidth:          Width of each individual color cell.
+ *                      Default value: 10
+ *
+ *  cellHeight:         Height of each individual color cell.
+ *                      Default value: 10
+ *
+ *  cellMargin:         Margin of each individual color cell.
+ *                      Default value: 1
+ *
+ *  boxWidth:           Width of the color display box.
+ *                      Default value: 115px
+ *
+ *  boxHeight:          Height of the color display box.
+ *                      Default value: 20px
+ *
+ *  columns:            Number of columns to display. Color order may look strange if this is altered.
+ *                      Default value: 16
+ *
+ *  insert:             The position to insert the color picker. 'before' or 'after'.
+ *                      Default value: 'after'
+ *
+ *  colors:             An array of colors to display, if you want to customize the default color set.
+ *                      Default value: default color set - see 'default_colors' below.
+ *
+ *  displayColorCode:   Display the color code (eg #333333) as text inside the button. true or false.
+ *                      Default value: false
+ *
+ *  colorCodeAlign:     Text alignment used to display the color code inside the button. Only used if 'displayColorCode' is true. 'left', 'center' or 'right'
+ *                      Default value: 'center'
+ *
+ *  colorCodeColor:     Text color of the color code inside the button. Only used if 'displayColorCode' is true.
+ *                      Default value: '#FFF'
+ *
+ *  onSelect:           Callback function to call after a color has been chosen.
+ *                      Default value: null
+ *                      Returns:       hex value
+ *
+ *  onCellEnter:        Callback function that excecutes when the mouse enters a cell.
+ *                      Default value: null
+ *                      Returns:       hex value
+ *
+ *  onClose:            Callback function that executes when the chooser is closed.
+ *                      Default value: null
+ *
+ *  livePreview:        The color display will change to show the color of the hovered color cell.
+ *                      The display will revert if no color is selected.
+ *                      Default value: false
+ */
+  $.fn.simpleColor = function(options) {
+
+    var default_colors = [
+      '990033', 'ff3366', 'cc0033', 'ff0033', 'ff9999', 'cc3366', 'ffccff', 'cc6699',
+      '993366', '660033', 'cc3399', 'ff99cc', 'ff66cc', 'ff99ff', 'ff6699', 'cc0066',
+      'ff0066', 'ff3399', 'ff0099', 'ff33cc', 'ff00cc', 'ff66ff', 'ff33ff', 'ff00ff',
+      'cc0099', '990066', 'cc66cc', 'cc33cc', 'cc99ff', 'cc66ff', 'cc33ff', '993399',
+      'cc00cc', 'cc00ff', '9900cc', '990099', 'cc99cc', '996699', '663366', '660099',
+      '9933cc', '660066', '9900ff', '9933ff', '9966cc', '330033', '663399', '6633cc',
+      '6600cc', '9966ff', '330066', '6600ff', '6633ff', 'ccccff', '9999ff', '9999cc',
+      '6666cc', '6666ff', '666699', '333366', '333399', '330099', '3300cc', '3300ff',
+      '3333ff', '3333cc', '0066ff', '0033ff', '3366ff', '3366cc', '000066', '000033',
+      '0000ff', '000099', '0033cc', '0000cc', '336699', '0066cc', '99ccff', '6699ff',
+      '003366', '6699cc', '006699', '3399cc', '0099cc', '66ccff', '3399ff', '003399',
+      '0099ff', '33ccff', '00ccff', '99ffff', '66ffff', '33ffff', '00ffff', '00cccc',
+      '009999', '669999', '99cccc', 'ccffff', '33cccc', '66cccc', '339999', '336666',
+      '006666', '003333', '00ffcc', '33ffcc', '33cc99', '00cc99', '66ffcc', '99ffcc',
+      '00ff99', '339966', '006633', '336633', '669966', '66cc66', '99ff99', '66ff66',
+      '339933', '99cc99', '66ff99', '33ff99', '33cc66', '00cc66', '66cc99', '009966',
+      '009933', '33ff66', '00ff66', 'ccffcc', 'ccff99', '99ff66', '99ff33', '00ff33',
+      '33ff33', '00cc33', '33cc33', '66ff33', '00ff00', '66cc33', '006600', '003300',
+      '009900', '33ff00', '66ff00', '99ff00', '66cc00', '00cc00', '33cc00', '339900',
+      '99cc66', '669933', '99cc33', '336600', '669900', '99cc00', 'ccff66', 'ccff33',
+      'ccff00', '999900', 'cccc00', 'cccc33', '333300', '666600', '999933', 'cccc66',
+      '666633', '999966', 'cccc99', 'ffffcc', 'ffff99', 'ffff66', 'ffff33', 'ffff00',
+      'ffcc00', 'ffcc66', 'ffcc33', 'cc9933', '996600', 'cc9900', 'ff9900', 'cc6600',
+      '993300', 'cc6633', '663300', 'ff9966', 'ff6633', 'ff9933', 'ff6600', 'cc3300',
+      '996633', '330000', '663333', '996666', 'cc9999', '993333', 'cc6666', 'ffcccc',
+      'ff3333', 'cc3333', 'ff6666', '660000', '990000', 'cc0000', 'ff0000', 'ff3300',
+      'cc9966', 'ffcc99', 'ffffff', 'cccccc', '999999', '666666', '333333', '000000',
+      '000000', '000000', '000000', '000000', '000000', '000000', '000000', '000000'
+    ];
+
+    // Option defaults
+    options = $.extend({
+      defaultColor:     this.attr('defaultColor') || '#FFF',
+      border:           this.attr('border') || '1px solid #000',
+      cellWidth:        this.attr('cellWidth') || 10,
+      cellHeight:       this.attr('cellHeight') || 10,
+      cellMargin:       this.attr('cellMargin') || 1,
+      boxWidth:         this.attr('boxWidth') || '115px',
+      boxHeight:        this.attr('boxHeight') || '20px',
+      columns:          this.attr('columns') || 16,
+      insert:           this.attr('insert') || 'after',
+      buttonClass:      this.attr('buttonClass') || '',
+      colors:           this.attr('colors') || default_colors,
+      displayColorCode: this.attr('displayColorCode') || false,
+      colorCodeAlign:   this.attr('colorCodeAlign') || 'center',
+      colorCodeColor:   this.attr('colorCodeColor') || '#FFF',
+      onSelect:         null,
+      onCellEnter:      null,
+      onClose:          null,
+      livePreview:      false
+    }, options || {});
+
+    // Hide the input
+    this.hide();
+
+    // Figure out the cell dimensions
+    options.totalWidth = options.columns * (options.cellWidth + (2 * options.cellMargin));
+    if ($.browser.msie) {
+      options.totalWidth += 2;
+    }
+
+    options.totalHeight = Math.ceil(options.colors.length / options.columns) * (options.cellHeight + (2 * options.cellMargin));
+
+    // Store these options so they'll be available to the other functions
+    // TODO - must be a better way to do this, not sure what the 'official'
+    // jQuery method is. Ideally i want to pass these as a parameter to the 
+    // each() function but i'm not sure how
+    $.simpleColorOptions = options;
+
+    function buildSelector(index) {
+      options = $.simpleColorOptions;
+
+      // Create a container to hold everything
+      var container = $("<div class='simpleColorContainer' />");
+      
+      // Absolutely positioned child elements now 'work'.
+			container.css('position', 'relative');
+
+      // Create the color display box
+      var default_color = (this.value && this.value != '') ? this.value : options.defaultColor;
+
+      var display_box = $("<div class='simpleColorDisplay' />");
+      display_box.css({
+        'backgroundColor': default_color,
+        'border':          options.border,
+        'width':           options.boxWidth,
+        'height':          options.boxHeight,
+        // Make sure that the code is vertically centered.
+        'line-height':     options.boxHeight,
+        'cursor':          'pointer'
+      });
+      container.append(display_box);
+      
+      // If 'displayColorCode' is turned on, display the currently selected color code as text inside the button.
+      if (options.displayColorCode) {
+        display_box.text(this.value);
+        display_box.css({
+          'color':     options.colorCodeColor,
+          'textAlign': options.colorCodeAlign
+        });
+      }
+      
+      var select_callback = function (event) {
+
+        // Bind and namespace the click listener only when the chooser is 
+        // displayed. Unbind when the chooser is closed.
+        $('html').bind("click.simpleColorDisplay", function(e) {
+          $('html').unbind("click.simpleColorDisplay");
+          $('.simpleColorChooser').hide();
+
+          // If the user has not selected a new color, then revert the display.
+          // Makes sure the selected cell is within the current color selector.
+          var target = $(e.target);
+          if (target.is('.simpleColorCell') === false || $.contains( $(event.target).closest('.simpleColorContainer')[0], target[0]) === false) {
+            display_box.css('backgroundColor', default_color);
+            if (options.displayColorCode) {
+              display_box.text(default_color);
+            }
+          }
+          // Execute onClose callback whenever the color chooser is closed.
+          if (options.onClose) {
+            options.onClose();
+          }
+        });
+
+        // Use an existing chooser if there is one
+        if (event.data.container.chooser) {
+          event.data.container.chooser.toggle();
+      
+        // Build the chooser.
+        } else {
+
+          // Make a chooser div to hold the cells
+          var chooser = $("<div class='simpleColorChooser'/>");
+          chooser.css({
+            'border':   options.border,
+            'margin':   '0 0 0 5px',
+            'width':    options.totalWidth,
+            'height':   options.totalHeight,
+            'top':      0,
+            'left':     options.boxWidth,
+            'position': 'absolute'
+          });
+      
+          event.data.container.chooser = chooser;
+          event.data.container.append(chooser);
+      
+          // Create the cells
+          for (var i=0; i<options.colors.length; i++) {
+            var cell = $("<div class='simpleColorCell' id='" + options.colors[i] + "'/>");
+            cell.css({
+              'width':           options.cellWidth + 'px',
+              'height':          options.cellHeight + 'px',
+              'margin':          options.cellMargin + 'px',
+              'cursor':          'pointer',
+              'lineHeight':      options.cellHeight + 'px',
+              'fontSize':        '1px',
+              'float':           'left',
+              'backgroundColor': '#'+options.colors[i]
+            });
+            chooser.append(cell);
+            if (options.onCellEnter || options.livePreview) {
+              cell.bind('mouseenter', function(event) {
+                if (options.onCellEnter) {
+                  options.onCellEnter(this.id);
+                }
+                if (options.livePreview) {
+                  display_box.css('backgroundColor', '#' + this.id);
+                  if (options.displayColorCode) {
+                    display_box.text('#' + this.id);
+                  }
+                }
+              });
+            }
+            cell.bind('click', {
+              input: event.data.input, 
+              chooser: chooser, 
+              display_box: display_box
+            }, 
+            function(event) {
+              event.data.input.value = '#' + this.id;
+              $(event.data.input).change();
+              event.data.display_box.css('backgroundColor', '#' + this.id);
+              event.data.chooser.hide();
+              event.data.display_box.show();
+
+              // If 'displayColorCode' is turned on, display the currently selected color code as text inside the button.
+              if (options.displayColorCode) {
+                event.data.display_box.text('#' + this.id);
+              }
+              // If an onSelect callback function is defined then excecute it.
+              if (options.onSelect) {
+                options.onSelect(this.id);
+              }
+
+            });
+          }
+        }
+      };
+      
+      var callback_params = {
+        container: container, 
+        input: this, 
+        display_box: display_box
+      };
+
+      // Also bind the display box button to display the chooser.
+      display_box.bind('click', callback_params, select_callback);
+
+      $(this).after(container);
+
+    };
+
+    this.each(buildSelector);
+
+    $('.simpleColorDisplay').each(function() {
+      $(this).click(function(e){
+        e.stopPropagation();
+      });
+    });
+
+    return this;
+  };
+
+  /*
+   * Close the given color selectors
+   */
+  $.fn.closeSelector = function() {
+    this.each( function(index) {
+      var container = $(this).parent().find('div.simpleColorContainer');
+      container.find('.simpleColorChooser').hide();
+      container.find('.simpleColorDisplay').show();
+    });
+
+    return this;
+  };
+
+})(jQuery);
+
+zeega.define("simpleColorPicker", function(){});
+
+zeega.define('zeega_parser/plugins/controls/color/color',[
+    "app",
+    "zeega_parser/modules/control.view",
+    "simpleColorPicker"
+],
+
+function( app, ControlView ) {
+
+    return {
+        color: ControlView.extend({
+
+            parentName: "color",
+            template: "color/color",
+
+            init: function() {
+                this.propertyName = this.options.options.propertyName;
+                this.model.on("change", this.onChange, this );
+            },
+
+            serialize: function() {
+                return _.extend({}, this.model.toJSON(), {
+                    _title: this.options.options.title,
+                    _propertyName: this.propertyName
+                });
+            },
+
+            create: function() {
+                /* plugin: https://github.com/recurser/jquery-simple-color */
+                var $colorPicker = this.$(".simple_color");
+
+                $colorPicker
+                    .simpleColor({
+                        livePreview: true,
+                        onCellEnter: function( hex ) {
+                            this.updateVisual( "#" + hex );
+                        }.bind( this ),
+                        onClose: function() {
+                            this.onChange();
+                        }.bind( this ),
+                        callback: function( hex ) {
+                            var attr = {};
+
+                            attr[ this.propertyName ] = "#" + hex;
+                            this.updateVisual( "#" + hex );
+                            this.update( attr );
+                        }.bind( this )
+                    });
+            },
+
+            onChange: function() {
+                this.updateVisual( this.getAttr( this.propertyName ) );
+            }
+
+        })
+    };
+
+
+});
+
+zeega.define('zeega_parser/plugins/controls/linkto/linkto',[
+    "app",
+    "zeega_parser/modules/control.view"
+],
+
+function( app, ControlView ) {
+
+    return {
+        linkto: ControlView.extend({
+
+            propertyName: "to_frame",
+            template: "linkto/linkto",
+
+            serialize: function() {
+                var targetFrame = app.project.getFrame( this.getAttr("to_frame") );
+
+                if ( targetFrame === false ) {
+                    return { thumbnail_url: ""};
+                } else {
+                    return targetFrame.toJSON();
+                }
+            },
+
+            onPropertyUpdate: function( value ) {
+                this.render();
+            },
+
+            events: {
+                "click .control-frame-thumb a": "openModal"
+            },
+
+            openModal: function() {
+                this.model.visual.startFrameChooser();
+            }
+
+        })
+    };
+
+
+});
+
+zeega.define('zeega_parser/plugins/controls/linkimage/linkimage',[
+    "app",
+    "zeega_parser/modules/control.view"
+],
+
+function( app, ControlView ) {
+
+    return {
+        linkimage: ControlView.extend({
+
+            propertyName: "link_type",
+            template: "linkimage/linkimage",
+
+            create: function() {
+                this.$(".link-image-select").val( this.getAttr("link_type") );
+            },
+
+            events: {
+                "change .link-image-select": "changeSelect"
+            },
+
+            changeSelect: function() {
+                var classes = this.$visualContainer.attr("class");
+
+                classes = classes.replace(/link-type-([a-zA-Z0-9_.])*\S/, "");
+                this.$visualContainer.attr("class", classes );
+                this.$visualContainer.addClass( "link-type-" + this.$(".link-image-select").val() );
+                this.update({ link_type: this.$(".link-image-select").val() });
+            }
+
+
+        })
+    };
+
+
+});
+
+zeega.define('zeega_parser/plugins/controls/av/av',[
+    "app",
+    "zeega_parser/modules/control.view",
+    "jqueryUI"
+],
+
+function( app, ControlView ) {
+
+    return {
+        av: ControlView.extend({
+
+            type: "av",
+
+            audio: null,
+            $avSlider: null,
+            playing: false,
+            dragging: false,
+
+            propertyName: "av",
+            template: "av/av",
+
+            options: {
+                step: 0.04
+            },
+
+            create: function() {
+                this.listen();
+
+                if ( !this.model.canplay ) {
+                    this.model.off("canplay");
+                    this.model.on("canplay", this.createSlider, this );
+                } else {
+                    this.createSlider();
+                }
+            },
+
+            createSlider: function() {
+                var cueIn, cueOut, max, $avSlider, cues = {};
+
+                cueIn = this.getAttr("cue_in");
+                cueOut = this.getAttr("cue_out");
+                duration = this.getAttr("duration");
+
+                if ( this.getAttr("duration") === null ) {
+                    cues.duration = max = this.audio.duration;
+                }
+                if ( this.getAttr("cue_out") === null ) {
+                    cues.cue_out = cueOut = this.audio.duration;
+                }
+
+                this.update( cues );
+
+                this.$avSlider = this.$(".av-slider");
+
+                this.$avSlider.slider({
+
+                    range: "min",
+                    step: 0.1,
+                    min: 0,
+                    max: max,
+                    values: [ cueIn, 0 , cueOut ],
+
+                    slide: function( e, ui ) {
+                        this.verifyValues( ui );
+
+                    }.bind( this ),
+                    
+                    start: function( e, ui ) {
+                        this.dragging = true;
+                    }.bind( this ),
+
+                    stop: function( e, ui ) {
+                        this.verifyValues( ui );
+                        this.updateElapsed();
+                        this.cueAudio( ui.values[1] );
+                        this.dragging = false;
+
+                    }.bind( this ),
+
+                    change: function( e, ui ) {
+                        this.updateElapsed();
+                    }.bind( this )
+                });
+
+                var handles = this.$(".av-slider a");
+
+                $( handles[0] ).addClass("handle-cueIn");
+                $( handles[1] ).addClass("handle-playhead");
+                $( handles[2] ).addClass("handle-cueOut");
+
+                this.updateElapsed();
+            },
+
+            verifyValues: _.debounce(function( ui ) {
+                var values = ui.values;
+
+                if ( values[0] >= values[2] ) {
+                    this.$avSlider.slider("values", 2, values[0] + 2 );
+                }
+                if ( values[1] < values[0] ) {
+                    this.$avSlider.slider("values", 1, values[0] + 0.1 );
+                } else if ( values[1] >= values[2] ) {
+                    this.$avSlider.slider("values", 1, values[2] - 0.1 );
+                }
+
+                this.updateCues( values );
+            }, 250 ),
+
+            updateCues: function( values ) {
+                var cueIn, cueOut, cues = {};
+
+                cueIn = this.getAttr("cue_in");
+                cueOut = this.getAttr("cue_out");
+                
+                if ( cueIn != values[0] ) {
+                    cues.cue_in = values[0];
+                }
+                if ( cueOut != values[2] ) {
+                    cues.cue_out = values[2];
+                }
+
+                this.update( cues );
+            },
+
+            updateElapsed: _.debounce(function() {
+                var cue, elap, width;
+
+                cue = parseInt( this.$(".handle-cueIn").css("left"), 10 );
+                elap = parseInt( this.$(".handle-playhead").css("left"), 10 );
+                width = this.$(".av-slider").width();
+
+                this.$(".ui-slider-range").css({
+                    left: ( cue / width * 100 ) + "%",
+                    width: ( (elap - cue) / width * 100 ) + "%"
+                });
+
+            }, 200),
+
+            cueAudio: function( sec ) {
+                this.audio.currentTime = sec;
+            },
+
+            listen: function() {
+
+                this.audio = this.model.visual.getAudio();
+
+
+                // if ( !this.audio ) {
+                //     this.audio = this.model.visual.getAudio();
+                // }
+                this.model.on("play", this.onPlay, this );
+                this.model.on("pause", this.onPause, this );
+                this.model.on("timeupdate", this.onTimeupdate, this );
+            },
+            
+            onBlur: function() {
+                this.audio.pause();
+                this.$avSlider.slider("destroy");
+                this.$avSlider.empty();
+                // if ( this.$avSlider.slider ) {
+                //     this.$avSlider.slider("destroy");
+                // }
+            },
+
+            onFocus: function() {},
+            
+            onPlay: function( obj ) {
+
+                console.log( this.cid );
+
+                this.$(".playpause i")
+                    .addClass("icon-pause")
+                    .removeClass("icon-play");
+            },
+
+            onPause: function( obj ) {
+                this.$(".playpause i")
+                    .removeClass("icon-pause")
+                    .addClass("icon-play");
+            },
+
+            onTimeupdate: function( obj ) {
+                if ( !this.dragging ) {
+                    if ( obj.currentTime >= this.getAttr("cue_out") ) {
+                        this.audio.pause();
+                        this.audio.currentTime = this.getAttr("cue_in");
+                    }
+                    this.$avSlider.slider("values", 1, obj.currentTime );
+                }
+            },
+
+            events: {
+                "click .playpause": "playpause"
+            },
+
+            playpause: function() {
+                this.model.visual.playPause();
+            }
+
+        })
+
+    };
+
+
+});
+
+zeega.define('zeega_parser/plugins/controls/textbar/textbar',[
+    "app",
+    "zeega_parser/modules/control.view"
+],
+
+function( Zeega, ControlView ) {
+
+    return {
+
+        textbar: ControlView.extend({
+
+            type: "textbar",
+            template: "textbar/textbar",
+            propertyName: "textbar",
+
+            fontList: [
+                "Allerta Stencil",
+                "Antic",
+                "Archivo Black",
+                "Arial",
+                "Bilbo Swash Caps",
+                "Cabin Sketch",
+                "Codystar",
+                "Cutive Mono",
+                "Dosis",
+                "Ewert",
+                "Fascinate",
+                "Faster One",
+                "Finger Paint",
+                "Georgia",
+                "Great Vibes",
+                "Londrina Outline",
+                "Londrina Sketch",
+                "Monofett",
+                "Montserrat",
+                "New Rocker",
+                "Nobile",
+                "Nova Mono",
+                "Orbitron",
+                "Sorts Mill Goudy",
+                "Poiret One",
+                "Pontano Sans",
+                "Trocchi",
+                "Ultra",
+                "Verdana",
+                "Wendy One",
+                "Yellowtail"
+            ],
+
+            create: function() {
+                this.loadFonts();
+                this.setFont();
+                this.setSize();
+            },
+
+            destroy: function() {
+                this.$visualContainer.resizable( "destroy" );
+            },
+
+            loadFonts: function() {
+                this.$(".font-list").empty();
+                _.each( this.fontList, function( fontName ) {
+                    this.$(".font-list").append("<option value='" + fontName + "'>" + fontName + "</option>");
+                }, this );
+            },
+
+            setFont: function() {
+                this.$(".font-list option[value='" + this.getAttr("fontFamily") + "']").prop("selected", true );
+            },
+
+            setSize: function() {
+                this.$(".size-list option[value='" + this.getAttr("fontSize") + "']").prop("selected", true );
+            },
+
+            events: {
+                "click .textbar-btn": "btnClick",
+                "change .font-list": "changeFont",
+                "change .size-list": "changeSize"
+            },
+
+            changeFont: function( e ) {
+                this.$visual.find('.style-font-family').contents().unwrap();
+                this.$visual.wrapInner('<span class="style-font-family" style="font-family:'+ $(e.target).val() +'"/>');
+                this.update({ fontFamily : $(e.target).val() });
+                this.saveContent();
+            },
+
+            changeSize: function( e ) {
+                this.model.visual.$el.css( 'fontSize', $(e.target).val() + '%' );
+                this.update({ fontSize : $(e.target).val() });
+            },
+
+            btnClick: function( e ) {
+                var action = $( e.target ).closest("a").data("action");
+
+                this[ action ]();
+            },
+
+            bold: function() {
+                if( this.$visual.find('.style-bold').length ) {
+                    this.$visual.find('.style-bold').contents().unwrap();
+                } else {
+                    this.$visual.wrapInner('<span class="style-bold" style="font-weight:bold"/>');
+                }
+
+                this.saveContent();
+            },
+
+            italic: function() {
+                if( this.$visual.find('.style-italic').length ) {
+                    this.$visual.find('.style-italic').contents().unwrap();
+                } else {
+                    this.$visual.wrapInner('<span class="style-italic" style="font-style:italic"/>');
+                }
+
+                this.saveContent();
+            },
+
+            clear: function() {
+                var clean = this.getAttr("content").replace(/(<([^>]+)>)/ig, "");
+
+                this.$visual.text( clean );
+                this.saveContent();
+            },
+
+            saveContent: function() {
+                this.lazyUpdate({ content: this.$visual.html() });
+            },
+
+            lazyUpdate: _.debounce(function( value ) {
+                this.update(value);
+            }, 500 )
+
+        }) // end control
+    
+    }; // end return
+
+});
+
+/*
+
+plugin/layer manifest file
+
+this should be auto generated probably!!
+
+*/
+
+zeega.define('zeega_parser/plugins/controls/_all-controls',[
+    "zeega_parser/plugins/controls/position/position",
+    "zeega_parser/plugins/controls/slider/slider",
+    "zeega_parser/plugins/controls/resize/resize",
+    "zeega_parser/plugins/controls/checkbox/checkbox",
+    "zeega_parser/plugins/controls/color/color",
+    "zeega_parser/plugins/controls/linkto/linkto",
+    "zeega_parser/plugins/controls/linkimage/linkimage",
+    "zeega_parser/plugins/controls/av/av",
+    "zeega_parser/plugins/controls/textbar/textbar"
+],
+function(
+    Position,
+    Slider,
+    Resize,
+    Checkbox,
+    Color,
+    LinkTo,
+    LinkImage,
+    AV,
+    TextBar
+) {
+
+    return _.extend(
+        Position,
+        Slider,
+        Resize,
+        Checkbox,
+        Color,
+        LinkTo,
+        LinkImage,
+        AV,
+        TextBar
+    );
+});
+
+// layer.js
+zeega.define('zeega_parser/modules/layer.model',[
+    "app",
+    "zeega_parser/plugins/controls/_all-controls"
+],
+
+function( app, Controls ) {
+
+    return app.Backbone.Model.extend({
+        ready: false,
+        state: "waiting", // waiting, loading, ready, destroyed, error
+
+        mode: "player",
+        order: [],
+        controls: [],
+        visual: null,
+
+        editorProperties: {
+            draggable: true
         },
 
-        serialize: function() {
-            return this.model.toJSON();
+        defaults: {
+            attr: {},
+            id: null,
+            project_id: null,
+            type: null
+        },
+
+        url: function() {
+            if ( this.isNew() ) {
+                return app.api + "projects/" + app.project.id + "/layers";
+            } else {
+                return app.api + "layers/" + this.id;
+            }
         },
 
         initialize: function() {
+            var augmentAttr = _.extend({}, this.attr, this.toJSON().attr );
+
+            this.set("attr", augmentAttr );
+            this.order = {};
+        
+            this.on( "visual_ready", this.onVisualReady, this );
+            this.on( "visual_error", this.onVisualError, this );
+        },
+
+        getAttr: function( attrName ) {
+            return this.get("attr")[ attrName ];
+        },
+
+        setAttr: function( attrObj ) {
+            var attr = this.get("attr");
+
+            this.set("attr", _.extend( attr, attrObj ) );
+        },
+
+        saveAttr: function( attrObj ) {
+            var attr = this.get("attr");
+
+            this.save("attr", _.extend( attr, attrObj ) );
+        },
+
+        initVisual: function( layerClass ) {
+            this.visual = new layerClass.Visual({
+                model: this,
+                attributes: {
+                    "data-id": this.id
+                }
+            });
+        },
+
+        addCollection: function( collection ) {
+            this.collection = collection;
+            this.collection.on("sort", this.onSort, this );
+        },
+
+        // when the parent collection is resorted as in a layer shuffle
+        onSort: function( collection ) {
+
+            var zIndex = this.order[ collection.frame.id ];
+            this.updateZIndex( zIndex );
+        },
+
+        editorCleanup: function() {
+            // there should probably be more done here
+            this.visual.remove();
+        },
+
+        render: function() {
+            // make sure the layer class is loaded or fail gracefully
+            if ( this.visual ) {
+
+                // if the layer is ready, then just show it
+                if ( this.state == "waiting") {
+                    this.state = "loading";
+                    this.status.emit("layer_loading", this.toJSON());
+                    this.visual.player_onPreload();
+                } else if( this.state == "ready" ) {
+                    this.visual.play();
+                }
+            } else {
+                console.log("***    The layer "+ this.get("type") +" is missing. ): ", this.id);
+            }
+        },
+
+        // editor mode skips preload and renders immediately
+        enterEditorMode: function() {
+            this.mode = "editor",
+            this.loadControls();
+            this.visual.enterEditorMode();
+            this.visual.moveOnStage();
+        },
+
+        loadControls: function() {
+
+            if ( !this._controls ) {
+
+                this._controls = _.map( this.controls, function( controlType ) {
+                    var control = false;
+
+                    if ( _.isObject( controlType ) && Controls[ controlType.type ] ) {
+                        control = new Controls[ controlType.type ]({ model: this, options: controlType.options });
+                    } else if ( Controls[ controlType ] ) {
+                        control = new Controls[ controlType ]({ model: this });
+                    }
+
+                    return control;
+                }, this );
+                this._controls = _.compact( this._controls );
+            }
+
+            return this._controls;
+        },
+
+        onVisualReady: function() {
+            this.ready = true;
+            this.state = "ready";
+            this.status.emit("layer_ready", this.toJSON() );
+            this.trigger("layer_ready", this.toJSON());
+        },
+
+        onVisualError: function() {
+            this.ready = true;
+            this.state = "error";
+            this.trigger("layer_error", this.toJSON());
+        },
+
+        updateZIndex: function( zIndex ) {
+            this.visual.updateZIndex( zIndex );
+        },
+
+        pause: function() {
+            this.visual.player_onPause();
+        },
+
+        play: function() {
+            this.visual.player_onPlay();
+        },
+
+        exit: function() {
+            this.visual.player_onExit();
+        },
+
+        remove: function() {
+            this.visual.player_onExit();
+        },
+
+        // removes the layer. destroys players, removes from dom, etc
+        destroy: function() {
+            // do not attempt to destroy if the layer is waiting or destroyed
+            if ( this.state != "waiting" && this.state != "destroyed" ) {
+                this.state = "destroyed";
+            }
+        }
+
+    });
+
+});
+
+// layer.js
+zeega.define('zeega_parser/modules/layer.visual.view',[
+    "app",
+    "zeega_parser/plugins/controls/_all-controls"
+],
+
+function( app, Controls ) {
+
+    return app.Backbone.LayoutView.extend({
+
+        className: function() {
+            return "visual-element visual-" + this.model.get("type").toLowerCase();
+        },
+
+        template: "",
+        controls: [],
+        _allowedControls: [ "resize", "position" ],
+        $visual: null,
+        $workspace: null,
+
+        initialize: function() {
             this.init();
+            this.model.off("blur focus");
+            this.model.on("focus", this.onFocus, this );
+            this.model.on("blur", this.onBlur, this );
+
+            this.listenToFrame = _.once(function() {
+                this.model.collection.frame.on("focus", this.editor_onLayerEnter, this );
+                this.model.collection.frame.on("blur", this.editor_onLayerExit, this );
+            }.bind( this ));
+        },
+
+        events: {},
+        editorEvents: {
+            "click": "onClick"
+        },
+
+        onClick: function() {
+            app.status.setCurrentLayer( this.model );
+        },
+
+        /* editor fxns */
+        enterEditorMode: function() {
+            this.listenToFrame();
+
+            // this.loadControls();
+            this.delegateEvents( _.extend( this.events, this.editorEvents ));
+        },
+
+        listenToFrame: null,
+
+        onFocus: function() {
+            this.$el.addClass('active');
+        },
+
+        onBlur: function() {
+            this.$el.removeClass('active');
+        },
+
+        loadControls: function() {
+            _.each( this.model._controls, function( control ) {
+                if ( _.contains( this._allowedControls, control.type ) ) {
+                    this.$(".controls-inline").append( control.el );
+                    control.render();
+                    // this.insertView( ".controls-inline", control );
+                }
+            }, this );
         },
 
         beforePlayerRender: function() {},
+        // beforeRender: function() {
+        //     // working from _layer
+        //     var target = this.model.status.target ? this.model.status.target.find(".ZEEGA-player-window") :
+        //                                 $(".ZEEGA-workspace");
+
+        //     this.className = this._className + " " + this.className;
+        //     this.beforePlayerRender();
+
+        //     target.append( this.el );
+        //     //Zeega.$( target ).append( this.el );
+
+        //     this.$el.addClass( "visual-element-" + this.model.get("type").toLowerCase() );
+        //     this.moveOffStage();
+        //     this.applyStyles();
+        // },
+
         beforeRender: function() {
-            var target = this.model.status.target.find(".ZEEGA-player-window");
+            if ( this.model.mode == "player") {
+                var target = this.model.status.target ? this.model.status.target.find(".ZEEGA-player-window") :
+                                            $(".ZEEGA-workspace");
 
-            this.className = this._className + " " + this.className;
-            this.beforePlayerRender();
+                this.className = this._className + " " + this.className;
+                this.beforePlayerRender();
 
-            Zeega.$( target ).append( this.el );
+                target.append( this.el );
+                //Zeega.$( target ).append( this.el );
 
-            this.$el.addClass( "visual-element-" + this.model.get("type").toLowerCase() );
-            this.moveOffStage();
-            this.applyStyles();
+                this.$el.addClass( "visual-element-" + this.model.get("type").toLowerCase() );
+                this.moveOffStage();
+                this.applyStyles();
+            } else if ( this.model.mode == "editor") {
+
+            }
+            this.visualBeforeRender();
         },
 
         afterRender: function() {
-            this.onRender();
-            this.verifyReady();
+            this.$visual = this.$(".visual-target");
+            this.$workspace = this.$el.closest(".ZEEGA-workspace");
+            
+            if ( this.model.mode == "player") {
+                this.verifyReady();
+            } else if ( this.model.mode == "editor") {
+                this.afterEditorRender();
+                this.loadControls();
+            }
+            this.applyVisualProperties();
+            this.visualAfterRender();
         },
-
-        onRender: function() {},
 
         applyStyles: function() {
             this.$el.css({
@@ -32270,20 +33337,38 @@ function( Zeega ) {
             });
         },
 
-        init: function() {},
-        render: function() {},
+        units: {
+            height: "%",
+            width: "%"
+        },
+
+        containerAttributes: ["height", "width"],
+
+        applyVisualProperties: function() {
+            var mediaTargetCSS = {},
+                containerCSS = {};
+
+            _.each( this.visualProperties, function( prop ) {
+                if ( _.contains( this.containerAttributes, prop ) ) {
+                    containerCSS[ prop ] = this.getAttr( prop ) + ( this.units[ prop ] ? this.units[ prop ] : "" );
+                } else {
+                    mediaTargetCSS[ prop ] = this.getAttr( prop ) + ( this.units[ prop ] ? this.units[ prop ] : "" );
+                }
+            }, this );
+
+            this.$el.css( containerCSS );
+            this.$(".visual-target").css( mediaTargetCSS );
+        },
+
+        afterEditorRender: function() {},
 
         // default verify fxn. return ready immediately
         verifyReady: function() {
             this.model.trigger("visual_ready", this.model.id );
         },
 
-        player_onPreload: function() {
-            this.render();
-        },
-
         player_onPlay: function() {
-            if ( this.getAttr("blink_on_start") && this.getAttr("link_type") == "default" ) {
+            if ( this.getAttr("blink_on_start") ) {
                 this.glowOnFrameStart();
             }
             this.onPlay();
@@ -32307,46 +33392,19 @@ function( Zeega ) {
         onPause: function() {},
         onExit: function() {},
 
+        player_onPreload: function() {
+            this.render();
+        },
 
         glowOnFrameStart: function() {
-            this.model.visualElement.$el.addClass("glow-blink");
+            this.model.visual.$el.addClass("glow-blink");
             _.delay(function() {
-                this.model.visualElement.$el.removeClass("glow-blink");
+                this.model.visual.$el.removeClass("glow-blink");
             }.bind( this ), 1000 );
         },
 
-        /*
-        TODO: Why is this special cased?
-        if there is a need for shorthanding, then I suggest writing
-        a "macro" to define many of these at initial run time:
-
-        (function( global ) {
-          var rdashAlpha = /-([\da-z])/gi,
-              camelCase = function( string ) {
-                return string.replace( rdashAlpha, function( all, letter ) {
-                  return letter.toUpperCase();
-                });
-              };
-
-          // Fake API
-          global.Util = [
-            // example list of properties to create shorthand setter api for
-            "z-index", "background-color", "height", "width"
-          ].reduce(function( api, property ) {
-            var camel = camelCase( "set-" + property );
-
-            api[ camel ] = function( value ) {
-              console.log( "Set " + property + " to: " + value );
-            };
-
-            return api;
-          }, {});
-
-        }( this ));
-
-        */
-        updateZIndex: function( z ) {
-            this.$el.css("z-index", this.model.get("type") == "Link" ? z + 100 : z );
+        updateZIndex: function( zIndex ) {
+            this.$el.css("z-index", zIndex );
         },
 
         editor_onLayerEnter: function() {},
@@ -32364,13 +33422,8 @@ function( Zeega ) {
         moveOnStage: function() {
             this.$el.css({
                 top: this.getAttr("top") + "%",
-                left: this.getAttr("left") + "%",
-                opacity: this.getAttr("dissolve") ? 0 : this.getAttr("opacity")
+                left: this.getAttr("left") + "%"
             });
-            if ( this.getAttr("dissolve") ) {
-                this.$el.animate({ "opacity": this.getAttr("opacity") }, 500 );
-            }
-
         },
 
         play: function() {
@@ -32397,32 +33450,44 @@ function( Zeega ) {
         // convenience fxn
         getAttr: function( key ) {
             return this.model.get("attr")[key];
-        }
+        },
 
-    });
+        update: function( attributes ) {
+            this.model.save( attributes );
+        },
 
-    _Layer.LayoutView = Zeega.Backbone.LayoutView.extend({
+        /* user endpoints */
+
+        init: function() {},
+        visualBeforeRender: function() {},
+        visualAfterRender: function() {},
 
         fetch: function( path ) {
             // Initialize done for use in async-mode
             var done;
-            // Concatenate the file extension.
-            path = "app/templates/"+ path + ".html";
+ 
+            path = app.parserPath + "plugins/layers/"+ path + ".html";
             // If cached, use the compiled template.
-            if (JST[path]) {
-                return JST[path];
+            if ( JST[ path ] ) {
+                return JST[ path ];
             } else {
                 // Put fetch into `async-mode`.
                 done = this.async();
                 // Seek out the template asynchronously.
                 return Zeega.$.ajax({ url: Zeega.root + path }).then(function( contents ) {
-                    done(JST[path] = _.template( contents ));
+                    done(
+                      JST[ path ] = _.template( contents )
+                    );
                 });
             }
+        },
+
+        serialize: function() {
+            return this.model.toJSON();
         }
+
     });
 
-    return _Layer;
 });
 
 (function(c,n){var k="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";c.fn.imagesLoaded=function(l){function m(){var b=c(h),a=c(g);d&&(g.length?d.reject(e,b,a):d.resolve(e));c.isFunction(l)&&l.call(f,e,b,a)}function i(b,a){b.src===k||-1!==c.inArray(b,j)||(j.push(b),a?g.push(b):h.push(b),c.data(b,"imagesLoaded",{isBroken:a,src:b.src}),o&&d.notifyWith(c(b),[a,e,c(h),c(g)]),e.length===j.length&&(setTimeout(m),e.unbind(".imagesLoaded")))}var f=this,d=c.isFunction(c.Deferred)?c.Deferred():
@@ -32431,17 +33496,18 @@ function( Zeega ) {
 zeega.define("plugins/jquery.imagesloaded.min", function(){});
 
 zeega.define('zeega_parser/plugins/layers/image/image',[
-    "zeega",
-    "zeega_parser/plugins/layers/_layer/_layer",
+    "app",
+    "zeega_parser/modules/layer.model",
+    "zeega_parser/modules/layer.visual.view",
     //plugins
     "plugins/jquery.imagesloaded.min"
 ],
 
-function( Zeega, _Layer ){
+function( app, Layer, Visual ){
 
-    var Layer = Zeega.module();
+    var L = {};
 
-    Layer.Image = _Layer.extend({
+    L.Image = Layer.extend({
 
         layerType: "Image",
 
@@ -32450,47 +33516,102 @@ function( Zeega, _Layer ){
             url: "none",
             left: 0,
             top: 0,
-            height: 100,
-            width: 100,
+            width: null,
             opacity: 1,
-            aspect: 1.33
+            aspectRatio: null,
+            dissolve: true
         },
 
         controls: [
+            "position",
             {
-                type: "checkbox",
-                property: "dissolve",
-                label: "Fade In"
+                type: "resize",
+                options: { aspectRatio: true }
             },
-            {
-                type: "slider",
-                property: "width",
-                label: "Scale",
-                suffix: "%",
-                min: 1,
-                max: 200
-            },
-            {
-                type: "slider",
-                property: "opacity",
-                label: "Scale",
-                step: 0.01,
-                min: 0.05,
-                max: 1
+            "rotate",
+            { type: "slider",
+                options: {
+                    title: "<i class='icon-eye-open icon-white'></i>",
+                    propertyName: "opacity",
+                    min: 0,
+                    max: 1,
+                    step: 0.001,
+                    css: true
+                }
             }
         ]
+
     });
 
-    Layer.Image.Visual = _Layer.Visual.extend({
+    L.Image.Visual = Visual.extend({
 
-        template: "plugins/image",
+        template: "image/image",
+
+        visualProperties: [
+            "height",
+            "width",
+            "opacity"
+        ],
 
         serialize: function() {
             return this.model.toJSON();
         },
 
+        afterEditorRender: function() {
+            // add height attribute if not already there
+            // this may break if the aspect ratio changes
+            if ( _.isNull( this.getAttr("aspectRatio") ) ) {
+                var $img = $("<img>").attr("src", this.getAttr("uri") ).css({
+                    position: "absolute",
+                    top: "-1000%",
+                    left: "-1000%"
+                });
+
+                $img.imagesLoaded();
+                $img.done(function() {
+                    var width, height, top, left, imgRatio, workspaceRatio;
+
+                    imgRatio = $img.width()/ $img.height();
+                    workspaceRatio = this.$workspace.width() / this.$workspace.height();
+
+                    if ( imgRatio > workspaceRatio ) {
+                        width = this.$workspace.width();
+                        height = width / imgRatio;
+                    } else {
+                        height = this.$workspace.height();
+                        width = height * imgRatio;
+                    }
+
+                    width = width / this.$workspace.width() * 100;
+                    height = height / this.$workspace.height() * 100;
+                    top = (100 - height) / 2;
+                    left = (100 - width) / 2;
+
+
+                    $img.remove();
+
+                    this.model.saveAttr({
+                        aspectRatio: imgRatio,
+                        height: height,
+                        width: width,
+                        top: top,
+                        left: left
+                    });
+
+                    this.$el.css({
+                        height: height + "%",
+                        width: width + "%",
+                        top: top + "%",
+                        left: left + "%"
+                    });
+                }.bind( this ));
+                $("body").append( $img );
+            }
+
+        },
+
         verifyReady: function() {
-            var img = Zeega.$( this.$el ).imagesLoaded();
+            var img = app.$( this.$("img") ).imagesLoaded();
 
             img.done(function() {
                 this.model.trigger( "visual_ready", this.model.id );
@@ -32502,17 +33623,150 @@ function( Zeega, _Layer ){
         }
     });
 
-    return Layer;
+    return L;
 });
 
-zeega.define('zeega_parser/plugins/layers/link/link',[
-    "zeega",
-    "zeega_parser/plugins/layers/_layer/_layer"
+zeega.define('zeega_parser/plugins/layers/link/frame-chooser',[
+    "app"
 ],
 
-function( Zeega, _Layer ) {
+function( app ) {
 
-    var Layer = Zeega.module();
+    return app.Backbone.View.extend({
+
+        selectedFrame: null,
+
+        template: "link/frame-chooser",
+        serialize: function() {
+            return this.model.toJSON();
+        },
+        className: "page-chooser overlay-dimmer ZEEGA-modal",
+
+        events: {
+            "click .modal-close": "closeThis",
+            "click .submit": "submit",
+            "click .page" : "selectPage",
+            "click .link-new-page": "selectNewPage"
+        },
+
+        closeThis: function() {
+
+            if ( this.model.getAttr("to_frame") === null && this.selectedFrame != "NEW_FRAME" ) {
+                this.model.collection.remove( this.model );
+            }
+
+            $("#main").removeClass("modal");
+            this.$el.fadeOut(function() {
+                this.$el.attr("style", "");
+                this.remove();
+            }.bind( this ));
+        },
+
+        submit: function() {
+            if ( this.selectedFrame !== null && this.selectedFrame == "NEW_FRAME" ) {
+                this.linkToNewPage();
+                this.closeThis();
+            } else if ( this.selectedFrame !== null ) {
+                this.model.saveAttr({ to_frame: this.selectedFrame });
+                this.model.trigger("change:to_frame", this.model, this.selectedFrame );
+                this.closeThis();
+            }
+        },
+
+        selectPage: function( e ) {
+            var $frameLI = $(e.target).closest("li");
+
+            if ( !$frameLI.hasClass("inactive") ) {
+                this.$(".page-chooser-list li.active, .link-new-page").removeClass("active");
+                $frameLI.addClass("active");
+                this.selectedFrame = $frameLI.data("id");
+            }
+
+            this.$(".submit").removeClass("btnz-inactive");
+        },
+
+        selectNewPage: function() {
+            this.$(".page-chooser-list li.active").removeClass("active");
+            this.$(".link-new-page").addClass("active");
+            this.selectedFrame = "NEW_FRAME";
+            this.$(".submit").removeClass("btnz-inactive");
+        },
+
+        linkToNewPage: function() {
+            var newFrame = app.status.get("currentSequence").frames.addFrame();
+
+            newFrame.once("sync", this.onNewFrameSave, this );
+            this.closeThis();
+        },
+
+        onNewFrameSave: function( newFrame ) {
+            this.model.saveAttr({ to_frame: newFrame.id });
+            this.model.trigger("change:to_frame", this.model, newFrame.id );
+            console.log('on new frame save', newFrame, this.model );
+        },
+
+        afterRender: function() {
+            $("#main").addClass("modal");
+            this.$(".page-chooser-list").empty();
+            app.status.get("currentSequence").frames.each(function( frame ) {
+                var fv = $("<li>"),
+                    bg = frame.get("thumbnail_url") === "" ? "black" :
+                        "url(" + frame.get("thumbnail_url") +") no-repeat center center";
+
+                fv.addClass("page")
+                    .data("id", frame.id )
+                    .css({
+                        background: bg,
+                        "-webkit-background-size": "cover"
+                    });
+
+                if ( app.status.get("currentFrame").id == frame.id ) {
+                    fv.addClass("inactive");
+                }
+
+                if ( this.model.getAttr("to_frame") == frame.id ) {
+                    fv.addClass("active");
+                }
+
+                this.$('.page-chooser-list').append( fv );
+            }, this );
+        },
+
+        fetch: function( path ) {
+            // Initialize done for use in async-mode
+            var done;
+            // Concatenate the file extension.
+            path = app.parserPath + "plugins/layers/" + path + ".html";
+            // remove app/templates/ via regexp // hacky? yes. probably.
+            path = path.replace("app/templates/","");
+
+            // If cached, use the compiled template.
+            if ( JST[ path ] ) {
+                return JST[ path ];
+            } else {
+                // Put fetch into `async-mode`.
+                done = this.async();
+                // Seek out the template asynchronously.
+                return app.$.ajax({ url: app.root + path }).then(function( contents ) {
+                    done(
+                      JST[ path ] = _.template( contents )
+                    );
+                });
+            }
+        }
+    });
+
+});
+zeega.define('zeega_parser/plugins/layers/link/link',[
+    "app",
+    "zeega_parser/modules/layer.model",
+    "zeega_parser/modules/layer.visual.view",
+    "zeega_parser/plugins/layers/link/frame-chooser"
+],
+
+function( app, _Layer, Visual, FrameChooser ) {
+
+    var Layer = app.module();
 
     Layer.Link = _Layer.extend({
 
@@ -32520,10 +33774,7 @@ function( Zeega, _Layer ) {
 
         attr: {
             title: "Link Layer",
-            //to_sequence: null,
             to_frame: null,
-            //from_frame: null,
-            //from_sequence: null,
             left: 25,
             top: 25,
             height: 50,
@@ -32536,36 +33787,67 @@ function( Zeega, _Layer ) {
             link_type: "default",
             linkable: false,
             default_controls: false
-        }
+        },
+
+        controls: [
+            "position",
+            "resize",
+            "linkto"
+            //"linkimage"
+        ]
     });
 
-  Layer.Link.Visual = _Layer.Visual.extend({
+  Layer.Link.Visual = Visual.extend({
 
-    template: "plugins/link",
+    template: "link/link",
+
+    visualProperties: [
+        "height",
+        "width",
+        "opacity"
+    ],
 
     serialize: function() {
         return this.model.toJSON();
     },
 
-    beforePlayerRender: function() {
-      style = {
-          "border-radius": "0",
-          "height": this.getAttr("height") + "%",
-          "background": this.getAttr("backgroundColor"),
-          "opacity": this.getAttr("opacity"),
-          "box-shadow": "0 0 10px rgba(255,255,255,"+ this.getAttr("opacity") + ")"
-      };
+    init: function() {
+        this.frameChooser = new FrameChooser({ model: this.model });
+    },
 
-      if ( this.getAttr("link_type") == "default" ) {
+    afterEditorRender: function() {
+        if ( this.getAttr("to_frame") === null ) {
+            this.startFrameChooser();
+        }
+        this.setLinkImage();
+    },
+
+    startFrameChooser: function() {
+        $("body").append( this.frameChooser.el );
+        this.frameChooser.render();
+    },
+
+    beforePlayerRender: function() {
+        style = {
+            "border-radius": "0",
+            "height": this.getAttr("height") + "%",
+            "background": this.getAttr("backgroundColor"),
+            "opacity": this.getAttr("opacity"),
+            "box-shadow": "0 0 10px rgba(255,255,255,"+ this.getAttr("opacity") + ")"
+        };
+
         this.$el.attr("data-glowOnHover", this.getAttr("glow_on_hover") );
-      }
-      
-      this.$el.addClass("link-type-" + this.getAttr("link_type") );
-      this.$(".ZEEGA-link-inner").css( style );
+
+        this.setLinkImage();
+        this.$(".ZEEGA-link-inner").css( style );
+    },
+
+    setLinkImage: function() {
+        this.$el.addClass("link-type-" + this.getAttr("link_type") );
     },
 
     events: {
-        "click": "goClick",
+        "click a": "goClick",
         "mouseover": "onMouseOver",
         "mouseout": "onMouseOut"
     },
@@ -32579,7 +33861,11 @@ function( Zeega, _Layer ) {
     },
 
     goClick: function() {
-        this.model.relay.set( "current_frame", this.getAttr("to_frame") );
+        if ( this.model.mode == "editor" ) {
+            app.status.setCurrentLayer( this.model );
+        } else {
+            this.model.relay.set( "current_frame", this.getAttr("to_frame") );
+        }
         return false;
     }
 
@@ -32587,1925 +33873,21 @@ function( Zeega, _Layer ) {
 
     return Layer;
 });
-zeega.define('zeega_parser/plugins/layers/slideshow/slideshow-metadata',[
-    "zeega",
-    "zeega_parser/plugins/layers/_layer/_layer"
-],
-
-function( Zeega, _Layer ) {
-
-    var Metadata = {};
-
-    Metadata.View = _Layer.LayoutView.extend({
-
-        className: 'slide-metadata',
-        template: "plugins/slideshow-metadata",
-
-        initialize: function() {
-            this.model.on("slideshow_update", this.onUpdate, this );
-            this.slideInfo = this.model.get('attr').slides[0].attr;
-        },
-
-        onUpdate: function( info ) {
-            this.slideInfo = info.data.attr;
-            this.render();
-        },
-
-        serialize: function() {
-            return _.extend({ title: '', description: ''}, this.slideInfo );
-        }
-
-    });
-
-  return Metadata;
-});
-
-zeega.define('zeega_parser/plugins/layers/slideshow/thumbnail-slider',[
-    "zeega",
-    "zeega_parser/plugins/layers/_layer/_layer",
-    "zeega_parser/plugins/layers/slideshow/slideshow-metadata"
-
-],
-
-function( Zeega, _Layer, Metadata ) {
-
-    var SSSlider = _Layer.LayoutView.extend({
-
-        slide: 0,
-        slidePos: 0,
-
-        className: "slideshow-slider",
-        template: "plugins/slideshowthumbslider",
-
-        initialize: function() {
-
-            this.slideNum = this.model.get("attr").slides.length;
-            this.model.on("slideshow_update", function( slide ) {
-                this.highlightThumb( slide.slideNum );
-            }, this );
-
-            Zeega.on("resize_window", this.onResize, this );
-        },
-
-        serialize: function() {
-            return this.model.toJSON();
-        },
-
-        afterRender: function() {
-            //this.onResize();
-            this.makeDraggable();
-            this.sinkThumbSlider();
-
-            this.metadata = new Metadata.View({ model: this.model });
-            this.$el.prepend( this.metadata.el );
-            this.metadata.render();
-        },
-
-        makeDraggable: function() {
-            // TODO: make playerWidth an attribute of the player model
-            var playerWidth = this.$el.closest(".ZEEGA-player-window").width(),
-                dragWidth = -this.$(".slideshow-thumb-wrapper ul").width() + playerWidth - 10;
-
-            this.$(".slideshow-thumb-wrapper ul").draggable({
-                axis: 'x',
-                containment: [ dragWidth - playerWidth / 2 , 0, playerWidth / 2, 0 ]
-            });
-        },
-
-        onResize: function() {
-            this.$el.css("bottom", 0 );
-        },
-
-        events: {
-            "click a.slider-thumb": "onClickThumb",
-            "click a.trackback": "onClickTrackback",
-
-            "mouseenter": "onMouseOver",
-            "mouseleave": "sinkThumbSlider"
-        },
-
-        onMouseOver: function() {
-            if ( this.sinkThumbsTimer ) {
-                clearTimeout( this.sinkThumbsTimer );
-            }
-            Zeega.$(".slideshow-slider").animate({"bottom": 0 });
-        },
-
-        sinkThumbSlider: function() {
-            var _this = this;
-            this.sinkThumbsTimer = setTimeout(function() {
-                Zeega.$(".slideshow-slider").animate({"bottom": -70 });
-            }, 2000 );
-        },
-
-        onClickThumb: function( e ) {
-            var slideNum = Zeega.$( e.target ).closest("a").data("slidenum");
-
-            this.highlightThumb( slideNum );
-            this.model.trigger("slideshow_switch-frame", slideNum );
-            return false;
-        },
-
-        onClickTrackback: function() {
-            return false;
-        },
-
-        highlightThumb: function( num ) {
-            var playerWidth = this.$el.closest(".ZEEGA-player-window").width(),
-                leftPosition = 0,
-                $li = this.$("li"),
-                $active = $li.eq(num);
-
-            this.slide = num;
-            $li.removeClass("active");
-            $active.addClass("active");
-            if ( $active.length ) {
-                leftPosition = playerWidth / 2 - $active.position().left;
-
-                this.$(".slideshow-thumb-wrapper ul").stop().animate({
-                    left: leftPosition
-                }, 250);
-            }
-        }
-  });
-
-  return SSSlider;
-});
-
-/*!
- * jQuery Cycle Plugin (with Transition Definitions)
- * Examples and documentation at: http://jquery.malsup.com/cycle/
- * Copyright (c) 2007-2010 M. Alsup
- * Version: 2.9999.8 (26-OCT-2012)
- * Dual licensed under the MIT and GPL licenses.
- * http://jquery.malsup.com/license.html
- * Requires: jQuery v1.3.2 or later
- */
-;(function($, undefined) {
-
-
-var ver = '2.9999.8';
-
-// if $.support is not defined (pre jQuery 1.3) add what I need
-if ($.support === undefined) {
-  $.support = {
-    opacity: !($.browser.msie)
-  };
-}
-
-function debug(s) {
-  if ($.fn.cycle.debug)
-    log(s);
-}   
-function log() {
-  if (window.console && console.log)
-    console.log('[cycle] ' + Array.prototype.join.call(arguments,' '));
-}
-$.expr[':'].paused = function(el) {
-  return el.cyclePause;
-};
-
-
-// the options arg can be...
-//   a number  - indicates an immediate transition should occur to the given slide index
-//   a string  - 'pause', 'resume', 'toggle', 'next', 'prev', 'stop', 'destroy' or the name of a transition effect (ie, 'fade', 'zoom', etc)
-//   an object - properties to control the slideshow
-//
-// the arg2 arg can be...
-//   the name of an fx (only used in conjunction with a numeric value for 'options')
-//   the value true (only used in first arg == 'resume') and indicates
-//   that the resume should occur immediately (not wait for next timeout)
-
-$.fn.cycle = function(options, arg2) {
-  var o = { s: this.selector, c: this.context };
-
-  // in 1.3+ we can fix mistakes with the ready state
-  if (this.length === 0 && options != 'stop') {
-    if (!$.isReady && o.s) {
-      log('DOM not ready, queuing slideshow');
-      $(function() {
-        $(o.s,o.c).cycle(options,arg2);
-      });
-      return this;
-    }
-    // is your DOM ready?  http://docs.jquery.com/Tutorials:Introducing_$(document).ready()
-    log('terminating; zero elements found by selector' + ($.isReady ? '' : ' (DOM not ready)'));
-    return this;
-  }
-
-  // iterate the matched nodeset
-  return this.each(function() {
-    var opts = handleArguments(this, options, arg2);
-    if (opts === false)
-      return;
-
-    opts.updateActivePagerLink = opts.updateActivePagerLink || $.fn.cycle.updateActivePagerLink;
-    
-    // stop existing slideshow for this container (if there is one)
-    if (this.cycleTimeout)
-      clearTimeout(this.cycleTimeout);
-    this.cycleTimeout = this.cyclePause = 0;
-    this.cycleStop = 0; // issue #108
-
-    var $cont = $(this);
-    var $slides = opts.slideExpr ? $(opts.slideExpr, this) : $cont.children();
-    var els = $slides.get();
-
-    if (els.length < 2) {
-      log('terminating; too few slides: ' + els.length);
-      return;
-    }
-
-    var opts2 = buildOptions($cont, $slides, els, opts, o);
-    if (opts2 === false)
-      return;
-
-    var startTime = opts2.continuous ? 10 : getTimeout(els[opts2.currSlide], els[opts2.nextSlide], opts2, !opts2.backwards);
-
-    // if it's an auto slideshow, kick it off
-    if (startTime) {
-      startTime += (opts2.delay || 0);
-      if (startTime < 10)
-        startTime = 10;
-      debug('first timeout: ' + startTime);
-      this.cycleTimeout = setTimeout(function(){go(els,opts2,0,!opts.backwards);}, startTime);
-    }
-  });
-};
-
-function triggerPause(cont, byHover, onPager) {
-  var opts = $(cont).data('cycle.opts');
-  if (!opts)
-    return;
-  var paused = !!cont.cyclePause;
-  if (paused && opts.paused)
-    opts.paused(cont, opts, byHover, onPager);
-  else if (!paused && opts.resumed)
-    opts.resumed(cont, opts, byHover, onPager);
-}
-
-// process the args that were passed to the plugin fn
-function handleArguments(cont, options, arg2) {
-  if (cont.cycleStop === undefined)
-    cont.cycleStop = 0;
-  if (options === undefined || options === null)
-    options = {};
-  if (options.constructor == String) {
-    switch(options) {
-    case 'destroy':
-    case 'stop':
-      var opts = $(cont).data('cycle.opts');
-      if (!opts)
-        return false;
-      cont.cycleStop++; // callbacks look for change
-      if (cont.cycleTimeout)
-        clearTimeout(cont.cycleTimeout);
-      cont.cycleTimeout = 0;
-      if (opts.elements)
-        $(opts.elements).stop();
-      $(cont).removeData('cycle.opts');
-      if (options == 'destroy')
-        destroy(cont, opts);
-      return false;
-    case 'toggle':
-      cont.cyclePause = (cont.cyclePause === 1) ? 0 : 1;
-      checkInstantResume(cont.cyclePause, arg2, cont);
-      triggerPause(cont);
-      return false;
-    case 'pause':
-      cont.cyclePause = 1;
-      triggerPause(cont);
-      return false;
-    case 'resume':
-      cont.cyclePause = 0;
-      checkInstantResume(false, arg2, cont);
-      triggerPause(cont);
-      return false;
-    case 'prev':
-    case 'next':
-      opts = $(cont).data('cycle.opts');
-      if (!opts) {
-        log('options not found, "prev/next" ignored');
-        return false;
-      }
-      $.fn.cycle[options](opts);
-      return false;
-    default:
-      options = { fx: options };
-    }
-    return options;
-  }
-  else if (options.constructor == Number) {
-    // go to the requested slide
-    var num = options;
-    options = $(cont).data('cycle.opts');
-    if (!options) {
-      log('options not found, can not advance slide');
-      return false;
-    }
-    if (num < 0 || num >= options.elements.length) {
-      log('invalid slide index: ' + num);
-      return false;
-    }
-    options.nextSlide = num;
-    if (cont.cycleTimeout) {
-      clearTimeout(cont.cycleTimeout);
-      cont.cycleTimeout = 0;
-    }
-    if (typeof arg2 == 'string')
-      options.oneTimeFx = arg2;
-    go(options.elements, options, 1, num >= options.currSlide);
-    return false;
-  }
-  return options;
-  
-  function checkInstantResume(isPaused, arg2, cont) {
-    if (!isPaused && arg2 === true) { // resume now!
-      var options = $(cont).data('cycle.opts');
-      if (!options) {
-        log('options not found, can not resume');
-        return false;
-      }
-      if (cont.cycleTimeout) {
-        clearTimeout(cont.cycleTimeout);
-        cont.cycleTimeout = 0;
-      }
-      go(options.elements, options, 1, !options.backwards);
-    }
-  }
-}
-
-function removeFilter(el, opts) {
-  if (!$.support.opacity && opts.cleartype && el.style.filter) {
-    try { el.style.removeAttribute('filter'); }
-    catch(smother) {} // handle old opera versions
-  }
-}
-
-// unbind event handlers
-function destroy(cont, opts) {
-  if (opts.next)
-    $(opts.next).unbind(opts.prevNextEvent);
-  if (opts.prev)
-    $(opts.prev).unbind(opts.prevNextEvent);
-  
-  if (opts.pager || opts.pagerAnchorBuilder)
-    $.each(opts.pagerAnchors || [], function() {
-      this.unbind().remove();
-    });
-  opts.pagerAnchors = null;
-  $(cont).unbind('mouseenter.cycle mouseleave.cycle');
-  if (opts.destroy) // callback
-    opts.destroy(opts);
-}
-
-// one-time initialization
-function buildOptions($cont, $slides, els, options, o) {
-  var startingSlideSpecified;
-  // support metadata plugin (v1.0 and v2.0)
-  var opts = $.extend({}, $.fn.cycle.defaults, options || {}, $.metadata ? $cont.metadata() : $.meta ? $cont.data() : {});
-  var meta = $.isFunction($cont.data) ? $cont.data(opts.metaAttr) : null;
-  if (meta)
-    opts = $.extend(opts, meta);
-  if (opts.autostop)
-    opts.countdown = opts.autostopCount || els.length;
-
-  var cont = $cont[0];
-  $cont.data('cycle.opts', opts);
-  opts.$cont = $cont;
-  opts.stopCount = cont.cycleStop;
-  opts.elements = els;
-  opts.before = opts.before ? [opts.before] : [];
-  opts.after = opts.after ? [opts.after] : [];
-
-  // push some after callbacks
-  if (!$.support.opacity && opts.cleartype)
-    opts.after.push(function() { removeFilter(this, opts); });
-  if (opts.continuous)
-    opts.after.push(function() { go(els,opts,0,!opts.backwards); });
-
-  saveOriginalOpts(opts);
-
-  // clearType corrections
-  if (!$.support.opacity && opts.cleartype && !opts.cleartypeNoBg)
-    clearTypeFix($slides);
-
-  // container requires non-static position so that slides can be position within
-  if ($cont.css('position') == 'static')
-    $cont.css('position', 'relative');
-  if (opts.width)
-    $cont.width(opts.width);
-  if (opts.height && opts.height != 'auto')
-    $cont.height(opts.height);
-
-  if (opts.startingSlide !== undefined) {
-    opts.startingSlide = parseInt(opts.startingSlide,10);
-    if (opts.startingSlide >= els.length || opts.startSlide < 0)
-      opts.startingSlide = 0; // catch bogus input
-    else 
-      startingSlideSpecified = true;
-  }
-  else if (opts.backwards)
-    opts.startingSlide = els.length - 1;
-  else
-    opts.startingSlide = 0;
-
-  // if random, mix up the slide array
-  if (opts.random) {
-    opts.randomMap = [];
-    for (var i = 0; i < els.length; i++)
-      opts.randomMap.push(i);
-    opts.randomMap.sort(function(a,b) {return Math.random() - 0.5;});
-    if (startingSlideSpecified) {
-      // try to find the specified starting slide and if found set start slide index in the map accordingly
-      for ( var cnt = 0; cnt < els.length; cnt++ ) {
-        if ( opts.startingSlide == opts.randomMap[cnt] ) {
-          opts.randomIndex = cnt;
-        }
-      }
-    }
-    else {
-      opts.randomIndex = 1;
-      opts.startingSlide = opts.randomMap[1];
-    }
-  }
-  else if (opts.startingSlide >= els.length)
-    opts.startingSlide = 0; // catch bogus input
-  opts.currSlide = opts.startingSlide || 0;
-  var first = opts.startingSlide;
-
-  // set position and zIndex on all the slides
-  $slides.css({position: 'absolute', top:0, left:0}).hide().each(function(i) {
-    var z;
-    if (opts.backwards)
-      z = first ? i <= first ? els.length + (i-first) : first-i : els.length-i;
-    else
-      z = first ? i >= first ? els.length - (i-first) : first-i : els.length-i;
-    $(this).css('z-index', z);
-  });
-
-  // make sure first slide is visible
-  $(els[first]).css('opacity',1).show(); // opacity bit needed to handle restart use case
-  removeFilter(els[first], opts);
-
-  // stretch slides
-  if (opts.fit) {
-    if (!opts.aspect) {
-          if (opts.width)
-              $slides.width(opts.width);
-          if (opts.height && opts.height != 'auto')
-              $slides.height(opts.height);
-    } else {
-      $slides.each(function(){
-        var $slide = $(this);
-        var ratio = (opts.aspect === true) ? $slide.width()/$slide.height() : opts.aspect;
-        if( opts.width && $slide.width() != opts.width ) {
-          $slide.width( opts.width );
-          $slide.height( opts.width / ratio );
-        }
-
-        if( opts.height && $slide.height() < opts.height ) {
-          $slide.height( opts.height );
-          $slide.width( opts.height * ratio );
-        }
-      });
-    }
-  }
-
-  if (opts.center && ((!opts.fit) || opts.aspect)) {
-    $slides.each(function(){
-      var $slide = $(this);
-      $slide.css({
-        "margin-left": opts.width ?
-          ((opts.width - $slide.width()) / 2) + "px" :
-          0,
-        "margin-top": opts.height ?
-          ((opts.height - $slide.height()) / 2) + "px" :
-          0
-      });
-    });
-  }
-
-  if (opts.center && !opts.fit && !opts.slideResize) {
-    $slides.each(function(){
-      var $slide = $(this);
-      $slide.css({
-        "margin-left": opts.width ? ((opts.width - $slide.width()) / 2) + "px" : 0,
-        "margin-top": opts.height ? ((opts.height - $slide.height()) / 2) + "px" : 0
-      });
-    });
-  }
-    
-  // stretch container
-  var reshape = (opts.containerResize || opts.containerResizeHeight) && !$cont.innerHeight();
-  if (reshape) { // do this only if container has no size http://tinyurl.com/da2oa9
-    var maxw = 0, maxh = 0;
-    for(var j=0; j < els.length; j++) {
-      var $e = $(els[j]), e = $e[0], w = $e.outerWidth(), h = $e.outerHeight();
-      if (!w) w = e.offsetWidth || e.width || $e.attr('width');
-      if (!h) h = e.offsetHeight || e.height || $e.attr('height');
-      maxw = w > maxw ? w : maxw;
-      maxh = h > maxh ? h : maxh;
-    }
-    if (opts.containerResize && maxw > 0 && maxh > 0)
-      $cont.css({width:maxw+'px',height:maxh+'px'});
-    if (opts.containerResizeHeight && maxh > 0)
-      $cont.css({height:maxh+'px'});
-  }
-
-  var pauseFlag = false;  // https://github.com/malsup/cycle/issues/44
-  if (opts.pause)
-    $cont.bind('mouseenter.cycle', function(){
-      pauseFlag = true;
-      this.cyclePause++;
-      triggerPause(cont, true);
-    }).bind('mouseleave.cycle', function(){
-        if (pauseFlag)
-          this.cyclePause--;
-        triggerPause(cont, true);
-    });
-
-  if (supportMultiTransitions(opts) === false)
-    return false;
-
-  // apparently a lot of people use image slideshows without height/width attributes on the images.
-  // Cycle 2.50+ requires the sizing info for every slide; this block tries to deal with that.
-  var requeue = false;
-  options.requeueAttempts = options.requeueAttempts || 0;
-  $slides.each(function() {
-    // try to get height/width of each slide
-    var $el = $(this);
-    this.cycleH = (opts.fit && opts.height) ? opts.height : ($el.height() || this.offsetHeight || this.height || $el.attr('height') || 0);
-    this.cycleW = (opts.fit && opts.width) ? opts.width : ($el.width() || this.offsetWidth || this.width || $el.attr('width') || 0);
-
-    if ( $el.is('img') ) {
-      // sigh..  sniffing, hacking, shrugging...  this crappy hack tries to account for what browsers do when
-      // an image is being downloaded and the markup did not include sizing info (height/width attributes);
-      // there seems to be some "default" sizes used in this situation
-      var loadingIE = ($.browser.msie  && this.cycleW == 28 && this.cycleH == 30 && !this.complete);
-      var loadingFF = ($.browser.mozilla && this.cycleW == 34 && this.cycleH == 19 && !this.complete);
-      var loadingOp = ($.browser.opera && ((this.cycleW == 42 && this.cycleH == 19) || (this.cycleW == 37 && this.cycleH == 17)) && !this.complete);
-      var loadingOther = (this.cycleH === 0 && this.cycleW === 0 && !this.complete);
-      // don't requeue for images that are still loading but have a valid size
-      if (loadingIE || loadingFF || loadingOp || loadingOther) {
-        if (o.s && opts.requeueOnImageNotLoaded && ++options.requeueAttempts < 100) { // track retry count so we don't loop forever
-          log(options.requeueAttempts,' - img slide not loaded, requeuing slideshow: ', this.src, this.cycleW, this.cycleH);
-          setTimeout(function() {$(o.s,o.c).cycle(options);}, opts.requeueTimeout);
-          requeue = true;
-          return false; // break each loop
-        }
-        else {
-          log('could not determine size of image: '+this.src, this.cycleW, this.cycleH);
-        }
-      }
-    }
-    return true;
-  });
-
-  if (requeue)
-    return false;
-
-  opts.cssBefore = opts.cssBefore || {};
-  opts.cssAfter = opts.cssAfter || {};
-  opts.cssFirst = opts.cssFirst || {};
-  opts.animIn = opts.animIn || {};
-  opts.animOut = opts.animOut || {};
-
-  $slides.not(':eq('+first+')').css(opts.cssBefore);
-  $($slides[first]).css(opts.cssFirst);
-
-  if (opts.timeout) {
-    opts.timeout = parseInt(opts.timeout,10);
-    // ensure that timeout and speed settings are sane
-    if (opts.speed.constructor == String)
-      opts.speed = $.fx.speeds[opts.speed] || parseInt(opts.speed,10);
-    if (!opts.sync)
-      opts.speed = opts.speed / 2;
-    
-    var buffer = opts.fx == 'none' ? 0 : opts.fx == 'shuffle' ? 500 : 250;
-    while((opts.timeout - opts.speed) < buffer) // sanitize timeout
-      opts.timeout += opts.speed;
-  }
-  if (opts.easing)
-    opts.easeIn = opts.easeOut = opts.easing;
-  if (!opts.speedIn)
-    opts.speedIn = opts.speed;
-  if (!opts.speedOut)
-    opts.speedOut = opts.speed;
-
-  opts.slideCount = els.length;
-  opts.currSlide = opts.lastSlide = first;
-  if (opts.random) {
-    if (++opts.randomIndex == els.length)
-      opts.randomIndex = 0;
-    opts.nextSlide = opts.randomMap[opts.randomIndex];
-  }
-  else if (opts.backwards)
-    opts.nextSlide = opts.startingSlide === 0 ? (els.length-1) : opts.startingSlide-1;
-  else
-    opts.nextSlide = opts.startingSlide >= (els.length-1) ? 0 : opts.startingSlide+1;
-
-  // run transition init fn
-  if (!opts.multiFx) {
-    var init = $.fn.cycle.transitions[opts.fx];
-    if ($.isFunction(init))
-      init($cont, $slides, opts);
-    else if (opts.fx != 'custom' && !opts.multiFx) {
-      log('unknown transition: ' + opts.fx,'; slideshow terminating');
-      return false;
-    }
-  }
-
-  // fire artificial events
-  var e0 = $slides[first];
-  if (!opts.skipInitializationCallbacks) {
-    if (opts.before.length)
-      opts.before[0].apply(e0, [e0, e0, opts, true]);
-    if (opts.after.length)
-      opts.after[0].apply(e0, [e0, e0, opts, true]);
-  }
-  if (opts.next)
-    $(opts.next).bind(opts.prevNextEvent,function(){return advance(opts,1);});
-  if (opts.prev)
-    $(opts.prev).bind(opts.prevNextEvent,function(){return advance(opts,0);});
-  if (opts.pager || opts.pagerAnchorBuilder)
-    buildPager(els,opts);
-
-  exposeAddSlide(opts, els);
-
-  return opts;
-}
-
-// save off original opts so we can restore after clearing state
-function saveOriginalOpts(opts) {
-  opts.original = { before: [], after: [] };
-  opts.original.cssBefore = $.extend({}, opts.cssBefore);
-  opts.original.cssAfter  = $.extend({}, opts.cssAfter);
-  opts.original.animIn  = $.extend({}, opts.animIn);
-  opts.original.animOut   = $.extend({}, opts.animOut);
-  $.each(opts.before, function() { opts.original.before.push(this); });
-  $.each(opts.after,  function() { opts.original.after.push(this); });
-}
-
-function supportMultiTransitions(opts) {
-  var i, tx, txs = $.fn.cycle.transitions;
-  // look for multiple effects
-  if (opts.fx.indexOf(',') > 0) {
-    opts.multiFx = true;
-    opts.fxs = opts.fx.replace(/\s*/g,'').split(',');
-    // discard any bogus effect names
-    for (i=0; i < opts.fxs.length; i++) {
-      var fx = opts.fxs[i];
-      tx = txs[fx];
-      if (!tx || !txs.hasOwnProperty(fx) || !$.isFunction(tx)) {
-        log('discarding unknown transition: ',fx);
-        opts.fxs.splice(i,1);
-        i--;
-      }
-    }
-    // if we have an empty list then we threw everything away!
-    if (!opts.fxs.length) {
-      log('No valid transitions named; slideshow terminating.');
-      return false;
-    }
-  }
-  else if (opts.fx == 'all') {  // auto-gen the list of transitions
-    opts.multiFx = true;
-    opts.fxs = [];
-    for (var p in txs) {
-      if (txs.hasOwnProperty(p)) {
-        tx = txs[p];
-        if (txs.hasOwnProperty(p) && $.isFunction(tx))
-          opts.fxs.push(p);
-      }
-    }
-  }
-  if (opts.multiFx && opts.randomizeEffects) {
-    // munge the fxs array to make effect selection random
-    var r1 = Math.floor(Math.random() * 20) + 30;
-    for (i = 0; i < r1; i++) {
-      var r2 = Math.floor(Math.random() * opts.fxs.length);
-      opts.fxs.push(opts.fxs.splice(r2,1)[0]);
-    }
-    debug('randomized fx sequence: ',opts.fxs);
-  }
-  return true;
-}
-
-// provide a mechanism for adding slides after the slideshow has started
-function exposeAddSlide(opts, els) {
-  opts.addSlide = function(newSlide, prepend) {
-    var $s = $(newSlide), s = $s[0];
-    if (!opts.autostopCount)
-      opts.countdown++;
-    els[prepend?'unshift':'push'](s);
-    if (opts.els)
-      opts.els[prepend?'unshift':'push'](s); // shuffle needs this
-    opts.slideCount = els.length;
-
-    // add the slide to the random map and resort
-    if (opts.random) {
-      opts.randomMap.push(opts.slideCount-1);
-      opts.randomMap.sort(function(a,b) {return Math.random() - 0.5;});
-    }
-
-    $s.css('position','absolute');
-    $s[prepend?'prependTo':'appendTo'](opts.$cont);
-
-    if (prepend) {
-      opts.currSlide++;
-      opts.nextSlide++;
-    }
-
-    if (!$.support.opacity && opts.cleartype && !opts.cleartypeNoBg)
-      clearTypeFix($s);
-
-    if (opts.fit && opts.width)
-      $s.width(opts.width);
-    if (opts.fit && opts.height && opts.height != 'auto')
-      $s.height(opts.height);
-    s.cycleH = (opts.fit && opts.height) ? opts.height : $s.height();
-    s.cycleW = (opts.fit && opts.width) ? opts.width : $s.width();
-
-    $s.css(opts.cssBefore);
-
-    if (opts.pager || opts.pagerAnchorBuilder)
-      $.fn.cycle.createPagerAnchor(els.length-1, s, $(opts.pager), els, opts);
-
-    if ($.isFunction(opts.onAddSlide))
-      opts.onAddSlide($s);
-    else
-      $s.hide(); // default behavior
-  };
-}
-
-// reset internal state; we do this on every pass in order to support multiple effects
-$.fn.cycle.resetState = function(opts, fx) {
-  fx = fx || opts.fx;
-  opts.before = []; opts.after = [];
-  opts.cssBefore = $.extend({}, opts.original.cssBefore);
-  opts.cssAfter  = $.extend({}, opts.original.cssAfter);
-  opts.animIn = $.extend({}, opts.original.animIn);
-  opts.animOut   = $.extend({}, opts.original.animOut);
-  opts.fxFn = null;
-  $.each(opts.original.before, function() { opts.before.push(this); });
-  $.each(opts.original.after,  function() { opts.after.push(this); });
-
-  // re-init
-  var init = $.fn.cycle.transitions[fx];
-  if ($.isFunction(init))
-    init(opts.$cont, $(opts.elements), opts);
-};
-
-// this is the main engine fn, it handles the timeouts, callbacks and slide index mgmt
-function go(els, opts, manual, fwd) {
-  var p = opts.$cont[0], curr = els[opts.currSlide], next = els[opts.nextSlide];
-
-  // opts.busy is true if we're in the middle of an animation
-  if (manual && opts.busy && opts.manualTrump) {
-    // let manual transitions requests trump active ones
-    debug('manualTrump in go(), stopping active transition');
-    $(els).stop(true,true);
-    opts.busy = 0;
-    clearTimeout(p.cycleTimeout);
-  }
-
-  // don't begin another timeout-based transition if there is one active
-  if (opts.busy) {
-    debug('transition active, ignoring new tx request');
-    return;
-  }
-
-
-  // stop cycling if we have an outstanding stop request
-  if (p.cycleStop != opts.stopCount || p.cycleTimeout === 0 && !manual)
-    return;
-
-  // check to see if we should stop cycling based on autostop options
-  if (!manual && !p.cyclePause && !opts.bounce &&
-    ((opts.autostop && (--opts.countdown <= 0)) ||
-    (opts.nowrap && !opts.random && opts.nextSlide < opts.currSlide))) {
-    if (opts.end)
-      opts.end(opts);
-    return;
-  }
-
-  // if slideshow is paused, only transition on a manual trigger
-  var changed = false;
-  if ((manual || !p.cyclePause) && (opts.nextSlide != opts.currSlide)) {
-    changed = true;
-    var fx = opts.fx;
-    // keep trying to get the slide size if we don't have it yet
-    curr.cycleH = curr.cycleH || $(curr).height();
-    curr.cycleW = curr.cycleW || $(curr).width();
-    next.cycleH = next.cycleH || $(next).height();
-    next.cycleW = next.cycleW || $(next).width();
-
-    // support multiple transition types
-    if (opts.multiFx) {
-      if (fwd && (opts.lastFx === undefined || ++opts.lastFx >= opts.fxs.length))
-        opts.lastFx = 0;
-      else if (!fwd && (opts.lastFx === undefined || --opts.lastFx < 0))
-        opts.lastFx = opts.fxs.length - 1;
-      fx = opts.fxs[opts.lastFx];
-    }
-
-    // one-time fx overrides apply to:  $('div').cycle(3,'zoom');
-    if (opts.oneTimeFx) {
-      fx = opts.oneTimeFx;
-      opts.oneTimeFx = null;
-    }
-
-    $.fn.cycle.resetState(opts, fx);
-
-    // run the before callbacks
-    if (opts.before.length)
-      $.each(opts.before, function(i,o) {
-        if (p.cycleStop != opts.stopCount) return;
-        o.apply(next, [curr, next, opts, fwd]);
-      });
-
-    // stage the after callacks
-    var after = function() {
-      opts.busy = 0;
-      $.each(opts.after, function(i,o) {
-        if (p.cycleStop != opts.stopCount) return;
-        o.apply(next, [curr, next, opts, fwd]);
-      });
-      if (!p.cycleStop) {
-        // queue next transition
-        queueNext();
-      }
-    };
-
-    debug('tx firing('+fx+'); currSlide: ' + opts.currSlide + '; nextSlide: ' + opts.nextSlide);
-    
-    // get ready to perform the transition
-    opts.busy = 1;
-    if (opts.fxFn) // fx function provided?
-      opts.fxFn(curr, next, opts, after, fwd, manual && opts.fastOnEvent);
-    else if ($.isFunction($.fn.cycle[opts.fx])) // fx plugin ?
-      $.fn.cycle[opts.fx](curr, next, opts, after, fwd, manual && opts.fastOnEvent);
-    else
-      $.fn.cycle.custom(curr, next, opts, after, fwd, manual && opts.fastOnEvent);
-  }
-  else {
-    queueNext();
-  }
-
-  if (changed || opts.nextSlide == opts.currSlide) {
-    // calculate the next slide
-    var roll;
-    opts.lastSlide = opts.currSlide;
-    if (opts.random) {
-      opts.currSlide = opts.nextSlide;
-      if (++opts.randomIndex == els.length) {
-        opts.randomIndex = 0;
-        opts.randomMap.sort(function(a,b) {return Math.random() - 0.5;});
-      }
-      opts.nextSlide = opts.randomMap[opts.randomIndex];
-      if (opts.nextSlide == opts.currSlide)
-        opts.nextSlide = (opts.currSlide == opts.slideCount - 1) ? 0 : opts.currSlide + 1;
-    }
-    else if (opts.backwards) {
-      roll = (opts.nextSlide - 1) < 0;
-      if (roll && opts.bounce) {
-        opts.backwards = !opts.backwards;
-        opts.nextSlide = 1;
-        opts.currSlide = 0;
-      }
-      else {
-        opts.nextSlide = roll ? (els.length-1) : opts.nextSlide-1;
-        opts.currSlide = roll ? 0 : opts.nextSlide+1;
-      }
-    }
-    else { // sequence
-      roll = (opts.nextSlide + 1) == els.length;
-      if (roll && opts.bounce) {
-        opts.backwards = !opts.backwards;
-        opts.nextSlide = els.length-2;
-        opts.currSlide = els.length-1;
-      }
-      else {
-        opts.nextSlide = roll ? 0 : opts.nextSlide+1;
-        opts.currSlide = roll ? els.length-1 : opts.nextSlide-1;
-      }
-    }
-  }
-  if (changed && opts.pager)
-    opts.updateActivePagerLink(opts.pager, opts.currSlide, opts.activePagerClass);
-  
-  function queueNext() {
-    // stage the next transition
-    var ms = 0, timeout = opts.timeout;
-    if (opts.timeout && !opts.continuous) {
-      ms = getTimeout(els[opts.currSlide], els[opts.nextSlide], opts, fwd);
-         if (opts.fx == 'shuffle')
-            ms -= opts.speedOut;
-      }
-    else if (opts.continuous && p.cyclePause) // continuous shows work off an after callback, not this timer logic
-      ms = 10;
-    if (ms > 0)
-      p.cycleTimeout = setTimeout(function(){ go(els, opts, 0, !opts.backwards); }, ms);
-  }
-}
-
-// invoked after transition
-$.fn.cycle.updateActivePagerLink = function(pager, currSlide, clsName) {
-   $(pager).each(function() {
-       $(this).children().removeClass(clsName).eq(currSlide).addClass(clsName);
-   });
-};
-
-// calculate timeout value for current transition
-function getTimeout(curr, next, opts, fwd) {
-  if (opts.timeoutFn) {
-    // call user provided calc fn
-    var t = opts.timeoutFn.call(curr,curr,next,opts,fwd);
-    while (opts.fx != 'none' && (t - opts.speed) < 250) // sanitize timeout
-      t += opts.speed;
-    debug('calculated timeout: ' + t + '; speed: ' + opts.speed);
-    if (t !== false)
-      return t;
-  }
-  return opts.timeout;
-}
-
-// expose next/prev function, caller must pass in state
-$.fn.cycle.next = function(opts) { advance(opts,1); };
-$.fn.cycle.prev = function(opts) { advance(opts,0);};
-
-// advance slide forward or back
-function advance(opts, moveForward) {
-  var val = moveForward ? 1 : -1;
-  var els = opts.elements;
-  var p = opts.$cont[0], timeout = p.cycleTimeout;
-  if (timeout) {
-    clearTimeout(timeout);
-    p.cycleTimeout = 0;
-  }
-  if (opts.random && val < 0) {
-    // move back to the previously display slide
-    opts.randomIndex--;
-    if (--opts.randomIndex == -2)
-      opts.randomIndex = els.length-2;
-    else if (opts.randomIndex == -1)
-      opts.randomIndex = els.length-1;
-    opts.nextSlide = opts.randomMap[opts.randomIndex];
-  }
-  else if (opts.random) {
-    opts.nextSlide = opts.randomMap[opts.randomIndex];
-  }
-  else {
-    opts.nextSlide = opts.currSlide + val;
-    if (opts.nextSlide < 0) {
-      if (opts.nowrap) return false;
-      opts.nextSlide = els.length - 1;
-    }
-    else if (opts.nextSlide >= els.length) {
-      if (opts.nowrap) return false;
-      opts.nextSlide = 0;
-    }
-  }
-
-  var cb = opts.onPrevNextEvent || opts.prevNextClick; // prevNextClick is deprecated
-  if ($.isFunction(cb))
-    cb(val > 0, opts.nextSlide, els[opts.nextSlide]);
-  go(els, opts, 1, moveForward);
-  return false;
-}
-
-function buildPager(els, opts) {
-  var $p = $(opts.pager);
-  $.each(els, function(i,o) {
-    $.fn.cycle.createPagerAnchor(i,o,$p,els,opts);
-  });
-  opts.updateActivePagerLink(opts.pager, opts.startingSlide, opts.activePagerClass);
-}
-
-$.fn.cycle.createPagerAnchor = function(i, el, $p, els, opts) {
-  var a;
-  if ($.isFunction(opts.pagerAnchorBuilder)) {
-    a = opts.pagerAnchorBuilder(i,el);
-    debug('pagerAnchorBuilder('+i+', el) returned: ' + a);
-  }
-  else
-    a = '<a href="#">'+(i+1)+'</a>';
-    
-  if (!a)
-    return;
-  var $a = $(a);
-  // don't reparent if anchor is in the dom
-  if ($a.parents('body').length === 0) {
-    var arr = [];
-    if ($p.length > 1) {
-      $p.each(function() {
-        var $clone = $a.clone(true);
-        $(this).append($clone);
-        arr.push($clone[0]);
-      });
-      $a = $(arr);
-    }
-    else {
-      $a.appendTo($p);
-    }
-  }
-
-  opts.pagerAnchors =  opts.pagerAnchors || [];
-  opts.pagerAnchors.push($a);
-  
-  var pagerFn = function(e) {
-    e.preventDefault();
-    opts.nextSlide = i;
-    var p = opts.$cont[0], timeout = p.cycleTimeout;
-    if (timeout) {
-      clearTimeout(timeout);
-      p.cycleTimeout = 0;
-    }
-    var cb = opts.onPagerEvent || opts.pagerClick; // pagerClick is deprecated
-    if ($.isFunction(cb))
-      cb(opts.nextSlide, els[opts.nextSlide]);
-    go(els,opts,1,opts.currSlide < i); // trigger the trans
-//    return false; // <== allow bubble
-  };
-  
-  if ( /mouseenter|mouseover/i.test(opts.pagerEvent) ) {
-    $a.hover(pagerFn, function(){/* no-op */} );
-  }
-  else {
-    $a.bind(opts.pagerEvent, pagerFn);
-  }
-  
-  if ( ! /^click/.test(opts.pagerEvent) && !opts.allowPagerClickBubble)
-    $a.bind('click.cycle', function(){return false;}); // suppress click
-  
-  var cont = opts.$cont[0];
-  var pauseFlag = false; // https://github.com/malsup/cycle/issues/44
-  if (opts.pauseOnPagerHover) {
-    $a.hover(
-      function() { 
-        pauseFlag = true;
-        cont.cyclePause++; 
-        triggerPause(cont,true,true);
-      }, function() { 
-        if (pauseFlag)
-          cont.cyclePause--; 
-        triggerPause(cont,true,true);
-      } 
-    );
-  }
-};
-
-// helper fn to calculate the number of slides between the current and the next
-$.fn.cycle.hopsFromLast = function(opts, fwd) {
-  var hops, l = opts.lastSlide, c = opts.currSlide;
-  if (fwd)
-    hops = c > l ? c - l : opts.slideCount - l;
-  else
-    hops = c < l ? l - c : l + opts.slideCount - c;
-  return hops;
-};
-
-// fix clearType problems in ie6 by setting an explicit bg color
-// (otherwise text slides look horrible during a fade transition)
-function clearTypeFix($slides) {
-  debug('applying clearType background-color hack');
-  function hex(s) {
-    s = parseInt(s,10).toString(16);
-    return s.length < 2 ? '0'+s : s;
-  }
-  function getBg(e) {
-    for ( ; e && e.nodeName.toLowerCase() != 'html'; e = e.parentNode) {
-      var v = $.css(e,'background-color');
-      if (v && v.indexOf('rgb') >= 0 ) {
-        var rgb = v.match(/\d+/g);
-        return '#'+ hex(rgb[0]) + hex(rgb[1]) + hex(rgb[2]);
-      }
-      if (v && v != 'transparent')
-        return v;
-    }
-    return '#ffffff';
-  }
-  $slides.each(function() { $(this).css('background-color', getBg(this)); });
-}
-
-// reset common props before the next transition
-$.fn.cycle.commonReset = function(curr,next,opts,w,h,rev) {
-  $(opts.elements).not(curr).hide();
-  if (typeof opts.cssBefore.opacity == 'undefined')
-    opts.cssBefore.opacity = 1;
-  opts.cssBefore.display = 'block';
-  if (opts.slideResize && w !== false && next.cycleW > 0)
-    opts.cssBefore.width = next.cycleW;
-  if (opts.slideResize && h !== false && next.cycleH > 0)
-    opts.cssBefore.height = next.cycleH;
-  opts.cssAfter = opts.cssAfter || {};
-  opts.cssAfter.display = 'none';
-  $(curr).css('zIndex',opts.slideCount + (rev === true ? 1 : 0));
-  $(next).css('zIndex',opts.slideCount + (rev === true ? 0 : 1));
-};
-
-// the actual fn for effecting a transition
-$.fn.cycle.custom = function(curr, next, opts, cb, fwd, speedOverride) {
-  var $l = $(curr), $n = $(next);
-  var speedIn = opts.speedIn, speedOut = opts.speedOut, easeIn = opts.easeIn, easeOut = opts.easeOut;
-  $n.css(opts.cssBefore);
-  if (speedOverride) {
-    if (typeof speedOverride == 'number')
-      speedIn = speedOut = speedOverride;
-    else
-      speedIn = speedOut = 1;
-    easeIn = easeOut = null;
-  }
-  var fn = function() {
-    $n.animate(opts.animIn, speedIn, easeIn, function() {
-      cb();
-    });
-  };
-  $l.animate(opts.animOut, speedOut, easeOut, function() {
-    $l.css(opts.cssAfter);
-    if (!opts.sync) 
-      fn();
-  });
-  if (opts.sync) fn();
-};
-
-// transition definitions - only fade is defined here, transition pack defines the rest
-$.fn.cycle.transitions = {
-  fade: function($cont, $slides, opts) {
-    $slides.not(':eq('+opts.currSlide+')').css('opacity',0);
-    opts.before.push(function(curr,next,opts) {
-      $.fn.cycle.commonReset(curr,next,opts);
-      opts.cssBefore.opacity = 0;
-    });
-    opts.animIn    = { opacity: 1 };
-    opts.animOut   = { opacity: 0 };
-    opts.cssBefore = { top: 0, left: 0 };
-  }
-};
-
-$.fn.cycle.ver = function() { return ver; };
-
-// override these globally if you like (they are all optional)
-$.fn.cycle.defaults = {
-    activePagerClass: 'activeSlide', // class name used for the active pager link
-    after:            null,     // transition callback (scope set to element that was shown):  function(currSlideElement, nextSlideElement, options, forwardFlag)
-    allowPagerClickBubble: false, // allows or prevents click event on pager anchors from bubbling
-    animIn:           null,     // properties that define how the slide animates in
-    animOut:          null,     // properties that define how the slide animates out
-    aspect:           false,    // preserve aspect ratio during fit resizing, cropping if necessary (must be used with fit option)
-    autostop:         0,        // true to end slideshow after X transitions (where X == slide count)
-    autostopCount:    0,        // number of transitions (optionally used with autostop to define X)
-    backwards:        false,    // true to start slideshow at last slide and move backwards through the stack
-    before:           null,     // transition callback (scope set to element to be shown):     function(currSlideElement, nextSlideElement, options, forwardFlag)
-    center:           null,     // set to true to have cycle add top/left margin to each slide (use with width and height options)
-    cleartype:        !$.support.opacity,  // true if clearType corrections should be applied (for IE)
-    cleartypeNoBg:    false,    // set to true to disable extra cleartype fixing (leave false to force background color setting on slides)
-    containerResize:  1,        // resize container to fit largest slide
-    containerResizeHeight:  0,  // resize containers height to fit the largest slide but leave the width dynamic
-    continuous:       0,        // true to start next transition immediately after current one completes
-    cssAfter:         null,     // properties that defined the state of the slide after transitioning out
-    cssBefore:        null,     // properties that define the initial state of the slide before transitioning in
-    delay:            0,        // additional delay (in ms) for first transition (hint: can be negative)
-    easeIn:           null,     // easing for "in" transition
-    easeOut:          null,     // easing for "out" transition
-    easing:           null,     // easing method for both in and out transitions
-    end:              null,     // callback invoked when the slideshow terminates (use with autostop or nowrap options): function(options)
-    fastOnEvent:      0,        // force fast transitions when triggered manually (via pager or prev/next); value == time in ms
-    fit:              0,        // force slides to fit container
-    fx:               'fade',   // name of transition effect (or comma separated names, ex: 'fade,scrollUp,shuffle')
-    fxFn:             null,     // function used to control the transition: function(currSlideElement, nextSlideElement, options, afterCalback, forwardFlag)
-    height:           'auto',   // container height (if the 'fit' option is true, the slides will be set to this height as well)
-    manualTrump:      true,     // causes manual transition to stop an active transition instead of being ignored
-    metaAttr:         'cycle',  // data- attribute that holds the option data for the slideshow
-    next:             null,     // element, jQuery object, or jQuery selector string for the element to use as event trigger for next slide
-    nowrap:           0,        // true to prevent slideshow from wrapping
-    onPagerEvent:     null,     // callback fn for pager events: function(zeroBasedSlideIndex, slideElement)
-    onPrevNextEvent:  null,     // callback fn for prev/next events: function(isNext, zeroBasedSlideIndex, slideElement)
-    pager:            null,     // element, jQuery object, or jQuery selector string for the element to use as pager container
-    pagerAnchorBuilder: null,   // callback fn for building anchor links:  function(index, DOMelement)
-    pagerEvent:       'click.cycle', // name of event which drives the pager navigation
-    pause:            0,        // true to enable "pause on hover"
-    pauseOnPagerHover: 0,       // true to pause when hovering over pager link
-    prev:             null,     // element, jQuery object, or jQuery selector string for the element to use as event trigger for previous slide
-    prevNextEvent:    'click.cycle',// event which drives the manual transition to the previous or next slide
-    random:           0,        // true for random, false for sequence (not applicable to shuffle fx)
-    randomizeEffects: 1,        // valid when multiple effects are used; true to make the effect sequence random
-    requeueOnImageNotLoaded: true, // requeue the slideshow if any image slides are not yet loaded
-    requeueTimeout:   250,      // ms delay for requeue
-    rev:              0,        // causes animations to transition in reverse (for effects that support it such as scrollHorz/scrollVert/shuffle)
-    shuffle:          null,     // coords for shuffle animation, ex: { top:15, left: 200 }
-    skipInitializationCallbacks: false, // set to true to disable the first before/after callback that occurs prior to any transition
-    slideExpr:        null,     // expression for selecting slides (if something other than all children is required)
-    slideResize:      1,        // force slide width/height to fixed size before every transition
-    speed:            1000,     // speed of the transition (any valid fx speed value)
-    speedIn:          null,     // speed of the 'in' transition
-    speedOut:         null,     // speed of the 'out' transition
-    startingSlide:    undefined,// zero-based index of the first slide to be displayed
-    sync:             1,        // true if in/out transitions should occur simultaneously
-    timeout:          4000,     // milliseconds between slide transitions (0 to disable auto advance)
-    timeoutFn:        null,     // callback for determining per-slide timeout value:  function(currSlideElement, nextSlideElement, options, forwardFlag)
-    updateActivePagerLink: null,// callback fn invoked to update the active pager link (adds/removes activePagerClass style)
-    width:            null      // container width (if the 'fit' option is true, the slides will be set to this width as well)
-};
-
-})(jQuery);
-
-
-/*!
- * jQuery Cycle Plugin Transition Definitions
- * This script is a plugin for the jQuery Cycle Plugin
- * Examples and documentation at: http://malsup.com/jquery/cycle/
- * Copyright (c) 2007-2010 M. Alsup
- * Version:  2.73
- * Dual licensed under the MIT and GPL licenses:
- * http://www.opensource.org/licenses/mit-license.php
- * http://www.gnu.org/licenses/gpl.html
- */
-(function($) {
-
-//
-// These functions define slide initialization and properties for the named
-// transitions. To save file size feel free to remove any of these that you
-// don't need.
-//
-$.fn.cycle.transitions.none = function($cont, $slides, opts) {
-  opts.fxFn = function(curr,next,opts,after){
-    $(next).show();
-    $(curr).hide();
-    after();
-  };
-};
-
-// not a cross-fade, fadeout only fades out the top slide
-$.fn.cycle.transitions.fadeout = function($cont, $slides, opts) {
-  $slides.not(':eq('+opts.currSlide+')').css({ display: 'block', 'opacity': 1 });
-  opts.before.push(function(curr,next,opts,w,h,rev) {
-    $(curr).css('zIndex',opts.slideCount + (rev !== true ? 1 : 0));
-    $(next).css('zIndex',opts.slideCount + (rev !== true ? 0 : 1));
-  });
-  opts.animIn.opacity = 1;
-  opts.animOut.opacity = 0;
-  opts.cssBefore.opacity = 1;
-  opts.cssBefore.display = 'block';
-  opts.cssAfter.zIndex = 0;
-};
-
-// scrollUp/Down/Left/Right
-$.fn.cycle.transitions.scrollUp = function($cont, $slides, opts) {
-  $cont.css('overflow','hidden');
-  opts.before.push($.fn.cycle.commonReset);
-  var h = $cont.height();
-  opts.cssBefore.top = h;
-  opts.cssBefore.left = 0;
-  opts.cssFirst.top = 0;
-  opts.animIn.top = 0;
-  opts.animOut.top = -h;
-};
-$.fn.cycle.transitions.scrollDown = function($cont, $slides, opts) {
-  $cont.css('overflow','hidden');
-  opts.before.push($.fn.cycle.commonReset);
-  var h = $cont.height();
-  opts.cssFirst.top = 0;
-  opts.cssBefore.top = -h;
-  opts.cssBefore.left = 0;
-  opts.animIn.top = 0;
-  opts.animOut.top = h;
-};
-$.fn.cycle.transitions.scrollLeft = function($cont, $slides, opts) {
-  $cont.css('overflow','hidden');
-  opts.before.push($.fn.cycle.commonReset);
-  var w = $cont.width();
-  opts.cssFirst.left = 0;
-  opts.cssBefore.left = w;
-  opts.cssBefore.top = 0;
-  opts.animIn.left = 0;
-  opts.animOut.left = 0-w;
-};
-$.fn.cycle.transitions.scrollRight = function($cont, $slides, opts) {
-  $cont.css('overflow','hidden');
-  opts.before.push($.fn.cycle.commonReset);
-  var w = $cont.width();
-  opts.cssFirst.left = 0;
-  opts.cssBefore.left = -w;
-  opts.cssBefore.top = 0;
-  opts.animIn.left = 0;
-  opts.animOut.left = w;
-};
-$.fn.cycle.transitions.scrollHorz = function($cont, $slides, opts) {
-  $cont.css('overflow','hidden').width();
-  opts.before.push(function(curr, next, opts, fwd) {
-    if (opts.rev)
-      fwd = !fwd;
-    $.fn.cycle.commonReset(curr,next,opts);
-    opts.cssBefore.left = fwd ? (next.cycleW-1) : (1-next.cycleW);
-    opts.animOut.left = fwd ? -curr.cycleW : curr.cycleW;
-  });
-  opts.cssFirst.left = 0;
-  opts.cssBefore.top = 0;
-  opts.animIn.left = 0;
-  opts.animOut.top = 0;
-};
-$.fn.cycle.transitions.scrollVert = function($cont, $slides, opts) {
-  $cont.css('overflow','hidden');
-  opts.before.push(function(curr, next, opts, fwd) {
-    if (opts.rev)
-      fwd = !fwd;
-    $.fn.cycle.commonReset(curr,next,opts);
-    opts.cssBefore.top = fwd ? (1-next.cycleH) : (next.cycleH-1);
-    opts.animOut.top = fwd ? curr.cycleH : -curr.cycleH;
-  });
-  opts.cssFirst.top = 0;
-  opts.cssBefore.left = 0;
-  opts.animIn.top = 0;
-  opts.animOut.left = 0;
-};
-
-// slideX/slideY
-$.fn.cycle.transitions.slideX = function($cont, $slides, opts) {
-  opts.before.push(function(curr, next, opts) {
-    $(opts.elements).not(curr).hide();
-    $.fn.cycle.commonReset(curr,next,opts,false,true);
-    opts.animIn.width = next.cycleW;
-  });
-  opts.cssBefore.left = 0;
-  opts.cssBefore.top = 0;
-  opts.cssBefore.width = 0;
-  opts.animIn.width = 'show';
-  opts.animOut.width = 0;
-};
-$.fn.cycle.transitions.slideY = function($cont, $slides, opts) {
-  opts.before.push(function(curr, next, opts) {
-    $(opts.elements).not(curr).hide();
-    $.fn.cycle.commonReset(curr,next,opts,true,false);
-    opts.animIn.height = next.cycleH;
-  });
-  opts.cssBefore.left = 0;
-  opts.cssBefore.top = 0;
-  opts.cssBefore.height = 0;
-  opts.animIn.height = 'show';
-  opts.animOut.height = 0;
-};
-
-// shuffle
-$.fn.cycle.transitions.shuffle = function($cont, $slides, opts) {
-  var i, w = $cont.css('overflow', 'visible').width();
-  $slides.css({left: 0, top: 0});
-  opts.before.push(function(curr,next,opts) {
-    $.fn.cycle.commonReset(curr,next,opts,true,true,true);
-  });
-  // only adjust speed once!
-  if (!opts.speedAdjusted) {
-    opts.speed = opts.speed / 2; // shuffle has 2 transitions
-    opts.speedAdjusted = true;
-  }
-  opts.random = 0;
-  opts.shuffle = opts.shuffle || {left:-w, top:15};
-  opts.els = [];
-  for (i=0; i < $slides.length; i++)
-    opts.els.push($slides[i]);
-
-  for (i=0; i < opts.currSlide; i++)
-    opts.els.push(opts.els.shift());
-
-  // custom transition fn (hat tip to Benjamin Sterling for this bit of sweetness!)
-  opts.fxFn = function(curr, next, opts, cb, fwd) {
-    if (opts.rev)
-      fwd = !fwd;
-    var $el = fwd ? $(curr) : $(next);
-    $(next).css(opts.cssBefore);
-    var count = opts.slideCount;
-    $el.animate(opts.shuffle, opts.speedIn, opts.easeIn, function() {
-      var hops = $.fn.cycle.hopsFromLast(opts, fwd);
-      for (var k=0; k < hops; k++) {
-        if (fwd)
-          opts.els.push(opts.els.shift());
-        else
-          opts.els.unshift(opts.els.pop());
-      }
-      if (fwd) {
-        for (var i=0, len=opts.els.length; i < len; i++)
-          $(opts.els[i]).css('z-index', len-i+count);
-      }
-      else {
-        var z = $(curr).css('z-index');
-        $el.css('z-index', parseInt(z,10)+1+count);
-      }
-      $el.animate({left:0, top:0}, opts.speedOut, opts.easeOut, function() {
-        $(fwd ? this : curr).hide();
-        if (cb) cb();
-      });
-    });
-  };
-  $.extend(opts.cssBefore, { display: 'block', opacity: 1, top: 0, left: 0 });
-};
-
-// turnUp/Down/Left/Right
-$.fn.cycle.transitions.turnUp = function($cont, $slides, opts) {
-  opts.before.push(function(curr, next, opts) {
-    $.fn.cycle.commonReset(curr,next,opts,true,false);
-    opts.cssBefore.top = next.cycleH;
-    opts.animIn.height = next.cycleH;
-    opts.animOut.width = next.cycleW;
-  });
-  opts.cssFirst.top = 0;
-  opts.cssBefore.left = 0;
-  opts.cssBefore.height = 0;
-  opts.animIn.top = 0;
-  opts.animOut.height = 0;
-};
-$.fn.cycle.transitions.turnDown = function($cont, $slides, opts) {
-  opts.before.push(function(curr, next, opts) {
-    $.fn.cycle.commonReset(curr,next,opts,true,false);
-    opts.animIn.height = next.cycleH;
-    opts.animOut.top   = curr.cycleH;
-  });
-  opts.cssFirst.top = 0;
-  opts.cssBefore.left = 0;
-  opts.cssBefore.top = 0;
-  opts.cssBefore.height = 0;
-  opts.animOut.height = 0;
-};
-$.fn.cycle.transitions.turnLeft = function($cont, $slides, opts) {
-  opts.before.push(function(curr, next, opts) {
-    $.fn.cycle.commonReset(curr,next,opts,false,true);
-    opts.cssBefore.left = next.cycleW;
-    opts.animIn.width = next.cycleW;
-  });
-  opts.cssBefore.top = 0;
-  opts.cssBefore.width = 0;
-  opts.animIn.left = 0;
-  opts.animOut.width = 0;
-};
-$.fn.cycle.transitions.turnRight = function($cont, $slides, opts) {
-  opts.before.push(function(curr, next, opts) {
-    $.fn.cycle.commonReset(curr,next,opts,false,true);
-    opts.animIn.width = next.cycleW;
-    opts.animOut.left = curr.cycleW;
-  });
-  $.extend(opts.cssBefore, { top: 0, left: 0, width: 0 });
-  opts.animIn.left = 0;
-  opts.animOut.width = 0;
-};
-
-// zoom
-$.fn.cycle.transitions.zoom = function($cont, $slides, opts) {
-  opts.before.push(function(curr, next, opts) {
-    $.fn.cycle.commonReset(curr,next,opts,false,false,true);
-    opts.cssBefore.top = next.cycleH/2;
-    opts.cssBefore.left = next.cycleW/2;
-    $.extend(opts.animIn, { top: 0, left: 0, width: next.cycleW, height: next.cycleH });
-    $.extend(opts.animOut, { width: 0, height: 0, top: curr.cycleH/2, left: curr.cycleW/2 });
-  });
-  opts.cssFirst.top = 0;
-  opts.cssFirst.left = 0;
-  opts.cssBefore.width = 0;
-  opts.cssBefore.height = 0;
-};
-
-// fadeZoom
-$.fn.cycle.transitions.fadeZoom = function($cont, $slides, opts) {
-  opts.before.push(function(curr, next, opts) {
-    $.fn.cycle.commonReset(curr,next,opts,false,false);
-    opts.cssBefore.left = next.cycleW/2;
-    opts.cssBefore.top = next.cycleH/2;
-    $.extend(opts.animIn, { top: 0, left: 0, width: next.cycleW, height: next.cycleH });
-  });
-  opts.cssBefore.width = 0;
-  opts.cssBefore.height = 0;
-  opts.animOut.opacity = 0;
-};
-
-// blindX
-$.fn.cycle.transitions.blindX = function($cont, $slides, opts) {
-  var w = $cont.css('overflow','hidden').width();
-  opts.before.push(function(curr, next, opts) {
-    $.fn.cycle.commonReset(curr,next,opts);
-    opts.animIn.width = next.cycleW;
-    opts.animOut.left   = curr.cycleW;
-  });
-  opts.cssBefore.left = w;
-  opts.cssBefore.top = 0;
-  opts.animIn.left = 0;
-  opts.animOut.left = w;
-};
-// blindY
-$.fn.cycle.transitions.blindY = function($cont, $slides, opts) {
-  var h = $cont.css('overflow','hidden').height();
-  opts.before.push(function(curr, next, opts) {
-    $.fn.cycle.commonReset(curr,next,opts);
-    opts.animIn.height = next.cycleH;
-    opts.animOut.top   = curr.cycleH;
-  });
-  opts.cssBefore.top = h;
-  opts.cssBefore.left = 0;
-  opts.animIn.top = 0;
-  opts.animOut.top = h;
-};
-// blindZ
-$.fn.cycle.transitions.blindZ = function($cont, $slides, opts) {
-  var h = $cont.css('overflow','hidden').height();
-  var w = $cont.width();
-  opts.before.push(function(curr, next, opts) {
-    $.fn.cycle.commonReset(curr,next,opts);
-    opts.animIn.height = next.cycleH;
-    opts.animOut.top   = curr.cycleH;
-  });
-  opts.cssBefore.top = h;
-  opts.cssBefore.left = w;
-  opts.animIn.top = 0;
-  opts.animIn.left = 0;
-  opts.animOut.top = h;
-  opts.animOut.left = w;
-};
-
-// growX - grow horizontally from centered 0 width
-$.fn.cycle.transitions.growX = function($cont, $slides, opts) {
-  opts.before.push(function(curr, next, opts) {
-    $.fn.cycle.commonReset(curr,next,opts,false,true);
-    opts.cssBefore.left = this.cycleW/2;
-    opts.animIn.left = 0;
-    opts.animIn.width = this.cycleW;
-    opts.animOut.left = 0;
-  });
-  opts.cssBefore.top = 0;
-  opts.cssBefore.width = 0;
-};
-// growY - grow vertically from centered 0 height
-$.fn.cycle.transitions.growY = function($cont, $slides, opts) {
-  opts.before.push(function(curr, next, opts) {
-    $.fn.cycle.commonReset(curr,next,opts,true,false);
-    opts.cssBefore.top = this.cycleH/2;
-    opts.animIn.top = 0;
-    opts.animIn.height = this.cycleH;
-    opts.animOut.top = 0;
-  });
-  opts.cssBefore.height = 0;
-  opts.cssBefore.left = 0;
-};
-
-// curtainX - squeeze in both edges horizontally
-$.fn.cycle.transitions.curtainX = function($cont, $slides, opts) {
-  opts.before.push(function(curr, next, opts) {
-    $.fn.cycle.commonReset(curr,next,opts,false,true,true);
-    opts.cssBefore.left = next.cycleW/2;
-    opts.animIn.left = 0;
-    opts.animIn.width = this.cycleW;
-    opts.animOut.left = curr.cycleW/2;
-    opts.animOut.width = 0;
-  });
-  opts.cssBefore.top = 0;
-  opts.cssBefore.width = 0;
-};
-// curtainY - squeeze in both edges vertically
-$.fn.cycle.transitions.curtainY = function($cont, $slides, opts) {
-  opts.before.push(function(curr, next, opts) {
-    $.fn.cycle.commonReset(curr,next,opts,true,false,true);
-    opts.cssBefore.top = next.cycleH/2;
-    opts.animIn.top = 0;
-    opts.animIn.height = next.cycleH;
-    opts.animOut.top = curr.cycleH/2;
-    opts.animOut.height = 0;
-  });
-  opts.cssBefore.height = 0;
-  opts.cssBefore.left = 0;
-};
-
-// cover - curr slide covered by next slide
-$.fn.cycle.transitions.cover = function($cont, $slides, opts) {
-  var d = opts.direction || 'left';
-  var w = $cont.css('overflow','hidden').width();
-  var h = $cont.height();
-  opts.before.push(function(curr, next, opts) {
-    $.fn.cycle.commonReset(curr,next,opts);
-    opts.cssAfter.display = '';
-    if (d == 'right')
-      opts.cssBefore.left = -w;
-    else if (d == 'up')
-      opts.cssBefore.top = h;
-    else if (d == 'down')
-      opts.cssBefore.top = -h;
-    else
-      opts.cssBefore.left = w;
-  });
-  opts.animIn.left = 0;
-  opts.animIn.top = 0;
-  opts.cssBefore.top = 0;
-  opts.cssBefore.left = 0;
-};
-
-// uncover - curr slide moves off next slide
-$.fn.cycle.transitions.uncover = function($cont, $slides, opts) {
-  var d = opts.direction || 'left';
-  var w = $cont.css('overflow','hidden').width();
-  var h = $cont.height();
-  opts.before.push(function(curr, next, opts) {
-    $.fn.cycle.commonReset(curr,next,opts,true,true,true);
-    if (d == 'right')
-      opts.animOut.left = w;
-    else if (d == 'up')
-      opts.animOut.top = -h;
-    else if (d == 'down')
-      opts.animOut.top = h;
-    else
-      opts.animOut.left = -w;
-  });
-  opts.animIn.left = 0;
-  opts.animIn.top = 0;
-  opts.cssBefore.top = 0;
-  opts.cssBefore.left = 0;
-};
-
-// toss - move top slide and fade away
-$.fn.cycle.transitions.toss = function($cont, $slides, opts) {
-  var w = $cont.css('overflow','visible').width();
-  var h = $cont.height();
-  opts.before.push(function(curr, next, opts) {
-    $.fn.cycle.commonReset(curr,next,opts,true,true,true);
-    // provide default toss settings if animOut not provided
-    if (!opts.animOut.left && !opts.animOut.top)
-      $.extend(opts.animOut, { left: w*2, top: -h/2, opacity: 0 });
-    else
-      opts.animOut.opacity = 0;
-  });
-  opts.cssBefore.left = 0;
-  opts.cssBefore.top = 0;
-  opts.animIn.left = 0;
-};
-
-// wipe - clip animation
-$.fn.cycle.transitions.wipe = function($cont, $slides, opts) {
-  var w = $cont.css('overflow','hidden').width();
-  var h = $cont.height();
-  opts.cssBefore = opts.cssBefore || {};
-  var clip;
-  if (opts.clip) {
-    if (/l2r/.test(opts.clip))
-      clip = 'rect(0px 0px '+h+'px 0px)';
-    else if (/r2l/.test(opts.clip))
-      clip = 'rect(0px '+w+'px '+h+'px '+w+'px)';
-    else if (/t2b/.test(opts.clip))
-      clip = 'rect(0px '+w+'px 0px 0px)';
-    else if (/b2t/.test(opts.clip))
-      clip = 'rect('+h+'px '+w+'px '+h+'px 0px)';
-    else if (/zoom/.test(opts.clip)) {
-      var top = parseInt(h/2,10);
-      var left = parseInt(w/2,10);
-      clip = 'rect('+top+'px '+left+'px '+top+'px '+left+'px)';
-    }
-  }
-
-  opts.cssBefore.clip = opts.cssBefore.clip || clip || 'rect(0px 0px 0px 0px)';
-
-  var d = opts.cssBefore.clip.match(/(\d+)/g);
-  var t = parseInt(d[0],10), r = parseInt(d[1],10), b = parseInt(d[2],10), l = parseInt(d[3],10);
-
-  opts.before.push(function(curr, next, opts) {
-    if (curr == next) return;
-    var $curr = $(curr), $next = $(next);
-    $.fn.cycle.commonReset(curr,next,opts,true,true,false);
-    opts.cssAfter.display = 'block';
-
-    var step = 1, count = parseInt((opts.speedIn / 13),10) - 1;
-    (function f() {
-      var tt = t ? t - parseInt(step * (t/count),10) : 0;
-      var ll = l ? l - parseInt(step * (l/count),10) : 0;
-      var bb = b < h ? b + parseInt(step * ((h-b)/count || 1),10) : h;
-      var rr = r < w ? r + parseInt(step * ((w-r)/count || 1),10) : w;
-      $next.css({ clip: 'rect('+tt+'px '+rr+'px '+bb+'px '+ll+'px)' });
-      (step++ <= count) ? setTimeout(f, 13) : $curr.css('display', 'none');
-    })();
-  });
-  $.extend(opts.cssBefore, { display: 'block', opacity: 1, top: 0, left: 0 });
-  opts.animIn    = { left: 0 };
-  opts.animOut   = { left: 0 };
-};
-
-})(jQuery);
-zeega.define("plugins/cycle", function(){});
-
-/*
-    possible transitions: [via http://jquery.malsup.com/cycle/browser.html]
-
-    blindX
-    blindY
-    blindZ
-    cover
-    curtainX
-    curtainY
-    fade
-    fadeZoom
-    growX
-    growY
-    none
-    scrollUp
-    scrollDown
-    scrollLeft
-    scrollRight
-    scrollHorz
-    scrollVert
-    shuffle
-    slideX
-    slideY
-    toss
-    turnUp
-    turnDown
-    turnLeft
-    turnRight
-    uncover
-    wipe
-    zoom
-
-*/
-
-zeega.define('zeega_parser/plugins/layers/slideshow/slideshow',[
-    "zeega",
-    "zeega_parser/plugins/layers/_layer/_layer",
-    "zeega_parser/plugins/layers/slideshow/thumbnail-slider",
-    "plugins/cycle"
-],
-
-function( Zeega, _Layer, SSSlider ) {
-
-    var Layer = Zeega.module();
-
-    Layer.SlideShow = _Layer.extend({
-
-        layerType: "SlideShow",
-
-        attr: {
-            arrows: true, // turns on/off visual arrow controls
-            keyboard: false, // turns on/off keyboard controls
-            thumbnail_slider: true, // turns on/off thumbnail drawer
-
-            start_slide: null,
-            start_slide_id: null,
-            slides_bleed: true,
-
-            title: "Slideshow Layer",
-            url: "none",
-            left: 0,
-            top: 0,
-            height: 100,
-            width: 100,
-            opacity: 1,
-            aspect: 1.33
-        }
-    });
-
-    Layer.SlideShow.Visual = _Layer.Visual.extend({
-
-        template: "plugins/slideshow",
-
-        slide: 0,
-
-        init: function() {
-            this.slideCount = this.model.get("attr").slides.length;
-            this.model.on("slideshow_switch-frame", this.scrollTo, this);
-            Zeega.on("resize_window", this.positionArrows, this);
-        },
-
-        serialize: function() {
-            return this.model.toJSON();
-        },
-
-        onPlay: function() {
-            var index,
-                startSlide = this.model.get("start_slide"),
-                startSlideId = this.model.get("start_slide_id");
-
-            this.$el.css({ "height": this.$el.closest(".ZEEGA-player-window").height() + "px" });
-            this.hideArrows();
-            this.initKeyboard();
-            this.emitSlideData( this.slide );
-            this.positionArrows();
-
-            // investigate why this is needed
-            Zeega.$( this.$(".slideshow-container")[0] ).cycle({
-                timeout: 0,
-                fx: this.model.get("transition") || "scrollHorz",
-                speed: this.model.get("speed") || 1000,
-                startingSlide: this.slide
-            });
-
-        },
-
-        onRender: function() {
-            this.$el.css("height", this.$el.closest(".ZEEGA-player").height() );
-            this.thumbSlider = new SSSlider({ model: this.model });
-            this.$el.append( this.thumbSlider.el );
-            this.thumbSlider.render();
-        },
-
-        onExit: function() {
-            this.killKeyboard();
-            Zeega.$( this.$(".slideshow-container")[0] ).cycle("destroy");
-        },
-
-        events: {
-            "click  .slideshow-control-prev": "goLeft",
-            "click  .slideshow-control-next": "goRight"
-        },
-
-        goLeft: function() {
-            if ( this.slide > 0 ) {
-                this.slide--;
-                this.scrollTo(this.slide);
-            }
-            return false;
-        },
-
-        goRight: function() {
-            if ( this.slide < this.slideCount -1 ) {
-                this.slide++;
-                this.scrollTo(this.slide);
-            }
-            return false;
-        },
-
-        scrollTo: function( slideNo ) {
-            this.slide = slideNo;
-            this.hideArrows();
-            Zeega.$( this.$(".slideshow-container")[0] ).cycle( slideNo );
-
-            this.updateTitle( slideNo );
-            this.emitSlideData( slideNo );
-        },
-
-        updateTitle: function( slideNo ) {
-            var slide = this.model.get('attr').slides[slideNo];
-
-            this.$(".slide-title").text( slide.attr.title );
-            this.$(".slide-description").text( slide.attr.description );
-        },
-
-        emitSlideData: function(slideNo) {
-            this.model.trigger("slideshow_update", {
-                slideNum: slideNo,
-                data: this.getAttr("slides")[slideNo]
-            });
-        },
-
-        positionArrows: function() {
-            this.$(".slideshow-arrow").css({
-                top: (this.$el.closest(".ZEEGA-player").height() / 2 - 50) + "px",
-                height: (this.$el.closest(".ZEEGA-player").height() / 10 ) + "px",
-                width: (this.$el.closest(".ZEEGA-player").height() / 10 ) + "px"
-            });
-        },
-
-        hideArrows: function() {
-
-            if ( this.slideCount <= 1 ) {
-                this.$(".slideshow-arrow").remove();
-            } else if( this.slide === 0 ) {
-                this.$(".slideshow-control-prev").addClass("disabled");
-            } else if( this.slide == this.slideCount - 1 ) {
-                this.$(".slideshow-control-next").addClass("disabled");
-            } else {
-                this.$(".slideshow-control-prev, .slideshow-control-next")
-                    .removeClass("disabled");
-            }
-        },
-
-        initKeyboard: function() {
-            if ( this.getAttr("keyboard") ) {
-
-                Zeega.$( window ).on("keyup.slideshow", function( e ) {
-                    switch( e.which ) {
-                        case 37: // left arrow
-                            _this.goLeft();
-                            break;
-                        case 39: // right arrow
-                            _this.goRight();
-                        break;
-                    }
-                });
-            }
-        },
-
-        killKeyboard: function() {
-            if ( this.getAttr("keyboard") ) {
-                Zeega.$( window ).off("keyup.slideshow");
-            }
-        }
-    });
-
-    return Layer;
-});
-
 zeega.define('zeega_parser/plugins/layers/audio/audio',[
-    "zeega",
-    "zeega_parser/plugins/layers/_layer/_layer"
+    "app",
+    "zeega_parser/modules/layer.model",
+    "zeega_parser/modules/layer.visual.view"
 ],
 
-function( Zeega, _Layer ){
+function( app, _Layer, Visual ){
 
-    var Layer = Zeega.module();
+    var Layer = app.module();
 
     Layer.Audio = _Layer.extend({
 
         layerType: "Audio",
+
+        canplay: false,
 
         attr: {
             title: "Audio Layer",
@@ -34517,129 +33899,189 @@ function( Zeega, _Layer ){
             volume: 0.5,
             cue_in: 0,
             cue_out: null,
+            duration: null,
             fade_in: 0,
             fade_out: 0,
+            loop: false,
             opacity: 0,
-            citation: true
-        }
+            citation: true,
+            soundtrack: false
+        },
+
+        controls: [
+            {
+                type: "checkbox",
+                options: {
+                    title: "loop",
+                    propertyName: "loop"
+                }
+            },
+            "av"
+        ]
     });
 
-    Layer.Audio.Visual = _Layer.Visual.extend({
-        template: "plugins/audio",
+    Layer.Audio.Visual = Visual.extend({
 
         audio: null,
         ended: false,
         playbackCount: 0,
-        listening: false,
+
+        template: "audio/audio",
 
         serialize: function() {
             return this.model.toJSON();
         },
 
         onPlay: function() {
-            this.audio.play();
+            this.setAudio();
             this.ended = false;
-            
+            this.audio.play();
         },
 
         onPause: function() {
+            this.setAudio();
             this.audio.pause();
         },
 
         onExit: function() {
+            this.setAudio();
             this.audio.pause();
+        },
+
+        editor_onLayerEnter: function() {
+            // this.render();
+        },
+
+        editor_onLayerExit: function() {
+            this.$("audio").attr("src", "");
+            this.audio = null;
+            this.render();
+        },
+
+        playPause: function() {
+            this.setAudio();
+            if ( this.audio.paused ) {
+                this.audio.play();
+            } else {
+                this.audio.pause();
+            }
+        },
+
+        setAudio: function() {
+            if ( this.audio === null ) {
+                this.audio = document.getElementById("audio-el-" + this.model.id );
+                this.listen();
+                this.audio.load();
+            }
+        },
+
+        getAudio: function() {
+            this.setAudio();
+            return this.audio;
+        },
+
+        listen: function() {
+            jQuery(this.audio).on("canplay", function() {
+                this.model.trigger( "visual_ready", this.model.id );
+                this.model.trigger( "canplay", this.model );
+                this.model.canplay = true;
+            }.bind( this ));
+
+            _.each( ["play", "pause", "timeupdate"], function( e ) {
+                jQuery(this.audio).on( e, function() {
+                    this.model.trigger( e, {
+                        layer: this.model,
+                        currentTime: this.audio.currentTime,
+                        duration: this.audio.duration
+                    });
+                }.bind( this ));
+            }, this );
+
+            // listen for volume changes
+            this.model.on("change:volume", this.onVolumeChange, this );
+        },
+
+        onVolumeChange: function( model, vol ) {
+            console.log('on vol change', vol );
+            if ( this.audio ) {
+                this.audio.volume = vol;
+            }
         },
 
         verifyReady: function() {
-
-            this.audio = document.getElementById("audio-el-" + this.model.id );
-
-            this.audio.load();
-            this.audio.addEventListener("canplaythrough", function() {
-                this.onCanPlay();
+            this.setAudio();
+            this.$('audio').on("canplay", function() {
+                this.audio.pause();
+                this.model.trigger( "visual_ready", this.model.id );
             }.bind( this ));
-        },
-
-        onCanPlay: _.once(function() {
-            this.audio.pause();
-            this.audio.currentTime = this.getAttr("cue_in");
-
-            if ( this.getAttr("cue_out") || this.getAttr("loop") ) {
-                this.listen();
-            }
-            this.model.trigger( "visual_ready", this.model.id );
-        }),
-
-        listen: _.once(function() {
-            // don't need to listen to audio time if there's no cue out!
-            if ( this.getAttr("cue_out") !== null ) {
-                this.audio.addEventListener("timeupdate", function(){
-                    var currentTime = this.audio.currentTime;
-
-                    if ( currentTime >= this.getAttr("cue_out" ) ) {
-                        if ( this.getAttr("loop") ) {
-                            this.audio.pause();
-                            this.audio.currentTime = this.getAttr("cue_in");
-                            this.audio.play();
-                        } else {
-                            this.audio.pause();
-                            this.audio.currentTime = this.getAttr("cue_in");
-                        }
-                    }
-                }.bind( this ));
-            }
-
-            this.audio.addEventListener("ended", function(){
-                if ( this.getAttr("loop") ) {
-                    this.audio.pause();
-                    this.audio.currentTime = this.getAttr("cue_in");
-                    this.audio.play();
-                } else {
-                    this.audio.pause();
-                    this.audio.currentTime = this.getAttr("cue_in");
-                }
-            }.bind( this ));
-        })
-
-
+        }
     });
 
     return Layer;
 });
 
 zeega.define('zeega_parser/plugins/layers/rectangle/rectangle',[
-    "zeega",
-    "zeega_parser/plugins/layers/_layer/_layer"
+    "app",
+    "zeega_parser/modules/layer.model",
+    "zeega_parser/modules/layer.visual.view"
 ],
-function( Zeega, _Layer ) {
+function( app, LayerModel, Visual ) {
 
-    var Layer = Zeega.module();
+    var Layer = {};
 
-    Layer.Rectangle = _Layer.extend({
+    Layer.Rectangle = LayerModel.extend({
         // TODO: is the redundant naming necessary? If this program knows
         // this is a Layer, wouldn't "type" be sufficient?
         layerType: "Rectangle",
 
         attr: {
+            backgroundColor: "#FF00FF",
             citation: false,
-            default_controls: false,
-            height: 50,
+            height: 100,
             left: 0,
             linkable: false,
-            opacity: 1,
-            opacity_hover: 1,
-            title: "Rectangle Layer",
+            opacity: 0.75,
+            title: "Color Layer",
             top: 0,
-            width: 50
-        }
+            width: 100,
+            dissolve: true
+        },
+
+        controls: [
+            "position",
+            "resize",
+            "rotate",
+            { type: "slider",
+                options: {
+                    title: "opacity",
+                    propertyName: "opacity",
+                    min: 0,
+                    max: 1,
+                    step: 0.001,
+                    css: true
+                }
+            },
+            { type: "color",
+                options: {
+                    title: "color",
+                    propertyName: "backgroundColor"
+                }
+            }
+        ]
+
     });
 
-    Layer.Rectangle.Visual = _Layer.Visual.extend({
+    Layer.Rectangle.Visual = Visual.extend({
 
-        template: "plugins/rectangle",
+        template: "rectangle/rectangle",
 
-        // TODO: This doesn"t produce a "serialization", perhaps rename
-        // to something more appropriate?
+        visualProperties: [
+            "backgroundColor",
+            "height",
+            "width",
+            "opacity"
+        ],
+
         serialize: function() {
             return this.model.toJSON();
         },
@@ -34654,18 +34096,20 @@ function( Zeega, _Layer ) {
 
             this.$el.css( style );
         }
+
   });
 
   return Layer;
 });
 
 zeega.define('zeega_parser/plugins/layers/text/text',[
-    "zeega",
-    "zeega_parser/plugins/layers/_layer/_layer"
+    "app",
+    "zeega_parser/modules/layer.model",
+    "zeega_parser/modules/layer.visual.view"
 ],
-function( Zeega, _Layer ) {
+function( app, _Layer, Visual ) {
 
-    var Layer = Zeega.module();
+    var Layer = app.module();
 
     Layer.Text = _Layer.extend({
         // TODO: is the redundant naming necessary? If this program knows
@@ -34674,49 +34118,162 @@ function( Zeega, _Layer ) {
 
         attr: {
             citation: false,
+            color: "#FFF",
+            content: "text",
+            fontSize: 200,
+            fontFamily: "Archivo Black",
             default_controls: true,
             left: 30,
             opacity: 1,
             title: "Text Layer",
             top: 40,
-            width: 25
-        }
+            width: 25,
+            dissolve: true
+        },
+
+        controls: [
+            {
+                type: "resize",
+                options: {
+                    aspectRatio: false,
+                    handles: "e"
+                }
+            },
+            "rotate",
+            { type: "slider",
+                options: {
+                    title: "<i class='icon-eye-open icon-white'></i>",
+                    propertyName: "opacity",
+                    min: 0,
+                    max: 1,
+                    step: 0.001,
+                    css: true
+                }
+            },
+            { type: "color",
+                options: {
+                    title: "color",
+                    propertyName: "color"
+                }
+            },
+            "textbar"
+        ]
     });
 
-    Layer.Text.Visual = _Layer.Visual.extend({
+    Layer.Text.Visual = Visual.extend({
 
-        template: "plugins/text",
+        template: "text/text",
 
-        init: function() {
-            if ( this.model.get("attr").link ) {
-                this.template = "plugins/text-link";
-            }
-        },
+        visualProperties: [
+            "top",
+            "left",
+            "width",
+            "opacity"
+        ],
 
         serialize: function() {
             return this.model.toJSON();
         },
 
-        onRender: function() {
+        saveContent: null,
 
-            // using jquery because it provides a few vendor prefix styles
+        init: function() {
+            this.saveContent = _.debounce(function() {
+                this.model.saveAttr({
+                    title: this.$(".visual-target").text(),
+                    content: this.$(".visual-target").html()
+                });
+            }.bind( this ), 1000);
+        },
+
+        afterEditorRender: function() {
             this.$el.css({
                 color: this.model.get("attr").color,
-                fontSize: this.model.get("attr").fontSize + "%"
+                fontSize: this.model.get("attr").fontSize + "%",
+                fontFamily: this.model.get("attr").fontFamily
             });
-        }
+
+            this.$(".visual-target").attr("contenteditable", "true");
+
+            this.$el.append(
+                "<a class='drag-handle drag-handle-nw'><span class='icon-area'><i class='icon-move'></i></span></a>" +
+                "<a class='drag-handle drag-handle-ne'><span class='icon-area'><i class='icon-move'></i></span></a>" +
+                "<a class='drag-handle drag-handle-se'><span class='icon-area'><i class='icon-move'></i></span></a>" +
+                "<a class='drag-handle drag-handle-sw'><span class='icon-area'><i class='icon-move'></i></span></a>"
+            );
+            this.makeDraggable();
+            this.listen();
+        },
+
+        makeDraggable: function() {
+            this.$el.draggable({
+                handle: ".drag-handle",
+                stop: function( e, ui ) {
+                    var top, left, workspace;
+
+                    workspace = this.$el.closest(".ZEEGA-workspace");
+                    top = ui.position.top / workspace.height() * 100;
+                    left = ui.position.left / workspace.width() * 100;
+
+                    this.model.saveAttr({
+                        top: top,
+                        left: left
+                    });
+
+                    this.convertToPercents( top, left );
+                }.bind( this )
+            });
+        },
+
+        convertToPercents: function( top, left ) {
+            this.$el.css({
+                top: top + "%",
+                left: left + "%"
+            });
+        },
+
+        listen: function() {
+            this.$(".visual-target")
+                .keyup(function(e){
+                    if ( e.which == 27 ) {
+                        this.$(".visual-target").blur();
+                    }
+                    this.saveContent();
+                }.bind( this ))
+
+                .bind("paste", function(e){
+                    _.delay(function() {
+                        this.$(".visual-target").html( this.$(".visual-target").text() );
+                        this.lazyUpdate({ content: this.$(".visual-target").text() });
+                    }, 500);
+                }.bind( this ));
+
+            this.$(".visual-target").blur(function() {
+                this.saveContent();
+            }.bind( this ));
+        },
+
+        
+
+        lazyUpdate: _.debounce(function( value ) {
+            var attr = {};
+            
+            attr[ this.propertyName ] = value;
+            this.model.saveAttr( attr );
+        }, 500 )
   });
 
   return Layer;
 });
 
 zeega.define('zeega_parser/plugins/layers/text_v2/textmodal',[
-    "zeega"
+    "app",
+    "simpleColorPicker"
 ],
 
-function( zeega ) {
+function( app ) {
 
-    return zeega.Backbone.View.extend({
+    return app.Backbone.View.extend({
 
         template: "text_v2/textmodal",
         serialize: function() {
@@ -34746,13 +34303,14 @@ function( zeega ) {
                                 color: "#" + hex
                             });
                     }.bind( this ),
-                    // onClose: function() {
-                    //     this.onChange();
-                    // }.bind( this ),
                     callback: function( hex ) {
                         this.onChangeColor( hex );
                     }.bind( this )
                 });
+
+            this.$("textarea").bind("input propertychange", function() {
+                this.$(".text-sample").text( this.$("textarea").val() );
+            }.bind( this )),
 
             $("#main").addClass("modal");
             this.loadFonts();
@@ -34777,12 +34335,11 @@ function( zeega ) {
         },
 
         onChangeColor: function( hex ) {
-            this.model.saveAttr({ color: hex });
+            this.model.saveAttr({ color: "#" + hex });
             this.updateSample();
         },
 
         onChangeSize: function( e ) {
-            console.log("change size:", $( e.target ).val() );
             this.model.setAttr({ fontSize: $( e.target ).val() });
 
             this.model.saveAttr({ fontSize: $( e.target ).val() });
@@ -34837,13 +34394,11 @@ function( zeega ) {
                 this.$el.attr("style", "");
                 this.remove();
             }.bind( this ));
+            this.$("input").unbind("input propertychange");
         },
 
         submit: function() {
-            if ( this.selectedFrame !== null ) {
-                this.model.saveAttr({ to_frame: this.selectedFrame });
-                this.model.trigger("change:to_frame", this.model, this.selectedFrame );
-            }
+            this.model.saveAttr({ content: this.$("textarea").val() });
             this.closeThis();
             this.updateVisualElement();
         },
@@ -34853,7 +34408,8 @@ function( zeega ) {
             _.each( this.model.fontList, function( fontName ) {
                 this.$(".font-list").append("<option value='" + fontName + "'>" + fontName + "</option>");
             }, this );
-            this.$(".size-list").val( this.model.getAttr("fontFamily") );
+
+            this.$(".font-list").val( this.model.getAttr("fontFamily") );
         },
 
         loadSize: function() {
@@ -34885,18 +34441,42 @@ function( zeega ) {
 
         updateVisualElement: function() {
             this.model.visual.updateStyle();
+        },
+
+        fetch: function( path ) {
+            // Initialize done for use in async-mode
+            var done;
+            // Concatenate the file extension.
+            path = app.parserPath + "plugins/layers/" + path + ".html";
+            // remove app/templates/ via regexp // hacky? yes. probably.
+            path = path.replace("app/templates/","");
+
+            // If cached, use the compiled template.
+            if ( JST[ path ] ) {
+                return JST[ path ];
+            } else {
+                // Put fetch into `async-mode`.
+                done = this.async();
+                // Seek out the template asynchronously.
+                return app.$.ajax({ url: app.root + path }).then(function( contents ) {
+                    done(
+                      JST[ path ] = _.template( contents )
+                    );
+                });
+            }
         }
     });
 
 });
-zeega.define('zeega_parser/plugins/layers/text_v2/textV2',[
-    "zeega",
-    "zeega_parser/plugins/layers/_layer/_layer",
+zeega.define('zeega_parser/plugins/layers/text_v2/text',[
+    "app",
+    "zeega_parser/modules/layer.model",
+    "zeega_parser/modules/layer.visual.view",
     "zeega_parser/plugins/layers/text_v2/textmodal"
 ],
-function( Zeega, _Layer, TextModal ) {
+function( app, _Layer, Visual, TextModal ) {
 
-    var Layer = Zeega.module();
+    var Layer = app.module();
 
     Layer.TextV2 = _Layer.extend({
         // TODO: is the redundant naming necessary? If this program knows
@@ -34978,12 +34558,12 @@ function( Zeega, _Layer, TextModal ) {
         ]
     });
 
-    Layer.TextV2.Visual = _Layer.Visual.extend({
+    Layer.TextV2.Visual = Visual.extend({
 
         textModal: null,
         transforming: false,
 
-        template: "plugins/textV2",
+        template: "text_v2/text-v2",
 
         visualProperties: [
             "top",
@@ -34998,20 +34578,16 @@ function( Zeega, _Layer, TextModal ) {
 
         saveContent: null,
 
-        onRender: function() {
-            this.updateStyle();
-        },
-
         updateStyle: function() {
-            this.$(".visual-target").text( this.model.get("attr").content );
+            this.$(".visual-target").text( this.model.getAttr("content") );
             
             this.$el.css({
                     color: this.model.get("attr").color,
-                    fontWeight: this.model.get("attr").bold ? "bold" : "normal",
-                    fontStyle: this.model.get("attr").italic ? "italic" : "normal",
-                    fontFamily: this.model.get("attr").fontFamily,
-                    fontSize: this.model.get("attr").fontSize + "%",
-                    textAlign: this.model.get("attr").textAlign
+                    fontWeight: this.model.getAttr("bold") ? "bold" : "normal",
+                    fontStyle: this.model.getAttr("italic") ? "italic" : "normal",
+                    fontFamily: this.model.getAttr("fontFamily"),
+                    fontSize: this.model.getAttr("fontSize") + "%",
+                    textAlign: this.model.getAttr("textAlign")
                 });
                 
         },
@@ -35033,7 +34609,6 @@ function( Zeega, _Layer, TextModal ) {
             this.$el.bind("mouseup", function() {
 
                 if ( !this.transforming ) {
-                    console.log("launch text modal");
                     $("body").append( this.textModal.el );
                     this.textModal.render();
                 }
@@ -35057,7 +34632,11 @@ function( Zeega, _Layer, TextModal ) {
             
             attr[ this.propertyName ] = value;
             this.model.saveAttr( attr );
-        }, 500 )
+        }, 500 ),
+
+        beforePlayerRender: function() {
+            this.updateStyle();
+        }
   });
 
   return Layer;
@@ -35074,16 +34653,14 @@ this should be auto generated probably!!
 zeega.define('zeega_parser/plugins/layers/_all',[
     "zeega_parser/plugins/layers/image/image",
     "zeega_parser/plugins/layers/link/link",
-    "zeega_parser/plugins/layers/slideshow/slideshow",
     "zeega_parser/plugins/layers/audio/audio",
     "zeega_parser/plugins/layers/rectangle/rectangle",
     "zeega_parser/plugins/layers/text/text",
-    "zeega_parser/plugins/layers/text_v2/textV2"
+    "zeega_parser/plugins/layers/text_v2/text"
 ],
 function(
     image,
     link,
-    slideshow,
     audio,
     rectangle,
     text,
@@ -35095,7 +34672,6 @@ function(
         Plugins,
         image,
         link,
-        slideshow,
         audio,
         rectangle,
         text,
@@ -35103,137 +34679,514 @@ function(
     );
 });
 
-// layer.js
-zeega.define('zeega_parser/modules/layer.model',[
-    "zeega",
+zeega.define('zeega_parser/modules/sequence.model',[
+    "app",
     "zeega_parser/plugins/layers/_all"
 ],
 
-function( Zeega, LayerPlugin ) {
+function( app, Layers ) {
 
-    return Zeega.Backbone.Model.extend({
-        ready: false,
-        state: "waiting", // waiting, loading, ready, destroyed, error
-
-        order: [],
+    return app.Backbone.Model.extend({
 
         defaults: {
-            attr: {},
+            advance_to: null,
+            attr: {
+                soundtrack: false
+            },
+            description: null,
+            frames: [],
             id: null,
-            project_id: null,
-            type: null
+            persistent_layers: [],
+            title: ""
         },
+
+        url : function() {
+            if ( this.isNew() ) {
+                return app.api + 'projects/'+ app.project.id +'/sequences';
+            } else {
+                return app.api +'sequences/' + this.id;
+            }
+        },
+
+        lazySave: null,
 
         initialize: function() {
-            var layerClass = LayerPlugin[ this.get("type") ];
 
-            // init link layer type inside here
-            if ( layerClass ) {
-                var newAttr;
-
-                this.layerClass = new layerClass();
-
-                newAttr = _.defaults( this.toJSON().attr, this.layerClass.attr );
-
-                this.set({ attr: newAttr });
-
-                // create and store the layerClass
-                this.visualElement = new layerClass.Visual({
-                    model: this,
-                    attributes: function() {
-                        return _.extend( {}, _.result( this, "domAttributes" ), {
-                            id: "visual-element-" + this.id,
-                            "data-layer_id": this.id
-                        });
-                    }.bind( this )
-                });
-                // listen to visual element events
-                this.on( "visual_ready", this.onVisualReady, this );
-                this.on( "visual_error", this.onVisualError, this );
-            } else {
-                this.ready = true;
-                this.state = "error";
-                console.log( "could not find valid layer type: ", this.get("type") );
-            }
+            this.lazySave = _.debounce(function() {
+                this.save();
+            }.bind( this ), 1000 );
         },
 
-        render: function() {
-            // make sure the layer class is loaded or fail gracefully
-            if ( this.visualElement ) {
-                // if the layer is ready, then just show it
-                if ( this.state == "waiting") {
-                    this.state = "loading";
-                    this.status.emit("layer_loading", this.toJSON());
-                    this.visualElement.player_onPreload();
-                } else if( this.state == "ready" ) {
-                    this.visualElement.play();
+        onFrameSort: function() {
+            _.each( this.get("frames"), function( frameID, i ) {
+                this.frames.get( frameID ).set("_order", i );
+            }, this );
+            this.frames.sort();
+        },
+
+        setSoundtrack: function( item, view ) {
+            var newLayer, oldlayer;
+
+            oldLayer = app.project.getLayer( this.get("attr").soundtrack );
+            if ( this.get("attr").soundtrack && oldLayer ) {
+                this.removeSoundtrack( oldLayer );
+            }
+
+            newLayer = new Layers[ item.get("layer_type") ]({
+                type: item.get("layer_type")
+            });
+
+            newLayer.set( "attr", _.extend({},
+                newLayer.get("attr"),
+                {
+                    loop: true,
+                    soundtrack: true
+                },
+                item.toJSON())
+            );
+
+
+            newLayer.save().success(function( response ) {
+                var attr = this.get("attr");
+
+                if ( _.isArray( attr ) ) {
+                    attr = {};
                 }
+
+                attr.soundtrack = newLayer.id;
+                this.set("attr", attr );
+                this.persistLayer( newLayer );
+                view.setSoundtrackLayer( newLayer );
+
+                this.lazySave();
+            }.bind( this ));
+        },
+
+        removeSoundtrack: function( layer ) {
+            var attr = this.get("attr");
+
+            this.unpersistLayer( layer );
+            attr.soundtrack = false;
+            this.set("attr", attr );
+        },
+
+        persistLayer: function( layer ) {
+            if ( !_.contains( layer.id, this.get("persistent_layers") ) ) {
+                var pLayers = this.get("persistent_layers");
+
+                pLayers.push( layer.id );
+                this.set("persistent_layers", pLayers );
+                this.frames.each(function( frame ) {
+                    layer.order[ frame.id ] = frame.layers.length;
+                    frame.layers.add( layer );
+                });
+            }
+        },
+
+        unpersistLayer: function( layer ) {
+            if ( _.contains( this.get("persistent_layers"), layer.id ) ) {
+                var pLayers = _.without( this.get("persistent_layers"), layer.id );
+
+                this.set("persistent_layers", pLayers );
+                this.frames.each(function( frame ) {
+                    frame.layers.remove( layer );
+                });
+            }
+        },
+
+        togglePersistance: function( layer ) {
+            var isPersistant = _.contains( this.get("persistent_layers"), layer.id );
+
+            if( isPersistant ) {
+                this.unpersistLayer( layer );
             } else {
-                console.log("***    The layer "+ this.get("type") +" is missing. ): ", this.id);
+                this.persistLayer( layer );
             }
         },
 
-        onVisualReady: function() {
-            this.ready = true;
-            this.state = "ready";
-            this.status.emit("layer_preloaded", this.toJSON() );
-            this.trigger("layer_preloaded", this.toJSON());
-        },
+        continueLayerToNextFrame: function( layer ) {
+            var currentIndex = _.indexOf( _.toArray( this.frames ), this.status.get("currentFrame") );
 
-        onVisualError: function() {
-            this.ready = true;
-            this.state = "error";
-            this.trigger("layer_error", this.toJSON());
-        },
-
-        updateZIndex: function(z) {
-            this.visualElement.updateZIndex(z);
-        },
-
-        pause: function() {
-            this.visualElement.player_onPause();
-        },
-
-        play: function() {
-            this.visualElement.player_onPlay();
-        },
-
-        exit: function() {
-            if ( this.layerClass ) {
-                this.visualElement.player_onExit();
-            }
-        },
-
-        remove: function() {
-            if ( this.layerClass ) {
-                this.visualElement.remove();
-            }
-        },
-
-        // removes the layer. destroys players, removes from dom, etc
-        destroy: function() {
-            // do not attempt to destroy if the layer is waiting or destroyed
-            if ( this.state != "waiting" && this.state != "destroyed" ) {
-                this.state = "destroyed";
+            if ( currentIndex != -1 && this.frames.length > currentIndex + 1 ) {
+                this.frames.at( currentIndex + 1 ).layers.push( layer );
             }
         }
 
     });
 
 });
+// frame.js
+zeega.define('zeega_parser/modules/frame.model',[
+    "app",
+    "backbone",
+    "zeega_parser/plugins/layers/_all"
+],
+
+function( app, Backbone, Layers, ThumbWorker ) {
+
+    return app.Backbone.Model.extend({
+
+        ready: false,
+        // waiting, loading, ready, destroyed
+        state: "waiting",
+        hasPlayed: false,
+        elapsed: 0,
+
+        // frame render as soon as it's loaded. used primarily for the initial frame
+        renderOnReady: null,
+
+        defaults: {
+            _order: 0,
+            attr: { advance: 0 },
+            // ids of frames and their common layers for loading
+            common_layers: {},
+            _connections: "none",
+            controllable: true,
+            id: null,
+            // id of frame before current
+            _last: null,
+            // ids of layers contained on frame
+            // come in order of z-index: bottom -> top
+            layers: [],
+            // ids of frames this frame can lead to
+            linksTo: [],
+            // ids of frames this frame can be accessed from
+            linksFrom: [],
+
+            preload_frames: [],
+            // id of the next frame
+            _next: null,
+            // id of frame to be navigated to the left
+            _prev: null,
+            thumbnail_url: null
+        },
+
+        url: function() {
+            if( this.isNew() ) {
+                return app.api + 'projects/'+ app.project.id +'/sequences/'+ app.status.get("currentSequence").id +'/frames';
+            } else {
+                return app.api + 'frames/'+ this.id;
+            }
+        },
+
+        lazySave: null,
+        startThumbWorker: null,
+
+        initialize: function() {
+
+            this.lazySave = _.debounce(function() {
+                this.save();
+            }.bind( this ), 1000 );
+
+            this.startThumbWorker = _.debounce(function() {
+                var worker = new Worker( app.webRoot + "js/helpers/thumbworker.js" );
+                
+                worker.addEventListener("message", function(e) {
+
+                    if( e.data ) {
+                        this.set("thumbnail_url", e.data );
+                        this.lazySave();
+                    } else {
+                        this.trigger('thumbUpdateFail');
+                    }
+                    worker.terminate();
+                }.bind( this ), false);
+
+                worker.postMessage({
+                    cmd: 'capture',
+                    msg: app.api + "frames/" + this.id + "/thumbnail"
+                });
+
+            }, 1000);
+        },
+
+// editor
+        listenToLayers: function() {
+            this.stopListening( this.layers );
+            this.layers.on("sort", this.onLayerSort, this );
+            this.layers.on("add remove", this.onLayerAddRemove, this );
+        },
+
+        onLayerAddRemove: function() {
+            this.updateThumb();
+            this.onLayerSort();
+        },
+
+        onLayerSort: function() {
+            this.set("layers", this.layers.pluck("id") );
+            this.lazySave();
+            this.updateThumb();
+        },
+
+        addLayerType: function( type ) {
+            var newLayer = new Layers[ type ]({ type: type });
+            newLayer.order[ this.id ] = this.layers.length;
+            newLayer.save().success(function( response ) {
+                // if( type == "Link" ){
+                //     this.set( "attr", { "advance" : 10000 } ); //needs update in player – adding a link layer removes default advance
+                // }
+                this.layers.add( newLayer );
+                app.status.setCurrentLayer( newLayer );
+            }.bind( this ));
+            
+        },
+
+        addLayerByItem: function( item ) {
+            var newLayer = new Layers[ item.get("layer_type") ]({
+                type: item.get("layer_type"),
+                attr: _.extend({}, item.toJSON() )
+            });
+
+            newLayer.order[ this.id ] = this.layers.length;
+            newLayer.save().success(function( response ) {
+                this.layers.add( newLayer );
+                app.status.setCurrentLayer( newLayer );
+            }.bind( this ));
+        },
+
+        pasteLayer: function( layer ) {
+            var newLayer = new Layers[ layer.get("type") ]( _.extend({}, layer.toJSON(), { id: null } ) );
+
+            newLayer.order[ this.id ] = this.layers.length;
+            newLayer.save().success(function( response ) {
+                this.layers.add( newLayer );
+                app.status.setCurrentLayer( newLayer );
+            }.bind( this ));
+
+        },
+
+        //update the frame thumbnail
+        updateThumb: function() {
+            this.trigger("thumbUpdateStart");
+            this.startThumbWorker();
+        },
+
+        saveAttr: function( attrObj ) {
+            var attr = this.get("attr");
+
+            if ( _.isArray( attr ) ) {
+                attr = {};
+            }
+
+            this.set("attr", _.extend( attr, attrObj ) );
+            this.lazySave();
+        },
+
+// end editor
+
+        // for convenience
+        getNext: function() {
+            return this.get("_next");
+        },
+
+        getPrev: function() {
+            return this.get("_prev");
+        },
+
+        // sets the sequence adjacencies as a string
+        setConnections: function() {
+            var prev = this.get("_prev"),
+                next = this.get("_next");
+
+            this.set( "connections",
+                this.get('attr').advance ? "none" :
+                prev & next ? "lr" :
+                prev ? "l" :
+                next ? "r" : "none"
+            );
+        },
+
+        preload: function() {
+            var isFrameReady = this.isFrameReady();
+            
+            if ( !this.ready && isFrameReady ) {
+                this.onFrameReady();
+            } else if ( !this.ready && !isFrameReady ) {
+                this.layers.each(function( layer ) {
+                    if ( layer.state === "waiting" || layer.state === "loading" ) {
+                        layer.on( "layer_ready", this.onLayerReady, this );
+                        layer.render();
+                    }
+                }, this );
+            }
+        },
+
+        // render from frame.
+        render: function( oldID ) {
+            var commonLayers;
+            // if frame is completely loaded, then just render it
+            // else try preloading the layers
+            if ( this.ready ) {
+                // only render non-common layers. allows for persistent layers
+                commonLayers = this.get("common_layers")[ oldID ] || [];
+                // if the frame is "ready", then just render the layers
+                this.layers.each(function( layer ) {
+                    if ( !_.include(commonLayers, layer.id) ) {
+                        layer.render();
+                    }
+                });
+
+                // update status
+                this.status.set( "current_frame",this.id );
+                // set frame timer
+                advance = this.get("attr").advance;
+
+                if ( advance ) {
+                    this.startTimer( advance );
+                }
+
+                if ( !this.get("_next") && this.get("linksTo").length === 0 ) {
+                    this.status.emit("deadend_frame", _.extend({}, this.toJSON() ) );
+                }
+
+            } else {
+                this.renderOnReady = oldID;
+            }
+            /* determines the z-index of the layer in relation to other layers on the frame */
+            _.each( this.get("layers"), function( layerID, i ) {
+                this.layers.get( layerID ).updateZIndex( i );
+            }, this );
+        },
+
+        onLayerReady: function( layer ) {
+            if ( this.isFrameReady() && !this.ready ) {
+                this.onFrameReady();
+            }
+        },
+
+        onFrameReady: function() {
+            var data = {
+                frame: this.toJSON(),
+                layers: this.layers.toJSON()
+            };
+
+            this.ready = true;
+            this.state = "ready";
+            this.status.emit( "frame_ready", data );
+            if ( !_.isNull( this.renderOnReady ) ) {
+
+                this.status.emit( "can_play", data );
+                this.render( this.renderOnReady );
+                this.renderOnReady = null;
+            }
+        },
+
+        isFrameReady: function() {
+            var states, value;
+
+            states = _.pluck( this.layers.models, "state");
+            value = _.find( states, function( state ) {
+                return state != "ready";
+            });
+
+            return value === undefined;
+        },
+
+        pause: function() {
+
+            // cancel the timer
+            // record the current elapsed time on the frame
+            // the elapsed time will be subtracted from the total advance time when the timer is restarted in play()
+            if( this.timer ) {
+                clearTimeout( this.timer );
+                this.elapsed += ( new Date().getTime() - this.status.playTimestamp );
+            }
+
+            this.layers.each(function( layer ) {
+                layer.pause();
+            });
+        },
+
+        play: function() {
+            var advance;
+
+            this.layers.each(function( layer ) {
+                layer.play();
+            });
+
+            // set frame timer
+            advance = this.get("attr").advance;
+            if ( advance ) {
+                this.startTimer( advance - this.elapsed );
+            }
+        },
+
+        startTimer: function( ms ) {
+            if ( this.timer ) {
+                clearTimeout( this.timer );
+            }
+            this.timer = setTimeout(function() {
+                this.relay.set({
+                    current_frame: this.get("_next")
+                });
+            }.bind(this), ms );
+        },
+
+        exit: function( newID ) {
+            var commonLayers = this.get("common_layers")[ newID ] || [];
+
+            this.elapsed = 0;
+            if( this.timer ) {
+                clearTimeout( this.timer );
+            }
+            this.layers.each(function( layer ) {
+                if ( !_.include(commonLayers, layer.id) ) {
+                    layer.exit();
+                }
+            });
+        },
+
+        unrender: function( newID ) {
+            // not sure I need this
+        }
+
+    });
+});
 
 // layer.js
 zeega.define('zeega_parser/modules/layer.collection',[
-    "zeega",
-    "zeega_parser/modules/layer.model"
+    "app",
+    "zeega_parser/plugins/layers/_all"
 ],
 
-function( Zeega, LayerModel ) {
+function( app, Layers ) {
 
-    return Zeega.Backbone.Collection.extend({
-        model: LayerModel,
+    return app.Backbone.Collection.extend({
 
         frame: null,
+
+        initialize: function( models ) {
+            _.each( models, function( layer ) {
+                this.onAdd( layer );
+            }, this );
+            this.on("add", this.onAdd, this );
+            this.on("remove", this.onRemove, this );
+        },
+
+        onAdd: function( layer ) {
+            if ( layer ) {
+                layer.addCollection( this );
+                layer.initVisual( Layers[ layer.get("type") ]);
+                app.trigger("layer_added", layer );
+            } else {
+                this.each(function( layer ){
+                    layer.addCollection( this );
+                    layer.initVisual( Layers[ layer.get("type") ]);
+                });
+            }
+        },
+
+        onRemove: function( layer ) {
+            layer.editorCleanup();
+            layer.destroy();
+            app.trigger("layer_remove", layer );
+        },
+
+        editorCleanup: function() {
+            this.each( function( layer ) {
+                layer.editorCleanup();
+            });
+        },
 
         comparator: function( layer ) {
             if ( this.frame ) {
@@ -35246,17 +35199,23 @@ function( Zeega, LayerModel ) {
 
 // frame.js
 zeega.define('zeega_parser/modules/frame.collection',[
-    "zeega",
+    "app",
     "zeega_parser/modules/frame.model",
     "zeega_parser/modules/layer.collection"
 ],
 
-function( Zeega, FrameModel, LayerCollection ) {
+function( app, FrameModel, LayerCollection ) {
 
-    return Zeega.Backbone.Collection.extend({
+    return app.Backbone.Collection.extend({
         model: FrameModel,
 
-        initLayers: function( layerCollection ) {
+        initialize: function() {
+            this.on("add", this.onFrameAdd, this );
+            this.on("remove", this.onFrameRemove, this );
+        },
+
+        initLayers: function( layerCollection, options ) {
+
             this.each(function( frame ) {
                 var frameLayers = layerCollection.filter(function( layer ) {
                     var invalidLink, index;
@@ -35281,9 +35240,80 @@ function( Zeega, FrameModel, LayerCollection ) {
                 frame.layers.sort({ silent: true });
                 // update the layer collection attribute
                 frame.layers.each(function( layer ) {
-                    layer.collection = frame.layers;
+                    layer.addCollection( frame.layers );
+                    layer.pluginsPath = options.pluginsPath;
+                });
+                frame.listenToLayers();
+            });
+        },
+
+        // add frame at a specified index.
+        // omit index to append frame
+        addFrame: function( index ) {
+            var newFrame, continuingLayers = [];
+            // if the sequence has persistent layers then add them to new frames!
+            if ( this.sequence.get("persistent_layers").length ) {
+                _.each( this.sequence.get("persistent_layers"), function( layerID ) {
+                    continuingLayers.push( app.project.getLayer( layerID ) );
+                });
+            }
+
+            newFrame = new FrameModel({
+                layers: this.sequence.get("persistent_layers").reverse(),
+                _order: index
+            });
+
+            newFrame.status = app.status;
+            newFrame.layers = new LayerCollection( _.compact( continuingLayers ) );
+            newFrame.layers.frame = newFrame;
+            newFrame.listenToLayers();
+
+            newFrame.save().success(function() {
+                app.project.addFrameToKey( newFrame.id, this.sequence.id );
+
+                if ( _.isUndefined( index ) ) {
+                    this.push( newFrame );
+                } else {
+                    this.add( newFrame, { at: index });
+                }
+
+                this.each(function( frame, i ) {
+                    frame.set("_order", i );
+                });
+
+                app.trigger("frame_add", newFrame );
+            }.bind( this ));
+
+            return newFrame;
+        },
+
+        onFrameAdd: function( frame ) {
+            this.sequence.save("frames", this.pluck("id") );
+        },
+
+        onFrameRemove: function( frameModel ) {
+            var frameID = frameModel.id;
+
+            app.trigger("frame_remove", frameModel );
+            frameModel.destroy();
+            this.sort();
+
+            // remove link layers targeting the deleted frame
+            app.project.sequences.each(function( sequence ) {
+                sequence.frames.each(function( frame ) {
+                    frame.layers.each( function( layer ) {
+                        if ( layer.get("type") == "Link" && layer.get("attr").to_frame == frameID ) {
+                            layer.collection.remove( layer );
+                        }
+                    });
                 });
             });
+
+            if ( this.length === 0 ) {
+                this.addFrame();
+            } else {
+                this.sequence.save("frames", this.pluck("id") );
+            }
         },
 
         comparator: function( frame ) {
@@ -35294,51 +35324,63 @@ function( Zeega, FrameModel, LayerCollection ) {
 });
 
 zeega.define('zeega_parser/modules/sequence.collection',[
-    "zeega",
+    "app",
     "zeega_parser/modules/sequence.model",
     "zeega_parser/modules/frame.collection",
-    "zeega_parser/modules/layer.collection"
+    "zeega_parser/modules/layer.collection",
+    "zeega_parser/plugins/layers/_all"
 ],
 
-function( Zeega, SequenceModel, FrameCollection, LayerCollection ) {
+function( app, SequenceModel, FrameCollection, LayerCollection, LayerModels ) {
 
-    return Zeega.Backbone.Collection.extend({
+    return app.Backbone.Collection.extend({
         model: SequenceModel,
 
-        initFrames: function( options ) {
-            var layerCollection = new LayerCollection( options.layers );
+        initFrames: function( frames, layers, options ) {
+            var layerCollection, classedLayers;
+
+            // generate classed layers and add their visual counterparts
+            classedLayers = _.map( layers, function( layer ) {
+                var layerModel = new LayerModels[ layer.type ]( layer );
+
+                layerModel.initVisual( LayerModels[ layer.type ] );
+                return layerModel;
+            });
+            layerCollection = new LayerCollection( classedLayers );
 
             this.each(function( sequence ) {
                 var seqFrames;
 
-                seqFrames = options.frames.filter(function( frame ) {
+                seqFrames = frames.filter(function( frame ) {
                     var index = _.indexOf( sequence.get("frames"), frame.id );
 
                     if ( index > -1 ) {
                         frame._order = index;
                         return true;
                     }
+
                     return false;
                 });
 
                 sequence.frames = new FrameCollection( seqFrames );
                 sequence.frames.sequence = sequence;
-                sequence.frames.initLayers( layerCollection );
+                sequence.frames.initLayers( layerCollection, options );
             });
             // at this point, all frames should be loaded with layers and layer classes
         }
     });
 
 });
-// frame.js
 zeega.define('zeega_parser/modules/project.model',[
-    "zeega",
+    "app",
     "zeega_parser/modules/sequence.collection"
 ],
 
-function( Zeega, SequenceCollection ) {
+function( app, SequenceCollection ) {
 
-    return Zeega.Backbone.Model.extend({
+    return app.Backbone.Model.extend({
+
+        updated: false,
 
         defaults: {
             authors: null,
@@ -35366,6 +35408,10 @@ function( Zeega, SequenceCollection ) {
             attach: {}
         },
 
+        url : function() {
+            return app.api +'projects/' + this.id;
+        },
+
         initialize: function( data, options ) {
             this.options = _.defaults( options, this.defaultOptions );
             this.parser = options.parser;
@@ -35374,7 +35420,7 @@ function( Zeega, SequenceCollection ) {
 
         parseSequences: function() {
             this.sequences = new SequenceCollection( this.get("sequences") );
-            this.sequences.initFrames({ frames: this.get("frames"), layers: this.get("layers") });
+            this.sequences.initFrames( this.get("frames"), this.get("layers"), this.options );
 
             this._generateFrameSequenceKey();
             this._setInnerSequenceConnections();
@@ -35382,7 +35428,7 @@ function( Zeega, SequenceCollection ) {
             this._setLinkConnections();
             this._setFramePreloadArrays();
             this._setFrameCommonLayers();
-            this.attach( this.options.attach );
+            this._attach();
         },
 
         _generateFrameSequenceKey: function() {
@@ -35392,6 +35438,10 @@ function( Zeega, SequenceCollection ) {
                     this.frameKey[ frame.id ] = sequence.id;
                 }, this );
             }, this );
+        },
+
+        addFrameToKey: function( frameId, sequenceId ) {
+            this.frameKey[ frameId ] = sequenceId;
         },
 
         _setInnerSequenceConnections: function() {
@@ -35453,12 +35503,15 @@ function( Zeega, SequenceCollection ) {
 
                             targetFrameID = parseInt( layer.get("attr").to_frame, 10 );
                             targetFrame = this.getFrame( targetFrameID );
-                            linksFrom = [].concat( targetFrame.get("linksFrom") );
 
-                            linksTo.push( targetFrameID );
-                            linksFrom.push( frame.id );
+                            if ( targetFrame ) {
+                                linksFrom = [].concat( targetFrame.get("linksFrom") );
 
-                            targetFrame.put("linksFrom", linksFrom );
+                                linksTo.push( targetFrameID );
+                                linksFrom.push( frame.id );
+
+                                targetFrame.put("linksFrom", linksFrom );
+                            }
                         }
                     }, this );
 
@@ -35539,23 +35592,130 @@ function( Zeega, SequenceCollection ) {
             }, this );
         },
 
-        attach: function( attachments ) {
+        _attach: function() {
             this.sequences.each(function( sequence ) {
-                _.extend( sequence, attachments );
+                _.extend( sequence, this.options.attach );
                 sequence.frames.each(function( frame ) {
-                    _.extend( frame, attachments );
+                    _.extend( frame, this.options.attach );
                     frame.layers.each(function( layer ) {
-                        _.extend( layer, attachments );
+                        _.extend( layer, this.options.attach );
                     }, this );
                 }, this );
             }, this );
         },
 
+        getProjectJSON: function() {
+            var frames = [], layers = [];
+
+            this.sequences.each(function( sequence ) {
+                frames = frames.concat( sequence.frames.toJSON() );
+                sequence.frames.each(function( frame ) {
+                    layers = layers.concat( frame.layers.toJSON() );
+                });
+            });
+
+            return _.extend({}, this.toJSON(), {
+                sequences: this.sequences.toJSON(),
+                frames: frames,
+                layers: _.uniq( layers )
+            });
+        },
+
         getFrame: function( frameID ) {
-            if ( this.frameKey[ frameID ] ) {
+            var sequence = this.sequences.get( this.frameKey[ frameID ] );
+
+            if ( sequence ) {
                 return this.sequences.get( this.frameKey[ frameID ] ).frames.get( frameID );
+            } else {
+                return false;
             }
-            return false;
+        },
+
+        // this is not the best. cache these somewhere in a big collection?
+        getLayer: function( layerID ) {
+            var layerModel;
+
+            this.sequences.each(function( sequence ) {
+                sequence.frames.each(function( frame ) {
+                    var layer = frame.layers.get( layerID );
+
+                    if ( layer ) {
+                        layerModel = layer;
+                        return false;
+                    }
+                });
+            });
+
+            return layerModel;
+        },
+
+        /* editor */
+
+        publishProject: function() {
+
+            if ( this.get("date_updated") != this.get("date_published") || this.updated ) {
+                var mobile = this.validateMobile();
+                
+                this.updated = false;
+                this.once("sync", this.onProjectPublish, this);
+
+                if ( !this.get("published") ) {
+                     this.set({ published: true });
+                }
+                this.save({
+                    publish_update: 1,
+                    mobile: mobile
+                });
+                console.log("already published. published again");
+            } else {
+                this.trigger("update_buttons");
+            }
+        },
+
+        onProjectPublish: function( model, response ) {
+            this.set({ publish_update: 0 });
+        },
+
+        validateMobile: function() {
+            var layers, validLayerTypes, maxAudioLayers, valid;
+            
+            layers = [];
+            validLayerTypes = ["Image", "Audio", "Text", "Link", "Rectangle"];
+            maxAudioLayers = 1;
+            maxFrames = null;
+            valid = true;
+
+
+            this.sequences.each(function( sequence ) {
+
+                if ( maxFrames !== null && ( maxFrames -= sequence.frames.length ) < 0 ) {
+                    valid = false;
+                    return false;
+                }
+
+                sequence.frames.each(function( frame ) {
+                    frame.layers.each(function( layer ) {
+
+                        var layerTypeValid = _.contains( validLayerTypes, layer.get("type") );
+
+                        if ( !layerTypeValid ) {
+                            valid = false;
+                            return false;
+                        }
+
+                        // dupe layer. ignore
+                        if ( !_.contains( layers, layer.id ) && layer.get("type") == "Audio" && maxFrames-- < 0 ) {
+                            layers.push( layer.id );
+                            valid = false;
+                            return false;
+                        } else if ( !_.contains( layers, layer.id ) && layer.get("type") == "Audio" ) {
+                            layers.push( layer.id );
+                        }
+                    });
+                });
+            });
+
+            return valid;
         }
 
     });
@@ -35566,165 +35726,147 @@ zeega.define('zeega_parser/data-parsers/zeega-project-model',[
 ],
 
 function( ProjectModel ) {
+    var type = "zeega-project-model",
+        Parser = {};
 
-    return {
+    Parser[ type ] = { name: type };
 
-        name: "zeega-project-model",
-        
-        validate: function( response ) {
-            if ( response.sequences && ( response instanceof ProjectModel ) ) {
-                return true;
-            }
-            return false;
-        },
+    Parser[ type ].validate = function( response ) {
 
-        parse: function( response, opts ) {
-            return response;
+        if ( response.sequences && ( response instanceof ProjectModel ) ) {
+            return true;
         }
+        return false;
     };
 
+    // no op. projects are already formatted
+    Parser[type].parse = function( response, opts ) {
+        return response;
+    };
+
+    return Parser;
 });
 
 zeega.define('zeega_parser/data-parsers/zeega-project',["lodash"],
 
 function() {
-    return {
-        name: "zeega-project",
-        
-        validate: function( response ) {
+    var type = "zeega-project",
+        Parser = {};
 
-            if ( response.sequences && response.frames && response.layers ) {
-                return true;
-            }
-            return false;
-        },
-        
-        parse: function( response, opts ) {
-            return response;
+    Parser[ type ] = { name: type };
+
+    Parser[ type ].validate = function( response ) {
+
+        if ( response.sequences && response.frames && response.layers ) {
+            return true;
         }
+        return false;
     };
+
+    // no op. projects are already formatted
+    Parser[type].parse = function( response, opts ) {
+        return response;
+    };
+
+    return Parser;
 });
 
 zeega.define('zeega_parser/data-parsers/zeega-project-published',["lodash"],
 
 function() {
+    var type = "zeega-project-published",
+        Parser = {};
 
-    return {
-        name: "zeega-project-published",
+    Parser[ type ] = { name: type };
 
-        validate: function( response ) {
-            if ( response.items && response.items[0].media_type == "project"&& response.items.length==1) {
-                return true;
-            }
-            return false;
-        },
+    Parser[ type ].validate = function( response ) {
 
-        parse: function( response, opts ) {
-            return response.items[0].text;
+        if ( response.items && response.items[0].media_type == "project"&& response.items.length==1) {
+            return true;
         }
+        return false;
     };
+
+    // no op. projects are already formatted
+    Parser[type].parse = function( response, opts ) {
+        return response.items[0].text;
+    };
+
+    return Parser;
 });
 
 zeega.define('zeega_parser/data-parsers/zeega-project-collection',[
     "lodash"
 ],
 function() {
-    return {
-        name: "zeega-project-collection",
+    var type = "zeega-project-collection",
+        Parser = {};
 
-        validate: function( response ) {
-            if ( response.items && response.items.length > 1 ) {
-                var mediaTypes = _.pluck( response.items, "media_type" );
-                    nonProjects = _.without( mediaTypes, "project");
+    Parser[ type ] = { name: type };
 
-                if ( nonProjects.length === 0 ) {
-                    return true;
-                }
-            }
-            return false;
-        },
+    Parser[ type ].validate = function( response ) {
+        if ( response.items && response.items.length > 1 ) {
+            var mediaTypes = _.pluck( response.items, "media_type" );
+                nonProjects = _.without( mediaTypes, "project");
 
-        parse: function( response, opts ) {
-            var project = {
-                title: response.request.query.tags,
-                sequences: [],
-                frames: [],
-                layers: []
-            };
-            
-            _.each( response.items, function( item ) {
-                if ( item.text !== "" ) {
-                    project.layers = _.union( project.layers, item.text.layers );
-                    project.frames = _.union( project.frames, item.text.frames );
-                    if ( project.sequences.length > 0 ) {
-                        project.sequences[ project.sequences.length - 1 ].advance_to = item.text.sequences[0].id;
-                    }
-                    project.sequences = _.union( project.sequences, item.text.sequences );
-                }
-            });
-
-            return project;
-        }
-    };
-});
-
-/*
-
-    generates a valid slideshow layer from a set of images
-
-    pass in an array of image layers and it outputs a valid layer object
-
-*/
-zeega.define('zeega_parser/plugins/layers/slideshow/parser',[
-    "lodash"
-],
-
-function( _ ) {
-
-    var Slideshow = {};
-
-    Slideshow.parse = function( layers, options ) {
-        var defaults, slides;
-
-        defaults = {
-            keyboard: false,
-            width: 100,
-            top: 0,
-            left: 0
-        };
-        
-        slides = _.filter( layers, function( layer ) {
-            if ( layer.layer_type == "Image" ) {
-                _.extend( layer, {
-                    attr: layer,
-                    type: layer.layer_type,
-                    id: layer.id
-                });
+            if ( nonProjects.length === 0 ) {
                 return true;
             }
-            return false;
-        });
-
-        return {
-            attr: _.defaults({ slides: slides }, defaults ),
-            start_slide: parseInt( options.slideshow.start, 10 ) || 0,
-            start_slide_id: parseInt( options.slideshow.start_id, 10 ) || null,
-            slides_bleed: options.slideshow.bleed,
-            transition: options.slideshow.transition,
-            speed: options.slideshow.speed,
-            type: "SlideShow",
-            id: 1
-        };
+        }
+        return false;
     };
 
-    return Slideshow;
+    Parser[ type ].parse = function( response, opts ) {
+        var project = {
+            title: response.request.query.tags,
+            sequences: [],
+            frames: [],
+            layers: []
+        };
+        
+        _.each( response.items, function( item ) {
+            if ( item.text !== "" ) {
+                project.layers = _.union( project.layers, item.text.layers );
+                project.frames = _.union( project.frames, item.text.frames );
+                if ( project.sequences.length > 0 ) {
+                    project.sequences[ project.sequences.length - 1 ].advance_to = item.text.sequences[0].id;
+                }
+                project.sequences = _.union( project.sequences, item.text.sequences );
+            }
+        });
+
+        return project;
+    };
+
+
+
+    return Parser;
 });
 
 zeega.define('zeega_parser/data-parsers/zeega-collection',[
-    "lodash",
-    "zeega_parser/plugins/layers/slideshow/parser"
+    "lodash"
 ],
-function( _, Slideshow ) {
+function( _ ) {
+    var type = "zeega-collection",
+        Parser = {};
+
+    Parser[ type ] = { name: type };
+
+    Parser[ type ].validate = function( response ) {
+        // TODO: this works, but may not be valid with new API!!
+        if ( response.items && response.items[0] && response.items[0].child_items ) {
+            return true;
+        }
+        return false;
+    };
+
+    Parser[ type ].parse = function( response, opts ) {
+        if ( opts.layerOptions && opts.layerOptions.slideshow && opts.layerOptions.slideshow.display && response.items.length > 0 ) {
+            // return parseSlideshowCollection( response, opts );
+        } else {
+            return parseStandardCollection( response, opts );
+        }
+    };
 
     function parseStandardCollection( response, opts ) {
         var sequence, frames, layers;
@@ -35748,47 +35890,47 @@ function( _, Slideshow ) {
             });
     }
 
-    function parseSlideshowCollection( response, opts ) {
-        var sequence, frames, layers, slideshowLayer, timebasedLayers;
+    // function parseSlideshowCollection( response, opts ) {
+    //     var sequence, frames, layers, slideshowLayer, timebasedLayers;
 
-        timebasedLayers = _.filter( response.items, function( item ) {
-            return item.layer_type == "Audio" || item.media_type == "Video";
-        });
+    //     timebasedLayers = _.filter( response.items, function( item ) {
+    //         return item.layer_type == "Audio" || item.media_type == "Video";
+    //     });
 
-        slideshowLayer = Slideshow.parse( response.items, opts.layerOptions );
-        // layers from timebased items
-        layers = generateLayerArrayFromItems( timebasedLayers );
+    //     slideshowLayer = Slideshow.parse( response.items, opts.layerOptions );
+    //     // layers from timebased items
+    //     layers = generateLayerArrayFromItems( timebasedLayers );
         
-        if ( slideshowLayer ) {
-            layers.push( slideshowLayer );
-        }
-        // frames from timebased items
-        if ( timebasedLayers.length ) {
-            frames = generateFrameArrayFromItems( timebasedLayers, slideshowLayer ? [ slideshowLayer.id ] : [] );
-        } else {
-            // create single frame if no timebased layers exist
-            frames = [{
-                id: 1,
-                layers: [1],
-                attr: { advance : 0 }
-            }];
-        }
+    //     if ( slideshowLayer ) {
+    //         layers.push( slideshowLayer );
+    //     }
+    //     // frames from timebased items
+    //     if ( timebasedLayers.length ) {
+    //         frames = generateFrameArrayFromItems( timebasedLayers, slideshowLayer ? [ slideshowLayer.id ] : [] );
+    //     } else {
+    //         // create single frame if no timebased layers exist
+    //         frames = [{
+    //             id: 1,
+    //             layers: [1],
+    //             attr: { advance : 0 }
+    //         }];
+    //     }
 
-        sequence = {
-            id: 0,
-            title: "collection",
-            persistent_layers: slideshowLayer ? [ slideshowLayer.id ] : [],
-            frames: _.pluck( frames, "id")
-        };
+    //     sequence = {
+    //         id: 0,
+    //         title: "collection",
+    //         persistent_layers: slideshowLayer ? [ slideshowLayer.id ] : [],
+    //         frames: _.pluck( frames, "id")
+    //     };
 
-        return _.extend(
-            response.items[0],
-            {
-                sequences: [ sequence ],
-                frames: frames,
-                layers: layers
-            });
-    }
+    //     return _.extend(
+    //         response.items[0],
+    //         {
+    //             sequences: [ sequence ],
+    //             frames: frames,
+    //             layers: layers
+    //         });
+    // }
 
     function generateLayerArrayFromItems( itemsArray ) {
         var layerDefaults = {
@@ -35821,31 +35963,48 @@ function( _, Slideshow ) {
         });
     }
 
-    return {
-        name: "zeega-collection",
-
-        validate: function( response ) {
-            // TODO: this works, but may not be valid with new API!!
-            if ( response.items && response.items[0] && response.items[0].child_items ) {
-                return true;
-            }
-            return false;
-        },
-
-        parse: function( response, opts ) {
-            if ( opts.layerOptions && opts.layerOptions.slideshow && opts.layerOptions.slideshow.display && response.items.length > 0 ) {
-                return parseSlideshowCollection( response, opts );
-            } else {
-                return parseStandardCollection( response, opts );
-            }
-        }
-    };
+    return Parser;
 });
 
 zeega.define('zeega_parser/data-parsers/flickr',[
     "lodash"
 ],
 function() {
+    var type = "flickr",
+        Parser = {};
+
+    Parser[ type ] = { name: type };
+
+    // parser validation. returns true if data conforms to parameters
+    Parser[ type ].validate = function( response ) {
+
+        if ( response.generator && response.generator == "http://www.flickr.com/" ) {
+            return true;
+        }
+        return false;
+    };
+
+    // parser returns valid Zeega data object
+    Parser[ type ].parse = function( response, opts ) {
+
+        // layers and frames from timebased items
+        var layers = generateLayerArrayFromItems( response.items ),
+            frames = generateFrameArrayFromItems( response.items ),
+            sequence = {
+                id: 0,
+                title: "flickr collection",
+                persistent_layers: [],
+                frames: _.pluck( frames, "id")
+            };
+
+        return _.extend(
+            response,
+            {
+                sequences: [ sequence ],
+                frames: frames,
+                layers: layers
+            });
+    };
 
     function generateLayerArrayFromItems( itemsArray ) {
         var layerDefaults = {
@@ -35875,45 +36034,45 @@ function() {
         });
     }
 
-    return {
-        name: "flickr",
-
-        validate: function( response ) {
-
-            if ( response.generator && response.generator == "http://www.flickr.com/" ) {
-                return true;
-            }
-            return false;
-        },
-
-        parse: function( response, opts ) {
-
-            // layers and frames from timebased items
-            var layers = generateLayerArrayFromItems( response.items ),
-                frames = generateFrameArrayFromItems( response.items ),
-                sequence = {
-                    id: 0,
-                    title: "flickr collection",
-                    persistent_layers: [],
-                    frames: _.pluck( frames, "id")
-                };
-
-            return _.extend(
-                response,
-                {
-                    sequences: [ sequence ],
-                    frames: frames,
-                    layers: layers
-                });
-        }
-    };
-
+    return Parser;
 });
 
 zeega.define('zeega_parser/data-parsers/youtube',[
     "lodash"
 ],
 function() {
+    var type = "youtube",
+        Parser = {};
+
+    Parser[ type ] = { name: type };
+
+    Parser[ type ].validate = function( res ) {
+        if ( res.generator && res.generator == "http://gdata.youtube.com/" ) {
+            return true;
+        }
+        return true;
+    };
+
+    Parser[ type ].parse = function( res, opts ) {
+        // layers and frames from timebased items
+        var layers = generateLayerArrayFromItems( res.feed.entry ),
+            frames = generateFrameArrayFromItems( res.feed.entry ),
+            sequence = {
+                id: 0,
+                title: "youtube playlist",
+                persistent_layers: [],
+                frames: _.pluck( frames, "id" )
+            },
+            project = _.extend(
+            res,
+            {
+                sequences: [ sequence ],
+                frames: frames,
+                layers: layers
+            });
+        return project;
+    };
+
 
     function generateUniqueId( string ) {
         var k = 0,
@@ -35963,38 +36122,7 @@ function() {
         });
     }
 
-    return {
-        name: "youtube",
-
-        validate: function( res ) {
-            if ( res.generator && res.generator == "http://gdata.youtube.com/" ) {
-                return true;
-            }
-            return true;
-        },
-
-        parse: function( res, opts ) {
-            // layers and frames from timebased items
-            var layers = generateLayerArrayFromItems( res.feed.entry ),
-                frames = generateFrameArrayFromItems( res.feed.entry ),
-                sequence = {
-                    id: 0,
-                    title: "youtube playlist",
-                    persistent_layers: [],
-                    frames: _.pluck( frames, "id" )
-                },
-                project = _.extend(
-                res,
-                {
-                    sequences: [ sequence ],
-                    frames: frames,
-                    layers: layers
-                });
-            return project;
-        }
-
-    };
-
+    return Parser;
 });
 
 /*
@@ -36024,9 +36152,10 @@ function(
     youtube
 ) {
     // extend the plugin object with all the layers
-//    var Parsers = {};
+    var Parsers = {};
 
-    return [
+    return _.extend(
+        Parsers,
         zProjectModel,
         zProject,
         zProjectPublished,
@@ -36034,12 +36163,12 @@ function(
         zCollection,
         flickr,
         youtube
-    ];
+    );
 });
 
 // parser.js
 zeega.define('zeega_parser/parser',[
-    "zeega",
+    "app",
     "lodash",
 
     "zeega_parser/modules/project.model",
@@ -36088,13 +36217,13 @@ function( Zeega, _, ProjectModel, DataParser ) {
 */
 
 zeega.define('modules/relay',[
-    "zeega"
+    "app"
 ],
-function( Zeega ) {
+function( app ) {
 
     var Relay = {};
 
-    Relay.Model = Zeega.Backbone.Model.extend({
+    Relay.Model = app.Backbone.Model.extend({
 
         defaults: {
             current_frame: null,
@@ -36113,13 +36242,13 @@ function( Zeega ) {
 */
 
 zeega.define('modules/status',[
-    "zeega"
+    "app"
 ],
-function( Zeega ) {
+function( app ) {
 
     var Status = {};
 
-    Status.Model = Zeega.Backbone.Model.extend({
+    Status.Model = app.Backbone.Model.extend({
 
         silent: false,
 
@@ -36257,11 +36386,11 @@ function( Zeega ) {
 });
 
 zeega.define('modules/controls/arrows',[
-    "zeega"
+    "app"
 ],
-function( Zeega ) {
+function( app ) {
 
-    return Zeega.Backbone.LayoutView.extend({
+    return app.Backbone.LayoutView.extend({
         template: "controls/arrows",
         className: "controls-arrows"
     });
@@ -36269,11 +36398,11 @@ function( Zeega ) {
 });
 
 zeega.define('modules/controls/close',[
-    "zeega"
+    "app"
 ],
-function( Zeega ) {
+function( app ) {
 
-    return Zeega.Backbone.LayoutView.extend({
+    return app.Backbone.LayoutView.extend({
         template: "controls/close",
         className: "controls-close"
     });
@@ -36281,11 +36410,11 @@ function( Zeega ) {
 });
 
 zeega.define('modules/controls/playpause',[
-    "zeega"
+    "app"
 ],
-function( Zeega ) {
+function( app ) {
 
-    return Zeega.Backbone.LayoutView.extend({
+    return app.Backbone.LayoutView.extend({
         template: "controls/playpause",
         className: "controls-playpause"
     });
@@ -36293,14 +36422,14 @@ function( Zeega ) {
 });
 
 zeega.define('modules/controls-view',[
-    "zeega",
+    "app",
     "modules/controls/arrows",
     "modules/controls/close",
     "modules/controls/playpause"
 ],
-function( Zeega, ArrowView, CloseView, PlayPauseView ) {
+function( app, ArrowView, CloseView, PlayPauseView ) {
 
-    return Zeega.Backbone.LayoutView.extend({
+    return app.Backbone.LayoutView.extend({
 
         className: "ZEEGA-basic-controls",
         manage: true,
@@ -36402,10 +36531,10 @@ function( Zeega, ArrowView, CloseView, PlayPauseView ) {
 });
 
 zeega.define('modules/player-layout',[
-    "zeega",
+    "app",
     "modules/controls-view"
 ],
-function( Zeega, ControlsView ) {
+function( app, ControlsView ) {
     /*
         the player layout
 
@@ -36415,7 +36544,7 @@ function( Zeega, ControlsView ) {
     */
     var Player = {};
 
-    Player.Layout = Zeega.Backbone.Layout.extend({
+    Player.Layout = app.Backbone.Layout.extend({
 
         template: "layouts/player-layout",
         className: "ZEEGA-player",
@@ -36428,7 +36557,7 @@ function( Zeega, ControlsView ) {
                 }.bind(this), 300);
 
             // attempt to detect if the parent container is being resized
-            Zeega.$( window ).resize( lazyResize );
+            app.$( window ).resize( lazyResize );
         },
 
         serialize: function() {
@@ -36451,13 +36580,13 @@ function( Zeega, ControlsView ) {
                 _this = this;
 
             if ( next && next.length ) {
-                Zeega.$( next ).click(function() {
+                app.$( next ).click(function() {
                     _this.model.cueNext();
                     return false;
                 });
             }
             if ( prev && prev.length ) {
-                Zeega.$( prev ).click(function() {
+                app.$( prev ).click(function() {
                     _this.model.cuePrev();
                     return false;
                 });
@@ -36495,7 +36624,7 @@ function( Zeega, ControlsView ) {
             var css = this.getWindowSize();
             this.$(".ZEEGA-player-window").animate( css );
             this.model.trigger( "window_resized", css );
-            Zeega.trigger( "resize_window", css );
+            app.trigger( "resize_window", css );
         },
 
         // calculate and return the correct window size for the player window
@@ -36509,8 +36638,8 @@ function( Zeega, ControlsView ) {
                 };
 
             windowRatio = this.model.get("windowRatio");
-            winWidth = Zeega.$( this.model.get("target") ).find(".ZEEGA-player").width();
-            winHeight = Zeega.$( this.model.get("target") ).find(".ZEEGA-player").height();
+            winWidth = app.$( this.model.get("target") ).find(".ZEEGA-player").width();
+            winHeight = app.$( this.model.get("target") ).find(".ZEEGA-player").height();
             actualRatio = winWidth / winHeight;
 
             if ( this.model.get("cover") === true ) {
@@ -36564,7 +36693,7 @@ function( Zeega, ControlsView ) {
 });
 
 zeega.define('modules/player',[
-    "zeega",
+    "app",
 
     "zeega_parser/parser",
 
@@ -36573,7 +36702,7 @@ zeega.define('modules/player',[
     "modules/player-layout"
 ],
 
-function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
+function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
     /**
     Player
 
@@ -36600,7 +36729,7 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
     @constructor
     */
 
-    Player = Zeega.Backbone.Model.extend({
+    Player = app.Backbone.Model.extend({
 
         ready: false,          // the player is parsed and in the dom. can call play play. layers have not been preloaded yet
         state: "paused",
@@ -36832,7 +36961,7 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
         },
 
         _load: function( attributes ) {
-            var rawDataModel = new Zeega.Backbone.Model(); // throw away model. may contain extraneous data
+            var rawDataModel = new app.Backbone.Model(); // throw away model. may contain extraneous data
 
             if ( attributes.url ) {
                 rawDataModel.url = attributes.url;
@@ -36851,7 +36980,7 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
         // |target| may be a Selector, Node or jQuery object.
         // If no |target| was provided, default to |document.body|
         _setTarget: function() {
-            var target = Zeega.$( this.get("target") || document.body );
+            var target = app.$( this.get("target") || document.body );
 
             this.status.target = target;
             this.put({
@@ -36942,7 +37071,7 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
             var _this = this;
 
             if ( this.get("keyboard") ) {
-                Zeega.$(window).keyup(function( event ) {
+                app.$(window).keyup(function( event ) {
                     switch( event.which ) {
                         case 37: // left arrow
                             _this.cuePrev();
@@ -37195,9 +37324,9 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
 
     });
 
-    Zeega.player = Player;
+    app.player = Player;
 
-    return Zeega;
+    return app;
 });
 
 zeega.require([
