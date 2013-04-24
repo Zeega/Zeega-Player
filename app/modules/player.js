@@ -607,10 +607,12 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
                 // destroy all layers before calling player_destroyed
                 this.project.sequences.each(function( sequence ) {
                     sequence.frames.each(function( frame ) {
-                        frame.destroy();
-                        frame.layers.each(function( layer ) {
-                            layer.destroy();
-                        });
+                        if ( frame ) {
+                            frame.destroy();
+                            frame.layers.each(function( layer ) {
+                                layer.destroy();
+                            });
+                        }
                     });
                 });
                 this.Layout.remove();

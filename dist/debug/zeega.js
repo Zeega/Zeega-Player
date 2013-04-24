@@ -31852,6 +31852,7 @@ function( Backbone, jquery, Spinner ) {
     // Provide a global location to place configuration settings and module
     // creation.
     var app = {
+        mode: "player",
         // The root path to run the application.
         root: "/",
 
@@ -35372,8 +35373,10 @@ function( app, FrameModel, LayerCollection ) {
         model: FrameModel,
 
         initialize: function() {
-            this.on("add", this.onFrameAdd, this );
-            this.on("remove", this.onFrameRemove, this );
+            if ( app.mode != "player") {
+                this.on("add", this.onFrameAdd, this );
+                this.on("remove", this.onFrameRemove, this );
+            }
         },
 
         initLayers: function( layerCollection, options ) {
@@ -37463,10 +37466,12 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
                 // destroy all layers before calling player_destroyed
                 this.project.sequences.each(function( sequence ) {
                     sequence.frames.each(function( frame ) {
-                        frame.destroy();
-                        frame.layers.each(function( layer ) {
-                            layer.destroy();
-                        });
+                        if ( frame ) {
+                            frame.destroy();
+                            frame.layers.each(function( layer ) {
+                                layer.destroy();
+                            });
+                        }
                     });
                 });
                 this.Layout.remove();
