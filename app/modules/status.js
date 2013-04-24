@@ -5,13 +5,13 @@
 */
 
 define([
-    "zeega"
+    "app"
 ],
-function( Zeega ) {
+function( app ) {
 
     var Status = {};
 
-    Status.Model = Zeega.Backbone.Model.extend({
+    Status.Model = app.Backbone.Model.extend({
 
         silent: false,
 

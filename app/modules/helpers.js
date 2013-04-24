@@ -1,10 +1,10 @@
 define([
-    "zeega"
+    "app"
 ],
 
-function( Zeega ) {
+function( app ) {
 
-    var Helpers = Zeega.module(),
+    var Helpers = app.module(),
         location = window.location;
 
     Helpers.getHost = function() {

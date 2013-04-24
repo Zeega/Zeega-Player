@@ -9,13 +9,13 @@
 */
 
 define([
-    "zeega"
+    "app"
 ],
-function( Zeega ) {
+function( app ) {
 
     var Relay = {};
 
-    Relay.Model = Zeega.Backbone.Model.extend({
+    Relay.Model = app.Backbone.Model.extend({
 
         defaults: {
             current_frame: null,

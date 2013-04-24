@@ -20,8 +20,7 @@ require.config({
 
         // Plugins
 
-        simpleColorPicker: "../vendor/simple-color-picker/src/jquery.simple-color",
-        ddslick: "../assets/js/plugins/jquery.ddslick"
+        simpleColorPicker: "../app/zeega-parser/vendor/jquery-simple-color/jquery.simple-color",
 
         // spin: "../assets/js/libs/spin"
         //imagesLoaded: "../assets/js/plugins/jquery/imagesloaded.min.js",

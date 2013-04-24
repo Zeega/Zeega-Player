@@ -1,8 +1,8 @@
 define([
-    "zeega",
+    "app",
     "modules/controls-view"
 ],
-function( Zeega, ControlsView ) {
+function( app, ControlsView ) {
     /*
         the player layout
 
@@ -12,7 +12,7 @@ function( Zeega, ControlsView ) {
     */
     var Player = {};
 
-    Player.Layout = Zeega.Backbone.Layout.extend({
+    Player.Layout = app.Backbone.Layout.extend({
 
         template: "layouts/player-layout",
         className: "ZEEGA-player",
@@ -25,7 +25,7 @@ function( Zeega, ControlsView ) {
                 }.bind(this), 300);
 
             // attempt to detect if the parent container is being resized
-            Zeega.$( window ).resize( lazyResize );
+            app.$( window ).resize( lazyResize );
         },
 
         serialize: function() {
@@ -48,13 +48,13 @@ function( Zeega, ControlsView ) {
                 _this = this;
 
             if ( next && next.length ) {
-                Zeega.$( next ).click(function() {
+                app.$( next ).click(function() {
                     _this.model.cueNext();
                     return false;
                 });
             }
             if ( prev && prev.length ) {
-                Zeega.$( prev ).click(function() {
+                app.$( prev ).click(function() {
                     _this.model.cuePrev();
                     return false;
                 });
@@ -92,7 +92,7 @@ function( Zeega, ControlsView ) {
             var css = this.getWindowSize();
             this.$(".ZEEGA-player-window").animate( css );
             this.model.trigger( "window_resized", css );
-            Zeega.trigger( "resize_window", css );
+            app.trigger( "resize_window", css );
         },
 
         // calculate and return the correct window size for the player window
@@ -106,8 +106,8 @@ function( Zeega, ControlsView ) {
                 };
 
             windowRatio = this.model.get("windowRatio");
-            winWidth = Zeega.$( this.model.get("target") ).find(".ZEEGA-player").width();
-            winHeight = Zeega.$( this.model.get("target") ).find(".ZEEGA-player").height();
+            winWidth = app.$( this.model.get("target") ).find(".ZEEGA-player").width();
+            winHeight = app.$( this.model.get("target") ).find(".ZEEGA-player").height();
             actualRatio = winWidth / winHeight;
 
             if ( this.model.get("cover") === true ) {

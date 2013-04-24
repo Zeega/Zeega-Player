@@ -1,5 +1,5 @@
 define([
-    "zeega",
+    "app",
 
     "zeega_parser/parser",
 
@@ -8,7 +8,7 @@ define([
     "modules/player-layout"
 ],
 
-function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
+function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
     /**
     Player
 
@@ -35,7 +35,7 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
     @constructor
     */
 
-    Player = Zeega.Backbone.Model.extend({
+    Player = app.Backbone.Model.extend({
 
         ready: false,          // the player is parsed and in the dom. can call play play. layers have not been preloaded yet
         state: "paused",
@@ -267,7 +267,7 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
         },
 
         _load: function( attributes ) {
-            var rawDataModel = new Zeega.Backbone.Model(); // throw away model. may contain extraneous data
+            var rawDataModel = new app.Backbone.Model(); // throw away model. may contain extraneous data
 
             if ( attributes.url ) {
                 rawDataModel.url = attributes.url;
@@ -286,7 +286,7 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
         // |target| may be a Selector, Node or jQuery object.
         // If no |target| was provided, default to |document.body|
         _setTarget: function() {
-            var target = Zeega.$( this.get("target") || document.body );
+            var target = app.$( this.get("target") || document.body );
 
             this.status.target = target;
             this.put({
@@ -377,7 +377,7 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
             var _this = this;
 
             if ( this.get("keyboard") ) {
-                Zeega.$(window).keyup(function( event ) {
+                app.$(window).keyup(function( event ) {
                     switch( event.which ) {
                         case 37: // left arrow
                             _this.cuePrev();
@@ -630,7 +630,7 @@ function( Zeega, ZeegaParser, Relay, Status, PlayerLayout ) {
 
     });
 
-    Zeega.player = Player;
+    app.player = Player;
 
-    return Zeega;
+    return app;
 });

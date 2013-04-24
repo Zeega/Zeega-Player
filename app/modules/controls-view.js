@@ -1,12 +1,12 @@
 define([
-    "zeega",
+    "app",
     "modules/controls/arrows",
     "modules/controls/close",
     "modules/controls/playpause"
 ],
-function( Zeega, ArrowView, CloseView, PlayPauseView ) {
+function( app, ArrowView, CloseView, PlayPauseView ) {
 
-    return Zeega.Backbone.LayoutView.extend({
+    return app.Backbone.LayoutView.extend({
 
         className: "ZEEGA-basic-controls",
         manage: true,

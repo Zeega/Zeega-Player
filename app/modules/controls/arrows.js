@@ -1,9 +1,9 @@
 define([
-    "zeega"
+    "app"
 ],
-function( Zeega ) {
+function( app ) {
 
-    return Zeega.Backbone.LayoutView.extend({
+    return app.Backbone.LayoutView.extend({
         template: "controls/arrows",
         className: "controls-arrows"
     });
