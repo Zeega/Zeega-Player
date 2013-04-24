@@ -188,17 +188,6 @@ module.exports = function(grunt) {
 
         copy: {
 
-            layers: {
-                options: {
-                    flatten: true
-                },
-                files: {
-                    "assets/css/less/layers/" : "app/zeega-parser/plugins/layers/**/*.less",
-                    "assets/img/layers/" : "app/zeega-parser/plugins/layers/**/img/*",
-                    "app/templates/plugins/": "app/zeega-parser/plugins/**/*.html"
-                }
-            },
-
             debug: {
                 files: {
                     "dist/debug/css/" : "assets/css/zeega.css"
@@ -228,7 +217,6 @@ module.exports = function(grunt) {
 
     });
 
-    grunt.registerTask('comp', 'copy:layers less');
     // The debug task will remove all contents inside the dist/ folder, lint
     // all your code, precompile all the underscore templates into
     // dist/debug/templates.js, compile all the application code into

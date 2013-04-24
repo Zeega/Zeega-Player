@@ -12,6 +12,9 @@ function( Backbone, jquery, Spinner ) {
     var app = {
         // The root path to run the application.
         root: "/",
+
+        parserPath: "app/zeega-parser/",
+
         gmapAPI: "waiting",
         spinner: new Spinner({
             lines: 13, // The number of lines to draw
