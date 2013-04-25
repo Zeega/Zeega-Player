@@ -209,3 +209,13 @@ __p+='<div class="modal-content">\n    <div class="modal-title">Edit your text</
 }
 return __p;
 };
+
+this["JST"]["app/zeega-parser/plugins/layers/youtube/youtube.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div class="visual-target"><iframe width="100%" height="100%" src="http://www.youtube.com/embed/'+
+( attr.uri )+
+'" frameborder="0" allowfullscreen></iframe></div>\n<div class="controls-inline"></div>';
+}
+return __p;
+};
