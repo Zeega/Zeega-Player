@@ -21,7 +21,7 @@ require.config({
         // Plugins
 
         simpleColorPicker: "../app/zeega-parser/vendor/jquery-simple-color/jquery.simple-color",
-        swfObject: "http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject"
+        swfObject: "../app/zeega-parser/vendor/swfobject"
 
         // spin: "../assets/js/libs/spin"
         //imagesLoaded: "../assets/js/plugins/jquery/imagesloaded.min.js",
