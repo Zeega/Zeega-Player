@@ -154,7 +154,7 @@ return __p;
 this["JST"]["app/zeega-parser/plugins/layers/link/link.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<a href=\'#\' class=\'ZEEGA-link-inner\'></a>';
+__p+='<div href=\'#\' class=\'ZEEGA-link-inner\'></div>';
 }
 return __p;
 };
@@ -34015,7 +34015,7 @@ function( app, _Layer, Visual, FrameChooser ) {
     },
 
     events: {
-        "click a": "goClick",
+        "click": "goClick",
         "mouseover": "onMouseOver",
         "mouseout": "onMouseOut"
     },
@@ -35235,6 +35235,7 @@ function( app, Backbone, Layers, ThumbWorker ) {
 
             } else {
                 this.renderOnReady = oldID;
+                app.spinner.spin( app.$(".ZEEGA-player")[0] );
             }
             /* determines the z-index of the layer in relation to other layers on the frame */
             _.each( this.get("layers"), function( layerID, i ) {
@@ -35259,6 +35260,7 @@ function( app, Backbone, Layers, ThumbWorker ) {
             this.status.emit( "frame_ready", data );
             if ( !_.isNull( this.renderOnReady ) ) {
 
+                app.spinner.stop();
                 this.status.emit( "can_play", data );
                 this.render( this.renderOnReady );
                 this.renderOnReady = null;
@@ -35358,15 +35360,17 @@ function( app, Layers ) {
         },
 
         onAdd: function( layer ) {
-            if ( layer ) {
-                layer.addCollection( this );
-                layer.initVisual( Layers[ layer.get("type") ]);
-                app.trigger("layer_added", layer );
-            } else {
-                this.each(function( layer ){
+            if( app.mode != "player" ){
+               if ( layer ) {
                     layer.addCollection( this );
                     layer.initVisual( Layers[ layer.get("type") ]);
-                });
+                    app.trigger("layer_added", layer );
+                } else {
+                    this.each(function( layer ){
+                        layer.addCollection( this );
+                        layer.initVisual( Layers[ layer.get("type") ]);
+                    });
+                }
             }
         },
 
