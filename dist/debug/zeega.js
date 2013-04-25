@@ -117,6 +117,22 @@ __p+='<div class="control-name">text controls</div>\n\n<a data-action="bold" cla
 return __p;
 };
 
+this["JST"]["app/zeega-parser/plugins/layers/audio/audio-flash.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div id="audio-flash-'+
+( id )+
+'" data-src="'+
+( attr.uri )+
+'"  data-cue="'+
+( attr.cue_in )+
+'"  >\n    <div id="flash-'+
+( id )+
+'" %>" > \n    </div>\n</div>';
+}
+return __p;
+};
+
 this["JST"]["app/zeega-parser/plugins/layers/audio/audio.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
@@ -34044,12 +34060,14 @@ function( app, _Layer, Visual, FrameChooser ) {
 zeega.define('zeega_parser/plugins/layers/audio/audio',[
     "app",
     "zeega_parser/modules/layer.model",
-    "zeega_parser/modules/layer.visual.view"
+    "zeega_parser/modules/layer.visual.view",
+    "swfObject"
 ],
 
 function( app, _Layer, Visual ){
 
-    var Layer = app.module();
+    var Layer = app.module(),
+        canPlayMpeg;
 
     Layer.Audio = _Layer.extend({
 
@@ -34088,128 +34106,321 @@ function( app, _Layer, Visual ){
         ]
     });
 
-    Layer.Audio.Visual = Visual.extend({
+    canPlayMpeg = function(){
+        var a = document.createElement('audio');
+        return !!(a.canPlayType && a.canPlayType('audio/mpeg;').replace(/no/, ''));
+    };
 
-        audio: null,
-        ended: false,
-        playbackCount: 0,
+    if( canPlayMpeg() ){
+        Layer.Audio.Visual = Visual.extend({
 
-        template: "audio/audio",
+            audio: null,
+            ended: false,
+            playbackCount: 0,
 
-        serialize: function() {
-            return this.model.toJSON();
-        },
+            template: "audio/audio",
 
-        onPlay: function() {
-            this.setAudio();
-            this.ended = false;
-            this.audio.play();
-        },
+            serialize: function() {
+                return this.model.toJSON();
+            },
 
-        onPause: function() {
-            this.setAudio();
-            this.audio.pause();
-        },
-
-        onExit: function() {
-            this.setAudio();
-            this.audio.pause();
-        },
-
-        destroy: function() {
-            this.$("audio").attr("src", "");
-            this.audio = null;
-        },
-
-        editor_onLayerEnter: function() {
-            // this.render();
-        },
-
-        editor_onLayerExit: function() {
-            this.$("audio").attr("src", "");
-            this.audio = null;
-            this.render();
-        },
-
-        playPause: function() {
-            this.setAudio();
-            if ( this.audio.paused ) {
+            onPlay: function() {
+                this.setAudio();
+                this.ended = false;
                 this.audio.play();
-            } else {
+            },
+
+            onPause: function() {
+                this.setAudio();
                 this.audio.pause();
-            }
-        },
+            },
 
-        setAudio: function() {
-            if ( this.audio === null ) {
-                this.audio = this.$("#audio-el-" + this.model.id )[0];
-                // this.audio = document.getElementById("audio-el-" + this.model.id );
-                this.listen();
-                this.audio.load();
-            }
-        },
-
-        getAudio: function() {
-            this.setAudio();
-            return this.audio;
-        },
-
-        verifyReady: function() {
-
-            this.audio = this.$("#audio-el-" + this.model.id )[0];
-
-            this.audio.load();
-            this.audio.addEventListener("canplaythrough", function() {
-                this.onCanPlay();
-            }.bind( this ));
-        },
-
-        init: function() {
-            this.onCanPlay = _.once(function() {
+            onExit: function() {
+                this.setAudio();
                 this.audio.pause();
-                this.audio.currentTime = this.getAttr("cue_in");
+            },
 
-                if ( this.getAttr("cue_out") || this.getAttr("loop") ) {
-                    this.listen();
-                }
-                this.model.trigger( "visual_ready", this.model.id );
-            });
-        },
+            destroy: function() {
+                this.$("audio").attr("src", "");
+                this.audio = null;
+            },
 
-        onCanPlay: function() {},
+            editor_onLayerEnter: function() {
+                // this.render();
+            },
 
-        listen: _.once(function() {
-            // don't need to listen to audio time if there's no cue out!
-            if ( this.getAttr("cue_out") !== null ) {
-                this.audio.addEventListener("timeupdate", function(){
-                    var currentTime = this.audio.currentTime;
+            editor_onLayerExit: function() {
+                this.$("audio").attr("src", "");
+                this.audio = null;
+                this.render();
+            },
 
-                    if ( currentTime >= this.getAttr("cue_out" ) ) {
-                        if ( this.getAttr("loop") ) {
-                            this.audio.pause();
-                            this.audio.currentTime = this.getAttr("cue_in");
-                            this.audio.play();
-                        } else {
-                            this.audio.pause();
-                            this.audio.currentTime = this.getAttr("cue_in");
-                        }
-                    }
-                }.bind( this ));
-            }
-
-            this.audio.addEventListener("ended", function(){
-                if ( this.getAttr("loop") ) {
-                    this.audio.pause();
-                    this.audio.currentTime = this.getAttr("cue_in");
+            playPause: function() {
+                this.setAudio();
+                if ( this.audio.paused ) {
                     this.audio.play();
                 } else {
                     this.audio.pause();
-                    this.audio.currentTime = this.getAttr("cue_in");
                 }
-            }.bind( this ));
-        })
+            },
 
-    });
+            setAudio: function() {
+                if ( this.audio === null ) {
+                    this.audio = this.$("#audio-el-" + this.model.id )[0];
+                    // this.audio = document.getElementById("audio-el-" + this.model.id );
+                    this.listen();
+                    this.audio.load();
+                }
+            },
+
+            getAudio: function() {
+                this.setAudio();
+                return this.audio;
+            },
+
+            verifyReady: function() {
+
+                this.audio = this.$("#audio-el-" + this.model.id )[0];
+
+                this.audio.load();
+                this.audio.addEventListener("canplaythrough", function() {
+                    this.onCanPlay();
+                }.bind( this ));
+            },
+
+            init: function() {
+                //console.log("initiing this shit", this.model.id)
+                this.onCanPlay = _.once(function() {
+                    this.audio.pause();
+                    this.audio.currentTime = this.getAttr("cue_in");
+
+                    if ( this.getAttr("cue_out") || this.getAttr("loop") ) {
+                        this.listen();
+                    }
+                    this.model.trigger( "visual_ready", this.model.id );
+                });
+            },
+
+            onCanPlay: function() {},
+
+            listen: _.once(function() {
+                // don't need to listen to audio time if there's no cue out!
+                if ( this.getAttr("cue_out") !== null ) {
+                    this.audio.addEventListener("timeupdate", function(){
+                        var currentTime = this.audio.currentTime;
+
+                        if ( currentTime >= this.getAttr("cue_out" ) ) {
+                            if ( this.getAttr("loop") ) {
+                                this.audio.pause();
+                                this.audio.currentTime = this.getAttr("cue_in");
+                                this.audio.play();
+                            } else {
+                                this.audio.pause();
+                                this.audio.currentTime = this.getAttr("cue_in");
+                            }
+                        }
+                    }.bind( this ));
+                }
+
+                this.audio.addEventListener("ended", function(){
+                    if ( this.getAttr("loop") ) {
+                        this.audio.pause();
+                        this.audio.currentTime = this.getAttr("cue_in");
+                        this.audio.play();
+                    } else {
+                        this.audio.pause();
+                        this.audio.currentTime = this.getAttr("cue_in");
+                    }
+                }.bind( this ));
+            })
+
+        });
+    } else {
+
+        
+        window.onPlayerLoaded = function( containerId ) {
+            onPlayerLoaded[ containerId ] && onPlayerLoaded[ containerId ]();
+        };
+
+        window.onLoading= function( containerId, value ) {
+            onLoading[ containerId ] && onLoading[ containerId ](value);
+        };
+
+        window.onStateChange= function( containerId, eventid, eventvalue ) {
+            onStateChange[ containerId ] && onStateChange[ containerId ](eventid, eventvalue);
+        };
+
+        window.onError= function( containerId, value ) {
+          onError[ containerId ] && onError[ containerId ](value);
+        };
+
+        Layer.Audio.Visual = Visual.extend({
+
+            audio: null,
+            ended: false,
+            playbackCount: 0,
+
+            template: "audio/audio-flash",
+
+            serialize: function() {
+                return this.model.toJSON();
+            },
+
+            init: function() {
+                this.paused = true;
+            },
+
+            afterRender: function(){
+                if ( window.swfobject ) {
+                    this.flashVideoInit();
+                }
+            },
+
+
+
+            onPlay: function() {
+                this.audio.sendToFlash('play', this.currentTime );
+                this.paused = false;
+            },
+
+            onPause: function() {
+                flashvideoObject.sendToFlash('pause','');
+                this.paused = true;
+            },
+
+            onExit: function() {
+                this.audio.pause();
+            },
+
+            destroy: function() {
+
+            },
+
+            editor_onLayerEnter: function() {
+
+            },
+
+            editor_onLayerExit: function() {
+
+            },
+
+            playPause: function() {
+                
+                if ( this.paused ) {
+                    this.audio.play();
+                } else {
+                    this.audio.pause();
+                }
+            },
+
+            flashVideoInit: function() {
+                var flashvars,
+                    params,
+                    attributes,
+                    containerId = "flash-" + this.model.id,
+                    _this = this;
+
+
+                jQuery("#audio-"+containerId).on("player-loaded", function(){
+                    _this.onPlayerLoaded();
+                }).on("loading", function( event, value ){
+                    _this.onLoading(value);
+                }).on("state-change", function( event, event_id, value ){
+                    _this.onStateChange(event_id,value);
+                });
+
+                // expose a callback to this scope, that is called from the global callback youtube calls
+                onPlayerLoaded[ containerId ] = function() {
+                    
+                    jQuery("#audio-"+containerId).trigger( "player-loaded" );
+
+                    var src = jQuery("#audio-"+containerId).data("src"),
+                        cue_in = jQuery("#audio-"+containerId).data("cue_in");
+
+                    flashvideoObject = document.getElementById (containerId);
+                    onLoading[ containerId ] = function (value){
+                        jQuery("#audio-"+containerId).trigger( "loading", [ value ] );
+                    };
+
+                    onStateChange[ containerId ] = function (event_id, value){
+                        jQuery("#audio-"+containerId).trigger( "state-change", [ event_id, value ] );
+                    };
+                    
+                    flashvideoObject.sendToFlash("load", src + ',' + cue_in );
+                };
+
+                flashvars = {
+                    vidId: containerId
+                };
+
+                params = {
+                    wmode: "transparent",
+                    allowScriptAccess: "always",
+                    allownetworking : "all",
+                    bgcolor : "#000000"
+                };
+
+                attributes = {
+                    id: containerId
+                };
+
+               
+                swfobject.embedSWF("assets/vendor/popcorn/MediaPlayer.swf", containerId, "100%", "100%", "9.0.0", false, flashvars, params, attributes);
+                    
+            },
+
+            onPlayerLoaded: function(){
+                this.audio = document.getElementById( "flash-" + this.model.id );
+            },
+
+            onLoading: function( value ){
+
+                if( value == 3 ) {
+                    this.model.trigger( "visual_ready", this.model.id );
+                }
+
+            },
+
+            onStateChange: function( event_id, value ){
+
+            },
+
+            onCanPlay: function() {}
+
+            // listen: _.once(function() {
+            //     // don't need to listen to audio time if there's no cue out!
+            //     if ( this.getAttr("cue_out") !== null ) {
+            //         this.audio.addEventListener("timeupdate", function(){
+            //             var currentTime = this.audio.currentTime;
+
+            //             if ( currentTime >= this.getAttr("cue_out" ) ) {
+            //                 if ( this.getAttr("loop") ) {
+            //                     this.audio.pause();
+            //                     this.audio.currentTime = this.getAttr("cue_in");
+            //                     this.audio.play();
+            //                 } else {
+            //                     this.audio.pause();
+            //                     this.audio.currentTime = this.getAttr("cue_in");
+            //                 }
+            //             }
+            //         }.bind( this ));
+            //     }
+
+            //     this.audio.addEventListener("ended", function(){
+            //         if ( this.getAttr("loop") ) {
+            //             this.audio.pause();
+            //             this.audio.currentTime = this.getAttr("cue_in");
+            //             this.audio.play();
+            //         } else {
+            //             this.audio.pause();
+            //             this.audio.currentTime = this.getAttr("cue_in");
+            //         }
+            //     }.bind( this ));
+            // })
+
+        });
+    }
+       
 
     return Layer;
 });

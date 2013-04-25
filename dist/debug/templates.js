@@ -110,6 +110,22 @@ __p+='<div class="control-name">text controls</div>\n\n<a data-action="bold" cla
 return __p;
 };
 
+this["JST"]["app/zeega-parser/plugins/layers/audio/audio-flash.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div id="audio-flash-'+
+( id )+
+'" data-src="'+
+( attr.uri )+
+'"  data-cue="'+
+( attr.cue_in )+
+'"  >\n    <div id="flash-'+
+( id )+
+'" %>" > \n    </div>\n</div>';
+}
+return __p;
+};
+
 this["JST"]["app/zeega-parser/plugins/layers/audio/audio.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
