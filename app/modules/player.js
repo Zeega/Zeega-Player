@@ -502,6 +502,21 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
             }
         },
 
+        // mobile only hack
+        mobileLoadAudioLayers: function() {
+            this.project.sequences.each(function( sequence ) {
+                sequence.frames.each(function( frame ) {
+                    frame.layers.each(function( layer ) {
+                        if ( layer.get("type") == "Audio") {
+                            var audio = document.getElementById("audio-el-" + layer.id );
+                            
+                            audio.load();
+                        }
+                    });
+                });
+            });
+        },
+
         // should this live in the cueFrame method so it"s not exposed?
         _goToFrame:function( id ) {
             var oldID ;
