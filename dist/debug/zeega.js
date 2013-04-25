@@ -16123,6 +16123,8 @@ zeega.define("backbone", ["lodash","jquery"], (function (global) {
   else
     window.Spinner = Spinner
 
+  return Spinner;
+
 }(window, document);
 
 /*! jQuery UI - v1.10.1 - 2013-02-26
@@ -31864,7 +31866,7 @@ zeega.define('app',[
     "plugins/backbone.layoutmanager"
 ],
 
-function( Backbone, jquery, Spinner ) {
+function( Backbone, jquery, Spinner) {
     // Provide a global location to place configuration settings and module
     // creation.
     var app = {
