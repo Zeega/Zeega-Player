@@ -35235,6 +35235,7 @@ function( app, Backbone, Layers, ThumbWorker ) {
 
             } else {
                 this.renderOnReady = oldID;
+                app.spinner.spin( app.$(".ZEEGA-player")[0] );
             }
             /* determines the z-index of the layer in relation to other layers on the frame */
             _.each( this.get("layers"), function( layerID, i ) {
@@ -35259,6 +35260,7 @@ function( app, Backbone, Layers, ThumbWorker ) {
             this.status.emit( "frame_ready", data );
             if ( !_.isNull( this.renderOnReady ) ) {
 
+                app.spinner.stop();
                 this.status.emit( "can_play", data );
                 this.render( this.renderOnReady );
                 this.renderOnReady = null;
