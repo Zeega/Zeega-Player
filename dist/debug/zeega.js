@@ -220,11 +220,11 @@ return __p;
 this["JST"]["app/zeega-parser/plugins/layers/youtube/youtube.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<div id="yt-player-'+
+__p+='<div   class="youtube-player"  class="visual-target">\n     <iframe id="yt-player-'+
 ( id )+
-'"class="youtube-player"  class="visual-target">\n    \n\n    <iframe  type="text/html" width="100%" height="100%"\n        src="http://www.youtube.com/embed/'+
+'" type="text/html" width="100%" height="100%"\n        src="http://www.youtube.com/embed/'+
 ( attr.uri )+
-'?iv_load_policy=3&showinfo=0&modestbranding=1&disablekb=1&enablejsapi=1&origin=http://localhost:8888"\n        frameborder="0">\n    </iframe>\n</div>\n<div class="controls-inline"></div>';
+'?enablejsapi=1&iv_load_policy=3&showinfo=0&modestbranding=1&disablekb=1&rel=0"\n        frameborder="0">\n    </iframe>\n</div>\n<div class="controls-inline"></div>\n<div class="mobile-cover top"></div>\n<div class="mobile-cover bottom"></div>\n';
 }
 return __p;
 };
@@ -35101,8 +35101,8 @@ function( Zeega, LayerModel, Visual ) {
     Layer.Youtube.Visual = Visual.extend({
 
         template: "youtube/youtube",
-        init: function(){
-
+        afterRender: function(){
+            this.ytInit();
         },
         ytInit: function(){
             
@@ -35118,51 +35118,14 @@ function( Zeega, LayerModel, Visual ) {
 
         onApiReady: function(){
 
-            function getFrameID(id){
-                var elem = document.getElementById(id);
-                if (elem) {
-                    if(/^iframe$/i.test(elem.tagName)) return id; //Frame, OK
-                    // else: Look for frame
-                    var elems = elem.getElementsByTagName("iframe");
-                    if (!elems.length) return null; //No iframe found, FAILURE
-                    for (var i=0; i<elems.length; i++) {
-                       if (/^https?:\/\/(?:www\.)?youtube(?:-nocookie)?\.com(\/|$)/i.test(elems[i].src)) break;
-                    }
-                    elem = elems[i]; //The only, or the best iFrame
-                    if (elem.id) return elem.id; //Existing ID, return it
-                    // else: Create a new ID
-                    do { //Keep postfixing `-frame` until the ID is unique
-                        id += "-frame";
-                    } while (document.getElementById(id));
-                    elem.id = id;
-                    return id;
-                }
-                // If no element, return null.
-                return null;
+            this.ytPlayer = new YT.Player("yt-player-" + this.model.id, { });
+
+            if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
+                this.$(".mobile-cover").show();
             }
 
-
-            var frameID = getFrameID("yt-player-" + this.model.id);
-
-            this.ytPlayer = new YT.Player("yt-player-" + this.model.id + "-frame", {});
             this.model.trigger( "visual_ready", this.model.id );
             
-        },
-
-        afterRender: function(){
-            this.ytInit();
-        },
-
-        playPause: function() {
-                
-        },
-
-        onPlay: function() {
-
-        },
-
-        onPause: function() {
-            this.ytPlayer.pauseVideo();
         },
 
         onExit: function(){

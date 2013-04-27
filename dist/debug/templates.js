@@ -213,11 +213,11 @@ return __p;
 this["JST"]["app/zeega-parser/plugins/layers/youtube/youtube.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<div id="yt-player-'+
+__p+='<div   class="youtube-player"  class="visual-target">\n     <iframe id="yt-player-'+
 ( id )+
-'"class="youtube-player"  class="visual-target">\n    \n\n    <iframe  type="text/html" width="100%" height="100%"\n        src="http://www.youtube.com/embed/'+
+'" type="text/html" width="100%" height="100%"\n        src="http://www.youtube.com/embed/'+
 ( attr.uri )+
-'?iv_load_policy=3&showinfo=0&modestbranding=1&disablekb=1&enablejsapi=1&origin=http://localhost:8888"\n        frameborder="0">\n    </iframe>\n</div>\n<div class="controls-inline"></div>';
+'?enablejsapi=1&iv_load_policy=3&showinfo=0&modestbranding=1&disablekb=1&rel=0"\n        frameborder="0">\n    </iframe>\n</div>\n<div class="controls-inline"></div>\n<div class="mobile-cover top"></div>\n<div class="mobile-cover bottom"></div>\n';
 }
 return __p;
 };

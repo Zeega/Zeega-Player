@@ -806,6 +806,20 @@
 .text-modal .submit {
   float: right;
 }
+.mobile-cover {
+  display: none;
+  position: absolute;
+  width: 100%;
+  height: 40%;
+  left: 0;
+  z-index: 5;
+}
+.mobile-cover.top {
+  top: 0;
+}
+.mobile-cover.bottom {
+  bottom: 0;
+}
 .ZEEGA-player {
   background-color: #000000;
   font-family: "Helvetica Neue", Helvetica, sans-serif;
@@ -1713,6 +1727,20 @@
 }
 .text-modal .submit {
   float: right;
+}
+.mobile-cover {
+  display: none;
+  position: absolute;
+  width: 100%;
+  height: 40%;
+  left: 0;
+  z-index: 5;
+}
+.mobile-cover.top {
+  top: 0;
+}
+.mobile-cover.bottom {
+  bottom: 0;
 }
 
 .ZEEGA-basic-controls a {
@@ -2665,6 +2693,21 @@
 }
 .text-modal .submit {
   float: right;
+}
+
+.mobile-cover {
+  display: none;
+  position: absolute;
+  width: 100%;
+  height: 40%;
+  left: 0;
+  z-index: 5;
+}
+.mobile-cover.top {
+  top: 0;
+}
+.mobile-cover.bottom {
+  bottom: 0;
 }
 
 /******************************
