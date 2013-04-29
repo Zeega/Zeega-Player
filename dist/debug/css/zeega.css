@@ -820,11 +820,11 @@
 }
 .youtube-player.mobile {
   position: absolute;
-  width: 5px;
-  height: 5px;
-  top: 48%;
-  left: 48%;
-  opacity: 0;
+  width: 16%;
+  height: 16%;
+  top: 42%;
+  left: 42%;
+  opacity: 0.01;
 }
 .ZEEGA-player {
   background-color: #000000;
@@ -1748,11 +1748,11 @@
 }
 .youtube-player.mobile {
   position: absolute;
-  width: 5px;
-  height: 5px;
-  top: 48%;
-  left: 48%;
-  opacity: 0;
+  width: 16%;
+  height: 16%;
+  top: 42%;
+  left: 42%;
+  opacity: 0.01;
 }
 
 .ZEEGA-basic-controls a {
@@ -2721,11 +2721,11 @@
 }
 .youtube-player.mobile {
   position: absolute;
-  width: 5px;
-  height: 5px;
-  top: 48%;
-  left: 48%;
-  opacity: 0;
+  width: 16%;
+  height: 16%;
+  top: 42%;
+  left: 42%;
+  opacity: 0.01;
 }
 
 /******************************
