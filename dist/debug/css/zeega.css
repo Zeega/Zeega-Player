@@ -807,6 +807,7 @@
   float: right;
 }
 .mobile-cover {
+  display: none;
   position: absolute;
   width: 100%;
   height: 100%;
@@ -817,6 +818,18 @@
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
+}
+.mobile-cover .play-button {
+  position: absolute;
+  width: 16%;
+  height: 16%;
+  top: 42%;
+  left: 42%;
+  background: url("../img/youtube-mobile-play.png") no-repeat center;
+  -webkit-background-size: 100%;
+  -moz-background-size: 100%;
+  -o-background-size: 100%;
+  background-size: 100%;
 }
 .youtube-player.mobile {
   position: absolute;
@@ -1735,6 +1748,7 @@
   float: right;
 }
 .mobile-cover {
+  display: none;
   position: absolute;
   width: 100%;
   height: 100%;
@@ -1745,6 +1759,18 @@
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
+}
+.mobile-cover .play-button {
+  position: absolute;
+  width: 16%;
+  height: 16%;
+  top: 42%;
+  left: 42%;
+  background: url("../img/youtube-mobile-play.png") no-repeat center;
+  -webkit-background-size: 100%;
+  -moz-background-size: 100%;
+  -o-background-size: 100%;
+  background-size: 100%;
 }
 .youtube-player.mobile {
   position: absolute;
@@ -2708,6 +2734,7 @@
 }
 
 .mobile-cover {
+  display: none;
   position: absolute;
   width: 100%;
   height: 100%;
@@ -2718,6 +2745,18 @@
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
+}
+.mobile-cover .play-button {
+  position: absolute;
+  width: 16%;
+  height: 16%;
+  top: 42%;
+  left: 42%;
+  background: url("../img/youtube-mobile-play.png") no-repeat center;
+  -webkit-background-size: 100%;
+  -moz-background-size: 100%;
+  -o-background-size: 100%;
+  background-size: 100%;
 }
 .youtube-player.mobile {
   position: absolute;
