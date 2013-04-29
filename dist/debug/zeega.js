@@ -35104,7 +35104,7 @@ function( Zeega, LayerModel, Visual ) {
 
         template: "youtube/youtube",
         afterRender: function(){
-            if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
+            if( /Android|webOS|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
                 //this.$(".mobile-cover").show();
                 this.$(".youtube-player").addClass("mobile");
                 this.$(".mobile-cover").show();
