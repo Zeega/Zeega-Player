@@ -213,7 +213,7 @@ return __p;
 this["JST"]["app/zeega-parser/plugins/layers/youtube/youtube.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<div   class="youtube-player mobile"  class="visual-target">\n     <iframe id="yt-player-'+
+__p+='<div   class="youtube-player"  class="visual-target">\n     <iframe id="yt-player-'+
 ( id )+
 '" type="text/html" width="100%" height="100%"\n        src="http://www.youtube.com/embed/'+
 ( attr.uri )+
