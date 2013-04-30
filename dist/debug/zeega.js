@@ -222,8 +222,6 @@ var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='<div   class="youtube-player"  class="visual-target">\n    <iframe id="yt-player-'+
 ( id )+
-'-'+
-( cid )+
 '" type="text/html" width="100%" height="100%"\n        src="http://www.youtube.com/embed/'+
 ( attr.uri )+
 '?enablejsapi=1&iv_load_policy=3&showinfo=0&modestbranding=1&disablekb=1&rel=0&wmode=opaque"\n        frameborder="0">\n    </iframe>\n</div>\n<div class="play-button"></div>\n<div class="ipad-cover"> pause video to return to Zeega </div>\n<div class="controls-inline"></div>\n\n';
@@ -35156,6 +35154,10 @@ function( Zeega, LayerModel, Visual ) {
 
             var onPlayerReady = jQuery.proxy( this.onPlayerReady, this),
                 onStateChange = jQuery.proxy( this.onStateChange, this);
+
+
+            this.$("#yt-player-" + this.model.id).attr("id", "yt-player-" + this.model.id + "-" + this.model.cid );
+
             this.ytPlayer = new YT.Player("yt-player-" + this.model.id + "-" + this.model.cid, {
                     events:{
                         'onReady': onPlayerReady,
