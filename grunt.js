@@ -65,17 +65,6 @@ module.exports = function(grunt) {
             "dist/debug/templates.js": ["app/templates/**/*.html"]
         },
 
-        // This task uses the MinCSS Node.js project to take all your CSS files in
-        // order and concatenate them into a single CSS file named index.css.  It
-        // also minifies all the CSS as well.  This is named index.css, because we
-        // only want to load one stylesheet in index.html.
-        mincss: {
-            "dist/release/css/zeega.css": [
-                "dist/debug/css/zeega.css"
-            ]
-        },
-
-
         // Takes the built require.js file and minifies it for filesize benefits.
         min: {
             "dist/release/zeega.js": [
@@ -181,10 +170,21 @@ module.exports = function(grunt) {
         less: {
             main: {
                 files: {
-                    'assets/css/less/_combined-layers.less' : 'assets/css/less/layers/*.less',
-                    'assets/css/zeega.css' : 'assets/css/less/**/*.less'
+                    //'assets/css/less/_combined-layers.less' : 'assets/css/less/layers/*.less',
+                    "assets/css/less/_combined-layers.less": "app/zeega-parser/plugins/**/*.less",
+                    "assets/css/zeega.css": "assets/css/less/**/*.less"
                 }
             }
+        },
+
+        // This task uses the MinCSS Node.js project to take all your CSS files in
+        // order and concatenate them into a single CSS file named index.css.  It
+        // also minifies all the CSS as well.  This is named index.css, because we
+        // only want to load one stylesheet in index.html.
+        mincss: {
+            "dist/release/css/zeega.css": [
+                "dist/debug/css/zeega.css"
+            ]
         },
 
         copy: {
