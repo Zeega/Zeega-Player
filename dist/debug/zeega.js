@@ -224,7 +224,7 @@ __p+='<div   class="youtube-player"  class="visual-target">\n    <iframe id="yt-
 ( id )+
 '" type="text/html" width="100%" height="100%"\n        src="http://www.youtube.com/embed/'+
 ( attr.uri )+
-'?enablejsapi=1&iv_load_policy=3&showinfo=0&modestbranding=1&disablekb=1&rel=0&wmode=opaque"\n        frameborder="0">\n    </iframe>\n</div>\n<div class="play-button"></div>\n<div class="controls-inline"></div>\n\n';
+'?enablejsapi=1&iv_load_policy=3&showinfo=0&modestbranding=1&disablekb=1&rel=0&wmode=opaque"\n        frameborder="0">\n    </iframe>\n</div>\n<div class="play-button"></div>\n<div class="ipad-cover"> pause video to return to Zeega </div>\n<div class="controls-inline"></div>\n\n';
 }
 return __p;
 };
@@ -35103,11 +35103,8 @@ function( Zeega, LayerModel, Visual ) {
         template: "youtube/youtube",
         afterRender: function(){
             if( /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent) ) {
-                //this.$(".mobile-cover").show();
                 this.$(".youtube-player").addClass("mobile");
-                this.$(".mobile-cover").show();
             } else if( /iPad/i.test(navigator.userAgent) ) {
-                //this.$(".ipad-cover").show();
                 this.$(".youtube-player").addClass("ipad");
             }
 
@@ -35115,7 +35112,8 @@ function( Zeega, LayerModel, Visual ) {
             this.ytInit();
         },
         events: {
-            "click .play-button": "playVideo"
+            "click .play-button": "playVideo",
+            "tap .play-button": "playVideo"
 
         },
 
@@ -35132,17 +35130,21 @@ function( Zeega, LayerModel, Visual ) {
         },
 
         onPlayerReady: function(e){
-            console.log("player ready:", e);
+
         },
 
         onStateChange: function(e){
-            console.log("player state change:", e);
-            if(e.data == 23 || e.data == 5){
+            if(e.data == 2 || e.data == 5){
                 this.$(".youtube-player").removeClass("active");
                 this.$(".play-button").fadeIn("fast");
+                if( /iPad/i.test(navigator.userAgent) ) {
+                    this.$(".ipad-cover").removeClass("visible");
+                }
             } else if (e.data == 1){
-                this.$(".youtube-player").addClass("active");
-                this.$(".play-button").fadeOut("fast");
+
+                if( /iPad/i.test(navigator.userAgent) ) {
+                    this.$(".ipad-cover").addClass("visible");
+                }
             }
         },
 
@@ -35161,11 +35163,13 @@ function( Zeega, LayerModel, Visual ) {
         },
 
         playVideo: function(){
+            this.$(".play-button").fadeOut("fast");
+            this.$(".youtube-player").addClass("active");
             this.ytPlayer.playVideo();
         },
 
         onExit: function(){
-            this.ytPlayer.stopVideo();
+            this.ytPlayer.pauseVideo();
         }
 
     });
