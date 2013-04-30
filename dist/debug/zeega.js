@@ -35110,6 +35110,7 @@ function( Zeega, LayerModel, Visual ) {
                 this.$(".mobile-cover").show();
             } else if( /iPad/i.test(navigator.userAgent) ) {
                 this.$(".ipad-cover").show();
+                this.$(".youtube-player").addClass("ipad");
             }
 
 
