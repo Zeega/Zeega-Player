@@ -23,9 +23,6 @@ require.config({
         simpleColorPicker: "../app/zeega-parser/vendor/jquery-simple-color/jquery.simple-color",
         swfObject: "../app/zeega-parser/vendor/swfobject"
 
-        // spin: "../assets/js/libs/spin"
-        //imagesLoaded: "../assets/js/plugins/jquery/imagesloaded.min.js",
-
     },
     shim: {
         // Backbone library depends on lodash and jQuery.
