@@ -35075,7 +35075,6 @@ function( Zeega, LayerModel, Visual ) {
 
 
     window.onYouTubeIframeAPIReady = function() {
-
         window.jQuery(".youtube-player").trigger("api-ready");
     };
 
@@ -35125,7 +35124,10 @@ function( Zeega, LayerModel, Visual ) {
                 tag.src = "//www.youtube.com/iframe_api";
                 var firstScriptTag = document.getElementsByTagName('script')[0];
                 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+            } else {
+                this.onApiReady();
             }
+
             
         },
 
