@@ -35104,7 +35104,7 @@ function( Zeega, LayerModel, Visual ) {
 
         template: "youtube/youtube",
         afterRender: function(){
-            if( /Android|webOS|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
+            if( /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent) ) {
                 //this.$(".mobile-cover").show();
                 this.$(".youtube-player").addClass("mobile");
                 this.$(".mobile-cover").show();
@@ -35126,12 +35126,6 @@ function( Zeega, LayerModel, Visual ) {
         onApiReady: function(){
 
             this.ytPlayer = new YT.Player("yt-player-" + this.model.id, { });
-
-            if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
-                //this.$(".mobile-cover").show();
-                this.$("youtube-player").addClass("mobile");
-            }
-
             this.model.trigger( "visual_ready", this.model.id );
             
         },
