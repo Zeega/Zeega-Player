@@ -35,46 +35,15 @@
         // data: window.exampleData,
         // debugEvents: "media_timeupdate",
         // target: "#main",
-        //windowRatio: 16/9,
+        // windowRatio: 16/9,
         // target: $("#main"),
 
-        // url: "http://alpha.zeega.org/api/items/search?tags=makingof&media_type=project&page=1&limit=100&sort=desc", // example published zeega
-        // url: "http://dev.zeega.org/joseph/web/api/projects/4708", // video loading test
+        url: "http://zeega.com/api/items/112692", // test
 
-        // url: "http://staging.zeega.org/api/projects/4776", // fade in test
-        // url: " testdata/test.json", // test json data. update the grunt SERVER task to change which it points to
-        // url: "http://staging.zeega.org/api/items/74504", // how I got to Boston
-        // url: "http://alpha.zeega.org/api/projects/4318", // reinvention
-        // url: "http://staging.zeega.org/api/projects/4948",
-        
-// ahmed's broken projects
-        // url: "http://zeega.com/api/items/49564", // broken media ( youtube )
-        // url: "http://zeega.com/api/items/41255", // works. media-player bug
-        // url: "http://zeega.com/api/items/41292", // fixed old pub project issue
-//        url: "http://zeega.com/api/items/48110", // loads. broken still? Broken media
-        // url: "http://zeega.com/api/items/53680", // loads. broken still?
-
-        // url: "http://dev.zeega.org/joseph/web/api/projects/4973",
-
-        // url: "http://alpha.zeega.org/api/items/72666", // example published zeega
-        // url: "http://dev.zeega.org/joseph/web/api/projects/4521", // auto advance test
-        // url: "http://alpha.zeega.org/api/items/76998/items", // dynamic zeega collection
-        // url: "http://alpha.zeega.org/api/items/76999/items", // dynamic zeega project collection
-        // url: "http://api.flickr.com/services/feeds/photos_public.gne?tags=massascension&format=json&jsoncallback=?", // flickr tag set
-        //url: "http://staging.zeega.org/api/projects/4709", // 16/9 test project
-        // url: "http://staging.zeega.org/api/projects/2707", // ASHLAND
-
-
-        url: "http://dev.zeega.org/joseph/web/api/projects/8845", // test
-        //url: "http://staging.zeega.com/api/items/104366", // every layer
-        
-
-        // url: "http://dev.zeega.org/joseph/web/api/projects/7043", // popup test
-        // url: "http://alpha.zeega.org/api/items/74868", // reinvention
-        //url: "http://alpha.zeega.org/api/items/67060/items", // BGB collection
-        // cover: "vertical", // true/false || "vertical", "horizontal"
+        cover: true, //"vertical", // true/false || "vertical", "horizontal"
 
         autoplay: true,
+        mobile: true,
 
         layerOptions: {
           slideshow: {
@@ -99,6 +68,10 @@
 <!-- debug -->
 <!--
   <script data-main="app/player_config" src="assets/js/libs/zeega.js"></script>
+-->
+
+<!--
+  <script src="dist/debug/zeega.js"></script>
 -->
   <script data-main="app/config" src="assets/js/libs/require.js"></script>
 

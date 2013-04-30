@@ -14,6 +14,7 @@ function( Backbone, jquery, Spinner ) {
         // The root path to run the application.
         root: "/",
 
+        attributes: {},
         parserPath: "app/zeega-parser/",
 
         gmapAPI: "waiting",
