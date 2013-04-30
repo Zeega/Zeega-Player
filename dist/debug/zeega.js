@@ -31872,6 +31872,7 @@ function( Backbone, jquery, Spinner ) {
         // The root path to run the application.
         root: "/",
 
+        attributes: {},
         parserPath: "app/zeega-parser/",
 
         gmapAPI: "waiting",
@@ -33531,7 +33532,7 @@ function( app, Controls ) {
         applyVisualProperties: function() {
             var mediaTargetCSS = {},
                 containerCSS = {};
-
+console.log("vp", this.model.get("type"), this.visualProperties)
             _.each( this.visualProperties, function( prop ) {
                 if ( _.contains( this.containerAttributes, prop ) ) {
                     containerCSS[ prop ] = this.getAttr( prop ) + ( this.units[ prop ] ? this.units[ prop ] : "" );
@@ -34910,7 +34911,8 @@ function( app, _Layer, Visual, TextModal ) {
 
             bold: false,
             italic: false,
-            textAlign: "left"
+            textAlign: "left",
+            mobilePosition: "middle" // top, middle, bottom
         },
 
         controls: [
@@ -34976,6 +34978,15 @@ function( app, _Layer, Visual, TextModal ) {
 
         template: "text_v2/text-v2",
 
+        init: function() {
+            console.log("text", app.attributes)
+            if ( app.attributes.mobile ) {
+                this.visualProperties = [
+                    "opacity"
+                ]
+            }
+        },
+
         visualProperties: [
             "top",
             "left",
@@ -34989,8 +35000,45 @@ function( app, _Layer, Visual, TextModal ) {
 
         saveContent: null,
 
+        applyStyles: function() {
+            // if ( app.attributes.mobile ) {
+            //     this.$el.css({
+            //         width: (window.innerWidth - 60 ) + "px",
+            //         left: 0,
+            //         right: 0,
+            //         margin: "auto"
+            //     });
+            // } else {
+                this.$el.css({
+                    left: this.getAttr("left") + "%",
+                    width: this.getAttr("width") + "%"
+                });
+            // }
+        },
+
+        // moveOnStage: function() {
+        //     if ( app.attributes.mobile ) {
+        //         this.$el.css({
+        //             width: (window.innerWidth - 60 ) + "px",
+        //             top: "calc(50% - " + this.$el.height() / 2 + "px )",
+        //             left: 0,
+        //             right: 0,
+        //             margin: "auto"
+        //         });
+        //     } else {
+        //         console.log("APPLY WRONG")
+        //         this.$el.css({
+        //             top: this.getAttr("top") + "%",
+        //             left: this.getAttr("left") + "%"
+        //         });
+        //     }
+
+        // },
+
         updateStyle: function() {
             this.$(".visual-target").text( this.model.getAttr("content") );
+
+            console.log("TEXT V2:", app.attributes.mobile, app.attributes.mobile ? (window.innerWidth - 10) + "px" : this.model.getAttr("width") );
             
             this.$el.css({
                     color: this.model.get("attr").color,
@@ -37225,6 +37273,16 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
             layerOptions: {},
 
             /**
+            Sets the player to operate in a mobile browser environment
+
+            @property mobile
+            @type Boolean
+            @default false
+            **/
+
+            mobile: false,
+
+            /**
             number
 
             @property layers
@@ -37374,7 +37432,9 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
 
         _mergeAttributes: function( attributes ) {
             var attr = _.pick( attributes, _.keys( this.defaults ) );
+
             this.set( attr, { silent: true });
+            app.attributes = this.toJSON();
         },
 
         _load: function( attributes ) {
