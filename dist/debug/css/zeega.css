@@ -831,6 +831,19 @@
   -o-background-size: 100%;
   background-size: 100%;
 }
+.ipad-cover {
+  position: absolute;
+  width: 100%;
+  height: 40%;
+  left: 0;
+  z-index: 5;
+}
+.ipad-cover.top {
+  top: 0;
+}
+.ipad-cover.botton {
+  bottom: 0;
+}
 .youtube-player.mobile {
   position: absolute;
   width: 16%;
@@ -1771,6 +1784,19 @@
   -moz-background-size: 100%;
   -o-background-size: 100%;
   background-size: 100%;
+}
+.ipad-cover {
+  position: absolute;
+  width: 100%;
+  height: 40%;
+  left: 0;
+  z-index: 5;
+}
+.ipad-cover.top {
+  top: 0;
+}
+.ipad-cover.botton {
+  bottom: 0;
 }
 .youtube-player.mobile {
   position: absolute;
@@ -2757,6 +2783,19 @@
   -moz-background-size: 100%;
   -o-background-size: 100%;
   background-size: 100%;
+}
+.ipad-cover {
+  position: absolute;
+  width: 100%;
+  height: 40%;
+  left: 0;
+  z-index: 5;
+}
+.ipad-cover.top {
+  top: 0;
+}
+.ipad-cover.botton {
+  bottom: 0;
 }
 .youtube-player.mobile {
   position: absolute;

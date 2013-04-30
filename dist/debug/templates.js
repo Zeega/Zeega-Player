@@ -219,7 +219,7 @@ __p+='<div   class="youtube-player"  class="visual-target">\n     <iframe id="yt
 ( attr.uri )+
 '?enablejsapi=1&iv_load_policy=3&showinfo=0&modestbranding=1&disablekb=1&rel=0"\n        frameborder="0">\n    </iframe>\n</div>\n<div class="controls-inline"></div>\n<div class="mobile-cover" style="background:url('+
 ( attr.thumbnail_url )+
-') no-repeat center">\n    <div class="play-button"></div>\n</div>\n';
+') no-repeat center">\n    <div class="play-button"></div>\n</div>\n<div class="ipad-cover top"></div> \n\n<div class="ipad-cover bottom"></div> \n';
 }
 return __p;
 };
