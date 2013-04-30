@@ -35132,7 +35132,7 @@ function( Zeega, LayerModel, Visual ) {
         },
 
         onPlayerReady: function(e){
-
+            this.model.trigger( "visual_ready", this.model.id );
         },
 
         onStateChange: function(e){
@@ -35160,7 +35160,7 @@ function( Zeega, LayerModel, Visual ) {
                         'onStateChange': onStateChange
                     }
                 });
-            this.model.trigger( "visual_ready", this.model.id );
+            
             
         },
 
