@@ -224,7 +224,7 @@ __p+='<div   class="youtube-player"  class="visual-target">\n    <iframe id="yt-
 ( id )+
 '" type="text/html" width="100%" height="100%"\n        src="http://www.youtube.com/embed/'+
 ( attr.uri )+
-'?enablejsapi=1&iv_load_policy=3&showinfo=0&modestbranding=1&disablekb=1&rel=0&wmode=opaque"\n        frameborder="0">\n    </iframe>\n</div>\n<div class="play-button"></div>\n<div class="ipad-cover"> pause video to return to Zeega </div>\n<div class="controls-inline"></div>\n\n';
+'?enablejsapi=1&iv_load_policy=3&showinfo=0&controls=0&modestbranding=1&disablekb=1&rel=0&wmode=opaque"\n        frameborder="0">\n    </iframe>\n</div>\n<div class="play-button"></div>\n<div class="ipad-cover"> pause video to return to Zeega </div>\n<div class="controls-inline"></div>\n\n';
 }
 return __p;
 };
@@ -35137,13 +35137,16 @@ function( Zeega, LayerModel, Visual ) {
 
         onStateChange: function(e){
             if(e.data == 2 || e.data == 5){
+                this.model.status.get("project").play();
                 this.$(".youtube-player").removeClass("active");
                 this.$(".play-button").fadeIn("fast");
                 if( /iPad/i.test(navigator.userAgent) ) {
                     this.$(".ipad-cover").removeClass("visible");
                 }
-            } else if (e.data == 1){
-
+            } else if (e.data == 1 ){
+                this.$(".play-button").fadeOut("fast");
+                this.$(".youtube-player").addClass("active");
+                this.ytPlayer.playVideo();
                 if( /iPad/i.test(navigator.userAgent) ) {
                     this.$(".ipad-cover").addClass("visible");
                 }
@@ -35151,6 +35154,8 @@ function( Zeega, LayerModel, Visual ) {
         },
 
         onApiReady: function(){
+
+
 
             var onPlayerReady = jQuery.proxy( this.onPlayerReady, this),
                 onStateChange = jQuery.proxy( this.onStateChange, this);
@@ -35169,6 +35174,7 @@ function( Zeega, LayerModel, Visual ) {
         },
 
         playVideo: function(){
+            this.model.status.get("project").suspend();
             this.$(".play-button").fadeOut("fast");
             this.$(".youtube-player").addClass("active");
             this.ytPlayer.playVideo();
