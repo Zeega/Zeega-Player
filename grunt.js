@@ -49,7 +49,7 @@ module.exports = function(grunt) {
         jst: {
             "dist/debug/templates.js": [
                 "app/templates/**/*.html",
-                "app/zeega-parser/plugins/**/*.html"
+                "app/zeega-parser/plugins/layers/**/*.html"
             ]
         },
 
@@ -64,17 +64,6 @@ module.exports = function(grunt) {
         handlebars: {
             "dist/debug/templates.js": ["app/templates/**/*.html"]
         },
-
-        // This task uses the MinCSS Node.js project to take all your CSS files in
-        // order and concatenate them into a single CSS file named index.css.  It
-        // also minifies all the CSS as well.  This is named index.css, because we
-        // only want to load one stylesheet in index.html.
-        mincss: {
-            "dist/release/css/zeega.css": [
-                "dist/debug/css/zeega.css"
-            ]
-        },
-
 
         // Takes the built require.js file and minifies it for filesize benefits.
         min: {
@@ -183,8 +172,19 @@ module.exports = function(grunt) {
                 files: {
                     'assets/css/less/_combined-layers.less' : 'assets/css/less/layers/*.less',
                     'assets/css/zeega.css' : 'assets/css/less/_all.less'
+
                 }
             }
+        },
+
+        // This task uses the MinCSS Node.js project to take all your CSS files in
+        // order and concatenate them into a single CSS file named index.css.  It
+        // also minifies all the CSS as well.  This is named index.css, because we
+        // only want to load one stylesheet in index.html.
+        mincss: {
+            "dist/release/css/zeega.css": [
+                "dist/debug/css/zeega.css"
+            ]
         },
 
         copy: {
@@ -223,7 +223,7 @@ module.exports = function(grunt) {
     // dist/debug/templates.js, compile all the application code into
     // dist/debug/require.js, and then concatenate the require/define shim
     // almond.js and dist/debug/templates.js into the require.js file.
-    grunt.registerTask("debug", "clean copy:debug lint jst requirejs concat");
+    grunt.registerTask("debug", "clean copy:debug less lint jst requirejs concat");
 
     // The release task will run the debug tasks and then minify the
     // dist/debug/require.js file and CSS files.

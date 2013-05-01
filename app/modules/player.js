@@ -114,6 +114,16 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
             layerOptions: {},
 
             /**
+            Sets the player to operate in a mobile browser environment
+
+            @property mobile
+            @type Boolean
+            @default false
+            **/
+
+            mobile: false,
+
+            /**
             number
 
             @property layers
@@ -263,7 +273,9 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
 
         _mergeAttributes: function( attributes ) {
             var attr = _.pick( attributes, _.keys( this.defaults ) );
+
             this.set( attr, { silent: true });
+            app.attributes = this.toJSON();
         },
 
         _load: function( attributes ) {

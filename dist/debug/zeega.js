@@ -39,76 +39,6 @@ __p+='<div class=\'ZEEGA-player-window\'></div>';
 return __p;
 };
 
-this["JST"]["app/zeega-parser/plugins/controls/av/av.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='<div class="control-name">media controls</div>\n<a href="#" class="playpause"><i class="icon-play icon-white"></i></a>\n<div class="av-slider"></div>\n';
-}
-return __p;
-};
-
-this["JST"]["app/zeega-parser/plugins/controls/checkbox/checkbox.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='<div class="control-name">'+
-( title )+
-'</div>\n<div class="roundedOne">\n    <input type="checkbox" value="None" id="roundedOne" name="check" />\n    <label for="roundedOne"></label>\n</div>';
-}
-return __p;
-};
-
-this["JST"]["app/zeega-parser/plugins/controls/color/color.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='<div class="control-name">'+
-( _title )+
-'</div>\n<div class="color-selector">\n    <input class="simple_color" value="'+
-( attr[ _propertyName ] )+
-'"/>\n</div>';
-}
-return __p;
-};
-
-this["JST"]["app/zeega-parser/plugins/controls/linkimage/linkimage.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='<div class="control-name">type</div>\n<select class="link-image-select">\n    <option value="arrow_up">Up Arrow</option>\n    <option value="arrow_down">Down Arrow</option>\n    <option value="arrow_left">Left Arrow</option>\n    <option value="arrow_right">Right Arrow</option>\n    <option value="default">Glowing Rectangle</option>\n</select>';
-}
-return __p;
-};
-
-this["JST"]["app/zeega-parser/plugins/controls/linkto/linkto.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='<div class="control-name">link to</div>\n<div class="control-frame-thumb" style="\n    background: url('+
-( thumbnail_url )+
-') no-repeat center center; \n    -webkit-background-size: cover;\n    background-size: cover;\n">\n    <a href="#"></a>\n</div>';
-}
-return __p;
-};
-
-this["JST"]["app/zeega-parser/plugins/controls/opacity/opacity.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='<div class="hover-icon">\n    <i class="icon-eye-open id-icon icon-white"></i>\n    <input type="text" class="text-input" value="'+
-( Math.floor( attr.opacity * 100 ) )+
-'">\n    <div class="hidden-controls">\n        <div class="opacity-slider"></div>\n    </div>\n</div>';
-}
-return __p;
-};
-
-this["JST"]["app/zeega-parser/plugins/controls/slider/slider.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='<div class="hover-icon">\n    <div class="control-name">'+
-( title )+
-'</div>\n    <input type="text" class="text-input" value="'+
-( Math.floor( attr[ _propertyName ] * 100 ) )+
-'">\n    <div class="hidden-controls">\n        <div class="control-slider"></div>\n    </div>\n</div>';
-}
-return __p;
-};
-
 this["JST"]["app/zeega-parser/plugins/layers/audio/audio-flash.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
@@ -31880,6 +31810,7 @@ function( Backbone, jquery, Spinner ) {
         // The root path to run the application.
         root: "/",
 
+        attributes: {},
         parserPath: "app/zeega-parser/",
 
         gmapAPI: "waiting",
@@ -35048,17 +34979,13 @@ function( Zeega, LayerModel, Visual ) {
 
         template: "youtube/youtube",
         ignoreFirst: true,
-        init: function(){
-            if( /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent) ) {
-                this.model.set("browserType","mobile");
-            } else if( /iPad/i.test(navigator.userAgent) ) {
-                this.model.set("browserType","ipad");
-            } else {
-                this.model.set("browserType","desktop");
-            }
-        },
         afterRender: function(){
-            this.$(".youtube-player").addClass( this.model.get("browserType") );
+            if( /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent) ) {
+                this.$(".youtube-player").addClass( "mobile" );
+            } else if( /iPad/i.test(navigator.userAgent) ) {
+                this.$(".youtube-player").addClass( "ipad" );
+            }
+
             this.ytInit();
         },
         events: {
@@ -35095,7 +35022,9 @@ function( Zeega, LayerModel, Visual ) {
                 if( /iPad/i.test(navigator.userAgent) ) {
                     this.$(".ipad-cover").removeClass("visible");
                 }
-                this.model.status.get("project").play();
+                if( Zeega.mode == "player"){
+                    this.model.status.get("project").play();
+                }
                 this.$(".youtube-player").removeClass("active");
                 this.$(".play-button").fadeIn("fast");
                 
@@ -35131,7 +35060,10 @@ function( Zeega, LayerModel, Visual ) {
         },
 
         playVideo: function(){
-            this.model.status.get("project").suspend();
+            if( Zeega.mode == "player"){
+                this.model.status.get("project").suspend();
+            }
+
             this.$(".play-button").fadeOut("fast");
             this.$(".youtube-player").addClass("active");
             this.ytPlayer.playVideo();
@@ -37321,6 +37253,16 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
             layerOptions: {},
 
             /**
+            Sets the player to operate in a mobile browser environment
+
+            @property mobile
+            @type Boolean
+            @default false
+            **/
+
+            mobile: false,
+
+            /**
             number
 
             @property layers
@@ -37470,7 +37412,9 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
 
         _mergeAttributes: function( attributes ) {
             var attr = _.pick( attributes, _.keys( this.defaults ) );
+
             this.set( attr, { silent: true });
+            app.attributes = this.toJSON();
         },
 
         _load: function( attributes ) {
