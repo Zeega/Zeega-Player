@@ -49,7 +49,7 @@ module.exports = function(grunt) {
         jst: {
             "dist/debug/templates.js": [
                 "app/templates/**/*.html",
-                "app/zeega-parser/plugins/**/*.html"
+                "app/zeega-parser/plugins/layers/**/*.html"
             ]
         },
 
