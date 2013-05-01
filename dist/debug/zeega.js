@@ -34820,10 +34820,24 @@ function( app, _Layer, Visual, TextModal ) {
         },
 
         moveOnStage: function() {
+            var css = {};
+
             if ( app.attributes.mobile ) {
-                this.$el.css({
+
+                if ( this.getAttr("mobileTextPosition") == "middle" ) {
+                   var heightPercent = this.$el.height() / window.innerHeight; // middle
+                   
+                   css.top = (50 - heightPercent * 100 / 2) + "%";
+                } else if ( this.getAttr("mobileTextPosition") == "top" ) {
+                    css.top = "30px"; // top
+                } else {
+                    // bottom
+                    css.top = "auto";
+                    css.bottom = "30px";
+                }
+
+                _.extend( css, {
                     width: (window.innerWidth - 60 ) + "px",
-                    top: "calc(50% - " + this.$el.height() / 2 + "px )",
                     left: 0,
                     right: 0,
                     margin: "auto",
@@ -34835,6 +34849,8 @@ function( app, _Layer, Visual, TextModal ) {
                     textAlign: this.model.getAttr("textAlign"),
                     lineHeight: this.model.getAttr("lineHeight") + "em"
                 });
+
+                this.$el.css(css );
             } else {
                 console.log("APPLY WRONG")
                 this.$el.css({
@@ -34848,7 +34864,7 @@ function( app, _Layer, Visual, TextModal ) {
         updateStyle: function() {
             this.$(".visual-target").text( this.model.getAttr("content") );
 
-            this.$(".visual-target").css({
+            this.$el.css({
                 color: this.model.get("attr").color,
                 fontWeight: this.model.getAttr("bold") ? "bold" : "normal",
                 fontStyle: this.model.getAttr("italic") ? "italic" : "normal",
