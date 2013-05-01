@@ -109,14 +109,6 @@ __p+='<div class="hover-icon">\n    <div class="control-name">'+
 return __p;
 };
 
-this["JST"]["app/zeega-parser/plugins/controls/textbar/textbar.html"] = function(obj){
-var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
-with(obj||{}){
-__p+='<div class="control-name">text controls</div>\n\n<a data-action="bold" class="textbar-btn" href="#" >\n    <i class="icon-bold"></i>\n</a>\n<a data-action="italic" class="textbar-btn" href="#" >\n    <i class="icon-italic"></i>\n</a>\n<a data-action="clear" class="textbar-btn" href="#" >\n    <i class="icon-ban-circle"></i>\n</a>\n\n<div class="font-chooser control">\n    <select class="font-list" style=""></select>\n    <select class="size-list" style="">\n        <option value="100">8</option>\n        <option value="125">10</option>\n        <option value="150">12</option>\n        <option value="175">14</option>\n        <option value="200">18</option>\n        <option value="250">24</option>\n        <option value="375">36</option>\n        <option value="500">48</option>\n        <option value="800">72</option>\n        <option value="1600">144</option>\n        <option value="2400">200</option>\n        <option value="3600">300</option>\n    </select>\n</div>';
-}
-return __p;
-};
-
 this["JST"]["app/zeega-parser/plugins/layers/audio/audio-flash.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
@@ -210,7 +202,7 @@ __p+='<div class="modal-content">\n    <div class="modal-title">Edit your text</
 ( attr.content )+
 '</textarea>\n\n        <div class="textarea-info">max 140 characters</div>\n\n        <div class="text-controls clearfix">\n            <div class="color-selector">\n                <input class="simple-color" value="'+
 ( attr.color )+
-'"/>\n            </div>\n            <a href="#" class="btnz btnz-light text-btn-bold"><i class="icon-bold"></i></a>\n            <a href="#" class="btnz btnz-light text-btn-italic"><i class="icon-italic"></i></a>\n            <a href="#" class="btnz btnz-light text-btn-align-left"><i class="icon-align-left"></i></a>\n            <a href="#" class="btnz btnz-light text-btn-align-center"><i class="icon-align-center"></i></a>\n            <a href="#" class="btnz btnz-light text-btn-align-right"><i class="icon-align-right"></i></a>\n\n            <select class="font-list" style=""></select>\n            <select class="size-list" style="">\n                <option value="100">8</option>\n                <option value="125">10</option>\n                <option value="150">12</option>\n                <option value="175">14</option>\n                <option value="200">18</option>\n                <option value="250">24</option>\n                <option value="375">36</option>\n                <option value="500">48</option>\n                <option value="800">72</option>\n                <option value="1600">144</option>\n                <option value="2400">200</option>\n                <option value="3600">300</option>\n            </select>\n            \n        </div>\n\n        <div class="sample-header">sample</div>\n        <div class="text-sample">'+
+'"/>\n            </div>\n            <a href="#" class="btnz btnz-light text-btn-bold"><i class="icon-bold"></i></a>\n            <a href="#" class="btnz btnz-light text-btn-italic"><i class="icon-italic"></i></a>\n            <a href="#" class="btnz btnz-light text-btn-align-left"><i class="icon-align-left"></i></a>\n            <a href="#" class="btnz btnz-light text-btn-align-center"><i class="icon-align-center"></i></a>\n            <a href="#" class="btnz btnz-light text-btn-align-right"><i class="icon-align-right"></i></a>\n\n            <select class="font-list" style=""></select>\n\n            <div class="control-module">\n                <div class="control-title">font size</div>\n                <select class="size-list" style="">\n                    <option value="100">8</option>\n                    <option value="125">10</option>\n                    <option value="150">12</option>\n                    <option value="175">14</option>\n                    <option value="200">18</option>\n                    <option value="250">24</option>\n                    <option value="375">36</option>\n                    <option value="500">48</option>\n                    <option value="800">72</option>\n                    <option value="1600">144</option>\n                    <option value="2400">200</option>\n                    <option value="3600">300</option>\n                </select>\n            </div>\n\n            <div class="control-module">\n                <div class="control-title">line height</div>\n                <select class="line-height-list">\n                    <option value="1">1</option>\n                    <option value="1.25">1.25</option>\n                    <option value="1.5">1.5</option>\n                    <option value="1.75">1.75</option>\n                    <option value="2">2</option>\n                </select>\n            </div>\n\n            <div class="control-module">\n                <div class="control-title">text-position</div>\n                <select class="text-position-list">\n                    <option value="top">top</option>\n                    <option value="middle">middle</option>\n                    <option value="bottom">bottom</option>\n                </select>\n            </div>\n            \n        </div>\n\n        <div class="sample-header">sample</div>\n        <div class="text-sample">'+
 ( attr.content )+
 '</div>\n\n        <div class="bottom-chooser clearfix">\n            <a href="#" class="submit btnz btnz-submit">OK</a>\n        </div>\n    </div>\n</div>\n';
 }
@@ -220,11 +212,15 @@ return __p;
 this["JST"]["app/zeega-parser/plugins/layers/youtube/youtube.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<div   class="youtube-player"  class="visual-target">\n    <iframe id="yt-player-'+
+__p+='<div   class="youtube-player"  class="visual-target">\n    \n\n    <iframe id="yt-player-'+
 ( id )+
 '" type="text/html" width="100%" height="100%"\n        src="http://www.youtube.com/embed/'+
 ( attr.uri )+
-'?enablejsapi=1&iv_load_policy=3&showinfo=0&controls=2&modestbranding=1&disablekb=1&rel=0&wmode=opaque"\n        frameborder="0">\n    </iframe>\n</div>\n<div class="play-button"></div>\n<div class="ipad-cover"> pause video to return to Zeega </div>\n<div class="controls-inline"></div>\n\n';
+'?enablejsapi=1&iv_load_policy=3&showinfo=0';
+ if ( !/iPad/i.test(navigator.userAgent) ) { 
+;__p+='&controls=0';
+ } 
+;__p+='&modestbranding=1&disablekb=1&rel=0&wmode=opaque"\n        frameborder="0">\n    </iframe>\n</div>\n<div class="play-button"></div>\n<div class="ipad-cover"> pause video to return to Zeega </div>\n<div class="controls-inline"></div>\n\n';
 }
 return __p;
 };
@@ -33039,145 +33035,6 @@ function( app, ControlView ) {
 
 });
 
-zeega.define('zeega_parser/plugins/controls/textbar/textbar',[
-    "app",
-    "zeega_parser/modules/control.view"
-],
-
-function( Zeega, ControlView ) {
-
-    return {
-
-        textbar: ControlView.extend({
-
-            type: "textbar",
-            template: "textbar/textbar",
-            propertyName: "textbar",
-
-            fontList: [
-                "Allerta Stencil",
-                "Antic",
-                "Archivo Black",
-                "Arial",
-                "Bilbo Swash Caps",
-                "Cabin Sketch",
-                "Codystar",
-                "Cutive Mono",
-                "Dosis",
-                "Ewert",
-                "Fascinate",
-                "Faster One",
-                "Finger Paint",
-                "Georgia",
-                "Great Vibes",
-                "Londrina Outline",
-                "Londrina Sketch",
-                "Monofett",
-                "Montserrat",
-                "New Rocker",
-                "Nobile",
-                "Nova Mono",
-                "Orbitron",
-                "Sorts Mill Goudy",
-                "Poiret One",
-                "Pontano Sans",
-                "Trocchi",
-                "Ultra",
-                "Verdana",
-                "Wendy One",
-                "Yellowtail"
-            ],
-
-            create: function() {
-                this.loadFonts();
-                this.setFont();
-                this.setSize();
-            },
-
-            destroy: function() {
-                this.$visualContainer.resizable( "destroy" );
-            },
-
-            loadFonts: function() {
-                this.$(".font-list").empty();
-                _.each( this.fontList, function( fontName ) {
-                    this.$(".font-list").append("<option value='" + fontName + "'>" + fontName + "</option>");
-                }, this );
-            },
-
-            setFont: function() {
-                this.$(".font-list option[value='" + this.getAttr("fontFamily") + "']").prop("selected", true );
-            },
-
-            setSize: function() {
-                this.$(".size-list option[value='" + this.getAttr("fontSize") + "']").prop("selected", true );
-            },
-
-            events: {
-                "click .textbar-btn": "btnClick",
-                "change .font-list": "changeFont",
-                "change .size-list": "changeSize"
-            },
-
-            changeFont: function( e ) {
-                this.$visual.find('.style-font-family').contents().unwrap();
-                this.$visual.wrapInner('<span class="style-font-family" style="font-family:'+ $(e.target).val() +'"/>');
-                this.update({ fontFamily : $(e.target).val() });
-                this.saveContent();
-            },
-
-            changeSize: function( e ) {
-                this.model.visual.$el.css( 'fontSize', $(e.target).val() + '%' );
-                this.update({ fontSize : $(e.target).val() });
-            },
-
-            btnClick: function( e ) {
-                var action = $( e.target ).closest("a").data("action");
-
-                this[ action ]();
-            },
-
-            bold: function() {
-                if( this.$visual.find('.style-bold').length ) {
-                    this.$visual.find('.style-bold').contents().unwrap();
-                } else {
-                    this.$visual.wrapInner('<span class="style-bold" style="font-weight:bold"/>');
-                }
-
-                this.saveContent();
-            },
-
-            italic: function() {
-                if( this.$visual.find('.style-italic').length ) {
-                    this.$visual.find('.style-italic').contents().unwrap();
-                } else {
-                    this.$visual.wrapInner('<span class="style-italic" style="font-style:italic"/>');
-                }
-
-                this.saveContent();
-            },
-
-            clear: function() {
-                var clean = this.getAttr("content").replace(/(<([^>]+)>)/ig, "");
-
-                this.$visual.text( clean );
-                this.saveContent();
-            },
-
-            saveContent: function() {
-                this.lazyUpdate({ content: this.$visual.html() });
-            },
-
-            lazyUpdate: _.debounce(function( value ) {
-                this.update(value);
-            }, 500 )
-
-        }) // end control
-    
-    }; // end return
-
-});
-
 /*
 
 plugin/layer manifest file
@@ -33194,8 +33051,7 @@ zeega.define('zeega_parser/plugins/controls/_all-controls',[
     "zeega_parser/plugins/controls/color/color",
     "zeega_parser/plugins/controls/linkto/linkto",
     "zeega_parser/plugins/controls/linkimage/linkimage",
-    "zeega_parser/plugins/controls/av/av",
-    "zeega_parser/plugins/controls/textbar/textbar"
+    "zeega_parser/plugins/controls/av/av"
 ],
 function(
     Position,
@@ -33205,8 +33061,7 @@ function(
     Color,
     LinkTo,
     LinkImage,
-    AV,
-    TextBar
+    AV
 ) {
 
     return _.extend(
@@ -33217,8 +33072,7 @@ function(
         Color,
         LinkTo,
         LinkImage,
-        AV,
-        TextBar
+        AV
     );
 });
 
@@ -33543,7 +33397,7 @@ function( app, Controls ) {
         applyVisualProperties: function() {
             var mediaTargetCSS = {},
                 containerCSS = {};
-
+console.log("vp", this.model.get("type"), this.visualProperties)
             _.each( this.visualProperties, function( prop ) {
                 if ( _.contains( this.containerAttributes, prop ) ) {
                     containerCSS[ prop ] = this.getAttr( prop ) + ( this.units[ prop ] ? this.units[ prop ] : "" );
@@ -34738,6 +34592,8 @@ function( app ) {
             $("#main").addClass("modal");
             this.loadFonts();
             this.loadSize();
+            this.loadTextPosition();
+            this.loadLineHeight();
             this.setButtonStates();
 
             this.updateSample();
@@ -34752,6 +34608,8 @@ function( app ) {
             "keypress textarea": "onKeypress",
             "change .size-list": "onChangeSize",
             "change .font-list": "onChangeFont",
+            "change .line-height-list": "onLineHeight",
+            "change .text-position-list": "onTextPosition",
             "click .text-btn-align-left": "toggleAlignLeft",
             "click .text-btn-align-center": "toggleAlignCenter",
             "click .text-btn-align-right": "toggleAlignRight"
@@ -34764,12 +34622,21 @@ function( app ) {
 
         onChangeSize: function( e ) {
             this.model.setAttr({ fontSize: $( e.target ).val() });
-
             this.model.saveAttr({ fontSize: $( e.target ).val() });
         },
 
         onChangeFont: function( e ) {
             this.model.saveAttr({ fontFamily: $( e.target ).val() });
+            this.updateSample();
+        },
+
+        onTextPosition: function( e ) {
+            this.model.saveAttr({ mobileTextPosition: $( e.target ).val() });
+            this.updateSample();
+        },
+
+        onLineHeight: function( e ) {
+            this.model.saveAttr({ lineHeight: $( e.target ).val() });
             this.updateSample();
         },
 
@@ -34837,6 +34704,14 @@ function( app ) {
 
         loadSize: function() {
             this.$(".size-list").val( this.model.getAttr("fontSize") );
+        },
+
+        loadTextPosition: function() {
+            this.$(".text-position-list").val( this.model.getAttr("mobileTextPosition") );
+        },
+
+        loadLineHeight: function() {
+            this.$(".line-height-list").val( this.model.getAttr("lineHeight") );
         },
 
         setButtonStates: function() {
@@ -34910,19 +34785,21 @@ function( app, _Layer, Visual, TextModal ) {
             citation: false,
             color: "#FFF",
             content: "text",
-            fontSize: 200,
+            fontSize: 100,
             fontFamily: "Archivo Black",
             default_controls: true,
-            left: 30,
+            left: 12.5,
             opacity: 1,
             title: "Text Layer",
             top: 40,
-            width: 25,
+            width: 75,
             dissolve: true,
 
             bold: false,
             italic: false,
-            textAlign: "left"
+            textAlign: "left",
+            lineHeight: 1,
+            mobileTextPosition: "middle" // top, middle, bottom
         },
 
         controls: [
@@ -34988,11 +34865,21 @@ function( app, _Layer, Visual, TextModal ) {
 
         template: "text_v2/text-v2",
 
+        init: function() {
+            console.log("text", app.attributes)
+            // if ( app.attributes.mobile ) {
+            //     this.visualProperties = [
+            //         "opacity"
+            //     ]
+            // }
+        },
+
         visualProperties: [
             "top",
             "left",
             "width",
-            "opacity"
+            "opacity",
+            "lineHeight"
         ],
 
         serialize: function() {
@@ -35001,18 +34888,78 @@ function( app, _Layer, Visual, TextModal ) {
 
         saveContent: null,
 
-        updateStyle: function() {
-            this.$(".visual-target").text( this.model.getAttr("content") );
-            
-            this.$el.css({
+        applyStyles: function() {
+            if ( app.attributes.mobile ) {
+                this.$el.css({
+                    width: (window.innerWidth - 60 ) + "px",
+                    left: 0,
+                    right: 0,
+                    margin: "auto"
+                });
+            } else {
+                this.$el.css({
+                    left: this.getAttr("left") + "%",
+                    width: this.getAttr("width") + "%"
+                });
+            }
+        },
+
+        moveOnStage: function() {
+            var css = {};
+
+            if ( app.attributes.mobile ) {
+
+                css.position = "fixed";
+                if ( this.getAttr("mobileTextPosition") == "middle" ) {
+                   var heightPercent = this.$el.height() / window.innerHeight; // middle
+                   
+                   css.top = (50 - heightPercent * 100 / 2) + "%";
+
+                } else if ( this.getAttr("mobileTextPosition") == "top" ) {
+                    css.top = "30px"; // top
+                } else {
+                    // bottom
+                    css.top = "auto";
+                    css.bottom = "30px";
+                }
+
+                _.extend( css, {
+                    width: "90%",
+                    left: 0,
+                    right: 0,
+                    margin: "auto",
                     color: this.model.get("attr").color,
                     fontWeight: this.model.getAttr("bold") ? "bold" : "normal",
                     fontStyle: this.model.getAttr("italic") ? "italic" : "normal",
                     fontFamily: this.model.getAttr("fontFamily"),
                     fontSize: this.model.getAttr("fontSize") + "%",
-                    textAlign: this.model.getAttr("textAlign")
+                    textAlign: this.model.getAttr("textAlign"),
+                    lineHeight: this.model.getAttr("lineHeight") + "em"
                 });
-                
+
+                this.$el.css(css );
+            } else {
+                console.log("APPLY WRONG")
+                this.$el.css({
+                    top: this.getAttr("top") + "%",
+                    left: this.getAttr("left") + "%"
+                });
+            }
+
+        },
+
+        updateStyle: function() {
+            this.$(".visual-target").text( this.model.getAttr("content") );
+
+            this.$el.css({
+                color: this.model.get("attr").color,
+                fontWeight: this.model.getAttr("bold") ? "bold" : "normal",
+                fontStyle: this.model.getAttr("italic") ? "italic" : "normal",
+                fontFamily: this.model.getAttr("fontFamily"),
+                fontSize: this.model.getAttr("fontSize") + "%",
+                textAlign: this.model.getAttr("textAlign"),
+                lineHeight: this.model.getAttr("lineHeight") + "em"
+            });
         },
 
         afterEditorRender: function() {
@@ -35021,7 +34968,7 @@ function( app, _Layer, Visual, TextModal ) {
                 this.textModal = new TextModal({ model: this.model });
             }
 
-            this.$el.css({
+            this.$(".visual-target").css({
                 color: this.model.get("attr").color,
                 fontSize: this.model.get("attr").fontSize + "%",
                 fontFamily: this.model.get("attr").fontFamily
@@ -35100,14 +35047,18 @@ function( Zeega, LayerModel, Visual ) {
     Layer.Youtube.Visual = Visual.extend({
 
         template: "youtube/youtube",
-        afterRender: function(){
+        ignoreFirst: true,
+        init: function(){
             if( /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent) ) {
-                this.$(".youtube-player").addClass("mobile");
+                this.model.set("browserType","mobile");
             } else if( /iPad/i.test(navigator.userAgent) ) {
-                this.$(".youtube-player").addClass("ipad");
+                this.model.set("browserType","ipad");
+            } else {
+                this.model.set("browserType","desktop");
             }
-
-
+        },
+        afterRender: function(){
+            this.$(".youtube-player").addClass( this.model.get("browserType") );
             this.ytInit();
         },
         events: {
@@ -35136,18 +35087,23 @@ function( Zeega, LayerModel, Visual ) {
         },
 
         onStateChange: function(e){
-            if(e.data == 2 || e.data == 5){
-                this.model.status.get("project").play();
-                this.$(".youtube-player").removeClass("active");
-                this.$(".play-button").fadeIn("fast");
+            if( /iPad/i.test(navigator.userAgent) && e.data ==2 && this.ignoreFirst ) {
+                this.ignoreFirst = false;
+                this.ytPlayer.playVideo();
+            }
+            else if(e.data == 2 || e.data == 5){
                 if( /iPad/i.test(navigator.userAgent) ) {
                     this.$(".ipad-cover").removeClass("visible");
                 }
+                this.model.status.get("project").play();
+                this.$(".youtube-player").removeClass("active");
+                this.$(".play-button").fadeIn("fast");
+                
             } else if (e.data == 1 ){
                 
                 this.$(".play-button").fadeOut("fast");
                 this.$(".youtube-player").addClass("active");
-                this.ytPlayer.playVideo();
+               
                 if( /iPad/i.test(navigator.userAgent) ) {
                     this.$(".ipad-cover").addClass("visible");
                 }
@@ -35179,6 +35135,7 @@ function( Zeega, LayerModel, Visual ) {
             this.$(".play-button").fadeOut("fast");
             this.$(".youtube-player").addClass("active");
             this.ytPlayer.playVideo();
+            window.ytPlayer = this.ytPlayer;
         },
 
         onExit: function(){

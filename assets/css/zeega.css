@@ -856,7 +856,7 @@
   opacity: 1;
 }
 .youtube-player {
-  position: absolue;
+  position: absolute;
   width: 100%;
   height: 100%;
   top: -1000%;
@@ -874,7 +874,6 @@
   opacity: 1;
 }
 .youtube-player.mobile {
-  position: absolute;
   width: 16%;
   height: 16%;
   top: 42%;
