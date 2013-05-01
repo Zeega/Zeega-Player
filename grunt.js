@@ -171,7 +171,7 @@ module.exports = function(grunt) {
             main: {
                 files: {
                     //'assets/css/less/_combined-layers.less' : 'assets/css/less/layers/*.less',
-                    "assets/css/less/_combined-layers.less": "app/zeega-parser/plugins/**/*.less",
+                    "assets/css/less/_combined-layers.less": "app/zeega-parser/plugins/layers/**/*.less",
                     "assets/css/zeega.css": "assets/css/less/**/*.less"
                 }
             }
@@ -223,7 +223,7 @@ module.exports = function(grunt) {
     // dist/debug/templates.js, compile all the application code into
     // dist/debug/require.js, and then concatenate the require/define shim
     // almond.js and dist/debug/templates.js into the require.js file.
-    grunt.registerTask("debug", "clean copy:debug lint jst requirejs concat");
+    grunt.registerTask("debug", "clean copy:debug less lint jst requirejs concat");
 
     // The release task will run the debug tasks and then minify the
     // dist/debug/require.js file and CSS files.
