@@ -224,7 +224,7 @@ __p+='<div   class="youtube-player"  class="visual-target">\n    <iframe id="yt-
 ( id )+
 '" type="text/html" width="100%" height="100%"\n        src="http://www.youtube.com/embed/'+
 ( attr.uri )+
-'?enablejsapi=1&iv_load_policy=3&showinfo=0&controls=0&modestbranding=1&disablekb=1&rel=0&wmode=opaque"\n        frameborder="0">\n    </iframe>\n</div>\n<div class="play-button"></div>\n<div class="ipad-cover"> pause video to return to Zeega </div>\n<div class="controls-inline"></div>\n\n';
+'?enablejsapi=1&iv_load_policy=3&showinfo=0&controls=2&modestbranding=1&disablekb=1&rel=0&wmode=opaque"\n        frameborder="0">\n    </iframe>\n</div>\n<div class="play-button"></div>\n<div class="ipad-cover"> pause video to return to Zeega </div>\n<div class="controls-inline"></div>\n\n';
 }
 return __p;
 };
@@ -35144,6 +35144,7 @@ function( Zeega, LayerModel, Visual ) {
                     this.$(".ipad-cover").removeClass("visible");
                 }
             } else if (e.data == 1 ){
+                
                 this.$(".play-button").fadeOut("fast");
                 this.$(".youtube-player").addClass("active");
                 this.ytPlayer.playVideo();
