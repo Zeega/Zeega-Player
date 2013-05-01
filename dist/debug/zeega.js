@@ -34824,10 +34824,12 @@ function( app, _Layer, Visual, TextModal ) {
 
             if ( app.attributes.mobile ) {
 
+                css.position = "fixed";
                 if ( this.getAttr("mobileTextPosition") == "middle" ) {
                    var heightPercent = this.$el.height() / window.innerHeight; // middle
                    
                    css.top = (50 - heightPercent * 100 / 2) + "%";
+
                 } else if ( this.getAttr("mobileTextPosition") == "top" ) {
                     css.top = "30px"; // top
                 } else {
@@ -34837,7 +34839,7 @@ function( app, _Layer, Visual, TextModal ) {
                 }
 
                 _.extend( css, {
-                    width: (window.innerWidth - 60 ) + "px",
+                    width: "90%",
                     left: 0,
                     right: 0,
                     margin: "auto",
