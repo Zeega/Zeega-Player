@@ -820,6 +820,7 @@
   background-size: cover;
 }
 .play-button {
+  curoser: pointer;
   position: absolute;
   width: 16%;
   height: 16%;
@@ -830,6 +831,10 @@
   -moz-background-size: 100%;
   -o-background-size: 100%;
   background-size: 100%;
+  opacity: 0.8;
+}
+.play-button:hover {
+  opacity: 1;
 }
 .ipad-cover {
   position: absolute;
@@ -851,12 +856,15 @@
   opacity: 1;
 }
 .youtube-player {
-  position: absolute;
+  position: absolue;
   width: 100%;
   height: 100%;
   top: -1000%;
   left: -1000%;
   opacity: 0.01;
+}
+.youtube-player.ipad {
+  position: fixed;
 }
 .youtube-player.active {
   top: 0;

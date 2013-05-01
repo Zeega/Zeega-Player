@@ -56,12 +56,16 @@
 }
 
 .youtube-player{
-    position: fixed;
+    position: absolue;
     width:100%;
     height:100%;
     top:-1000%;
     left:-1000%;
     opacity:0.01;
+
+    &.ipad {
+        position: fixed;
+    }
 
 
     &.active{
