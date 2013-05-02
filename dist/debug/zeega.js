@@ -33328,7 +33328,6 @@ function( app, Controls ) {
         applyVisualProperties: function() {
             var mediaTargetCSS = {},
                 containerCSS = {};
-console.log("vp", this.model.get("type"), this.visualProperties)
             _.each( this.visualProperties, function( prop ) {
                 if ( _.contains( this.containerAttributes, prop ) ) {
                     containerCSS[ prop ] = this.getAttr( prop ) + ( this.units[ prop ] ? this.units[ prop ] : "" );
@@ -34972,6 +34971,7 @@ function( Zeega, LayerModel, Visual ) {
             citation: true
         },
         controls: [
+        
         ]
     });
 
@@ -34980,7 +34980,7 @@ function( Zeega, LayerModel, Visual ) {
         template: "youtube/youtube",
         //ignoreFirst: true,
         afterRender: function(){
-            if( /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent) ) {
+            if( /iPhone|iPod/i.test(navigator.userAgent) ) {
                 this.$(".youtube-player").addClass( "mobile" );
             } else if( /iPad/i.test(navigator.userAgent) ) {
                 this.$(".youtube-player").addClass( "ipad" );
@@ -35005,8 +35005,7 @@ function( Zeega, LayerModel, Visual ) {
             } else {
                 this.onApiReady();
             }
-
-            
+ 
         },
 
         onPlayerReady: function(e){
@@ -35377,12 +35376,28 @@ function( app, Backbone, Layers, ThumbWorker ) {
                 type: item.get("layer_type"),
                 attr: _.extend({}, item.toJSON() )
             });
+            var oldYoutube = this.layers.find(function(layer){ return layer.get("type") == "Youtube"; });
+                
 
-            newLayer.order[ this.id ] = this.layers.length;
+            if ( newLayer.get("type") == "Youtube" ){
+                if( oldYoutube ){
+                    oldYoutube.trigger("remove");
+                    this.layers.remove( oldYoutube, { silent: true } );
+                }
+                newLayer.order [ this.id ] = 100;
+                newLayer.status = this.status;
+            } else{
+                if( oldYoutube ){
+                    oldYoutube.order[ this.id ] = 100;
+                }
+                newLayer.order[ this.id ] = this.layers.length;
+            }
+            
             newLayer.save().success(function( response ) {
-                this.layers.add( newLayer );
-                app.status.setCurrentLayer( newLayer );
-            }.bind( this ));
+                    this.layers.add( newLayer );
+                    app.status.setCurrentLayer( newLayer );
+                }.bind( this ));
+            
         },
 
         pasteLayer: function( layer ) {
