@@ -138,6 +138,22 @@ __p+='<div class="modal-content">\n    <div class="modal-title">Edit your text</
 }
 return __p;
 };
+
+this["JST"]["app/zeega-parser/plugins/layers/youtube/youtube.html"] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div   class="youtube-player"  class="visual-target">\n    \n\n    <iframe id="yt-player-'+
+( id )+
+'" type="text/html" width="100%" height="100%"\n        src="http://www.youtube.com/embed/'+
+( attr.uri )+
+'?enablejsapi=1&iv_load_policy=3&showinfo=0';
+ if ( !/iPad/i.test(navigator.userAgent) ) { 
+;__p+='&controls=0';
+ } 
+;__p+='&modestbranding=1&disablekb=1&rel=0&wmode=opaque"\n        frameborder="0">\n    </iframe>\n</div>\n<div class="play-button"></div>\n<div class="ipad-cover"> pause video to return to Zeega </div>\n<div class="controls-inline"></div>\n\n';
+}
+return __p;
+};
 (function () {
 var zeega;(function () { if (typeof zeega === 'undefined') {
 zeega = {};
@@ -33186,6 +33202,7 @@ function( app, Controls ) {
     return app.Backbone.LayoutView.extend({
 
         className: function() {
+            console.log("classname", this)
             return "visual-element visual-" + this.model.get("type").toLowerCase();
         },
 
@@ -33312,7 +33329,6 @@ function( app, Controls ) {
         applyVisualProperties: function() {
             var mediaTargetCSS = {},
                 containerCSS = {};
-console.log("vp", this.model.get("type"), this.visualProperties)
             _.each( this.visualProperties, function( prop ) {
                 if ( _.contains( this.containerAttributes, prop ) ) {
                     containerCSS[ prop ] = this.getAttr( prop ) + ( this.units[ prop ] ? this.units[ prop ] : "" );
@@ -34781,11 +34797,8 @@ function( app, _Layer, Visual, TextModal ) {
         template: "text_v2/text-v2",
 
         init: function() {
-            console.log("text", app.attributes)
             // if ( app.attributes.mobile ) {
-            //     this.visualProperties = [
-            //         "opacity"
-            //     ]
+            //     window.onorientationchange = function(){ this.moveOnStage(); }.bind(this);
             // }
         },
 
@@ -34823,23 +34836,28 @@ function( app, _Layer, Visual, TextModal ) {
             var css = {};
 
             if ( app.attributes.mobile ) {
+                var zHeight = $(".ZEEGA-player-window").height(),
+                    zWidth = $(".ZEEGA-player-window").width();
 
-                css.position = "fixed";
                 if ( this.getAttr("mobileTextPosition") == "middle" ) {
                    var heightPercent = this.$el.height() / window.innerHeight; // middle
                    
                    css.top = (50 - heightPercent * 100 / 2) + "%";
-
+                    
                 } else if ( this.getAttr("mobileTextPosition") == "top" ) {
-                    css.top = "30px"; // top
+                    var marginTop = (zHeight - window.innerHeight) / 2;
+
+                    css.top = (marginTop + 30) + "px";
                 } else {
                     // bottom
+                    var marginBottom = (zHeight - window.innerHeight) / 2;
+
                     css.top = "auto";
-                    css.bottom = "30px";
+                    css.bottom = (marginBottom + 30) + "px";
                 }
 
                 _.extend( css, {
-                    width: "90%",
+                    width: window.innerWidth - 30 + "px",
                     left: 0,
                     right: 0,
                     margin: "auto",
@@ -34927,6 +34945,143 @@ function( app, _Layer, Visual, TextModal ) {
   return Layer;
 });
 
+zeega.define('zeega_parser/plugins/layers/youtube/youtube',[
+    "app",
+    "zeega_parser/modules/layer.model",
+    "zeega_parser/modules/layer.visual.view"
+],
+
+function( Zeega, LayerModel, Visual ) {
+
+
+    window.onYouTubeIframeAPIReady = function() {
+        window.jQuery(".youtube-player").trigger("api-ready");
+    };
+
+    var Layer = Zeega.module();
+
+    Layer.Youtube = LayerModel.extend({
+
+        layerType: "Youtube",
+
+        attr: {
+            title: "Youtube Layer",
+            url: "none",
+            left: 0,
+            top: 0,
+            height: 100,
+            width: 100,
+            citation: true
+        },
+        controls: [
+        
+        ]
+    });
+
+    Layer.Youtube.Visual = Visual.extend({
+
+        template: "youtube/youtube",
+        //ignoreFirst: true,
+        afterRender: function(){
+            if( /iPhone|iPod/i.test(navigator.userAgent) ) {
+                this.$(".youtube-player").addClass( "mobile" );
+            } else if( /iPad/i.test(navigator.userAgent) ) {
+                this.$(".youtube-player").addClass( "ipad" );
+            }
+
+            this.ytInit();
+        },
+        events: {
+            "click .play-button": "playVideo",
+            "tap .play-button": "playVideo"
+
+        },
+
+        ytInit: function(){
+            
+            window.jQuery(this.$(".youtube-player" )).on("api-ready", jQuery.proxy( this.onApiReady, this) );
+            if ( _.isUndefined( window.YT ) ){
+                var tag = document.createElement('script');
+                tag.src = "//www.youtube.com/iframe_api";
+                var firstScriptTag = document.getElementsByTagName('script')[0];
+                firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+            } else {
+                this.onApiReady();
+            }
+ 
+        },
+
+        onPlayerReady: function(e){
+            this.model.trigger( "visual_ready", this.model.id );
+        },
+
+        onStateChange: function(e){
+            // if( /iPad/i.test(navigator.userAgent) && e.data ==2 && this.ignoreFirst ) {
+            //     this.ignoreFirst = false;
+            //     this.ytPlayer.playVideo();
+            // }
+            // else
+
+            if (e.data == 2 || e.data == 5){
+                if( /iPad/i.test(navigator.userAgent) ) {
+                    this.$(".ipad-cover").removeClass("visible");
+                }
+                if( Zeega.mode == "player"){
+                    this.model.status.get("project").play();
+                }
+                this.$(".youtube-player").removeClass("active");
+                this.$(".play-button").fadeIn("fast");
+                
+            } else if (e.data == 1 ){
+                
+                this.$(".play-button").fadeOut("fast");
+                this.$(".youtube-player").addClass("active");
+               
+                if( /iPad/i.test(navigator.userAgent) ) {
+                    this.$(".ipad-cover").addClass("visible");
+                }
+            }
+        },
+
+        onApiReady: function(){
+
+
+
+            var onPlayerReady = jQuery.proxy( this.onPlayerReady, this),
+                onStateChange = jQuery.proxy( this.onStateChange, this);
+
+
+            this.$("#yt-player-" + this.model.id).attr("id", "yt-player-" + this.model.id + "-" + this.model.cid );
+
+            this.ytPlayer = new YT.Player("yt-player-" + this.model.id + "-" + this.model.cid, {
+                    events:{
+                        'onReady': onPlayerReady,
+                        'onStateChange': onStateChange
+                    }
+                });
+            
+            
+        },
+
+        playVideo: function(){
+            if( Zeega.mode == "player"){
+                this.model.status.get("project").suspend();
+            }
+
+            this.$(".play-button").fadeOut("fast");
+            this.$(".youtube-player").addClass("active");
+            this.ytPlayer.playVideo();
+            window.ytPlayer = this.ytPlayer;
+        },
+
+        onExit: function(){
+            this.ytPlayer.pauseVideo();
+        }
+
+    });
+
+    return Layer;
+});
 /*
 
 plugin/layer manifest file
@@ -34941,7 +35096,8 @@ zeega.define('zeega_parser/plugins/layers/_all',[
     "zeega_parser/plugins/layers/audio/audio",
     "zeega_parser/plugins/layers/rectangle/rectangle",
     "zeega_parser/plugins/layers/text/text",
-    "zeega_parser/plugins/layers/text_v2/text"
+    "zeega_parser/plugins/layers/text_v2/text",
+    "zeega_parser/plugins/layers/youtube/youtube"
 ],
 function(
     image,
@@ -34949,7 +35105,8 @@ function(
     audio,
     rectangle,
     text,
-    textV2
+    textV2,
+    youtube
 ) {
     var Plugins = {};
     // extend the plugin object with all the layers
@@ -34960,7 +35117,8 @@ function(
         audio,
         rectangle,
         text,
-        textV2
+        textV2,
+        youtube
     );
 });
 
@@ -35221,12 +35379,28 @@ function( app, Backbone, Layers, ThumbWorker ) {
                 type: item.get("layer_type"),
                 attr: _.extend({}, item.toJSON() )
             });
+            var oldYoutube = this.layers.find(function(layer){ return layer.get("type") == "Youtube"; });
+                
 
-            newLayer.order[ this.id ] = this.layers.length;
+            if ( newLayer.get("type") == "Youtube" ){
+                if( oldYoutube ){
+                    oldYoutube.trigger("remove");
+                    this.layers.remove( oldYoutube, { silent: true } );
+                }
+                newLayer.order [ this.id ] = 100;
+                newLayer.status = this.status;
+            } else{
+                if( oldYoutube ){
+                    oldYoutube.order[ this.id ] = 100;
+                }
+                newLayer.order[ this.id ] = this.layers.length;
+            }
+            
             newLayer.save().success(function( response ) {
-                this.layers.add( newLayer );
-                app.status.setCurrentLayer( newLayer );
-            }.bind( this ));
+                    this.layers.add( newLayer );
+                    app.status.setCurrentLayer( newLayer );
+                }.bind( this ));
+            
         },
 
         pasteLayer: function( layer ) {

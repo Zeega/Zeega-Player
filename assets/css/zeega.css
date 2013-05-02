@@ -444,6 +444,19 @@
 .text-modal .submit {
   float: right;
 }
+.visual-youtube {
+  width: 100%;
+  height: 100%;
+}
+.mobile-cover {
+  position: absolute;
+  width: 100%;
+  height: 60%;
+  color: rgba(255, 0, 0, 0.4);
+  top: 20%;
+  left: 0;
+  z-index: 5;
+}
 .ZEEGA-player {
   background-color: #000000;
   font-family: "Helvetica Neue", Helvetica, sans-serif;
@@ -989,6 +1002,19 @@
 }
 .text-modal .submit {
   float: right;
+}
+.visual-youtube {
+  width: 100%;
+  height: 100%;
+}
+.mobile-cover {
+  position: absolute;
+  width: 100%;
+  height: 60%;
+  color: rgba(255, 0, 0, 0.4);
+  top: 20%;
+  left: 0;
+  z-index: 5;
 }
 
 .ZEEGA-basic-controls a {
