@@ -266,6 +266,7 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
             this._mergeAttributes( attributes );
             this.relay = new Relay.Model();
             this.status = new Status.Model({ project: this });
+            app.status = this.status; // booooo
 
             this._setTarget();
             this._load( attributes );
@@ -424,12 +425,16 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
             var currentFrame = this.status.get("current_frame"),
                 startFrame = this.get("startFrame"),
                 isCurrentNull, isStartNull;
+
+            this.loadSoundtrack();
+
             if ( !this.ready ) {
                 this.render(); // render the player first!
             } else if ( this.state == "paused" || this.state == "suspended" ) {
                 this._fadeIn();
                 if ( currentFrame ) {
                     this.state = "playing";
+                    app.soundtrack.play();
                     this.status.emit( "play", this );
                     this.status.get("current_frame_model").play();
                 }
@@ -452,12 +457,20 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
             }
         },
 
+        loadSoundtrack: _.once(function() {
+            app.soundtrack.on("layer_ready", function() {
+                app.soundtrack.play();
+            });
+            app.soundtrack.render();
+        }),
+
         // if the player is playing, pause the project
         pause: function() {
             if ( this.state == "playing" ) {
                 this.state ="paused";
                 // pause each frame - layer
                 this.status.get("current_frame_model").pause();
+                app.soundtrack.pause();
                 // pause auto advance
                 this.status.emit("pause");
             }
