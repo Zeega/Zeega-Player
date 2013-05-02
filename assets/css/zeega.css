@@ -404,7 +404,8 @@
   font-size: 12px;
 }
 .text-modal .sample-header {
-  color: #aaa;
+  font-size: 12px;
+  color: #999;
 }
 .text-modal .text-sample {
   height: 1em;
@@ -438,7 +439,7 @@
   height: 25px !important;
   cursor: pointer;
   position: relative;
-  top: -4px;
+  top: 6px;
   border-radius: 2px;
 }
 .text-modal .submit {
@@ -963,7 +964,8 @@
   font-size: 12px;
 }
 .text-modal .sample-header {
-  color: #aaa;
+  font-size: 12px;
+  color: #999;
 }
 .text-modal .text-sample {
   height: 1em;
@@ -997,7 +999,7 @@
   height: 25px !important;
   cursor: pointer;
   position: relative;
-  top: -4px;
+  top: 6px;
   border-radius: 2px;
 }
 .text-modal .submit {
