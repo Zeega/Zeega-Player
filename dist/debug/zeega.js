@@ -35488,7 +35488,8 @@ function( app, Backbone, Layers, ThumbWorker ) {
                 commonLayers = this.get("common_layers")[ oldID ] || [];
                 // if the frame is "ready", then just render the layers
                 this.layers.each(function( layer ) {
-                    if ( !_.include(commonLayers, layer.id) ) {
+                    // disable existing soundtrack layers inside a frame !!!
+                    if ( !_.include(commonLayers, layer.id) && layer.get("type") != "Audio" ) {
                         layer.render();
                     }
                 });
@@ -35819,6 +35820,7 @@ function( app, SequenceModel, FrameCollection, LayerCollection, LayerModels ) {
                 layerModel.initVisual( LayerModels[ layer.type ] );
                 return layerModel;
             });
+
             layerCollection = new LayerCollection( classedLayers );
 
             this.each(function( sequence ) {
