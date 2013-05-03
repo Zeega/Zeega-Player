@@ -679,6 +679,9 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
                     sequence.frames.each(function( frame ) {
                         if ( frame ) {
                             // frame.destroy();
+                            if ( app.soundtrack ) {
+                                app.soundtrack.destroy();
+                            }
                             frame.layers.each(function( layer ) {
                                 layer.destroy();
                             });
