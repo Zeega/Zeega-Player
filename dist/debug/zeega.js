@@ -37429,9 +37429,9 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
                     } else {
                         app.soundtrack.on("layer_ready", function() {
                             app.soundtrack.play();
-                            app.soundtrack.render();
                         });
                     }
+                    app.soundtrack.render();
                 }
             });
 
