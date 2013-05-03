@@ -37423,14 +37423,16 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
 
         initialize: function( attributes ) {
             this.loadSoundtrack = _.once(function() {
-                this.loadSoundtrack = _.once(function() {
-                    if ( app.soundtrack ) {
+                if ( app.soundtrack ) {
+                    if ( app.soundtrack.state == "ready" ) {
+                        app.soundtrack.play();
+                    } else {
                         app.soundtrack.on("layer_ready", function() {
                             app.soundtrack.play();
+                            app.soundtrack.render();
                         });
-                        app.soundtrack.render();
                     }
-                });
+                }
             });
 
             this._mergeAttributes( attributes );
