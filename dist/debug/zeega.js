@@ -31812,6 +31812,7 @@ function( Backbone, jquery, Spinner ) {
 
         attributes: {},
         parserPath: "app/zeega-parser/",
+        hasSoundtrack: false,
 
         gmapAPI: "waiting",
         spinner: new Spinner({
@@ -35015,7 +35016,15 @@ function( Zeega, LayerModel, Visual ) {
         },
 
         onStateChange: function(e){
-            if( this.model.status.get("current_sequence_model").get("attr").soundtrack && /iPad/i.test(navigator.userAgent) && e.data ==2 && this.ignoreFirst ) {
+            var currentSequence;
+            if(this.model.status.get("current_sequence_model")){
+                currentSequence = this.model.status.get("current_sequence_model");
+            } else {
+                currentSequence = this.model.status.get("currentSequence");
+            }
+
+
+            if( currentSequence.get("attr").soundtrack && /iPad/i.test(navigator.userAgent) && e.data ==2 && this.ignoreFirst ) {
                 this.ignoreFirst = false;
                 this.ytPlayer.playVideo();
             } else if (e.data == 2 || e.data == 5){
@@ -35132,6 +35141,8 @@ function( app, Layers ) {
 
     return app.Backbone.Model.extend({
 
+        soundtrackModel: null,
+
         defaults: {
             advance_to: null,
             attr: {
@@ -35155,10 +35166,16 @@ function( app, Layers ) {
         lazySave: null,
 
         initialize: function() {
-
             this.lazySave = _.debounce(function() {
                 this.save();
             }.bind( this ), 1000 );
+        },
+
+        initSoundtrackModel: function( layers ) {
+            if ( this.get("attr").soundtrack ) {
+                this.soundtrackModel = app.soundtrack = layers.get( this.get("attr").soundtrack );
+                this.soundtrackModel.status = app.status;
+            }
         },
 
         onFrameSort: function() {
@@ -35479,7 +35496,8 @@ function( app, Backbone, Layers, ThumbWorker ) {
                 commonLayers = this.get("common_layers")[ oldID ] || [];
                 // if the frame is "ready", then just render the layers
                 this.layers.each(function( layer ) {
-                    if ( !_.include(commonLayers, layer.id) ) {
+                    // disable existing soundtrack layers inside a frame !!!
+                    if ( !_.include(commonLayers, layer.id) && layer.get("type") != "Audio" ) {
                         layer.render();
                     }
                 });
@@ -35810,6 +35828,7 @@ function( app, SequenceModel, FrameCollection, LayerCollection, LayerModels ) {
                 layerModel.initVisual( LayerModels[ layer.type ] );
                 return layerModel;
             });
+
             layerCollection = new LayerCollection( classedLayers );
 
             this.each(function( sequence ) {
@@ -35830,6 +35849,8 @@ function( app, SequenceModel, FrameCollection, LayerCollection, LayerModels ) {
                 sequence.frames.sequence = sequence;
                 sequence.frames.initLayers( layerCollection, options );
             });
+
+            this.at(0).initSoundtrackModel( layerCollection );
             // at this point, all frames should be loaded with layers and layer classes
         }
     });
@@ -36096,6 +36117,9 @@ function( app, SequenceCollection ) {
                 sequence.frames.each(function( frame ) {
                     layers = layers.concat( frame.layers.toJSON() );
                 });
+                if ( sequence.soundtrackModel ) {
+                    layers = layers.concat( [ sequence.soundtrackModel.toJSON() ] );
+                }
             });
 
             return _.extend({}, this.toJSON(), {
@@ -36138,7 +36162,6 @@ function( app, SequenceCollection ) {
         publishProject: function() {
 
             if ( this.get("date_updated") != this.get("date_published") || this.updated ) {
-                var mobile = this.validateMobile();
                 
                 this.updated = false;
                 this.once("sync", this.onProjectPublish, this);
@@ -36148,7 +36171,7 @@ function( app, SequenceCollection ) {
                 }
                 this.save({
                     publish_update: 1,
-                    mobile: mobile
+                    mobile: true
                 });
                 console.log("already published. published again");
             } else {
@@ -36158,48 +36181,6 @@ function( app, SequenceCollection ) {
 
         onProjectPublish: function( model, response ) {
             this.set({ publish_update: 0 });
-        },
-
-        validateMobile: function() {
-            var layers, validLayerTypes, maxAudioLayers, valid;
-            
-            layers = [];
-            validLayerTypes = ["Image", "Audio", "Text", "Link", "Rectangle"];
-            maxAudioLayers = 1;
-            maxFrames = null;
-            valid = true;
-
-
-            this.sequences.each(function( sequence ) {
-
-                if ( maxFrames !== null && ( maxFrames -= sequence.frames.length ) < 0 ) {
-                    valid = false;
-                    return false;
-                }
-
-                sequence.frames.each(function( frame ) {
-                    frame.layers.each(function( layer ) {
-
-                        var layerTypeValid = _.contains( validLayerTypes, layer.get("type") );
-
-                        if ( !layerTypeValid ) {
-                            valid = false;
-                            return false;
-                        }
-
-                        // dupe layer. ignore
-                        if ( !_.contains( layers, layer.id ) && layer.get("type") == "Audio" && maxFrames-- < 0 ) {
-                            layers.push( layer.id );
-                            valid = false;
-                            return false;
-                        } else if ( !_.contains( layers, layer.id ) && layer.get("type") == "Audio" ) {
-                            layers.push( layer.id );
-                        }
-                    });
-                });
-            });
-
-            return valid;
         }
 
     });
@@ -37444,6 +37425,7 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
             this._mergeAttributes( attributes );
             this.relay = new Relay.Model();
             this.status = new Status.Model({ project: this });
+            app.status = this.status; // booooo
 
             this._setTarget();
             this._load( attributes );
@@ -37602,12 +37584,16 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
             var currentFrame = this.status.get("current_frame"),
                 startFrame = this.get("startFrame"),
                 isCurrentNull, isStartNull;
+
+            this.loadSoundtrack();
+
             if ( !this.ready ) {
                 this.render(); // render the player first!
             } else if ( this.state == "paused" || this.state == "suspended" ) {
                 this._fadeIn();
                 if ( currentFrame ) {
                     this.state = "playing";
+                    app.soundtrack.play();
                     this.status.emit( "play", this );
                     this.status.get("current_frame_model").play();
                 }
@@ -37630,12 +37616,20 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
             }
         },
 
+        loadSoundtrack: _.once(function() {
+            app.soundtrack.on("layer_ready", function() {
+                app.soundtrack.play();
+            });
+            app.soundtrack.render();
+        }),
+
         // if the player is playing, pause the project
         pause: function() {
             if ( this.state == "playing" ) {
                 this.state ="paused";
                 // pause each frame - layer
                 this.status.get("current_frame_model").pause();
+                app.soundtrack.pause();
                 // pause auto advance
                 this.status.emit("pause");
             }
@@ -37827,7 +37821,7 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
                 this.project.sequences.each(function( sequence ) {
                     sequence.frames.each(function( frame ) {
                         if ( frame ) {
-                            frame.destroy();
+                            // frame.destroy();
                             frame.layers.each(function( layer ) {
                                 layer.destroy();
                             });

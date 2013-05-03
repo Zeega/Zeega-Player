@@ -16,6 +16,7 @@ function( Backbone, jquery, Spinner ) {
 
         attributes: {},
         parserPath: "app/zeega-parser/",
+        hasSoundtrack: false,
 
         gmapAPI: "waiting",
         spinner: new Spinner({
