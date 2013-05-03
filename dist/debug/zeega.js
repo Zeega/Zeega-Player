@@ -37604,7 +37604,10 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
                 this._fadeIn();
                 if ( currentFrame ) {
                     this.state = "playing";
-                    app.soundtrack.play();
+
+                    if ( app.soundtrack ) {
+                        app.soundtrack.play();
+                    }
                     this.status.emit( "play", this );
                     this.status.get("current_frame_model").play();
                 }
@@ -37635,7 +37638,9 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
                 this.state ="paused";
                 // pause each frame - layer
                 this.status.get("current_frame_model").pause();
-                app.soundtrack.pause();
+                if ( app.soundtrack ) {
+                    app.soundtrack.pause();
+                }
                 // pause auto advance
                 this.status.emit("pause");
             }
@@ -37646,6 +37651,9 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
                 this.state ="suspended";
                 // pause each frame - layer
                 this.status.get("current_frame_model").pause();
+                if ( app.soundtrack ) {
+                    app.soundtrack.pause();
+                }
                 // pause auto advance
                 this.status.emit("suspend");
             }
