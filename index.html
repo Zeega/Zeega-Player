@@ -40,8 +40,8 @@
         target: $("#main"),
 
         //url: "http://dev.zeega.com/joseph/web/api/projects/10442", // new sequence
-        // url: "http://dev.zeega.com/joseph/web/api/projects/10090",
-        url: "http://dev.zeega.com/joseph/web/api/projects/10442", // soundtrack
+        url: "http://dev.zeega.com/joseph/web/api/projects/10090",
+        // url: "http://dev.zeega.com/joseph/web/api/projects/10442", // soundtrack
         //url: "http://dev.zeega.com/joseph/web/api/projects/10474", // no soundtrack
 
         cover: true, //"vertical", // true/false || "vertical", "horizontal"
@@ -63,7 +63,7 @@
       });
 
     $('#button').click(function(){
-      console.log('project:', project.destroy() );
+      console.log('project:', project.getProjectData() );
       return false;
     });
 

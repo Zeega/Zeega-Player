@@ -409,11 +409,7 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
                             _this.cuePrev();
                             break;
                         case 39: // right arrow
-                            var adv = this.status.get("current_frame_model").get("attr").advance;
-                            
-                            if ( adv === 0 || adv === undefined ) {
-                                _this.cueNext();
-                            }
+                            _this.cueNext();
                             break;
                         case 32: // spacebar
                             _this.playPause();
@@ -474,6 +470,14 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
         },
 
         loadSoundtrack: null,
+
+        mute: function() {
+            // TODO
+        },
+
+        unMute: function() {
+            // TODO
+        },
 
         // if the player is playing, pause the project
         pause: function() {
@@ -544,6 +548,7 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
         },
 
         // mobile only hack
+        // TODO -- this blows -j
         mobileLoadAudioLayers: function() {
             this.project.sequences.each(function( sequence ) {
                 sequence.frames.each(function( frame ) {
@@ -586,6 +591,8 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
             }
         },
 
+
+        //*******  DEPRECATED  ********//
         // if a next sequence exists, then cue and play it
         cueNextSequence: function() {
             var nextSequenceID = this.status.get("current_sequence_model").get("advance_to");
@@ -595,6 +602,7 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
             }
         },
 
+        //*******  DEPRECATED  ********//
         // if a prev sequence exists, then cue and play it
         cuePrevSequence: function() {
             var seqHist = this.status.get("sequenceHistory"),
@@ -618,40 +626,9 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
             }
         },
 
-        // TODO: update this
-        // returns project metadata
+        // returns project data
         getProjectData: function() {
-            var frames = [],
-                layers = [];
-
-            this.project.sequences.each(function( sequence ) {
-                sequence.frames.each(function( frame ) {
-                    var l, f;
-
-                    l = frame.layers.toJSON();
-                    f = _.extend({},
-                        frame.toJSON(),
-                        { layers: l }
-                    );
-
-                    layers.push( l );
-                    frames.push( f );
-                });
-            });
-
-            layers = _.flatten( layers );
-            layers = _.uniq( layers, function( lay) {
-                return lay.id;
-            });
-
-            return _.extend({},
-                this.toJSON(),
-                {
-                    sequences: this.project.sequences.toJSON(),
-                    frames: frames,
-                    layers: layers
-                }
-            );
+            return this.project.getProjectJSON();
         },
 
         getFrameData: function() {
@@ -665,7 +642,8 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
             return false;
         },
 
-        // returns the frame structure for the project // not implemented
+        // TODO
+        // returns the frame structure for the project
         getProjectTree: function() {
             return false;
         },
