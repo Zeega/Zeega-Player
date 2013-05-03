@@ -36,7 +36,7 @@
         // debugEvents: "media_timeupdate",
         // target: "#main",
         // windowRatio: 16/9,
-        // target: $("#main"),
+        target: $("#main"),
 
         //url: "http://dev.zeega.com/joseph/web/api/projects/10442", // new sequence
         // url: "http://dev.zeega.com/joseph/web/api/projects/10090",
@@ -60,7 +60,7 @@
       });
 
     $('#button').click(function(){
-      console.log('project:', project.destroy() );
+      console.log('project:', project.project.getProjectJSON() );
       return false;
     });
 

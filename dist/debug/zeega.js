@@ -36109,6 +36109,9 @@ function( app, SequenceCollection ) {
                 sequence.frames.each(function( frame ) {
                     layers = layers.concat( frame.layers.toJSON() );
                 });
+                if ( sequence.soundtrackModel ) {
+                    layers = layers.concat( [ sequence.soundtrackModel.toJSON() ] );
+                }
             });
 
             return _.extend({}, this.toJSON(), {
