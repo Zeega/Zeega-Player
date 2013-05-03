@@ -150,7 +150,7 @@ __p+='<div   class="youtube-player"  class="visual-target">\n    \n\n    <iframe
  if ( !/iPad/i.test(navigator.userAgent) ) { 
 ;__p+='&controls=0';
  } 
-;__p+='&modestbranding=1&disablekb=1&rel=0&wmode=opaque"\n        frameborder="0">\n    </iframe>\n</div>\n<div class="play-button"></div>\n<div class="ipad-cover"> pause video to return to Zeega </div>\n<div class="controls-inline"></div>\n\n';
+;__p+='&modestbranding=1&disablekb=1&rel=0&wmode=opaque&origin=http://zeega.com"\n        frameborder="0">\n    </iframe>\n</div>\n<div class="play-button"></div>\n<div class="ipad-cover"> pause video to return to Zeega </div>\n<div class="controls-inline"></div>\n\n';
 }
 return __p;
 };
@@ -34983,6 +34983,7 @@ function( Zeega, LayerModel, Visual ) {
         template: "youtube/youtube",
         ignoreFirst: true,
         afterRender: function(){
+            
             if( /iPhone|iPod/i.test(navigator.userAgent) ) {
                 this.$(".youtube-player").addClass( "mobile" );
             } else if( /iPad/i.test(navigator.userAgent) ) {
@@ -34991,6 +34992,7 @@ function( Zeega, LayerModel, Visual ) {
 
             if (Zeega.mode == "editor" ){
                 this.$el.addClass("editor");
+                this.$el.css({"top": "46%", "left": "46%", "width": "16%", "height": "16%"});
             }
 
             this.ytInit();
@@ -35039,6 +35041,7 @@ function( Zeega, LayerModel, Visual ) {
                     this.model.status.get("project").play();
                 } else if (Zeega.mode == "editor" ){
                     this.$el.addClass("editor");
+                    this.$el.css({"top": "46%", "left": "46%", "width": "16%", "height": "16%"});
                 }
 
                 this.$(".youtube-player").removeClass("active");
@@ -35078,17 +35081,18 @@ function( Zeega, LayerModel, Visual ) {
         },
 
         playVideo: function(){
+
             if( Zeega.mode == "player"){
                 this.model.status.get("project").suspend();
             } else if (Zeega.mode == "editor" ){
                 this.$el.removeClass("editor");
+                this.$el.css({"top": "0", "left": "0", "width": "100%", "height": "100%"}, 1000);
             }
 
 
             this.$(".play-button").fadeOut("fast");
             this.$(".youtube-player").addClass("active");
             this.ytPlayer.playVideo();
-            window.ytPlayer = this.ytPlayer;
         },
 
         onExit: function(){

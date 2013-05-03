@@ -143,7 +143,7 @@ __p+='<div   class="youtube-player"  class="visual-target">\n    \n\n    <iframe
  if ( !/iPad/i.test(navigator.userAgent) ) { 
 ;__p+='&controls=0';
  } 
-;__p+='&modestbranding=1&disablekb=1&rel=0&wmode=opaque"\n        frameborder="0">\n    </iframe>\n</div>\n<div class="play-button"></div>\n<div class="ipad-cover"> pause video to return to Zeega </div>\n<div class="controls-inline"></div>\n\n';
+;__p+='&modestbranding=1&disablekb=1&rel=0&wmode=opaque&origin=http://zeega.com"\n        frameborder="0">\n    </iframe>\n</div>\n<div class="play-button"></div>\n<div class="ipad-cover"> pause video to return to Zeega </div>\n<div class="controls-inline"></div>\n\n';
 }
 return __p;
 };
