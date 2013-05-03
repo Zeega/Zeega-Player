@@ -662,7 +662,7 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
                 this.project.sequences.each(function( sequence ) {
                     sequence.frames.each(function( frame ) {
                         if ( frame ) {
-                            frame.destroy();
+                            // frame.destroy();
                             frame.layers.each(function( layer ) {
                                 layer.destroy();
                             });
