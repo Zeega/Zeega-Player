@@ -37422,6 +37422,14 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
         */
 
         initialize: function( attributes ) {
+            this.loadSoundtrack = _.once(function() {
+                console.log("loadSoundtrack")
+                app.soundtrack.on("layer_ready", function() {
+                    app.soundtrack.play();
+                });
+                app.soundtrack.render();
+            });
+
             this._mergeAttributes( attributes );
             this.relay = new Relay.Model();
             this.status = new Status.Model({ project: this });
@@ -37616,12 +37624,7 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
             }
         },
 
-        loadSoundtrack: _.once(function() {
-            app.soundtrack.on("layer_ready", function() {
-                app.soundtrack.play();
-            });
-            app.soundtrack.render();
-        }),
+        loadSoundtrack: null,
 
         // if the player is playing, pause the project
         pause: function() {
