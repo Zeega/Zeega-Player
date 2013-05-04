@@ -84,6 +84,16 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
             debugEvents: false,
 
             /**
+            Turns on the end/credit frame at the end of the project
+
+            @property endPage
+            @type Boolean
+            @default false
+            **/
+
+            endPage: false,
+
+            /**
             Instance of a Frame.Collection
 
             @property frames
@@ -280,7 +290,6 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
             this.relay = new Relay.Model();
             this.status = new Status.Model({ project: this });
             app.status = this.status; // booooo
-
             this._setTarget();
             this._load( attributes );
         },
