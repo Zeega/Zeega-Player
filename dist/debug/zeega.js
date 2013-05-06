@@ -35167,7 +35167,7 @@ function( app, Layer, Visual ){
         ],
 
         serialize: function() {
-            console.log("serialize", this.model.toJSON(), app.status.get("project").project.toJSON() );
+
             return _.extend({},
                 this.model.toJSON(),
                 app.status.get("project").project.toJSON(),
@@ -35175,8 +35175,12 @@ function( app, Layer, Visual ){
             );
         },
 
-        afterEditorRender: function() {
+        onPlay: function() {
+            app.status.emit("endpage_enter");
+        },
 
+        onExit: function() {
+            app.status.emit("endpage_exit");
         }
     });
 
@@ -36276,9 +36280,20 @@ function() {
         return false;
     };
 
+    var removeDupeSoundtrack = function( response ) {
+        
+        if ( response.sequences[0].attr.soundtrack ) {
+            _.each( response.frames, function( frame ) {
+                frame.layers = _.without( frame.layers, response.sequences[0].attr.soundtrack );
+            });
+        }
+    }
+
     // no op. projects are already formatted
     Parser[type].parse = function( response, opts ) {
-        console.log("response", response );
+
+        removeDupeSoundtrack( response );
+
         if ( opts.endPage ) {
             var endId, lastPageId, lastPage, endPage, endLayers;
 
@@ -36308,7 +36323,6 @@ function() {
             response.sequences[0].frames.push( endId )
             console.log( endPage );
         }
-
 
         return response;
     };
@@ -36332,9 +36346,21 @@ function() {
         return false;
     };
 
-    // no op. projects are already formatted
+
+    // cleanses bad data from legacy projects
+    var removeDupeSoundtrack = function( response ) {
+        
+        if ( response.sequences[0].attr.soundtrack ) {
+            _.each( response.frames, function( frame ) {
+                frame.layers = _.without( frame.layers, response.sequences[0].attr.soundtrack );
+            });
+        }
+    }
+
     Parser[type].parse = function( response, opts ) {
         var response = response.items[0].text;
+
+        removeDupeSoundtrack( response );
 
         if ( opts.endPage ) {
             var endId, lastPageId, lastPage, endPage, endLayers;
@@ -36363,7 +36389,6 @@ function() {
             endPage.id = endId;
             response.frames.push( endPage );
             response.sequences[0].frames.push( endId )
-            console.log( endPage );
         }
 
         return response;
@@ -37500,6 +37525,7 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
 
         initialize: function( attributes ) {
             this.loadSoundtrack = _.once(function() {
+                console.log("load sondtrack", app.soundtrack)
                 if ( app.soundtrack ) {
                     if ( app.soundtrack.state == "ready" ) {
                         app.soundtrack.play();
