@@ -35158,7 +35158,7 @@ function( app, Layer, Visual ){
 
     L.EndPageLayer.Visual = Visual.extend({
 
-        // template: "end_page/endpage",
+        template: "end_page/endpage",
 
         visualProperties: [
             "height",
