@@ -9,10 +9,13 @@ define([
 function( Backbone, jquery, Spinner ) {
     // Provide a global location to place configuration settings and module
     // creation.
+
     var app = {
         mode: "player",
         // The root path to run the application.
         root: "/",
+
+        metadata: $("meta[name=zeega]").data(),
 
         attributes: {},
         parserPath: "app/zeega-parser/",

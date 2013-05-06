@@ -200,6 +200,26 @@
   height: 0px !important;
   opacity: 0 !important;
 }
+.user-block {
+  display: block;
+  font-size: 15px;
+  font-weight: bold;
+  width: 250px;
+}
+.user-block .profile-token {
+  border: 2px solid orangered;
+  height: 40px;
+  width: 40px;
+  border-radius: 22px;
+  display: inline-block;
+}
+.user-block .profile-name {
+  display: inline-block;
+  color: orangered;
+  position: relative;
+  top: -15px;
+  text-decoration: none;
+}
 .visual-element-endpagelayer {
   height: 100%;
   width: 100%;
@@ -207,7 +227,41 @@
   color: white;
 }
 .visual-element-endpagelayer .endpage-inner {
-  padding: 20px;
+  padding-top: 40px;
+  margin: 0 auto;
+  width: 75%;
+}
+.visual-element-endpagelayer .endpage-inner .endpage-header {
+  font-size: 2em;
+}
+.visual-element-endpagelayer .endpage-inner .user-block {
+  margin: 20px auto;
+}
+.visual-element-endpagelayer .endpage-inner .end-logo {
+  display: block;
+  margin: 0 auto;
+}
+.visual-element-endpagelayer .share-sites {
+  padding: 0;
+  list-style: none;
+  text-align: center;
+}
+.visual-element-endpagelayer .share-sites li {
+  display: inline-block;
+  margin-right: 10px;
+  opacity: 0.9;
+}
+.visual-element-endpagelayer .endpage-social {
+  height: 50px;
+  width: 50px;
+  display: inline-block;
+  background: url(../img/endpage-share-sprite.png);
+}
+.visual-element-endpagelayer .endpage-social.endpage-social-facebook {
+  background-position: -50px 0;
+}
+.visual-element-endpagelayer .endpage-social.endpage-social-tumblr {
+  background-position: -100px 0;
 }
 .visual-link {
   border-radius: 3px;
