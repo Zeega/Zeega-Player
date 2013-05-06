@@ -74,13 +74,13 @@ return __p;
 this["JST"]["app/zeega-parser/plugins/layers/end_page/endpage.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<div class="endpage-inner">\n    <img class="end-logo" src="assets/img/zeega-red-white-250.png">\n\n    <div class="user-block user-block-large">\n        <a href="http://zeega.com/user/'+
+__p+='<!-- <div class="endpage-inner">\n    <img class="end-logo" src="assets/img/zeega-red-white-250.png">\n\n    <div class="user-block user-block-large">\n        <a href="http://zeega.com/user/'+
 ( user_id )+
 '" target="blank">\n            <div class="profile-token"\n                style="\n                    background: url('+
 ( userThumbnail )+
 ');\n                    background-size: cover;\n                "\n            ></div>\n            <div class="profile-name">by '+
 ( authors )+
-'</div>\n        </a>\n    </div>\n\n    <div class="share-block">\n        <ul class="share-sites">\n            <li><a href="#"><i class="endpage-social endpage-social-twitter"></i></a></li>\n            <li><a href="#"><i class="endpage-social endpage-social-facebook"></i></a></li>\n            <li><a href="#"><i class="endpage-social endpage-social-tumblr"></i></a></li>\n        </ul>\n    </div>\n\n</div>';
+'</div>\n        </a>\n    </div>\n\n    <div class="share-block">\n        <ul class="share-sites">\n            <li><a href="#"><i class="endpage-social endpage-social-twitter"></i></a></li>\n            <li><a href="#"><i class="endpage-social endpage-social-facebook"></i></a></li>\n            <li><a href="#"><i class="endpage-social endpage-social-tumblr"></i></a></li>\n        </ul>\n    </div>\n\n</div> -->';
 }
 return __p;
 };
@@ -35158,7 +35158,7 @@ function( app, Layer, Visual ){
 
     L.EndPageLayer.Visual = Visual.extend({
 
-        template: "end_page/endpage",
+        // template: "end_page/endpage",
 
         visualProperties: [
             "height",
@@ -35166,14 +35166,14 @@ function( app, Layer, Visual ){
             "opacity"
         ],
 
-        serialize: function() {
+        // serialize: function() {
 
-            return _.extend({},
-                this.model.toJSON(),
-                app.status.get("project").project.toJSON(),
-                app.metadata
-            );
-        },
+        //     return _.extend({},
+        //         this.model.toJSON(),
+        //         app.status.get("project").project.toJSON(),
+        //         app.metadata
+        //     );
+        // },
 
         onPlay: function() {
             app.status.emit("endpage_enter");
@@ -37525,7 +37525,7 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
 
         initialize: function( attributes ) {
             this.loadSoundtrack = _.once(function() {
-                console.log("load sondtrack", app.soundtrack)
+
                 if ( app.soundtrack ) {
                     if ( app.soundtrack.state == "ready" ) {
                         app.soundtrack.play();
