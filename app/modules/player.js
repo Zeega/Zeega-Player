@@ -641,6 +641,10 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
             return this.project.getProjectJSON();
         },
 
+        getSoundtrack: function() {
+            return app.soundtrack;
+        },
+
         getFrameData: function() {
             if ( this.status.get("current_frame") ) {
                 return _.extend({},
@@ -649,12 +653,6 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
                 );
             }
 
-            return false;
-        },
-
-        // TODO
-        // returns the frame structure for the project
-        getProjectTree: function() {
             return false;
         },
 
