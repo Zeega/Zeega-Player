@@ -34908,7 +34908,7 @@ function( app, _Layer, Visual, TextModal ) {
                 .css( css )
                 .text( this.model.getAttr("content") );
 
-            this.$el.css( css );
+            // this.$el.css( css );
         },
 
         afterEditorRender: function() {
@@ -35159,15 +35159,6 @@ function( app, Layer, Visual ){
             "width",
             "opacity"
         ],
-
-        // serialize: function() {
-
-        //     return _.extend({},
-        //         this.model.toJSON(),
-        //         app.status.get("project").project.toJSON(),
-        //         app.metadata
-        //     );
-        // },
 
         onPlay: function() {
             app.status.emit("endpage_enter");
@@ -35461,18 +35452,23 @@ function( app, Backbone, Layers, ThumbWorker ) {
         },
 
         onLayerAddRemove: function() {
-            this.updateThumb();
             this.onLayerSort();
+            this.once("sync", function() {
+                this.updateThumb();
+            }.bind( this ));
         },
 
         onLayerSort: function() {
             this.set("layers", this.layers.pluck("id") );
             this.lazySave();
-            this.updateThumb();
+            this.once("sync", function() {
+                this.updateThumb();
+            }.bind( this ));
         },
 
         addLayerType: function( type ) {
             var newLayer = new Layers[ type ]({ type: type });
+
             newLayer.order[ this.id ] = this.layers.length;
             newLayer.save().success(function( response ) {
                 this.layers.add( newLayer );
@@ -36165,7 +36161,7 @@ function( app, SequenceCollection ) {
                     layers = layers.concat( [ sequence.soundtrackModel.toJSON() ] );
                 }
             });
-console.log("layers", layers, this.sequences.toJSON())
+
             return _.extend({}, this.toJSON(), {
                 sequences: this.sequences.toJSON(),
                 frames: frames,
@@ -37886,6 +37882,10 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
             return this.project.getProjectJSON();
         },
 
+        getSoundtrack: function() {
+            return app.soundtrack;
+        },
+
         getFrameData: function() {
             if ( this.status.get("current_frame") ) {
                 return _.extend({},
@@ -37894,12 +37894,6 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
                 );
             }
 
-            return false;
-        },
-
-        // TODO
-        // returns the frame structure for the project
-        getProjectTree: function() {
             return false;
         },
 
