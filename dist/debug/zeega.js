@@ -36057,7 +36057,9 @@ function( app, SequenceCollection ) {
                 if ( frames.length > 1 ) {
                     frames.each(function( frame, j ) {
                         frame.put({
-                            _next: frame.get("attr").advance && frames.at( j + 1 ) ? frames.at( j + 1 ).id : null,
+                            // for the new advance logic
+                            // _next: frame.get("attr").advance && frames.at( j + 1 ) ? frames.at( j + 1 ).id : null,
+                            _next: frames.at( j + 1 ) ? frames.at( j + 1 ).id : null,
                             _last: frames.at( j - 1 ) ? frames.at( j - 1 ).id : null
                         });
                     });
