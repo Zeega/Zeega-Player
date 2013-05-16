@@ -34016,6 +34016,7 @@ function( app, _Layer, Visual ){
                         this.listen();
                     }
                     this.model.trigger( "visual_ready", this.model.id );
+                    this.model.status.emit("audio_play", this.model );
                 });
             },
 
@@ -37839,6 +37840,8 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
                             var audio = document.getElementById("audio-el-" + layer.id );
                             
                             audio.load();
+                            
+                            return audio;
                         }
                     });
                 });

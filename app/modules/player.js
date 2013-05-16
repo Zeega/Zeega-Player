@@ -567,6 +567,8 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
                             var audio = document.getElementById("audio-el-" + layer.id );
                             
                             audio.load();
+                            
+                            return audio;
                         }
                     });
                 });
