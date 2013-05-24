@@ -421,9 +421,16 @@
 .visual-textv2 .drag-handle:hover {
   opacity: 1;
 }
-.visual-textv2.linked-layer:hover {
-  text-shadow: 0 0 10px orangered;
+.visual-textv2.linked-layer {
   cursor: pointer;
+  transition: text-decoration ease 1s;
+  -webkit-transition: text-decoration ease 1s;
+}
+.visual-textv2.linked-layer:hover,
+.visual-textv2.linked-layer.link-reveal {
+  transition: text-decoration ease 0.5s;
+  -webkit-transition: text-decoration ease 0.5s;
+  text-decoration: underline;
 }
 .text-modal {
   font-size: 14px;
@@ -734,30 +741,6 @@
   position: absolute;
   top: 0;
   left: 0;
-  box-shadow: 0 0 10px transparent;
-  transition: box-shadow 0.5s;
-  -moz-transition: box-shadow 0.5s;
-  /* Firefox 4 */
-
-  -webkit-transition: box-shadow 0.5s;
-  /* Safari and Chrome */
-
-  -o-transition: box-shadow 0.5s;
-  /* Opera */
-
-}
-.ZEEGA-player-window > .visual-element.glow-blink {
-  box-shadow: 0 0 10px white;
-  transition: box-shadow 0.5s;
-  -moz-transition: box-shadow 0.5s;
-  /* Firefox 4 */
-
-  -webkit-transition: box-shadow 0.5s;
-  /* Safari and Chrome */
-
-  -o-transition: box-shadow 0.5s;
-  /* Opera */
-
 }
 [data-glowOnHover=true] {
   box-shadow: 0 0 10px transparent;

@@ -229,9 +229,16 @@
 .visual-textv2 .drag-handle:hover {
   opacity: 1;
 }
-.visual-textv2.linked-layer:hover {
-  text-shadow: 0 0 10px orangered;
+.visual-textv2.linked-layer {
   cursor: pointer;
+  transition: text-decoration ease 1s;
+  -webkit-transition: text-decoration ease 1s;
+}
+.visual-textv2.linked-layer:hover,
+.visual-textv2.linked-layer.link-reveal {
+  transition: text-decoration ease 0.5s;
+  -webkit-transition: text-decoration ease 0.5s;
+  text-decoration: underline;
 }
 .text-modal {
   font-size: 14px;

@@ -21,7 +21,9 @@ require.config({
         // Plugins
 
         simpleColorPicker: "../app/zeega-parser/vendor/jquery-simple-color/jquery.simple-color",
-        swfObject: "../app/zeega-parser/vendor/swfobject"
+        swfObject: "../app/zeega-parser/vendor/swfobject",
+
+        ddslick: "../assets/stub"
 
     },
     shim: {
