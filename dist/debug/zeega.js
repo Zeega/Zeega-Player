@@ -136,13 +136,19 @@ return __p;
 this["JST"]["app/zeega-parser/plugins/layers/text_v2/textmodal.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<div class="modal-content">\n    <div class="modal-title">Edit your text</div>\n    <div class="modal-body">\n\n        <textarea rows="4" cols="59" maxlength="140">'+
+__p+='<div class="modal-content">\n    <div class="modal-title">Edit your text</div>\n    <div class="modal-body">\n\n        <div class="top-box clearfix">\n            <textarea rows="4" cols="59" maxlength="140">'+
 ( attr.content )+
-'</textarea>\n\n        <div class="textarea-info">max 140 characters</div>\n\n        <div class="text-controls clearfix">\n            <div class="control-module">\n                <div class="control-title">color</div>\n                <div class="color-selector">\n                    <input class="simple-color" value="'+
-( attr.color )+
-'"/>\n                </div>\n            </div>\n            <a href="#" class="btnz btnz-light text-btn-bold"><i class="icon-bold"></i></a>\n            <a href="#" class="btnz btnz-light text-btn-italic"><i class="icon-italic"></i></a>\n            <a href="#" class="btnz btnz-light text-btn-align-left"><i class="icon-align-left"></i></a>\n            <a href="#" class="btnz btnz-light text-btn-align-center"><i class="icon-align-center"></i></a>\n            <a href="#" class="btnz btnz-light text-btn-align-right"><i class="icon-align-right"></i></a>\n\n            <select class="font-list" style=""></select>\n\n            <div class="control-module">\n                <div class="control-title">font size</div>\n                <select class="size-list" style="">\n                    <option value="100">8</option>\n                    <option value="125">10</option>\n                    <option value="150">12</option>\n                    <option value="175">14</option>\n                    <option value="200">18</option>\n                    <option value="250">24</option>\n                    <option value="375">36</option>\n                    <option value="500">48</option>\n                    <option value="800">72</option>\n                    <option value="1600">144</option>\n                    <option value="2400">200</option>\n                    <option value="3600">300</option>\n                </select>\n            </div>\n<!--\n            <div class="control-module">\n                <div class="control-title">line height</div>\n                <select class="line-height-list">\n                    <option value="1">1</option>\n                    <option value="1.25">1.25</option>\n                    <option value="1.5">1.5</option>\n                    <option value="1.75">1.75</option>\n                    <option value="2">2</option>\n                </select>\n            </div>\n\n            <div class="control-module">\n                <div class="control-title">mobile position</div>\n                <select class="text-position-list">\n                    <option value="top">top</option>\n                    <option value="middle">middle</option>\n                    <option value="bottom">bottom</option>\n                </select>\n            </div>\n            \n        </div>\n-->\n        <div class="sample-header">sample</div>\n        <div class="text-sample">'+
-( attr.content )+
-'</div>\n\n        <div class="bottom-chooser clearfix">\n            <a href="#" class="submit btnz btnz-submit">OK</a>\n        </div>\n    </div>\n</div>\n';
+'</textarea>\n            <select class="font-list" id="font-list-'+
+( id )+
+'"></select>\n            <div class="textarea-info">max 140 characters</div>\n        </div>\n\n        <div class="bottom-box clearfix">\n            <a href="#" class="link-page-open action ';
+ if ( attr.to_frame ) { 
+;__p+='hide';
+ } 
+;__p+='"><i class="icon-plus-sign"></i> link to page</a>\n\n            <div class="page-chooser-wrapper ';
+ if ( !attr.to_frame ) { 
+;__p+='hide';
+ } 
+;__p+='">\n                <a href="#" class="link-new-page"><i class="icon-plus icon-white"></i></br>New Page</a>\n                <div class="divider">or</div>\n                <ul class="page-chooser-list clearfix"></ul>\n                <a href="#" class="unlink-text action"><i class="icon-minus-sign"></i> remove link</a>\n            </div>\n        </div>\n\n        <div class="bottom-chooser clearfix">\n            <a href="#" class="text-modal-save btnz btnz-submit">OK</a>\n        </div>\n    </div>\n</div>\n';
 }
 return __p;
 };
@@ -32981,6 +32987,45 @@ function( app, ControlView ) {
 
 });
 
+zeega.define('zeega_parser/plugins/controls/dropdown/dropdown',[
+    "app",
+    "zeega_parser/modules/control.view",
+    "jqueryUI"
+],
+
+function( Zeega, ControlView ) {
+
+    return {
+        dropdown: ControlView.extend({
+
+            template: "dropdown/dropdown",
+
+            serialize: function() {
+                return _.extend({}, this.model.toJSON(), this._userOptions );
+            },
+
+            create: function() {
+                this.$("select").val( this.getAttr( this.propertyName ) );
+            },
+
+            events: {
+                "change select": "onChange"
+            },
+
+            onChange: function( e ) {
+                var attr = {};
+
+                attr[ this.propertyName ] = this.$("select").val();
+                this.update( attr );
+                this.updateVisual( this.$("select").val() + this._userOptions.units );
+            }
+
+        })
+    };
+
+
+});
+
 /*
 
 plugin/layer manifest file
@@ -32997,7 +33042,8 @@ zeega.define('zeega_parser/plugins/controls/_all-controls',[
     "zeega_parser/plugins/controls/color/color",
     "zeega_parser/plugins/controls/linkto/linkto",
     "zeega_parser/plugins/controls/linkimage/linkimage",
-    "zeega_parser/plugins/controls/av/av"
+    "zeega_parser/plugins/controls/av/av",
+    "zeega_parser/plugins/controls/dropdown/dropdown"
 ],
 function(
     Position,
@@ -33007,7 +33053,8 @@ function(
     Color,
     LinkTo,
     LinkImage,
-    AV
+    AV,
+    Dropdown
 ) {
 
     return _.extend(
@@ -33018,7 +33065,8 @@ function(
         Color,
         LinkTo,
         LinkImage,
-        AV
+        AV,
+        Dropdown
     );
 });
 
@@ -34490,9 +34538,12 @@ function( app, _Layer, Visual ) {
   return Layer;
 });
 
+/* stub */;
+zeega.define("ddslick", function(){});
+
 zeega.define('zeega_parser/plugins/layers/text_v2/textmodal',[
     "app",
-    "simpleColorPicker"
+    "ddslick"
 ],
 
 function( app ) {
@@ -34509,6 +34560,9 @@ function( app ) {
         className: "text-modal overlay-dimmer ZEEGA-modal",
 
         initialize: function() {
+            // temporary hack to get latest textmodal.html to load
+            // window.JST["app/zeega-parser/plugins/layers/text_v2/textmodal.html"] = null;
+
             this.saveContent = _.debounce(function() {
                 this.model.saveAttr({ content: this.$("textarea").val() });
                 this.updateSample();
@@ -34516,111 +34570,46 @@ function( app ) {
         },
 
         afterRender: function() {
-            var $colorPicker = this.$(".simple-color");
-
-            $colorPicker
-                .simpleColor({
-                    livePreview: true,
-                    onCellEnter: function( hex ) {
-                        this.$(".text-sample")
-                            .css({
-                                color: "#" + hex
-                            });
-                    }.bind( this ),
-                    callback: function( hex ) {
-                        this.onChangeColor( hex );
-                    }.bind( this )
-                });
-
-            this.$("textarea").bind("input propertychange", function() {
-                this.$(".text-sample").text( this.$("textarea").val() );
-            }.bind( this )),
-
             $("#main").addClass("modal");
             this.loadFonts();
-            this.loadSize();
-            this.loadTextPosition();
-            this.loadLineHeight();
-            this.setButtonStates();
-
-            this.updateSample();
             
             this.$("textarea").focus().select();
+            this.fillInPages();
+        },
+
+        fillInPages: function() {
+            app.status.get("currentSequence").frames.each(function( frame ) {
+                var fv = $("<li>"),
+                    bg = frame.get("thumbnail_url") === "" ? "black" :
+                        "url(" + frame.get("thumbnail_url") +") no-repeat center center";
+
+                fv.addClass("page")
+                    .data("id", frame.id )
+                    .css({
+                        background: bg,
+                        "-webkit-background-size": "cover"
+                    });
+
+                if ( app.status.get("currentFrame").id == frame.id ) {
+                    fv.addClass("inactive");
+                }
+
+                if ( this.model.getAttr("to_frame") == frame.id ) {
+                    fv.addClass("active");
+                }
+
+                this.$('.page-chooser-list').append( fv );
+            }, this );
         },
 
         events: {
             "click .modal-close": "closeThis",
-            "click .submit": "submit",
-            "click .text-btn-italic": "toggleItalics",
-            "click .text-btn-bold": "toggleBold",
-
+            "click .text-modal-save": "submit",
             "keypress textarea": "onKeypress",
-            "change .size-list": "onChangeSize",
-            "change .font-list": "onChangeFont",
-            "change .line-height-list": "onLineHeight",
-            "change .text-position-list": "onTextPosition",
-            "click .text-btn-align-left": "toggleAlignLeft",
-            "click .text-btn-align-center": "toggleAlignCenter",
-            "click .text-btn-align-right": "toggleAlignRight"
-        },
-
-        onChangeColor: function( hex ) {
-            this.model.saveAttr({ color: "#" + hex });
-            this.updateSample();
-        },
-
-        onChangeSize: function( e ) {
-            this.model.setAttr({ fontSize: $( e.target ).val() });
-            this.model.saveAttr({ fontSize: $( e.target ).val() });
-        },
-
-        onChangeFont: function( e ) {
-            this.model.saveAttr({ fontFamily: $( e.target ).val() });
-            this.updateSample();
-        },
-
-        onTextPosition: function( e ) {
-            this.model.saveAttr({ mobileTextPosition: $( e.target ).val() });
-            this.updateSample();
-        },
-
-        onLineHeight: function( e ) {
-            this.model.saveAttr({ lineHeight: $( e.target ).val() });
-            this.updateSample();
-        },
-
-        toggleItalics: function() {
-            var italic = this.model.getAttr("italic");
-
-            this.model.saveAttr({ italic: !italic });
-            this.updateSample();
-            this.setButtonStates();
-        },
-
-        toggleAlignLeft: function() {
-            this.model.saveAttr({ textAlign: "left" });
-            this.updateSample();
-            this.setButtonStates();
-        },
-
-        toggleAlignCenter: function() {
-            this.model.saveAttr({ textAlign: "center" });
-            this.updateSample();
-            this.setButtonStates();
-        },
-
-        toggleAlignRight: function() {
-            this.model.saveAttr({ textAlign: "right" });
-            this.updateSample();
-            this.setButtonStates();
-        },
-
-        toggleBold: function() {
-            var bold = this.model.getAttr("bold");
-
-            this.model.saveAttr({ bold: !bold });
-            this.updateSample();
-            this.setButtonStates();
+            "click .page" : "selectPage",
+            "click .link-new-page": "selectNewPage",
+            "click .link-page-open": "openLinkDrawer",
+            "click .unlink-text": "unlink"
         },
 
         onKeypress: function( e ) {
@@ -34629,6 +34618,12 @@ function( app ) {
 
         closeThis: function() {
             $("#main").removeClass("modal");
+
+            if ( !this.model.get("attr").to_frame ) {
+                this.$(".page-chooser-wrapper").addClass("hide");
+                this.$(".link-page-open").removeClass("hide");
+            }
+
             this.$el.fadeOut(function() {
                 this.$el.attr("style", "");
                 this.remove();
@@ -34636,58 +34631,92 @@ function( app ) {
             this.$("input").unbind("input propertychange");
         },
 
+        openLinkDrawer: function() {
+            this.$(".page-chooser-wrapper").slideDown();
+            this.$(".link-page").hide();
+        },
+
+        unlink: function() {
+            this.model.saveAttr({ to_frame: null });
+            this.$(".page-chooser-wrapper").slideUp();
+            this.$(".link-page").show();
+        },
+
         submit: function() {
-            this.model.saveAttr({ content: this.$("textarea").val() });
+            this.model.setAttr({ content: this.$("textarea").val() });
             this.closeThis();
             this.updateVisualElement();
+
+            if ( this.selectedFrame !== null && this.selectedFrame == "NEW_FRAME" ) {
+                this.linkToNewPage();
+                this.closeThis();
+            } else if ( this.selectedFrame !== null ) {
+                this.model.saveAttr({ to_frame: this.selectedFrame });
+                this.model.trigger("change:to_frame", this.model, this.selectedFrame );
+                this.closeThis();
+            }
         },
 
         loadFonts: function() {
             this.$(".font-list").empty();
+
             _.each( this.model.fontList, function( fontName ) {
-                this.$(".font-list").append("<option value='" + fontName + "'>" + fontName + "</option>");
+                var opt = $("<option value='" + fontName + "' data-nondescription='" + fontName + "'>" + fontName + "</option>");
+
+                if ( this.model.getAttr("fontFamily") == fontName ) {
+                    opt.attr("selected", "selected");
+                }
+                this.$(".font-list").append( opt );
             }, this );
 
-            this.$(".font-list").val( this.model.getAttr("fontFamily") );
-        },
-
-        loadSize: function() {
-            this.$(".size-list").val( this.model.getAttr("fontSize") );
-        },
-
-        loadTextPosition: function() {
-            this.$(".text-position-list").val( this.model.getAttr("mobileTextPosition") );
-        },
-
-        loadLineHeight: function() {
-            this.$(".line-height-list").val( this.model.getAttr("lineHeight") );
-        },
-
-        setButtonStates: function() {
-            this.$(".active").removeClass("active");
-
-            this.$(".text-btn-bold").addClass( this.model.getAttr("bold") ? "active" : "" );
-            this.$(".text-btn-italic").addClass( this.model.getAttr("italic") ? "active" : "" );
-            this.$(".text-btn-align-left").addClass( this.model.getAttr("textAlign") == "left" ? "active" : "" );
-            this.$(".text-btn-align-center").addClass( this.model.getAttr("textAlign") == "center" ? "active" : "" );
-            this.$(".text-btn-align-right").addClass( this.model.getAttr("textAlign") == "right" ? "active" : "" );
+            $('#font-list-' + this.model.id ).ddslick({
+                height: "200px",
+                onSelected: function(data){
+                    this.model.setAttr({ fontFamily: data.selectedData.value });
+                    this.updateSample();
+                }.bind( this )
+            });
         },
 
         updateSample: function() {
-            this.$(".text-sample")
-                .css({
-                    color: "#" + this.model.getAttr("color"),
-                    fontWeight: this.model.getAttr("bold") ? "bold" : "normal",
-                    fontStyle: this.model.getAttr("italic") ? "italic" : "normal",
-                    fontFamily: this.model.getAttr("fontFamily"),
-                    textAlign: this.model.getAttr("textAlign")
-                })
-                .text( this.model.getAttr("content") );
-            this.updateVisualElement();
+            this.$("textarea").css({
+                fontFamily: this.model.getAttr("fontFamily")
+            });
         },
 
         updateVisualElement: function() {
             this.model.visual.updateStyle();
+        },
+
+        selectPage: function( e ) {
+            var $frameLI = $(e.target).closest("li");
+
+            if ( !$frameLI.hasClass("inactive") ) {
+                this.$(".page-chooser-list li.active, .link-new-page").removeClass("active");
+                $frameLI.addClass("active");
+                this.selectedFrame = $frameLI.data("id");
+            }
+
+            this.$(".submit").removeClass("btnz-inactive");
+        },
+
+        selectNewPage: function() {
+            this.$(".page-chooser-list li.active").removeClass("active");
+            this.$(".link-new-page").addClass("active");
+            this.selectedFrame = "NEW_FRAME";
+            this.$(".submit").removeClass("btnz-inactive");
+        },
+
+        linkToNewPage: function() {
+            var newFrame = app.status.get("currentSequence").frames.addFrame();
+
+            newFrame.once("sync", this.onNewFrameSave, this );
+            this.closeThis();
+        },
+
+        onNewFrameSave: function( newFrame ) {
+            this.model.saveAttr({ to_frame: newFrame.id });
+            this.model.trigger("change:to_frame", this.model, newFrame.id );
         },
 
         fetch: function( path ) {
@@ -34734,7 +34763,7 @@ function( app, _Layer, Visual, TextModal ) {
             citation: false,
             color: "#FFF",
             content: "text",
-            fontSize: 100,
+            fontSize: 150,
             fontFamily: "Archivo Black",
             default_controls: true,
             left: 12.5,
@@ -34743,6 +34772,7 @@ function( app, _Layer, Visual, TextModal ) {
             top: 40,
             width: 75,
             dissolve: true,
+            to_frame: null,
 
             bold: false,
             italic: false,
@@ -34769,7 +34799,26 @@ function( app, _Layer, Visual, TextModal ) {
                     step: 0.001,
                     css: true
                 }
+            },{
+                type: "color",
+                options: {
+                    title: "color",
+                    propertyName: "color"
+                }
+            },{
+                type: "dropdown",
+                options: {
+                    title: "font size",
+                    propertyName: "fontSize",
+                    units: "%",
+                    optionList: [
+                        { title: "small", value: 50 },
+                        { title: "medium", value: 150 },
+                        { title: "large", value: 250 }
+                    ]
+                }
             }
+
         ],
 
         fontList: [
@@ -34897,6 +34946,13 @@ function( app, _Layer, Visual, TextModal ) {
                 });
             }
 
+            if ( this.getAttr("to_frame") ) {
+                this.$el.addClass("linked-layer link-reveal");
+                setTimeout(function() {
+                    this.$el.removeClass("link-reveal");
+                }.bind( this ), 750 );
+            }
+
         },
 
         // ## TODO Simplify this - 5/3/2013
@@ -34975,6 +35031,20 @@ function( app, _Layer, Visual, TextModal ) {
             };
 
             this.$el.css( css );
+        },
+
+        events: {
+            "click": "onClick"
+        },
+
+        onClick: function() {
+
+            if ( this.model.mode == "editor" ) {
+                app.status.setCurrentLayer( this.model );
+            } else {
+                this.model.relay.set( "current_frame", this.getAttr("to_frame") );
+            }
+            return false;
         }
   });
 
@@ -35018,6 +35088,7 @@ function( Zeega, LayerModel, Visual ) {
 
         template: "youtube/youtube",
         ignoreFirst: true,
+
         afterRender: function(){
             
             if( /iPhone|iPod/i.test(navigator.userAgent) ) {
@@ -35036,12 +35107,11 @@ function( Zeega, LayerModel, Visual ) {
         events: {
             "click .play-button": "playVideo",
             "tap .play-button": "playVideo"
-
         },
 
         ytInit: function(){
-            
             window.jQuery(this.$(".youtube-player" )).on("api-ready", jQuery.proxy( this.onApiReady, this) );
+
             if ( _.isUndefined( window.YT ) ){
                 var tag = document.createElement('script');
                 tag.src = "//www.youtube.com/iframe_api";
@@ -35050,7 +35120,6 @@ function( Zeega, LayerModel, Visual ) {
             } else {
                 this.onApiReady();
             }
- 
         },
 
         onPlayerReady: function(e){
@@ -35059,12 +35128,12 @@ function( Zeega, LayerModel, Visual ) {
 
         onStateChange: function(e){
             var currentSequence;
-            if(this.model.status.get("current_sequence_model")){
+
+            if( this.model.status.get("current_sequence_model")){
                 currentSequence = this.model.status.get("current_sequence_model");
             } else {
                 currentSequence = this.model.status.get("currentSequence");
             }
-
 
             if( currentSequence.get("attr").soundtrack && /iPad/i.test(navigator.userAgent) && e.data ==2 && this.ignoreFirst ) {
                 this.ignoreFirst = false;
@@ -35083,7 +35152,7 @@ function( Zeega, LayerModel, Visual ) {
                 this.$(".youtube-player").removeClass("active");
                 this.$(".play-button").fadeIn("fast");
                 
-            } else if (e.data == 1 ){
+            } else if ( e.data == 1 ){
                 if( Zeega.mode == "player"){
                     this.model.status.get("project").suspend();
                 }
@@ -35097,12 +35166,8 @@ function( Zeega, LayerModel, Visual ) {
         },
 
         onApiReady: function(){
-
-
-
             var onPlayerReady = jQuery.proxy( this.onPlayerReady, this),
                 onStateChange = jQuery.proxy( this.onStateChange, this);
-
 
             this.$("#yt-player-" + this.model.id).attr("id", "yt-player-" + this.model.id + "-" + this.model.cid );
 
@@ -35112,19 +35177,16 @@ function( Zeega, LayerModel, Visual ) {
                         'onStateChange': onStateChange
                     }
                 });
-            
-            
         },
 
         playVideo: function(){
 
             if( Zeega.mode == "player"){
                 this.model.status.get("project").suspend();
-            } else if (Zeega.mode == "editor" ){
+            } else if ( Zeega.mode == "editor" ){
                 this.$el.removeClass("editor");
                 this.$el.css({"top": "0", "left": "0", "width": "100%", "height": "100%"}, 1000);
             }
-
 
             this.$(".play-button").fadeOut("fast");
             this.$(".youtube-player").addClass("active");
@@ -35162,7 +35224,6 @@ function( app, Layer, Visual ){
             top: 0,
             height: 100,
             width: 100,
-            width: null,
             opacity: 1,
             aspectRatio: null,
             dissolve: true
@@ -35507,9 +35568,12 @@ function( app, Backbone, Layers, ThumbWorker ) {
             */
 
             newLayer.order[ this.id ] = this.layers.length;
+
+            app.emit("layer_added_start", newLayer );
             newLayer.save().success(function( response ) {
                 this.layers.add( newLayer );
                 app.status.setCurrentLayer( newLayer );
+                app.emit("layer_added_success", newLayer );
             }.bind( this ));
         },
 
@@ -35535,9 +35599,12 @@ function( app, Backbone, Layers, ThumbWorker ) {
                 newLayer.order[ this.id ] = this.layers.length;
             }
             
+            app.emit("layer_added_start", newLayer );
+
             newLayer.save().success(function( response ) {
                     this.layers.add( newLayer );
                     app.status.setCurrentLayer( newLayer );
+                    app.emit("layer_added_success", newLayer );
                 }.bind( this ));
             
         },
@@ -35750,7 +35817,7 @@ function( app, Layers ) {
 
         onAdd: function( layer ) {
             if( app.mode != "player" ){
-               if ( layer ) {
+                if ( layer ) {
                     layer.addCollection( this );
                     layer.initVisual( Layers[ layer.get("type") ]);
                     app.trigger("layer_added", layer );
@@ -35997,23 +36064,6 @@ function( app, SequenceCollection ) {
             user_id: null
         },
 
-        defaultCoverImages: [
-            "http://giphy.com/gifs/VxbP9tLeKzazm",
-            "http://giphy.com/gifs/4lLVnnMbawnss",
-            "http://giphy.com/gifs/bq6gi8shRqgyA",
-            "http://giphy.com/gifs/BDqInV6xYl1Ju",
-            "http://giphy.com/gifs/k0ywWCPu4IlEs",
-            "http://giphy.com/gifs/Mi6gE0Qjw2dWM",
-            "http://www.musicobsessed.com/wp-content/gallery/sfmo/tv-set-funky-cuteo.gif",
-            "http://24.media.tumblr.com/tumblr_m8582nac7y1r0k830o1_500.gif",
-            "http://24.media.tumblr.com/tumblr_lnxkb8K8u61qjvkx9o1_500.gif",
-            "http://25.media.tumblr.com/tumblr_mbjwlvwO5R1reeolao1_500.gif",
-            "http://reignandpour.com/home_files/tv.gif",
-            "http://s8.favim.com/orig/72/gif-animated-gif-tv-static-glitch-Favim.com-687367.gif",
-            "http://alaingiffard.files.wordpress.com/2007/12/applaudissements-001_1173713587.gif",
-            "http://www.poly.edu/sites/polyproto.poly.edu/files/cinemaNOISE.gif"
-        ],
-
         defaultOptions: {
             preloadRadius: 2,
             attach: {}
@@ -36024,9 +36074,6 @@ function( app, SequenceCollection ) {
         },
 
         initialize: function( data, options ) {
-            // if ( this.get("cover_image") == "" ) {
-            //     this.set("cover_image", this.defaultCoverImages[ Math.floor( Math.random() * this.defaultCoverImages.length ) ])
-            // }
             this.options = _.defaults( options, this.defaultOptions );
             this.parser = options.parser;
             this.parseSequences();
@@ -36082,7 +36129,7 @@ function( app, SequenceCollection ) {
                     var linksTo = [];
 
                     frame.layers.each(function( layer ) {
-                        if ( layer.get("type") == "Link" && layer.get("attr").to_frame != frame.id ) {
+                        if ( layer.get("attr").to_frame != frame.id ) {
                             var targetFrameID, targetFrame, linksFrom;
 
                             targetFrameID = parseInt( layer.get("attr").to_frame, 10 );
@@ -36318,7 +36365,7 @@ function() {
                 frame.layers = _.without( frame.layers, response.sequences[0].attr.soundtrack );
             });
         }
-    }
+    };
 
     // no op. projects are already formatted
     Parser[type].parse = function( response, opts ) {
@@ -36351,7 +36398,7 @@ function() {
             
             endPage.id = endId;
             response.frames.push( endPage );
-            response.sequences[0].frames.push( endId )
+            response.sequences[0].frames.push( endId );
         }
 
         return response;
@@ -36385,10 +36432,10 @@ function() {
                 frame.layers = _.without( frame.layers, response.sequences[0].attr.soundtrack );
             });
         }
-    }
+    };
 
     Parser[type].parse = function( response, opts ) {
-        var response = response.items[0].text;
+        response = response.items[0].text;
 
         removeDupeSoundtrack( response );
 
@@ -36418,7 +36465,7 @@ function() {
             
             endPage.id = endId;
             response.frames.push( endPage );
-            response.sequences[0].frames.push( endId )
+            response.sequences[0].frames.push( endId );
         }
 
         return response;

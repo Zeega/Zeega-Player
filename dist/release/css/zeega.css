@@ -386,6 +386,9 @@
   left: -9px;
   bottom: -9px;
 }
+.hide {
+  display: none;
+}
 .visual-textv2 {
   white-space: pre-wrap;
 }
@@ -418,58 +421,207 @@
 .visual-textv2 .drag-handle:hover {
   opacity: 1;
 }
-.text-modal .text-controls {
-  margin: 20px 0 10px 0;
-}
-.text-modal .text-controls .control-module {
-  display: inline-block;
-  font-size: 10px;
-  color: #666;
-}
-.text-modal .text-controls .control-module select {
-  font-size: 12px;
-}
-.text-modal .sample-header {
-  font-size: 12px;
-  color: #999;
-}
-.text-modal .text-sample {
-  height: 1em;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  border: 1px solid #ddd;
-  padding: 10px;
-  margin-bottom: 10px;
-  background: #222;
-  white-space: pre;
-}
-.text-modal textarea {
-  resize: none;
-  width: 553px;
-}
-.text-modal .textarea-info {
-  font-size: 12px;
-  color: #999;
-  float: right;
-}
-.text-modal .color-selector {
-  float: left;
-  margin-right: 4px;
-}
-.text-modal .simpleColorChooser {
-  left: -5px !important;
-}
-.text-modal .simpleColorDisplay {
-  background-color: #cc0033;
-  border: 1px solid #000000;
-  height: 25px !important;
+.visual-textv2.linked-layer {
   cursor: pointer;
-  position: relative;
-  top: 6px;
-  border-radius: 2px;
 }
-.text-modal .submit {
+.visual-textv2.linked-layer:hover,
+.visual-textv2.linked-layer.link-reveal {
+  text-decoration: underline;
+}
+.text-modal {
+  font-size: 14px;
+}
+.text-modal a.action:link,
+.text-modal a.action:visited {
+  color: #333;
+}
+.text-modal a.action:hover {
+  text-decoration: underline;
+}
+.text-modal .top-box {
+  margin-bottom: 10px;
+}
+.text-modal .top-box textarea {
+  width: 280px;
+  height: 100px;
+  resize: none;
+  float: left;
+  font-size: 17px;
+}
+.text-modal .top-box select {
   float: right;
+}
+.text-modal .top-box .textarea-info {
+  font-size: 12px;
+  color: #999;
+  float: right;
+}
+.text-modal .top-box .dd-container {
+  float: right;
+}
+.text-modal .top-box .dd-options {
+  height: 250px;
+}
+.text-modal .link-new-page {
+  background: url(../img/tiny-stripes-dark.png);
+  height: 40px;
+  padding: 10px 0;
+  background-color: rgba(50, 205, 50, 0.75);
+  display: inline-block;
+  width: 80px;
+  float: left;
+  font-size: 13px;
+  text-align: center;
+  margin-top: 10px;
+  line-height: 1.5em;
+  color: white;
+}
+.text-modal .link-new-page.active {
+  outline: 3px solid orangered;
+}
+.text-modal .divider {
+  float: left;
+  width: 50px;
+  text-align: center;
+  padding-top: 30px;
+}
+.text-modal .page-chooser-list {
+  width: 420px;
+  background: white;
+  overflow: auto;
+  white-space: nowrap;
+  padding: 10px 5px 0 5px;
+  float: left;
+}
+.text-modal .page-chooser-list .page {
+  background: black;
+  height: 60px;
+  width: 80px;
+  margin-right: 10px;
+  white-space: nowrap;
+  display: inline-block;
+}
+.text-modal .page-chooser-list .page a {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+}
+.text-modal .page-chooser-list .page.inactive {
+  opacity: 0.5;
+}
+.text-modal .page-chooser-list .page.active {
+  outline: 3px solid orangered;
+}
+.text-modal .text-modal-save {
+  float: right;
+}
+[class^="font-sample-"] {
+  display: inline-block;
+  width: 200px;
+  height: 30px;
+  vertical-align: text-top;
+  background-image: url('../img/fonts-sprite.png');
+  background-position: 0px 0px;
+  background-repeat: no-repeat;
+}
+.font-sample-Allerta-Stencil {
+  background-position: 0 0px;
+}
+.font-sample-Antic {
+  background-position: 0 -36px;
+}
+.font-sample-Archivo-Black {
+  background-position: 0 -72px;
+}
+.font-sample-Arial {
+  background-position: 0 -108px;
+}
+.font-sample-Bilbo-Swash-Caps {
+  background-position: 0 -144px;
+}
+.font-sample-Cabin-Sketch {
+  background-position: 0 -180px;
+}
+.font-sample-Codystar {
+  background-position: 0 -216px;
+}
+.font-sample-Cutive-Mono {
+  background-position: 0 -252px;
+}
+.font-sample-Dosis {
+  background-position: 0 -288px;
+}
+.font-sample-Ewert {
+  background-position: 0 -324px;
+}
+.font-sample-Fascinate {
+  background-position: 0 -360px;
+}
+.font-sample-Faster-One {
+  background-position: 0 -396px;
+}
+.font-sample-Finger-Paint {
+  background-position: 0 -432px;
+}
+.font-sample-Georgia {
+  background-position: 0 -468px;
+}
+.font-sample-Great-Vibes {
+  background-position: 0 -504px;
+}
+.font-sample-Impact {
+  background-position: 0 -540px;
+}
+.font-sample-Londrina-Outline {
+  background-position: 0 -576px;
+}
+.font-sample-Londrina-Sketch {
+  background-position: 0 -612px;
+}
+.font-sample-Monofett {
+  background-position: 0 -648px;
+}
+.font-sample-Montserrat {
+  background-position: 0 -684px;
+}
+.font-sample-New-Rocker {
+  background-position: 0 -720px;
+}
+.font-sample-Nobile {
+  background-position: 0 -756px;
+}
+.font-sample-Nova-Mono {
+  background-position: 0 -792px;
+}
+.font-sample-Orbitron {
+  background-position: 0 -828px;
+}
+.font-sample-Sorts-Mill-Goudy {
+  background-position: 0 -864px;
+}
+.font-sample-Poiret-One {
+  background-position: 0 -900px;
+}
+.font-sample-Pontano-Sans {
+  background-position: 0 -936px;
+}
+.font-sample-Trocchi {
+  background-position: 0 -972px;
+}
+.font-sample-Ultra {
+  background-position: 0 -1008px;
+}
+.font-sample-Verdana {
+  background-position: 0 -1044px;
+}
+.font-sample-Wendy-One {
+  background-position: 0 -1080px;
+}
+.font-sample-Yellowtail {
+  background-position: 0 -1116px;
 }
 .mobile-cover {
   display: none;
@@ -585,30 +737,6 @@
   position: absolute;
   top: 0;
   left: 0;
-  box-shadow: 0 0 10px transparent;
-  transition: box-shadow 0.5s;
-  -moz-transition: box-shadow 0.5s;
-  /* Firefox 4 */
-
-  -webkit-transition: box-shadow 0.5s;
-  /* Safari and Chrome */
-
-  -o-transition: box-shadow 0.5s;
-  /* Opera */
-
-}
-.ZEEGA-player-window > .visual-element.glow-blink {
-  box-shadow: 0 0 10px white;
-  transition: box-shadow 0.5s;
-  -moz-transition: box-shadow 0.5s;
-  /* Firefox 4 */
-
-  -webkit-transition: box-shadow 0.5s;
-  /* Safari and Chrome */
-
-  -o-transition: box-shadow 0.5s;
-  /* Opera */
-
 }
 [data-glowOnHover=true] {
   box-shadow: 0 0 10px transparent;
