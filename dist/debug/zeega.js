@@ -34572,7 +34572,6 @@ function( app ) {
         afterRender: function() {
             $("#main").addClass("modal");
             this.loadFonts();
-            
             this.$("textarea").focus().select();
             this.fillInPages();
         },
@@ -34633,13 +34632,19 @@ function( app ) {
 
         openLinkDrawer: function() {
             this.$(".page-chooser-wrapper").slideDown();
-            this.$(".link-page").hide();
+            this.$(".link-page-open").hide();
         },
 
         unlink: function() {
+            this.selectedFrame = null;
             this.model.saveAttr({ to_frame: null });
-            this.$(".page-chooser-wrapper").slideUp();
-            this.$(".link-page").show();
+
+            this.model.visual.$el.removeClass("linked-layer");
+
+            this.$(".page-chooser-wrapper").slideUp(function(){
+                $(this).parent().find(".link-page-open").show();
+            });
+            
         },
 
         submit: function() {
@@ -34650,10 +34655,12 @@ function( app ) {
             if ( this.selectedFrame !== null && this.selectedFrame == "NEW_FRAME" ) {
                 this.linkToNewPage();
                 this.closeThis();
+                this.model.visual.$el.addClass("linked-layer");
             } else if ( this.selectedFrame !== null ) {
                 this.model.saveAttr({ to_frame: this.selectedFrame });
                 this.model.trigger("change:to_frame", this.model, this.selectedFrame );
                 this.closeThis();
+                this.model.visual.$el.addClass("linked-layer");
             }
         },
 
@@ -34708,7 +34715,7 @@ function( app ) {
         },
 
         linkToNewPage: function() {
-            var newFrame = app.status.get("currentSequence").frames.addFrame();
+            var newFrame = app.status.get("currentSequence").frames.addFrame( "auto", false );
 
             newFrame.once("sync", this.onNewFrameSave, this );
             this.closeThis();
@@ -34812,9 +34819,18 @@ function( app, _Layer, Visual, TextModal ) {
                     propertyName: "fontSize",
                     units: "%",
                     optionList: [
-                        { title: "small", value: 50 },
-                        { title: "medium", value: 150 },
-                        { title: "large", value: 250 }
+                        { title: "8", value: 100 },
+                        { title: "10", value: 125 },
+                        { title: "12", value: 150 },
+                        { title: "14", value: 175 },
+                        { title: "18", value: 200 },
+                        { title: "24", value: 250 },
+                        { title: "36", value: 375 },
+                        { title: "48", value: 500 },
+                        { title: "72", value: 800 },
+                        { title: "144", value: 1600 },
+                        { title: "200", value: 2400 },
+                        { title: "300", value: 3600 }
                     ]
                 }
             }
@@ -34946,7 +34962,7 @@ function( app, _Layer, Visual, TextModal ) {
                 });
             }
 
-            if ( this.getAttr("to_frame") ) {
+            if ( !_.isNull( this.getAttr("to_frame") ) ) {
                 this.$el.addClass("linked-layer link-reveal");
                 setTimeout(function() {
                     this.$el.removeClass("link-reveal");
@@ -35556,16 +35572,7 @@ function( app, Backbone, Layers, ThumbWorker ) {
         addLayerType: function( type ) {
             var newLayer = new Layers[ type ]({ type: type });
 
-            // turn off advance if the type is a link
-            /*
-            if ( type == "Link") {
-                var attr = this.get("attr");
-
-                attr.advance = false;
-                this.set("attr", attr );
-                this.trigger("no_advance")
-            }
-            */
+            this.set("attr", this.defaults.attr );
 
             newLayer.order[ this.id ] = this.layers.length;
 
@@ -35905,17 +35912,13 @@ function( app, FrameModel, LayerCollection ) {
 
         // add frame at a specified index.
         // omit index to append frame
-        addFrame: function( index ) {
+        addFrame: function( index, skipTo ) {
             var newFrame, continuingLayers = [];
-            // if the sequence has persistent layers then add them to new frames!
-            if ( this.sequence.get("persistent_layers").length ) {
-                _.each( this.sequence.get("persistent_layers"), function( layerID ) {
-                    continuingLayers.push( app.project.getLayer( layerID ) );
-                });
-            }
+
+            skipTo = !_.isUndefined( skipTo ) ? skipTo : true;
+            index = index == "auto" ? undefined : index;
 
             newFrame = new FrameModel({
-                layers: this.sequence.get("persistent_layers").reverse(),
                 _order: index
             });
 
@@ -35923,6 +35926,7 @@ function( app, FrameModel, LayerCollection ) {
             newFrame.layers = new LayerCollection( _.compact( continuingLayers ) );
             newFrame.layers.frame = newFrame;
             newFrame.listenToLayers();
+            newFrame.editorAdvanceToPage = skipTo;
 
             newFrame.save().success(function() {
                 app.project.addFrameToKey( newFrame.id, this.sequence.id );
@@ -36114,8 +36118,8 @@ function( app, SequenceCollection ) {
                     frames.each(function( frame, j ) {
                         frame.put({
                             // for the new advance logic
-                            // _next: frame.get("attr").advance && frames.at( j + 1 ) ? frames.at( j + 1 ).id : null,
-                            _next: frames.at( j + 1 ) ? frames.at( j + 1 ).id : null,
+                            _next: frame.get("attr").advance && frames.at( j + 1 ) ? frames.at( j + 1 ).id : null,
+                            // _next: frames.at( j + 1 ) ? frames.at( j + 1 ).id : null,
                             _last: frames.at( j - 1 ) ? frames.at( j - 1 ).id : null
                         });
                     });

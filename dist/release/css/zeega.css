@@ -424,8 +424,8 @@
 .visual-textv2.linked-layer {
   cursor: pointer;
 }
-.visual-textv2.linked-layer:hover,
-.visual-textv2.linked-layer.link-reveal {
+.visual-textv2.linked-layer:hover .visual-target,
+.visual-textv2.linked-layer.link-reveal .visual-target {
   text-decoration: underline;
 }
 .text-modal {
@@ -437,6 +437,9 @@
 }
 .text-modal a.action:hover {
   text-decoration: underline;
+}
+.text-modal .modal-body {
+  min-height: 162px !important;
 }
 .text-modal .top-box {
   margin-bottom: 10px;
