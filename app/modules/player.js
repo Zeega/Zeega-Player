@@ -416,7 +416,7 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
                 app.$(window).keyup(function( event ) {
                     switch( event.which ) {
                         case 37: // left arrow
-                            _this.cuePrev();
+                            _this.cueBack();
                             break;
                         case 39: // right arrow
                             _this.cueNext();
