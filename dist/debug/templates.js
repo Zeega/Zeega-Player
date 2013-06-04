@@ -75,9 +75,9 @@ return __p;
 this["JST"]["app/zeega-parser/plugins/layers/image/image.html"] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<div class="visual-target">\n    <img src="'+
+__p+='<div class="visual-target" style="\n    background: url('+
 ( attr.uri )+
-'" width=\'100%\' />\n</div>\n<div class="controls-inline"></div>';
+');\n    background-size: cover;\n    background-position: center;\n"></div>';
 }
 return __p;
 };

@@ -13,7 +13,7 @@ require.config({
         zeega_parser: "../app/zeega-parser",
 
         // Libraries.
-        jquery: "../assets/js/libs/jquery",
+        // jquery: "../assets/js/libs/jquery",
         jqueryUI: "../assets/js/plugins/jquery-ui/js/jquery-ui-1.10.1.custom",
         lodash: "../assets/js/libs/lodash",
         backbone: "../assets/js/libs/backbone",
@@ -29,15 +29,15 @@ require.config({
     shim: {
         // Backbone library depends on lodash and jQuery.
         backbone: {
-            deps: [ "lodash", "jquery" ],
+            deps: [ "lodash" ],
             exports: "Backbone"
         },
 
         // Plugins
-        jqueryUI: ["jquery"],
+        // jqueryUI: ["jquery"],
         // spin: ["jquery"],
-        "plugins/imagesloaded.min": ["jquery"],
-        "plugins/cycle": ["jquery"],
+        // "plugins/imagesloaded.min": ["jquery"],
+        // "plugins/cycle": ["jquery"],
 
         // Backbone.LayoutManager depends on Backbone.
         "plugins/backbone.layoutmanager": [ "backbone" ]
