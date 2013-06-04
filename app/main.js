@@ -23,6 +23,6 @@ function( Zeega ) {
         window.fireEvent("on" + event.eventType, event);
     }
 
-    $.noConflict(); // return $ to prev owner
+    // $.noConflict(); // return $ to prev owner
     Backbone.noConflict();
 });

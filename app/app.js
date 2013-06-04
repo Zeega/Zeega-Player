@@ -43,7 +43,7 @@ function( Backbone, Spinner ) {
     // Localize or create a new JavaScript Template object.
     var JST = window.JST = window.JST || {};
 
-    var zeegaJQuery = jquery;
+    var zeegaJQuery = $;
     var zeegaBackbone = Backbone;
     zeegaBackbone.$ = zeegaJQuery; // set backbone jquery
 

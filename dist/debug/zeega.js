@@ -22381,7 +22381,7 @@ function( Backbone, Spinner ) {
     // Localize or create a new JavaScript Template object.
     var JST = window.JST = window.JST || {};
 
-    var zeegaJQuery = jquery;
+    var zeegaJQuery = $;
     var zeegaBackbone = Backbone;
     zeegaBackbone.$ = zeegaJQuery; // set backbone jquery
 
@@ -28589,7 +28589,7 @@ function( Zeega ) {
         window.fireEvent("on" + event.eventType, event);
     }
 
-    $.noConflict(); // return $ to prev owner
+    // $.noConflict(); // return $ to prev owner
     Backbone.noConflict();
 });
 
