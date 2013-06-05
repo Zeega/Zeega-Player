@@ -1,3 +1,5 @@
+// this version of the player is dependant on other repos to work!!
+
 ![Zeega](https://raw.github.com/Zeega/Zeega-Core/master/web/images/zeega-logo-large.png)
 
 # Zeega Player

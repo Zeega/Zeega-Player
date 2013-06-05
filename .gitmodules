@@ -1,3 +1,0 @@
-[submodule "app/zeega-parser"]
-	path = app/zeega-parser
-	url = git@github.com:Zeega/Zeega-Parser.git
