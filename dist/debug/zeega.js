@@ -48841,7 +48841,7 @@ function( Zeega, SequenceCollection ) {
                         if ( layer.get("type") == "Link" && layer.get("attr").to_frame != frame.id ) {
                             var targetFrameID, targetFrame, linksFrom;
 
-                            targetFrameID = parseInt( layer.get("attr").to_frame, 10 );
+                            targetFrameID = layer.get("attr").to_frame;
                             targetFrame = this.getFrame( targetFrameID );
                             linksFrom = [].concat( targetFrame.get("linksFrom") );
 
@@ -48910,12 +48910,12 @@ function( Zeega, SequenceCollection ) {
                 }
             });
 */
-
+            
             frame.put( "_connections",
                 frame.get('attr').advance || hasLink ? "none" :
-                prev & next ? "lr" :
-                prev ? "l" :
-                next ? "r" : "none"
+                !_.isNull( prev ) & !_.isNull( next ) ? "lr" :
+                !_.isNull( prev ) ? "l" :
+                !_.isNull( next ) ? "r" : "none"
             );
         },
 
@@ -48993,8 +48993,8 @@ function() {
     Parser[ type ] = { name: type };
 
     Parser[ type ].validate = function( response ) {
-
-        if ( response.sequences && response.frames && response.layers ) {
+        var project = response.project;
+        if ( project.sequences && project.frames && project.layers ) {
             return true;
         }
         return false;
@@ -49002,7 +49002,7 @@ function() {
 
     // no op. projects are already formatted
     Parser[type].parse = function( response, opts ) {
-        return response;
+        return response.project;
     };
 
     return Parser;
@@ -49777,7 +49777,6 @@ function( Zeega, ArrowView, CloseView, PlayPauseView ) {
 
        
         onFramePlay: function( info ) {
-
             if( this.model.status.get("frameHistory").length > 1 ){
                 this.activateArrow("ZEEGA-prev");
             } else {

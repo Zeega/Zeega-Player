@@ -63,7 +63,6 @@ function( Zeega, ArrowView, CloseView, PlayPauseView ) {
 
        
         onFramePlay: function( info ) {
-            console.log(info)
             if( this.model.status.get("frameHistory").length > 1 ){
                 this.activateArrow("ZEEGA-prev");
             } else {
