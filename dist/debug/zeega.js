@@ -36360,57 +36360,61 @@ function() {
     Parser[ type ] = { name: type };
 
     Parser[ type ].validate = function( response ) {
-        if ( response.project.sequences && response.project.frames && response.project.layers ) {
+        var project = response.project;
+
+        if ( project.sequences && project.frames && project.layers ) {
             return true;
         }
         return false;
     };
 
-    var removeDupeSoundtrack = function( response ) {
+    var removeDupeSoundtrack = function( project ) {
         
-        if ( response.sequences[0].attr.soundtrack ) {
-            _.each( response.frames, function( frame ) {
-                frame.layers = _.without( frame.layers, response.sequences[0].attr.soundtrack );
+        if ( project.sequences[0].attr.soundtrack ) {
+            _.each( project.frames, function( frame ) {
+                frame.layers = _.without( frame.layers, project.sequences[0].attr.soundtrack );
             });
         }
     };
 
     // no op. projects are already formatted
     Parser[type].parse = function( response, opts ) {
-        removeDupeSoundtrack( response.project );
-        return response.project;
+        
+        var project = response.project;
 
 
-        // if ( opts.endPage ) {
-        //     var endId, lastPageId, lastPage, endPage, endLayers;
+        removeDupeSoundtrack( project );
+        
+        if ( opts.endPage ) {
+            var endId, lastPageId, lastPage, endPage, endLayers;
 
-        //     endId = -1;
-        //     lastPageId = response.sequences[0].frames[ response.sequences[0].frames.length - 1 ];
-        //     lastPage = _.find( response.frames, function( frame ) {
-        //         return frame.id == lastPageId;
-        //     });
-        //     endPage = _.extend({}, lastPage );
+            endId = -1;
+            lastPageId = project.sequences[0].frames[ project.sequences[0].frames.length - 1 ];
+            lastPage = _.find( project.frames, function( frame ) {
+                return frame.id == lastPageId;
+            });
+            endPage = _.extend({}, lastPage );
 
-        //     // only allow images, color layers
-        //     endLayers = _.filter(response.layers, function( layer ) {
-        //         return _.include(["Image", "Rectangle"], layer.type ) && _.include( endPage.layers, layer.id );
-        //     });
+            // only allow images, color layers
+            endLayers = _.filter(project.layers, function( layer ) {
+                return _.include(["Image", "Rectangle"], layer.type ) && _.include( endPage.layers, layer.id );
+            });
 
-        //     endPage.layers = _.pluck( endLayers, "id");
-        //     endPage.layers.push( endId );
+            endPage.layers = _.pluck( endLayers, "id");
+            endPage.layers.push( endId );
 
-        //     // add layer to layer array
-        //     response.layers.push({
-        //         id: endId,
-        //         type: "EndPageLayer"
-        //     });
+            // add layer to layer array
+            project.layers.push({
+                id: endId,
+                type: "EndPageLayer"
+            });
             
-        //     endPage.id = endId;
-        //     response.frames.push( endPage );
-        //     response.sequences[0].frames.push( endId );
-        // }
+            endPage.id = endId;
+            project.frames.push( endPage );
+            project.sequences[0].frames.push( endId );
+        }
 
-        // return response;
+        return project;
     };
 
     return Parser;
