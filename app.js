@@ -1,13 +1,11 @@
 define([
-    "backbone",
     "spin",
+    "backbone",
     "jqueryUI",
     "plugins/backbone.layoutmanager"
 ],
 
-function( Backbone, Spinner ) {
-    // Provide a global location to place configuration settings and module
-    // creation.
+function( Spinner ) {
 
     var app = {
         mode: "player",
