@@ -231,7 +231,7 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
             @type Float
             @default 4/3
             **/
-            windowRatio: 4/3,
+            windowRatio: 0.75,
 
             /**
             The frame id to start the player
