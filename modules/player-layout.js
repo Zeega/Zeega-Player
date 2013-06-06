@@ -34,9 +34,10 @@ function( app, ControlsView ) {
 
         afterRender: function() {
             // correctly size the player window
-            this.$(".ZEEGA-player-window").css( this.getWindowSize() );
-            this.setPrevNext();
+            this.$(".ZEEGA-player-wrapper").css( this.getWrapperSize() );
+            this.$(".ZEEGA-player-window").css( this.getPlayerSize() );
 
+            this.setPrevNext();
             this.renderControls();
         },
 
@@ -89,15 +90,37 @@ function( app, ControlsView ) {
 
         resizeWindow: function() {
             // animate the window size in place
-            var css = this.getWindowSize();
-            this.$(".ZEEGA-player-window").animate( css );
+            var css = this.getWrapperSize();
+
+            this.$(".ZEEGA-player-wrapper").css( css );
+            this.$(".ZEEGA-player-window").css( this.getPlayerSize() );
+            
             this.model.trigger( "window_resized", css );
             app.trigger( "resize_window", css );
         },
 
+        getPlayerSize: function() {
+            var windowRatio, winHeight,
+                css = {
+                    width: 0,
+                    height: 0,
+                    top: 0,
+                    left: 0
+                };
+
+            windowRatio = this.model.get("windowRatio");
+            winHeight = app.$( this.model.get("target") ).find(".ZEEGA-player").height();
+
+            css.width = winHeight * windowRatio;
+            css.height = winHeight;
+            css.top = (winHeight - css.height) / 2;
+
+            return css;
+        },
+
         // calculate and return the correct window size for the player window
-        getWindowSize: function() {
-            var windowRatio, winWidth, winHeight, actualRatio,
+        getWrapperSize: function() {
+            var windowRatio, winWidth, winHeight, actualRatio, playerMaxWidth, playerMinWidth,
                 css = {
                     width: 0,
                     height: 0,
@@ -110,42 +133,60 @@ function( app, ControlsView ) {
             winHeight = app.$( this.model.get("target") ).find(".ZEEGA-player").height();
             actualRatio = winWidth / winHeight;
 
-            if ( this.model.get("cover") === true ) {
-                if ( actualRatio > windowRatio ) { // width > height // fit left & right
-                    css.width = winWidth;
-                    css.height = winWidth / windowRatio;
-                    css.top = (winHeight - css.height) / 2;
-                } else if ( this.model.get("cover") == "vertical" ) {
-                    css.width = winHeight * windowRatio;
-                    css.height = winHeight;
-                    css.left = (winWidth - css.width) / 2;
-                } else { // width < height
-                    css.width = winHeight * windowRatio;
-                    css.height = winHeight;
-                    css.left = (winWidth - css.width) / 2;
-                }
-            } else if ( this.model.get("cover") === false ) {
-                if ( actualRatio > windowRatio ) { // width > height
-                    css.width = winHeight * windowRatio;
-                    css.height = winHeight;
-                } else { // width < height
-                    css.width = winWidth;
-                    css.height = winWidth / windowRatio;
-                    css.top = (winHeight - css.height) / 2;
-                }
-            } else {
-                if ( this.model.get("cover") == "horizontal" ) { // width > height // fit left & right
-                    css.width = winWidth;
-                    css.height = winWidth / windowRatio;
-                    css.top = (winHeight - css.height) / 2;
-                } else if ( this.model.get("cover") == "vertical" ) {
-                    var left = ( winWidth - winHeight * windowRatio ) / 2;
+            playerMaxWidth = winHeight * (16/9);
+            playerMinWidth = winHeight * windowRatio;
 
-                    css.width = winHeight * windowRatio;
+
+            if ( this.model.get("mobile") ) {
+
+            } else {
+                // if ( actualRatio > windowRatio ) {           // width > height // fit left & right
+                    css.width = winWidth < playerMaxWidth ? winWidth : playerMaxWidth;
                     css.height = winHeight;
-                    css.left = left < 0 ? left : 0;
-                }
+                    css.top = (winHeight - css.height) / 2;
+                // } else {                                     // width < height
+                //     css.width = winHeight * windowRatio;
+                //     css.height = winHeight;
+                //     css.left = (winWidth - css.width) / 2;
+                // }
             }
+
+            // if ( this.model.get("cover") === true ) {
+            //     if ( actualRatio > windowRatio ) { // width > height // fit left & right
+            //         css.width = winWidth;
+            //         css.height = winWidth / windowRatio;
+            //         css.top = (winHeight - css.height) / 2;
+            //     } else if ( this.model.get("cover") == "vertical" ) {
+            //         css.width = winHeight * windowRatio;
+            //         css.height = winHeight;
+            //         css.left = (winWidth - css.width) / 2;
+            //     } else { // width < height
+            //         css.width = winHeight * windowRatio;
+            //         css.height = winHeight;
+            //         css.left = (winWidth - css.width) / 2;
+            //     }
+            // } else if ( this.model.get("cover") === false ) {
+            //     if ( actualRatio > windowRatio ) { // width > height
+            //         css.width = winHeight * windowRatio;
+            //         css.height = winHeight;
+            //     } else { // width < height
+            //         css.width = winWidth;
+            //         css.height = winWidth / windowRatio;
+            //         css.top = (winHeight - css.height) / 2;
+            //     }
+            // } else {
+            //     if ( this.model.get("cover") == "horizontal" ) { // width > height // fit left & right
+            //         css.width = winWidth;
+            //         css.height = winWidth / windowRatio;
+            //         css.top = (winHeight - css.height) / 2;
+            //     } else if ( this.model.get("cover") == "vertical" ) {
+            //         var left = ( winWidth - winHeight * windowRatio ) / 2;
+
+            //         css.width = winHeight * windowRatio;
+            //         css.height = winHeight;
+            //         css.left = left < 0 ? left : 0;
+            //     }
+            // }
 
             css.fontSize = ( css.width / 520 ) +'em';
 

@@ -17,10 +17,26 @@
   }
 }
 
+/*
+.transition( @property, @sec ) {
+    transition: @property @sec;
+    -webkit-transition: @property @sec;
+}
+*/
+
+.ZEEGA-player-wrapper {
+  overflow: hidden;
+  margin: auto;
+  .transition( height, 0.5s );
+  .transition( width, 0.5s );
+}
 
 .ZEEGA-player-window {
-  overflow:hidden;
 
+  height: 100%;
+  .transition( height, 0.5s );
+  .transition( width, 0.5s );
+  
   &>.visual-element {
     position: absolute;
     top:0;
