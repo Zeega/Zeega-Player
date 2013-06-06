@@ -1,14 +1,14 @@
 define([
     "player/app",
 
-    "zeega-parser/parser",
+    "engine/parser",
 
     "player/modules/relay",
     "player/modules/status",
     "player/modules/player-layout"
 ],
 
-function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
+function( app, Engine, Relay, Status, PlayerLayout ) {
     /**
     Player
 
@@ -331,7 +331,7 @@ function( app, ZeegaParser, Relay, Status, PlayerLayout ) {
         },
 
         _parseData: function( response ) {
-            this.project = new ZeegaParser.parse( response,
+            this.project = new Engine.parse( response,
                 _.extend({},
                     this.toJSON(),
                     {
