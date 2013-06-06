@@ -1,5 +1,5 @@
 define([
-    "spin",
+    "engineVendor/spin",
     "backbone",
     "jqueryUI",
     "plugins/backbone.layoutmanager"
