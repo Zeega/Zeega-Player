@@ -114,6 +114,7 @@ function( app, ControlsView ) {
             css.width = winHeight * windowRatio;
             css.height = winHeight;
             css.top = (winHeight - css.height) / 2;
+            css.fontSize = ( css.width / 520 ) +'em';
 
             return css;
         },
@@ -140,55 +141,10 @@ function( app, ControlsView ) {
             if ( this.model.get("mobile") ) {
 
             } else {
-                // if ( actualRatio > windowRatio ) {           // width > height // fit left & right
-                    css.width = winWidth < playerMaxWidth ? winWidth : playerMaxWidth;
-                    css.height = winHeight;
-                    css.top = (winHeight - css.height) / 2;
-                // } else {                                     // width < height
-                //     css.width = winHeight * windowRatio;
-                //     css.height = winHeight;
-                //     css.left = (winWidth - css.width) / 2;
-                // }
+                css.width = winWidth < playerMaxWidth ? winWidth : playerMaxWidth;
+                css.height = winHeight;
+                css.top = (winHeight - css.height) / 2;
             }
-
-            // if ( this.model.get("cover") === true ) {
-            //     if ( actualRatio > windowRatio ) { // width > height // fit left & right
-            //         css.width = winWidth;
-            //         css.height = winWidth / windowRatio;
-            //         css.top = (winHeight - css.height) / 2;
-            //     } else if ( this.model.get("cover") == "vertical" ) {
-            //         css.width = winHeight * windowRatio;
-            //         css.height = winHeight;
-            //         css.left = (winWidth - css.width) / 2;
-            //     } else { // width < height
-            //         css.width = winHeight * windowRatio;
-            //         css.height = winHeight;
-            //         css.left = (winWidth - css.width) / 2;
-            //     }
-            // } else if ( this.model.get("cover") === false ) {
-            //     if ( actualRatio > windowRatio ) { // width > height
-            //         css.width = winHeight * windowRatio;
-            //         css.height = winHeight;
-            //     } else { // width < height
-            //         css.width = winWidth;
-            //         css.height = winWidth / windowRatio;
-            //         css.top = (winHeight - css.height) / 2;
-            //     }
-            // } else {
-            //     if ( this.model.get("cover") == "horizontal" ) { // width > height // fit left & right
-            //         css.width = winWidth;
-            //         css.height = winWidth / windowRatio;
-            //         css.top = (winHeight - css.height) / 2;
-            //     } else if ( this.model.get("cover") == "vertical" ) {
-            //         var left = ( winWidth - winHeight * windowRatio ) / 2;
-
-            //         css.width = winHeight * windowRatio;
-            //         css.height = winHeight;
-            //         css.left = left < 0 ? left : 0;
-            //     }
-            // }
-
-            css.fontSize = ( css.width / 520 ) +'em';
 
             // Append unit to calculated value
             css.width += "px";
