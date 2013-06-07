@@ -273,7 +273,10 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
         */
 
         initialize: function( attributes ) {
+
             this.loadSoundtrack = _.once(function() {
+                // this can be done better // TODO 6/8/13
+                app.soundtrack = this.project.sequences.at(0).soundtrackModel;
 
                 if ( app.soundtrack ) {
                     if ( app.soundtrack.state == "ready" ) {
