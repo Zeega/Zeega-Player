@@ -143,6 +143,15 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
             preloadRadius: 2,
 
             /**
+            the beginning state of the preview. vertical or fullscreen mode
+
+            @property previewMode
+            @type String
+            @default "standard"
+            **/
+            previewMode: "standard", // or mobile
+
+            /**
             Instance of a Sequence.Collection
 
             @property sequences
@@ -363,8 +372,13 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
         // attach listeners
         _listen: function() {
             this.on("cue_frame", this.cueFrame, this );
+            this.on("size_toggle", this.toggleSize, this );
             // relays
             this.relay.on("change:current_frame", this._remote_cueFrame, this );
+        },
+
+        toggleSize: function() {
+            this.Layout.toggleSize();
         },
 
         _remote_cueFrame: function( info, id ) {

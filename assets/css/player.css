@@ -212,12 +212,6 @@
   margin: 0 auto;
   position: relative;
 }
-/*
-.transition( @property, @sec ) {
-    transition: @property @sec;
-    -webkit-transition: @property @sec;
-}
-*/
 .ZEEGA-player-wrapper {
   overflow: hidden;
   margin: auto;
@@ -349,6 +343,27 @@
   border: none;
   height: 16px;
   box-shadow: none;
+}
+.ZEEGA-player-control a {
+  position: absolute;
+}
+.ZEEGA-player-control .size-toggle {
+  padding: 10px;
+}
+.ZEEGA-player-control .size-toggle-laptop,
+.ZEEGA-player-control .size-toggle-mobile {
+  background-image: url('../img/screen-toggle.png');
+  background-position: 0px 0px;
+  background-repeat: no-repeat;
+  background-size: 50px 100px;
+  display: inline-block;
+  height: 50px;
+  width: 50px;
+  transition: background-position 0.5s;
+  -webkit-transition: background-position 0.5s;
+}
+.ZEEGA-player-control .size-toggle-mobile {
+  background-position: 0 -50px;
 }
 .ZEEGA-basic-controls a {
   z-index: 99999;

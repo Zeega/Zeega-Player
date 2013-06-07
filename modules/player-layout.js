@@ -17,12 +17,16 @@ function( app, ControlsView ) {
         template: "app/player/templates/layouts/player-layout",
         className: "ZEEGA-player",
 
+        mobileView: false,
+
         initialize: function() {
             // debounce the resize function so it doesn"t bog down the browser
             var divId = this.model.get("divId"),
                 lazyResize = _.debounce(function() {
                     this.resizeWindow();
                 }.bind(this), 300);
+
+            this.mobileView = this.model.get("previewMode") == "mobile";
 
             // attempt to detect if the parent container is being resized
             app.$( window ).resize( lazyResize );
@@ -34,7 +38,7 @@ function( app, ControlsView ) {
 
         afterRender: function() {
             // correctly size the player window
-            this.$(".ZEEGA-player-wrapper").css( this.getWrapperSize() );
+            this.$(".ZEEGA-player-wrapper").css( this.mobileView ? this.getPlayerSize() : this.getWrapperSize() );
             this.$(".ZEEGA-player-window").css( this.getPlayerSize() );
 
             this.setPrevNext();
@@ -88,9 +92,18 @@ function( app, ControlsView ) {
             }
         },
 
+        toggleSize: function() {
+            this.mobileView = !this.mobileView;
+            if ( this.mobileView ) {
+                this.$(".ZEEGA-player-wrapper").css( this.getPlayerSize() );
+            } else {
+                this.$(".ZEEGA-player-wrapper").css( this.getWrapperSize() );
+            }
+        },
+
         resizeWindow: function() {
             // animate the window size in place
-            var css = this.getWrapperSize();
+            var css = this.mobileView ? this.getPlayerSize() : this.getWrapperSize();
 
             this.$(".ZEEGA-player-wrapper").css( css );
             this.$(".ZEEGA-player-window").css( this.getPlayerSize() );

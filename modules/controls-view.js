@@ -2,9 +2,10 @@ define([
     "player/app",
     "player/modules/controls/arrows",
     "player/modules/controls/close",
-    "player/modules/controls/playpause"
+    "player/modules/controls/playpause",
+    "player/modules/controls/size-toggle"
 ],
-function( app, ArrowView, CloseView, PlayPauseView ) {
+function( app, ArrowView, CloseView, PlayPauseView, SizeToggle ) {
 
     return app.Backbone.Layout.extend({
 
@@ -28,22 +29,24 @@ function( app, ArrowView, CloseView, PlayPauseView ) {
             if ( this.options.settings.playpause ) {
                 this.insertView( new PlayPauseView() );
             }
-        },
 
-        serialize: function() {
-
-            // return _.defaults( this.options.settings, {
-            //     arrows: true,
-            //     close: true,
-            //     playpause: true
-            // });
+            if ( this.options.settings.sizeToggle ) {
+                this.insertView( new SizeToggle() );
+            }
         },
 
         events: {
             "click .ZEEGA-close": "close",
             "click .ZEEGA-prev": "prev",
             "click .ZEEGA-next": "next",
-            "click .ZEEGA-playpause": "playpause"
+            "click .ZEEGA-playpause": "playpause",
+            "click .size-toggle": "toggleSize"
+        },
+
+        toggleSize: function( event ) {
+            this.model.trigger("size_toggle");
+
+            this.$(".size-toggle i").toggleClass("size-toggle-laptop").toggleClass("size-toggle-mobile");
         },
 
         close: function( event ) {

@@ -8,6 +8,37 @@
 @largeArrowSize: 3em;
 
 
+.ZEEGA-player-control {
+
+  a {
+    position: absolute;
+  }
+
+  .size-toggle {
+    padding: 10px;
+  }
+
+  .size-toggle-laptop,
+  .size-toggle-mobile {
+      background-image: url('@{image-folder}/screen-toggle.png');
+      background-position: 0px 0px;
+      background-repeat: no-repeat;
+      background-size: 50px 100px;
+      display: inline-block;
+      height: 50px;
+      width: 50px; 
+
+      .transition( background-position, 0.5s );
+  }
+
+  .size-toggle-laptop {
+
+  }
+  .size-toggle-mobile {
+    background-position: 0 -50px;
+  }
+}
+
 .ZEEGA-basic-controls {
 
     a {
@@ -52,12 +83,6 @@
 
 }
 
-.transition( @property, @sec ) {
-    transition: @property @sec;
-    -webkit-transition: @property @sec;
-}
-
-
 .controls-arrow {
 
     top: 0;
@@ -75,8 +100,6 @@
     -o-transition: opacity 0.5s; /* Opera */
   }
 }
-
-
 
 .nav-arrow ( @height:30px, @thickness: 10px, @color:#fff, @colorHover:orange, @opacity: 0.5, @opacityHover: 1 ) {
   height: @height;
