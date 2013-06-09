@@ -17,7 +17,8 @@ function( app, ControlsView ) {
         template: "app/player/templates/layouts/player-layout",
         className: "ZEEGA-player",
 
-        mobileView: false,
+        mobileView: true,
+        mobileOrientation: "portrait", // "landscape"
 
         initialize: function() {
             // debounce the resize function so it doesn"t bog down the browser
@@ -38,7 +39,7 @@ function( app, ControlsView ) {
 
         afterRender: function() {
             // correctly size the player window
-            this.$(".ZEEGA-player-wrapper").css( this.mobileView ? this.getPlayerSize() : this.getWrapperSize() );
+            this.$(".ZEEGA-player-wrapper").css( this.getWrapperSize() );
             this.$(".ZEEGA-player-window").css( this.getPlayerSize() );
 
             this.setPrevNext();
@@ -103,7 +104,7 @@ function( app, ControlsView ) {
 
         resizeWindow: function() {
             // animate the window size in place
-            var css = this.mobileView ? this.getPlayerSize() : this.getWrapperSize();
+            var css = this.getWrapperSize();
 
             this.$(".ZEEGA-player-wrapper").css( css );
             this.$(".ZEEGA-player-window").css( this.getPlayerSize() );
@@ -113,7 +114,7 @@ function( app, ControlsView ) {
         },
 
         getPlayerSize: function() {
-            var windowRatio, winHeight,
+            var windowRatio, screenRatio, winHeight, winWidth,
                 css = {
                     width: 0,
                     height: 0,
@@ -121,12 +122,30 @@ function( app, ControlsView ) {
                     left: 0
                 };
 
-            windowRatio = this.model.get("windowRatio");
             winHeight = app.$( this.model.get("target") ).find(".ZEEGA-player").height();
+            winWidth = app.$( this.model.get("target") ).find(".ZEEGA-player").width();
 
-            css.width = winHeight * windowRatio;
-            css.height = winHeight;
-            css.top = (winHeight - css.height) / 2;
+            windowRatio = this.model.get("windowRatio");
+            screenRatio = winWidth / winHeight;
+
+            if ( this.mobileView ) {
+                if ( screenRatio < windowRatio ) { // vertical
+                    var wrapperHeight = ( winWidth / windowRatio ) * 1.1326;
+
+                    css.width = winWidth;
+                    css.height = winWidth / windowRatio;
+                    css.top = (wrapperHeight - css.height) / 2;
+                } else { // portrait
+                    css.height = winHeight;
+                    css.width = css.height * windowRatio;
+                    css.top = 0;
+                }
+            } else {
+                css.width = winHeight * windowRatio;
+                css.height = winHeight;
+                css.top = (winHeight - css.height) / 2;
+            }
+
             css.fontSize = ( css.width / 520 ) +'em';
 
             return css;
@@ -134,7 +153,7 @@ function( app, ControlsView ) {
 
         // calculate and return the correct window size for the player window
         getWrapperSize: function() {
-            var windowRatio, winWidth, winHeight, actualRatio, playerMaxWidth, playerMinWidth,
+            var windowRatio, winWidth, winHeight, screenRatio, playerMaxWidth, playerMinWidth,
                 css = {
                     width: 0,
                     height: 0,
@@ -145,14 +164,21 @@ function( app, ControlsView ) {
             windowRatio = this.model.get("windowRatio");
             winWidth = app.$( this.model.get("target") ).find(".ZEEGA-player").width();
             winHeight = app.$( this.model.get("target") ).find(".ZEEGA-player").height();
-            actualRatio = winWidth / winHeight;
+            screenRatio = winWidth / winHeight;
 
             playerMaxWidth = winHeight * (16/9);
             playerMinWidth = winHeight * windowRatio;
 
-
             if ( this.model.get("mobile") ) {
+                css.width = winWidth;
+                css.height = ( winWidth / windowRatio ) * 1.1326;
 
+                if ( screenRatio < windowRatio ) { // vertical
+                    css.top = ( winHeight - css.height ) / 2;
+                } else { // portrait
+                    css.top = 0;
+                }
+                
             } else {
                 css.width = winWidth < playerMaxWidth ? winWidth : playerMaxWidth;
                 css.height = winHeight;
