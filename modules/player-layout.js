@@ -27,8 +27,7 @@ function( app, ControlsView ) {
                     this.resizeWindow();
                 }.bind(this), 300);
 
-            // this.mobileView = this.model.get("previewMode") == "mobile";
-
+            this.mobileView = this.model.get("previewMode") == "mobile";
             // attempt to detect if the parent container is being resized
             app.$( window ).resize( lazyResize );
         },
@@ -39,15 +38,21 @@ function( app, ControlsView ) {
 
         afterRender: function() {
             // correctly size the player window
-            this.$(".ZEEGA-player-wrapper").css( this.getWrapperSize() );
+            if ( this.mobileView ) {
+                this.$(".ZEEGA-player-wrapper").css( this.getPlayerSize() );
+            } else {
+                this.$(".ZEEGA-player-wrapper").css( this.getWrapperSize() );
+            }
             this.$(".ZEEGA-player-window").css( this.getPlayerSize() );
 
             this.setPrevNext();
             this.renderControls();
 
-            _.delay(function() {
-                this.controls.toggleSize();
-            }.bind( this ), 1000 );
+            if ( this.model.get("previewMode") == "standard>mobile" ) {
+                _.delay(function() {
+                    this.controls.toggleSize();
+                }.bind( this ), 1000 );
+            }
         },
 
         setPrevNext: function() {
