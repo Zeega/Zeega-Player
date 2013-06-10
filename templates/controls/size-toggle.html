@@ -1,3 +1,7 @@
 <a href="#" class="size-toggle">
-    <i class="size-toggle-mobile"></i>
+    <% if ( previewMode == "mobile" ) { %>
+        <i class="size-toggle-mobile"></i>
+    <% } else { %>
+        <i class="size-toggle-laptop"></i>
+    <% } %>
 </a>

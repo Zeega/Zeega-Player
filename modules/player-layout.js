@@ -17,7 +17,7 @@ function( app, ControlsView ) {
         template: "app/player/templates/layouts/player-layout",
         className: "ZEEGA-player",
 
-        mobileView: true,
+        mobileView: false,
         mobileOrientation: "portrait", // "landscape"
 
         initialize: function() {
@@ -27,7 +27,7 @@ function( app, ControlsView ) {
                     this.resizeWindow();
                 }.bind(this), 300);
 
-            this.mobileView = this.model.get("previewMode") == "mobile";
+            // this.mobileView = this.model.get("previewMode") == "mobile";
 
             // attempt to detect if the parent container is being resized
             app.$( window ).resize( lazyResize );
@@ -44,6 +44,10 @@ function( app, ControlsView ) {
 
             this.setPrevNext();
             this.renderControls();
+
+            _.delay(function() {
+                this.controls.toggleSize();
+            }.bind( this ), 1000 );
         },
 
         setPrevNext: function() {
