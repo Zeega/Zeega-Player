@@ -31,7 +31,8 @@ function( app, ArrowView, CloseView, PlayPauseView, SizeToggle ) {
             }
 
             if ( this.options.settings.sizeToggle ) {
-                this.insertView( new SizeToggle({ model: this.model }) );
+                this.sizeToggle = new SizeToggle({ model: this.model });
+                this.insertView( this.sizeToggle );
             }
         },
 
@@ -46,9 +47,7 @@ function( app, ArrowView, CloseView, PlayPauseView, SizeToggle ) {
         toggleSize: function( event ) {
             this.model.trigger("size_toggle");
 
-            this.$(".size-toggle i")
-                .toggleClass("size-toggle-laptop")
-                .toggleClass("size-toggle-mobile");
+            this.sizeToggle.toggle();
         },
 
         close: function( event ) {

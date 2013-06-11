@@ -18,7 +18,7 @@ function( app, ControlsView ) {
         className: "ZEEGA-player",
 
         mobileView: false,
-        mobileOrientation: "portrait", // "landscape"
+        mobilePreview: true,
 
         initialize: function() {
             // debounce the resize function so it doesn"t bog down the browser
@@ -27,6 +27,7 @@ function( app, ControlsView ) {
                     this.resizeWindow();
                 }.bind(this), 300);
 
+            this.mobilePreview = this.model.get("previewMode") == "mobile";
             this.mobileView = this.model.get("mobile");
             // attempt to detect if the parent container is being resized
             app.$( window ).resize( lazyResize );
@@ -42,7 +43,12 @@ function( app, ControlsView ) {
                 this.$(".ZEEGA-player-wrapper").css( this.getPlayerSize() );
                 this.$el.addClass("mobile-player");
             } else {
-                this.$(".ZEEGA-player-wrapper").css( this.getWrapperSize() );
+
+                if ( this.model.get("previewMode") == "mobile" ) {
+                    this.$(".ZEEGA-player-wrapper").css( this.getPlayerSize() );
+                } else {
+                    this.$(".ZEEGA-player-wrapper").css( this.getWrapperSize() );
+                }
             }
             this.$(".ZEEGA-player-window").css( this.getPlayerSize() );
 
@@ -104,8 +110,8 @@ function( app, ControlsView ) {
         },
 
         toggleSize: function() {
-            this.mobileView = !this.mobileView;
-            if ( this.mobileView ) {
+            this.mobilePreview = !this.mobilePreview;
+            if ( this.mobilePreview ) {
                 this.$(".ZEEGA-player-wrapper").css( this.getPlayerSize() );
             } else {
                 this.$(".ZEEGA-player-wrapper").css( this.getWrapperSize() );
