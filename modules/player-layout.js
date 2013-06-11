@@ -40,6 +40,7 @@ function( app, ControlsView ) {
             // correctly size the player window
             if ( this.mobileView ) {
                 this.$(".ZEEGA-player-wrapper").css( this.getPlayerSize() );
+                this.$el.addClass("mobile-player");
             } else {
                 this.$(".ZEEGA-player-wrapper").css( this.getWrapperSize() );
             }
