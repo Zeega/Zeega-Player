@@ -27,7 +27,7 @@ function( app, ControlsView ) {
                     this.resizeWindow();
                 }.bind(this), 300);
 
-            this.mobileView = this.model.get("previewMode") == "mobile";
+            this.mobileView = this.model.get("mobile");
             // attempt to detect if the parent container is being resized
             app.$( window ).resize( lazyResize );
         },
