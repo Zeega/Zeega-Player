@@ -38,6 +38,7 @@ function( app, ControlsView ) {
         },
 
         afterRender: function() {
+            if ( this.model.get("preview") ) this.$el.addClass("preview-player");
             // correctly size the player window
             if ( this.mobileView ) {
                 this.$(".ZEEGA-player-wrapper").css( this.getPlayerSize() );
