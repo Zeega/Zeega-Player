@@ -214,11 +214,13 @@
   position: relative;
 }
 .ZEEGA-player-wrapper {
+  position: absolute;
   background: black;
   overflow: hidden;
   margin: auto;
-  border-left: 1px solid #333;
-  border-right: 1px solid #333;
+  outline: 1px solid #333;
+  left: 0;
+  right: 0;
   transition: height 0.5s;
   -webkit-transition: height 0.5s;
   transition: width 0.5s;
