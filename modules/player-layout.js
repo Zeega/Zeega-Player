@@ -155,7 +155,7 @@ function( app, ControlsView ) {
                 css.top = (winHeight - css.height) / 2;
             }
 
-            css.fontSize = ( css.width / 520 ) +'em';
+            css.fontSize = ( css.width / 430 ) +'em';
 
             return css;
         },
