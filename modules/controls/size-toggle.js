@@ -36,7 +36,7 @@ function( app ) {
 
             this.$("i").tipsy("show");
             setTimeout(function() {
-                // this.$("i").tipsy("hide");
+                this.$("i").tipsy("hide");
             }.bind(this), 5000 );
         },
 
