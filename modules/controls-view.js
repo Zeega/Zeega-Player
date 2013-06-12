@@ -16,6 +16,8 @@ function( app, ArrowView, CloseView, PlayPauseView, SizeToggle ) {
             this.model.on("frame_play", this.onFramePlay, this );
             this.model.on("play", this.onPlay, this );
             this.model.on("pause", this.onPause, this );
+
+            this.model.on("player_destroyed", this.cleanup, this );
         },
 
         beforeRender: function() {
@@ -105,6 +107,10 @@ function( app, ArrowView, CloseView, PlayPauseView, SizeToggle ) {
 
         disableArrow: function(className) {
             this.$("."+ className).addClass("disabled");
+        },
+
+        cleanup: function() {
+            $(".tipsy").remove();
         }
 
     });
