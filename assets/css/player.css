@@ -196,7 +196,6 @@
   src: local('Ewert'), local('Ewert-Regular'), url(http://themes.googleusercontent.com/static/fonts/ewert/v1/32zt7mPTGOP9C_29yULlQaCWcynf_cDxXwCLxiixG1c.woff) format('woff');
 }
 .ZEEGA-player {
-  background: url(../img/transparency-grid.png);
   background-color: #000000;
   font-family: "Helvetica Neue", Helvetica, sans-serif;
   font-size: 16px;
@@ -208,8 +207,8 @@
   width: 100%;
   opacity: 0.01;
 }
-.ZEEGA-player.mobile-player {
-  background: black;
+.ZEEGA-player.preview-player {
+  background: url(../img/transparency-grid.png);
 }
 .ZEEGA-player .ZEEGA-player-window,
 .ZEEGA-player .ZEEGA-player-overlay {
