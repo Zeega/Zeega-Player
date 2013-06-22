@@ -1,7 +1,9 @@
+//TODO replace player/app
 define([
-    "player/app"
+    "player/app",
+    "app"
 ],
-function( app ) {
+function( app, baseApp ) {
 
     return app.Backbone.Layout.extend({
         template: "app/player/templates/controls/size-toggle",
@@ -25,8 +27,10 @@ function( app ) {
 
             if ( this.mobile ) {
                 this.$("i").attr("title", "Switch to laptop view");
+                baseApp.emit("preview_toggle_view", { state: "mobile" });
             } else {
                 this.$("i").attr("title", "Switch to mobile view");
+                baseApp.emit("preview_toggle_view", { state: "desktop" });
             }
             // this.initTipsy();
         },
