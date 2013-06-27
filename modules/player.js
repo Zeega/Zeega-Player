@@ -140,7 +140,7 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
             @type Collection
             @default null
             **/
-            preloadRadius: 2,
+            preloadRadius: 4,
 
             /**
             the beginning state of the preview. vertical or fullscreen mode
