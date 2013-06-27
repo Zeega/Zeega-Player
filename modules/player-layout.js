@@ -41,7 +41,7 @@ function( app, ControlsView ) {
             if ( this.model.get("preview") ) this.$el.addClass("preview-player");
             // correctly size the player window
             if ( this.mobileView ) {
-                this.$(".ZEEGA-player-wrapper").css( this.getPlayerSize() );
+                this.$(".ZEEGA-player-wrapper").css( this.getWrapperSize() );
                 this.$el.addClass("mobile-player");
             } else {
 
@@ -120,7 +120,6 @@ function( app, ControlsView ) {
         },
 
         resizeWindow: function() {
-            // animate the window size in place
             var css = this.getWrapperSize();
 
             this.$(".ZEEGA-player-wrapper").css( css );
