@@ -347,6 +347,7 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
                 _.extend({},
                     this.toJSON(),
                     {
+                        mode: "player",
                         attach: {
                             status: this.status,
                             relay: this.relay
