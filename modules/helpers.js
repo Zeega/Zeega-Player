@@ -1,10 +1,10 @@
 define([
-    "player/app"
+    "app"
 ],
 
 function( app ) {
 
-    var Helpers = app.module(),
+    var Helpers = {},
         location = window.location;
 
     Helpers.getHost = function() {

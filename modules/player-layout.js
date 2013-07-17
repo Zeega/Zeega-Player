@@ -1,5 +1,5 @@
 define([
-    "player/app",
+    "app",
     "player/modules/controls-view"
 ],
 function( app, ControlsView ) {

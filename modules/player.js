@@ -1,5 +1,5 @@
 define([
-    "player/app",
+    "app",
 
     "engine/parser",
 

@@ -1,5 +1,5 @@
 define([
-    "player/app",
+    "app",
     "player/modules/controls/arrows",
     "player/modules/controls/close",
     "player/modules/controls/playpause",
