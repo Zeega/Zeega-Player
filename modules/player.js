@@ -341,17 +341,17 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
         },
 
         cuePage: function( page ) {
+            console.log("CP", page.id, page)
             if ( page.state == "waiting" ) {
                 // preload
                 this.zeega.once("page_ready:" + page.id, this._playPage, this );
                 this.preloadPage( page );
-            } else if ( page.state == "loading" ) {
-                // wait for ready event
             } else if ( page.state == "ready" ) {
                 this.state = "playing";
                 // if ( app.soundtrack ) app.soundtrack.play();
-                this.emit( "play", this );
-                this.zeega.getCurrentPage().play();
+                // this.emit( "play", this );
+                // this._playPage( page );
+                this.zeega.focusPage( page );
             }
         },
 
@@ -371,7 +371,8 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
 
         // can only be called if a page is preloaded and ready
         _playPage: function( page ) {
-            page.play();
+            this.zeega.focusPage( page );
+//            page.play();
         },
 
         _fadeIn: function() {
@@ -388,6 +389,25 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
 
         emit: function( event, options ) {
             this.trigger( event, options );
+        },
+
+        // goes to the next frame after n ms
+        cueNext: function( ms ) {
+            this.cuePage( this.zeega.getNextPage() );
+        },
+
+        // goes to the prev frame after n ms
+        cuePrev: function( ms ) {
+
+        },
+
+        // goes to previous frame in history
+        cueBack: function() {
+            // this.status.onBack();
+            // var history = this.status.get("frameHistory");
+            // if( history.length > 0 ){
+            //     this.cueFrame( history [ history.length - 1 ] );
+            // }
         },
 
 
@@ -491,27 +511,6 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
         playPause: function() {
             if ( this.state == "paused" || this.state == "suspended" ) this.play();
             else this.pause();
-        },
-
-        // goes to the next frame after n ms
-        cueNext: function( ms ) {
-            this.cueFrame( this.status.get("current_frame_model").get("_next"), ms );
-        },
-
-        // goes to the prev frame after n ms
-        cuePrev: function( ms ) {
-            this.cueFrame( this.status.get("current_frame_model").get("_prev"), ms );
-        },
-
-        // goes to previous frame in history
-        cueBack: function() {
-
-            this.status.onBack();
-            var history = this.status.get("frameHistory");
-            if( history.length > 0 ){
-                this.cueFrame( history [ history.length - 1 ] );
-            }
-
         },
 
         // mobile only hack
