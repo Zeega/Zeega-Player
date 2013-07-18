@@ -1,48 +1,18 @@
 define([
     "app",
-
-    "engine/parser",
-
+    "engine/engine",
     "player/modules/relay",
     "player/modules/status",
     "player/modules/player-layout"
 ],
 
 function( app, Engine, Relay, Status, PlayerLayout ) {
-    /**
-    Player
 
-    can accept:
-
-    - valid ZEEGA data (json)
-
-    - valid url returning valid ZEEGA data
-
-    exposes the player API (play, pause, stop, destroy, getCitations, etc) // to be documented further
-
-    broadcasts events (ready, play, pause, stop, timeupdate, frameadvance, etc) // to be documented further
-
-    is the only external contact point
-
-        // initialize player
-        var player = new Player.Model({ `player attributes` });
-
-        // minimum
-        var player = new Player.Model({ url: "<valid url>"});
-        var player = new Player.Model({ data: {<valid data>} });
-
-    @class Player
-    @constructor
-    */
-
-    Player = app.Backbone.Model.extend({
+    return app.Backbone.Model.extend({
 
         ready: false,          // the player is parsed and in the dom. can call play play. layers have not been preloaded yet
         state: "paused",
-        relay: null,
-        status: null,
-        gmapAPI: "waiting",
-        Layout: null,
+        layout: null,
 
         // default settings -  can be overridden by project data
         defaults: {
@@ -68,10 +38,10 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
 
             @property data
             @type Object
-            @default null
+            @default false
             **/
 
-            data: null,
+            data: false,
 
             /**
             Turns on verbose console logs of player events
@@ -140,7 +110,7 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
             @type Collection
             @default null
             **/
-            preloadRadius: 4,
+            preloadRadius: 2,
 
             /**
             the beginning state of the preview. vertical or fullscreen mode
@@ -281,54 +251,131 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
         *
         */
 
+
+        projects: null,
+
         initialize: function( attributes ) {
-
-            this.loadSoundtrack = _.once(function() {
-                // this can be done better // TODO 6/8/13
-                app.soundtrack = this.project.sequences.at(0).soundtrackModel;
-
-                if ( app.soundtrack ) {
-                    if ( app.soundtrack.state == "ready" ) {
-                        app.soundtrack.play();
-                    } else {
-                        app.soundtrack.on("layer_ready", function() {
-                            app.soundtrack.play();
-                        });
-                    }
-                    app.soundtrack.render();
-                }
-            });
-
-            this._mergeAttributes( attributes );
-            this.relay = new Relay.Model();
-            this.status = new Status.Model({ project: this });
-            app.status = this.status; // booooo
-            this._setTarget();
-            this._load( attributes );
+            this.getData();
         },
 
-        _mergeAttributes: function( attributes ) {
-            var attr = _.pick( attributes, _.keys( this.defaults ) );
-
-            this.set( attr, { silent: true });
-            app.attributes = this.toJSON();
-        },
-
-        _load: function( attributes ) {
-            var rawDataModel = new app.Backbone.Model(); // throw away model. may contain extraneous data
-
-            if ( attributes.url ) {
-                rawDataModel.url = attributes.url;
-                rawDataModel.fetch().success(function( response ) {
-                    this._parseData( response );
-                }.bind( this )).error(function() {
-                    throw new Error("Ajax load fail");
-                });
-            } else if ( attributes.data ) {
-                this._parseData( attributes.data );
+        // prefers 'fresh' data from url
+        getData: function() {
+            if ( this.get("url") ) {
+                $.getJSON( this.get("url"), function( data ) {
+                    this.initialParse( data );
+                }.bind(this));
+            } else if ( this.get("data") ) {
+                this.initialParse( this.get("data") );
             } else {
                 throw new TypeError("`url` expected non null");
             }
+        },
+
+        initialParse: function( data ) {
+            this.zeega = new Engine.generateZeega( data,
+                _.extend({},
+                    this.toJSON(),
+                    {
+                        mode: "player"
+                    })
+                );
+
+            this._render();
+        },
+
+        // renders the player to the dom // this could be a _.once
+        _render: function() {
+            var target;
+
+            this._setTarget();
+            target = this.get("target");
+
+            this.layout = new PlayerLayout({
+                model: this,
+                attributes: {
+                    "data-projectID": this.id
+                }
+            });
+            target.append( this.layout.el );
+
+            this.once("layout_rendered", this._onRendered, this );
+
+            // do not apply relative style if the zeega is in appended to the body
+            if ( !target.is("body") ) {
+                target.css( "position", "relative" );
+            }
+
+            this.layout.render();
+        },
+
+        _onRendered: function() {
+            this.ready = true;
+            this._initEvents(); // this should be elsewhere. in an onReady fxn?
+            // this.emit( "ready", this );
+
+            if ( this.get("autoplay") ) this.play();
+        },
+
+
+        // if the player is paused, then play the project
+        // if the player is not rendered, then render it first
+        /**
+        * play
+        * plays the project
+        * -if the player is paused, then play the project
+        * -if the player is not rendered, then render it first
+        *
+        * @method play
+        */
+
+        play: function() {
+            var page = this.zeega.getCurrentPage();
+
+            // this.loadSoundtrack( app );
+            if ( !this.ready ) {
+                this.render(); // render the player first! // this should not happen
+            } else if ( this.state == "paused" || this.state == "suspended" ) {
+                this._fadeIn();
+                this.cuePage( page );
+            }
+        },
+
+        cuePage: function( page ) {
+            if ( page.state == "waiting" ) {
+                // preload
+                this.zeega.once("page_ready:" + page.id, this._playPage, this );
+                this.preloadPage( page );
+            } else if ( page.state == "loading" ) {
+                // wait for ready event
+            } else if ( page.state == "ready" ) {
+                this.state = "playing";
+                // if ( app.soundtrack ) app.soundtrack.play();
+                this.emit( "play", this );
+                this.zeega.getCurrentPage().play();
+            }
+        },
+
+        preloadPage: function( page ) {
+            var nextPage = this.zeega.getNextPage( page );
+
+            page.preload();
+
+            for ( var i = 0; i < this.get("preloadRadius"); i++ ) {
+                if( nextPage ) {
+                    nextPage.preload();
+                    nextPage = this.zeega.getNextPage( nextPage );
+                }
+            }
+            
+        },
+
+        // can only be called if a page is preloaded and ready
+        _playPage: function( page ) {
+            page.play();
+        },
+
+        _fadeIn: function() {
+            this.layout.$el.fadeTo("fast", 1 );
         },
 
         // |target| may be a Selector, Node or jQuery object.
@@ -336,39 +383,23 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
         _setTarget: function() {
             var target = app.$( this.get("target") || document.body );
 
-            this.status.target = target;
-            this.put({
-                target: target
-            });
+            this.put({ target: target });
         },
 
-        _parseData: function( response ) {
-            this.project = new Engine.parse( response,
-                _.extend({},
-                    this.toJSON(),
-                    {
-                        mode: "player",
-                        attach: {
-                            status: this.status,
-                            relay: this.relay
-                        }
-                    })
-                );
-
-            this._setStartFrame();
-
-            this.status.emit( "data_loaded", _.extend({}, this.project.toJSON() ) );
-            this._render();
-            this._listen();
+        emit: function( event, options ) {
+            this.trigger( event, options );
         },
 
-        _setStartFrame: function() {
-            if ( this.get("startFrame") === null || this.project.getFrame( this.get("startFrame") ) === undefined ) {
-                this.put({
-                    startFrame: this.project.sequences.at(0).get("frames")[0]
-                });
-            }
-        },
+
+
+
+
+
+/////
+
+
+
+
 
         // attach listeners
         _listen: function() {
@@ -379,54 +410,10 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
         },
 
         toggleSize: function() {
-            this.Layout.toggleSize();
+            this.layout.toggleSize();
         },
 
-        _remote_cueFrame: function( info, id ) {
-            this.cueFrame( id );
-        },
-
-        // renders the player to the dom // this could be a _.once
-        _render: function() {
-            var target = this.get("target");
-
-            this.Layout = new PlayerLayout.Layout({
-                model: this,
-                attributes: {
-//                    id: "ZEEGA-player-" + this.data.id,
-                    "data-projectID": this.id
-                }
-            });
-
-            // do not apply relative style if the zeega is in appended to the body
-            if ( !target.is("body") ) {
-                target.css( "position", "relative" );
-            }
-            target.append( this.Layout.el );
-
-            this.Layout.render();
-
-            _.delay(function() {
-                this._onRendered();
-            }.bind(this), 100);
-        },
-
-        _fadeIn: function() {
-            this.Layout.$el.fadeTo( "fast", 1 );
-        },
-
-        _onRendered: function() {
-            this.ready = true;
-            this._initEvents(); // this should be elsewhere. in an onReady fxn?
-            this.status.emit( "ready", this );
-
-            this.preloadFramesFrom( this.get("startFrame") );
-
-            if ( this.get("autoplay") ) {
-                this.play();
-            }
-        },
-
+         // move this to layout
         _initEvents: function() {
             var _this = this;
 
@@ -447,57 +434,24 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
             }
         },
 
-        // if the player is paused, then play the project
-        // if the player is not rendered, then render it first
-        /**
-        * play
-        * plays the project
-        * -if the player is paused, then play the project
-        * -if the player is not rendered, then render it first
-        *
-        * @method play
-        */
+        
+        loadSoundtrack: _.once(function( app ) {
 
-        play: function() {
-            var currentFrame = this.status.get("current_frame"),
-                startFrame = this.get("startFrame"),
-                isCurrentNull, isStartNull;
+                console.log("load soundtrack")
+                // this can be done better // TODO 6/8/13
+                app.soundtrack = this.project.sequences.at(0).soundtrackModel;
 
-            this.loadSoundtrack();
-
-            if ( !this.ready ) {
-                this.render(); // render the player first!
-            } else if ( this.state == "paused" || this.state == "suspended" ) {
-                this._fadeIn();
-                if ( currentFrame ) {
-                    this.state = "playing";
-
-                    if ( app.soundtrack ) {
+                if ( app.soundtrack ) {
+                    if ( app.soundtrack.state == "ready" ) {
                         app.soundtrack.play();
+                    } else {
+                        app.soundtrack.on("layer_ready", function() {
+                            app.soundtrack.play();
+                        });
                     }
-                    this.status.emit( "play", this );
-                    this.status.get("current_frame_model").play();
+                    app.soundtrack.render();
                 }
-
-                // TODO: Find out what values currentFrame and startFrame could possibly be
-                // eg. current_frame, startFrame
-                isCurrentNull = currentFrame === null;
-                isStartNull = startFrame === null;
-
-                // if there is no info on where the player is or where to start go to first frame in project
-                if ( isCurrentNull && isStartNull ) {
-                    this.cueFrame( this.project.sequences.get("sequences")[0].frames[0] );
-                } else if ( isCurrentNull && !isStartNull && this.project.getFrame( startFrame ) ) {
-                    this.cueFrame( startFrame );
-                } else if ( !isCurrentNull ) {
-                    // unpause the player
-                } else {
-                    throw new Error("Valid parser not found");
-                }
-            }
-        },
-
-        loadSoundtrack: null,
+            }),
 
         mute: function() {
             // TODO
@@ -560,21 +514,6 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
 
         },
 
-        // goes to specified frame after n ms
-        cueFrame: function( id, ms ) {
-            ms = ms || 0;
-            if ( id !== undefined && id !== null && this.project.getFrame( id ) !== undefined ) {
-                if ( ms > 0 ) {
-                    _.delay(function() {
-                        this._goToFrame( id );
-                    }.bind(this), ms );
-                }
-                else {
-                    this._goToFrame( id );
-                }
-            }
-        },
-
         // mobile only hack
         // TODO -- this blows -j
         mobileLoadAudioLayers: function() {
@@ -593,68 +532,6 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
             });
         },
 
-        // should this live in the cueFrame method so it"s not exposed?
-        _goToFrame:function( id ) {
-            var oldID ;
-
-            this.preloadFramesFrom( id );
-
-            if ( this.status.get("current_frame") ) {
-                this.status.get("current_frame_model").exit( id );
-                oldID = this.status.get("current_frame_model").id;
-            }
-
-            // unrender current frame
-            // swap out current frame with new one
-            // Use |set| to ensure that a "change" event is triggered
-            // from this.status
-            this.status.set( "current_frame", id );
-            // Use |put| to ensure that NO "change" event is triggered
-            // from this.relay
-            this.relay.put( "current_frame", id );
-            // render current frame // should trigger a frame rendered event when successful
-            this.status.get("current_frame_model").render( oldID );
-
-            if ( this.state !== "playing" ) {
-                this.state = "playing";
-                this.status.emit( "play", this );
-            }
-        },
-
-
-        //*******  DEPRECATED  ********//
-        // if a next sequence exists, then cue and play it
-        cueNextSequence: function() {
-            var nextSequenceID = this.status.get("current_sequence_model").get("advance_to");
-
-            if ( nextSequenceID && this.get("sequences").get( nextSequenceID ) ) {
-                this.cueFrame( this.get("sequences").get( nextSequenceID ).get("frames")[0] );
-            }
-        },
-
-        //*******  DEPRECATED  ********//
-        // if a prev sequence exists, then cue and play it
-        cuePrevSequence: function() {
-            var seqHist = this.status.get("sequenceHistory"),
-                prevSequenceID;
-
-            seqHist.pop();
-            this.status.set("sequenceHistory", seqHist );
-            prevSequenceID = seqHist[ seqHist.length - 1 ];
-            if ( prevSequenceID ) {
-                this.cueFrame( this.get("sequences").get( prevSequenceID ).get("frames")[0] );
-            }
-        },
-
-        preloadFramesFrom: function( id ) {
-            if ( id ) {
-                var frame = this.project.getFrame( id );
-
-                _.each( frame.get("preload_frames"), function( frameID ) {
-                    this.project.getFrame( frameID ).preload();
-                }, this );
-            }
-        },
 
         // returns project data
         getProjectData: function() {
@@ -679,7 +556,7 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
         // completely obliterate the player. triggers event
         destroy: function() {
 
-            this.Layout.$el.fadeOut( this.get("fadeOut"), function() {
+            this.layout.$el.fadeOut( this.get("fadeOut"), function() {
                 // destroy all layers before calling player_destroyed
                 this.project.sequences.each(function( sequence ) {
                     sequence.frames.each(function( frame ) {
@@ -694,7 +571,7 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
                         }
                     });
                 });
-                this.Layout.remove();
+                this.layout.remove();
                 this.status.emit("player_destroyed");
             }.bind( this ));
         },
@@ -705,13 +582,8 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
         @method fitPlayer
         **/
         fitWindow: function() {
-            this.Layout.resizeWindow();
+            this.layout.resizeWindow();
         }
 
-
     });
-
-    app.player = Player;
-
-    return app;
 });

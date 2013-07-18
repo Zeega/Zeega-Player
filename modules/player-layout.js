@@ -10,9 +10,7 @@ function( app, ControlsView ) {
         # renders the window target for frames/layers
 
     */
-    var Player = {};
-
-    Player.Layout = app.Backbone.Layout.extend({
+    return app.Backbone.Layout.extend({
 
         template: "app/player/templates/layouts/player-layout",
         className: "ZEEGA-player",
@@ -61,6 +59,8 @@ function( app, ControlsView ) {
                     this.controls.toggleSize();
                 }.bind( this ), 1000 );
             }
+
+            this.model.emit("layout_rendered");
         },
 
         setPrevNext: function() {
@@ -209,5 +209,4 @@ function( app, ControlsView ) {
         }
     });
 
-    return Player;
 });
