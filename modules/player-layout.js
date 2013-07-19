@@ -60,27 +60,26 @@ function( app, ControlsView ) {
                 }.bind( this ), 1000 );
             }
 
-            this.model.emit("layout_rendered");
+            this.model.emit("layout:rendered");
         },
 
         setPrevNext: function() {
             // TODO: Investigate whether or not this-alias can be safely
             // replaced by bind(this)
             var next = this.model.get("next"),
-                prev = this.model.get("prev"),
-                _this = this;
+                prev = this.model.get("prev")
 
             if ( next && next.length ) {
                 app.$( next ).click(function() {
-                    _this.model.cueNext();
+                    this.model.cueNext();
                     return false;
-                });
+                }.bind(this));
             }
             if ( prev && prev.length ) {
                 app.$( prev ).click(function() {
-                    _this.model.cuePrev();
+                    this.model.cuePrev();
                     return false;
-                });
+                }.bind(this));
             }
         },
 

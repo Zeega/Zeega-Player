@@ -12,6 +12,7 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
 
         ready: false,          // the player is parsed and in the dom. can call play play. layers have not been preloaded yet
         state: "paused",
+        soundtrackState: "waiting",
         layout: null,
 
         // default settings -  can be overridden by project data
@@ -279,12 +280,19 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
                         mode: "player"
                     })
                 );
+            this.emit("player:ready", this );
+            this._listenToZeega();
+            this._renderLayout();
+        },
 
-            this._render();
+        _listenToZeega: function() {
+            this.zeega.on("all", function( event, attributes ) {
+                this.emit( event, attributes );
+            }, this );
         },
 
         // renders the player to the dom // this could be a _.once
-        _render: function() {
+        _renderLayout: function() {
             var target;
 
             this._setTarget();
@@ -296,9 +304,9 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
                     "data-projectID": this.id
                 }
             });
-            target.append( this.layout.el );
 
-            this.once("layout_rendered", this._onRendered, this );
+            target.append( this.layout.el );
+            this.once("layout:rendered", this._onRendered, this );
 
             // do not apply relative style if the zeega is in appended to the body
             if ( !target.is("body") ) {
@@ -310,30 +318,44 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
 
         _onRendered: function() {
             this.ready = true;
-            this._initEvents(); // this should be elsewhere. in an onReady fxn?
-            // this.emit( "ready", this );
+            this._renderSoundtrack();
+            this._initEvents();
+            this.emit( "ready", this );
 
             if ( this.get("autoplay") ) this.play();
+
+            this.zeega.getCurrentPage().once("layers:ready", function() {
+                this.emit("player player:canplay", this );
+            }, this );
+
+            this.preloadPage( this.zeega.getCurrentPage() );
         },
 
+        _renderSoundtrack: function() {
+            var soundtrack = this.zeega.projects.at(0).soundtrack;
 
-        // if the player is paused, then play the project
-        // if the player is not rendered, then render it first
-        /**
-        * play
-        * plays the project
-        * -if the player is paused, then play the project
-        * -if the player is not rendered, then render it first
-        *
-        * @method play
-        */
+            if ( soundtrack ) {
+                this.soundtrackState = "loading";
+                this.emit("soundtrack soundtrack:loading", soundtrack );
+                soundtrack.once("layer:ready", this._onSoundtrackReady, this );
+                soundtrack.set("_target", this.layout.$(".ZEEGA-soundtrack") );
+                soundtrack.render();
+            }
+        },
+
+        _onSoundtrackReady: function( soundtrack ) {
+            this.soundtrackState = "ready";
+            this.emit("soundtrack soundtrack:ready", soundtrack );
+
+            if ( this.get("autoplay") ) this.zeega.projects.at(0).soundtrack.play();
+        },
 
         play: function() {
             var page = this.zeega.getCurrentPage();
 
             // this.loadSoundtrack( app );
             if ( !this.ready ) {
-                this.render(); // render the player first! // this should not happen
+                this.renderLayout(); // render the player first! // this should not happen
             } else if ( this.state == "paused" || this.state == "suspended" ) {
                 this._fadeIn();
                 this.cuePage( page );
@@ -341,10 +363,10 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
         },
 
         cuePage: function( page ) {
-            console.log("CP", page.id, page)
+
             if ( page.state == "waiting" ) {
                 // preload
-                this.zeega.once("page_ready:" + page.id, this._playPage, this );
+                this._playPage( page );
                 this.preloadPage( page );
             } else if ( page.state == "ready" ) {
                 this.state = "playing";
@@ -389,28 +411,44 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
 
         emit: function( event, options ) {
             this.trigger( event, options );
+
+            if ( this.get("debugEvents") ) console.log("player evt: ", event, options );
         },
 
         // goes to the next frame after n ms
-        cueNext: function( ms ) {
-            this.cuePage( this.zeega.getNextPage() );
+        cueNext: function() {
+            var nextPage = this.zeega.getNextPage();
+
+            if ( nextPage ) this.cuePage( this.zeega.getNextPage() );
         },
 
         // goes to the prev frame after n ms
         cuePrev: function( ms ) {
+            var prevPage = this.zeega.getPreviousPage();
 
+            if ( prevPage ) this.cuePage( this.zeega.getPreviousPage() );
         },
 
-        // goes to previous frame in history
-        cueBack: function() {
-            // this.status.onBack();
-            // var history = this.status.get("frameHistory");
-            // if( history.length > 0 ){
-            //     this.cueFrame( history [ history.length - 1 ] );
-            // }
+        // move this to layout
+        _initEvents: function() {
+            var _this = this;
+
+            if ( this.get("keyboard") ) {
+                app.$(window).keyup(function( event ) {
+                    switch( event.which ) {
+                        case 37: // left arrow
+                            _this.cuePrev();
+                            break;
+                        case 39: // right arrow
+                            _this.cueNext();
+                            break;
+                        case 32: // spacebar
+                            _this.playPause();
+                            break;
+                    }
+                }.bind( this ));
+            }
         },
-
-
 
 
 
@@ -431,27 +469,6 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
 
         toggleSize: function() {
             this.layout.toggleSize();
-        },
-
-         // move this to layout
-        _initEvents: function() {
-            var _this = this;
-
-            if ( this.get("keyboard") ) {
-                app.$(window).keyup(function( event ) {
-                    switch( event.which ) {
-                        case 37: // left arrow
-                            _this.cueBack();
-                            break;
-                        case 39: // right arrow
-                            _this.cueNext();
-                            break;
-                        case 32: // spacebar
-                            _this.playPause();
-                            break;
-                    }
-                }.bind( this ));
-            }
         },
 
         
