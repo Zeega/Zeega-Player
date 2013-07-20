@@ -242,17 +242,6 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
 
         },
 
-
-        /**
-        * initialize the zeega player:
-        *
-        * can be initialized like so:
-        *
-        * var player = new Player.Model({ url: "<valid url>"} });
-        *
-        */
-
-
         projects: null,
 
         initialize: function( attributes ) {
@@ -280,7 +269,7 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
                         mode: "player"
                     })
                 );
-            this.emit("player:ready", this );
+            this.emit("player player:ready", this );
             this._listenToZeega();
             this._renderLayout();
         },
@@ -332,7 +321,7 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
         },
 
         _renderSoundtrack: function() {
-            var soundtrack = this.zeega.projects.at(0).soundtrack;
+            var soundtrack = this.zeega.getSoundtrack();
 
             if ( soundtrack ) {
                 this.soundtrackState = "loading";
@@ -347,18 +336,19 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
             this.soundtrackState = "ready";
             this.emit("soundtrack soundtrack:ready", soundtrack );
 
-            if ( this.get("autoplay") ) this.zeega.projects.at(0).soundtrack.play();
+            if ( this.get("autoplay") ) this.zeega.getSoundtrack().play();
         },
 
         play: function() {
             var page = this.zeega.getCurrentPage();
 
-            // this.loadSoundtrack( app );
             if ( !this.ready ) {
                 this.renderLayout(); // render the player first! // this should not happen
             } else if ( this.state == "paused" || this.state == "suspended" ) {
                 this._fadeIn();
                 this.cuePage( page );
+                this.zeega.getSoundtrack().play();
+                this.emit("player player:play", this );
             }
         },
 
@@ -367,25 +357,23 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
             if ( page.state == "waiting" ) {
                 // preload
                 this._playPage( page );
-                this.preloadPage( page );
             } else if ( page.state == "ready" ) {
                 this.state = "playing";
-                // if ( app.soundtrack ) app.soundtrack.play();
-                // this.emit( "play", this );
-                // this._playPage( page );
                 this.zeega.focusPage( page );
             }
+            this.preloadPage( page );
         },
 
         preloadPage: function( page ) {
             var nextPage = this.zeega.getNextPage( page );
 
             page.preload();
-
             for ( var i = 0; i < this.get("preloadRadius"); i++ ) {
                 if( nextPage ) {
                     nextPage.preload();
                     nextPage = this.zeega.getNextPage( nextPage );
+                } else {
+                    this.zeega.preloadNextZeega();
                 }
             }
             
@@ -470,25 +458,6 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
         toggleSize: function() {
             this.layout.toggleSize();
         },
-
-        
-        loadSoundtrack: _.once(function( app ) {
-
-                console.log("load soundtrack")
-                // this can be done better // TODO 6/8/13
-                app.soundtrack = this.project.sequences.at(0).soundtrackModel;
-
-                if ( app.soundtrack ) {
-                    if ( app.soundtrack.state == "ready" ) {
-                        app.soundtrack.play();
-                    } else {
-                        app.soundtrack.on("layer_ready", function() {
-                            app.soundtrack.play();
-                        });
-                    }
-                    app.soundtrack.render();
-                }
-            }),
 
         mute: function() {
             // TODO
