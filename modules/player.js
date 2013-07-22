@@ -352,6 +352,26 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
             }
         },
 
+                // if the player is playing, pause the project
+        pause: function() {
+            if ( this.state == "playing" ) {
+                this.state ="paused";
+
+                this.zeega.getCurrentPage().pause();
+                if ( this.zeega.getSoundtrack() ) {
+                    this.zeega.getSoundtrack().pause();
+                }
+                // pause auto advance
+                this.emit("pause", this );
+            }
+        },
+
+
+        playPause: function() {
+            if ( this.state == "paused" || this.state == "suspended" ) this.play();
+            else this.pause();
+        },
+
         cuePage: function( page ) {
 
             if ( page.state == "waiting" ) {
@@ -465,38 +485,6 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
 
         unMute: function() {
             // TODO
-        },
-
-        // if the player is playing, pause the project
-        pause: function() {
-            if ( this.state == "playing" ) {
-                this.state ="paused";
-                // pause each frame - layer
-                this.status.get("current_frame_model").pause();
-                if ( app.soundtrack ) {
-                    app.soundtrack.pause();
-                }
-                // pause auto advance
-                this.status.emit("pause");
-            }
-        },
-
-        suspend: function() {
-            if ( this.state == "playing" ) {
-                this.state ="suspended";
-                // pause each frame - layer
-                this.status.get("current_frame_model").pause();
-                if ( app.soundtrack ) {
-                    app.soundtrack.pause();
-                }
-                // pause auto advance
-                this.status.emit("suspend");
-            }
-        },
-
-        playPause: function() {
-            if ( this.state == "paused" || this.state == "suspended" ) this.play();
-            else this.pause();
         },
 
         // mobile only hack
