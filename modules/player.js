@@ -341,13 +341,16 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
 
         play: function() {
             var page = this.zeega.getCurrentPage();
+            var soundtrack = this.zeega.getSoundtrack();
 
             if ( !this.ready ) {
                 this.renderLayout(); // render the player first! // this should not happen
             } else if ( this.state == "paused" || this.state == "suspended" ) {
                 this._fadeIn();
                 this.cuePage( page );
-                this.zeega.getSoundtrack().play();
+                
+                if ( soundtrack ) this.zeega.getSoundtrack().play();
+
                 this.emit("player player:play", this );
             }
         },

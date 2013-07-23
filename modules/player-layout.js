@@ -67,7 +67,7 @@ function( app, ControlsView ) {
             // TODO: Investigate whether or not this-alias can be safely
             // replaced by bind(this)
             var next = this.model.get("next"),
-                prev = this.model.get("prev")
+                prev = this.model.get("prev");
 
             if ( next && next.length ) {
                 app.$( next ).click(function() {
