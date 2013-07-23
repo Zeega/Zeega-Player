@@ -387,19 +387,55 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
             this.preloadPage( page );
         },
 
+        preloadTimer: null,
+
         preloadPage: function( page ) {
             var nextPage = this.zeega.getNextPage( page );
+
+            clearTimeout( this.preloadTimer );
 
             page.preload();
             for ( var i = 0; i < this.get("preloadRadius"); i++ ) {
                 if( nextPage ) {
+                    nextPage.once("layers:ready", function() {
+                        this.onPreloadFinish( nextPage );
+                    }, this );
+                    
                     nextPage.preload();
                     nextPage = this.zeega.getNextPage( nextPage );
                 } else {
                     this.zeega.preloadNextZeega();
                 }
             }
-            
+
+        },
+
+        onPreloadFinish: _.debounce(function( page ) {
+            var newStartPage = _.find( this.zeega.getPages(), function( page ) {
+                return page.state == "waiting";
+            });
+
+            if ( newStartPage ) {
+                this.onPreloadIdle( newStartPage );
+            }
+
+        }, 1500),
+
+        onPreloadIdle: function( page ) {
+            var next = this.zeega.getNextPage( page );
+
+            // var audio = this.zeega.getSoundtrack().visual.audio;
+            // console.log('preload from idle', page.id, audio.buffered.end( audio.buffered.length-1 ), audio.duration )
+
+            if ( next && next.state == "waiting" ) {
+                next.once("layers:ready", function() {
+                    this.preloadTimer = setTimeout(function() {
+                        this.onPreloadIdle( next );
+                    }.bind(this), 500 );
+                }, this );
+
+                next.preload();
+            }
         },
 
         // can only be called if a page is preloaded and ready
