@@ -568,7 +568,7 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
             this.layout.$el.fadeOut( this.get("fadeOut"), function() {
                 this.zeega.destroy();
                 this.layout.remove();
-                app.emit("player_destroyed");
+                this.emit("player_destroyed");
             }.bind( this ));
         },
 
