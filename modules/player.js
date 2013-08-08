@@ -424,9 +424,6 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
         onPreloadIdle: function( page ) {
             var next = this.zeega.getNextPage( page );
 
-            // var audio = this.zeega.getSoundtrack().visual.audio;
-            // console.log('preload from idle', page.id, audio.buffered.end( audio.buffered.length-1 ), audio.duration )
-
             if ( next && next.state == "waiting" ) {
                 next.once("layers:ready", function() {
                     this.preloadTimer = setTimeout(function() {
@@ -569,22 +566,9 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
         destroy: function() {
 
             this.layout.$el.fadeOut( this.get("fadeOut"), function() {
-                // destroy all layers before calling player_destroyed
-                this.project.sequences.each(function( sequence ) {
-                    sequence.frames.each(function( frame ) {
-                        if ( frame ) {
-                            // frame.destroy();
-                            if ( app.soundtrack ) {
-                                app.soundtrack.destroy();
-                            }
-                            frame.layers.each(function( layer ) {
-                                layer.destroy();
-                            });
-                        }
-                    });
-                });
+                this.zeega.destroy();
                 this.layout.remove();
-                this.status.emit("player_destroyed");
+                app.emit("player_destroyed");
             }.bind( this ));
         },
 
