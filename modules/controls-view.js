@@ -13,7 +13,8 @@ function( app, ArrowView, CloseView, PlayPauseView, SizeToggle ) {
         manage: true,
 
         initialize: function( args, options ) {
-            this.model.on("frame_play", this.onFramePlay, this );
+
+            this.model.on("page:play", this.onFramePlay, this );
             this.model.on("play", this.onPlay, this );
             this.model.on("pause", this.onPause, this );
 
@@ -38,6 +39,10 @@ function( app, ArrowView, CloseView, PlayPauseView, SizeToggle ) {
             }
         },
 
+        afterRender: function() {
+            this.onFramePlay()
+        },
+
         events: {
             "click .ZEEGA-close": "close",
             "click .ZEEGA-prev": "prev",
@@ -47,6 +52,7 @@ function( app, ArrowView, CloseView, PlayPauseView, SizeToggle ) {
         },
 
         toggleSize: function( event ) {
+            this.model.toggleSize();
             this.model.trigger("size_toggle");
 
             this.sizeToggle.toggle();
@@ -59,25 +65,22 @@ function( app, ArrowView, CloseView, PlayPauseView, SizeToggle ) {
 
         prev: function( event ) {
             event.preventDefault();
-            this.model.cueBack();
+            this.model.cuePrev();
         },
 
         next: function( event ) {
             event.preventDefault();
             this.model.cueNext();
         },
-
        
-        onFramePlay: function( info ) {
-
-            if( this.model.status.get("frameHistory").length > 1 ){
+        onFramePlay: function() {
+            if( this.model.zeega.getPreviousPage() ){
                 this.activateArrow("ZEEGA-prev");
             } else {
                 this.disableArrow("ZEEGA-prev");
             }
 
-
-            if( info._connections == "r" || info._connections == "lr" ){
+            if( this.model.zeega.getNextPage() ){
                 this.activateArrow("ZEEGA-next");
             } else {
                 this.disableArrow("ZEEGA-next");
