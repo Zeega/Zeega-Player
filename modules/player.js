@@ -523,24 +523,17 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
             // TODO
         },
 
-        // mobile only hack
-        // TODO -- this blows -j
         mobileLoadAudioLayers: function() {
-            
-            
-            // this.project.sequences.each(function( sequence ) {
-            //     sequence.frames.each(function( frame ) {
-            //         frame.layers.each(function( layer ) {
-            //             if ( layer.get("type") == "Audio") {
-            //                 var audio = document.getElementById("audio-el-" + layer.id );
-                            
-            //                 audio.load();
-                            
-            //                 return audio;
-            //             }
-            //         });
-            //     });
-            // });
+            if ( app.player.zeega.getSoundtrack().state != "ready" ) {
+                var audio = document.getElementById("audio-el-" + app.player.zeega.getSoundtrack().id );
+
+                audio.load();
+                audio.addEventListener("canplay",function() {
+                    app.player.zeega.getSoundtrack().state = "ready";
+                    audio.removeEventListener("canplay");
+                    audio.play();
+                });
+            }
         },
 
 
