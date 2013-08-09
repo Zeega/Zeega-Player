@@ -40,7 +40,7 @@ function( app, ArrowView, CloseView, PlayPauseView, SizeToggle ) {
         },
 
         afterRender: function() {
-            this.onFramePlay()
+            this.onFramePlay();
         },
 
         events: {
