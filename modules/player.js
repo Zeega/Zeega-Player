@@ -526,25 +526,27 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
         // mobile only hack
         // TODO -- this blows -j
         mobileLoadAudioLayers: function() {
-            this.project.sequences.each(function( sequence ) {
-                sequence.frames.each(function( frame ) {
-                    frame.layers.each(function( layer ) {
-                        if ( layer.get("type") == "Audio") {
-                            var audio = document.getElementById("audio-el-" + layer.id );
+            
+            
+            // this.project.sequences.each(function( sequence ) {
+            //     sequence.frames.each(function( frame ) {
+            //         frame.layers.each(function( layer ) {
+            //             if ( layer.get("type") == "Audio") {
+            //                 var audio = document.getElementById("audio-el-" + layer.id );
                             
-                            audio.load();
+            //                 audio.load();
                             
-                            return audio;
-                        }
-                    });
-                });
-            });
+            //                 return audio;
+            //             }
+            //         });
+            //     });
+            // });
         },
 
 
         // returns project data
         getProjectData: function() {
-            return this.project.getProjectJSON();
+            return this.zeega.getProjectJSON();
         },
 
         getSoundtrack: function() {
@@ -552,10 +554,10 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
         },
 
         getFrameData: function() {
-            if ( this.status.get("current_frame") ) {
+            if ( this.zeega.getCurrentPage() ) {
                 return _.extend({},
-                    this.status.get("current_frame_model").toJSON(),
-                    { layers: this.status.get("current_frame_model").layers.toJSON() }
+                    this.zeega.getCurrentPage().toJSON(),
+                    { layers: this.zeega.getCurrentPage().layers.toJSON() }
                 );
             }
 
