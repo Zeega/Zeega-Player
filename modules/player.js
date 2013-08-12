@@ -526,13 +526,15 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
         mobileLoadAudioLayers: function() {
             if ( app.player.zeega.getSoundtrack().state != "ready" ) {
                 var audio = document.getElementById("audio-el-" + app.player.zeega.getSoundtrack().id );
-
-                audio.load();
-                audio.addEventListener("canplay",function() {
-                    app.player.zeega.getSoundtrack().state = "ready";
-                    audio.removeEventListener("canplay");
-                    audio.play();
-                });
+                
+                if ( audio ) {
+                    audio.load();
+                    audio.addEventListener("canplay",function() {
+                        app.player.zeega.getSoundtrack().state = "ready";
+                        audio.removeEventListener("canplay");
+                        audio.play();
+                    });
+                }
             }
         },
 
