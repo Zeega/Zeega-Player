@@ -392,6 +392,7 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
         preloadPage: function( page ) {
             var nextPage = this.zeega.getNextPage( page );
 
+            this.zeega.preloadNextZeega();
             clearTimeout( this.preloadTimer );
 
             page.preload();
@@ -403,8 +404,6 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
                     
                     nextPage.preload();
                     nextPage = this.zeega.getNextPage( nextPage );
-                } else {
-                    this.zeega.preloadNextZeega();
                 }
             }
 
