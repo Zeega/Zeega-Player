@@ -376,15 +376,19 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
         },
 
         cuePage: function( page ) {
-
-            if ( page.state == "waiting" ) {
-                // preload
-                this._playPage( page );
-            } else if ( page.state == "ready" ) {
+            if ( page.state == "ready" ) {
                 this.state = "playing";
                 this.zeega.focusPage( page );
+            } else {
+                this.playAndWaitForPageLoad( page )
             }
             this.preloadPage( page );
+        },
+
+        playAndWaitForPageLoad: function( page ) {
+            console.log("play & wait", page);
+            this.state = "playing";
+            this.zeega.focusPage( page );
         },
 
         preloadTimer: null,
@@ -432,12 +436,6 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
 
                 next.preload();
             }
-        },
-
-        // can only be called if a page is preloaded and ready
-        _playPage: function( page ) {
-            this.zeega.focusPage( page );
-//            page.play();
         },
 
         _fadeIn: function() {
