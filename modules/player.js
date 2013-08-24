@@ -318,6 +318,10 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
             }, this );
 
             this.preloadPage( this.zeega.getCurrentPage() );
+
+            this.zeega.on("project:project_switch", function() {
+                this._renderSoundtrack();
+            }, this );
         },
 
         _renderSoundtrack: function() {
@@ -368,7 +372,6 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
                 this.emit("pause", this );
             }
         },
-
 
         playPause: function() {
             if ( this.state == "paused" || this.state == "suspended" ) this.play();
