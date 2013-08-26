@@ -319,28 +319,42 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
 
             this.preloadPage( this.zeega.getCurrentPage() );
 
-            this.zeega.on("project:project_switch", function() {
-                this._renderSoundtrack();
-            }, this );
+            this.zeega.on("project:soundtrack_switch", this.onSoundtrackSwitch, this );
         },
 
-        _renderSoundtrack: function() {
-            var soundtrack = this.zeega.getSoundtrack();
+        onSoundtrackSwitch: function( soundtracks ) {
+            if ( soundtracks.previous ) {
+                soundtracks.previous.pause();
+            }
+            if ( soundtracks.next ) {
+                if ( soundtracks.next.state != "ready" ) {
+                    this._renderSoundtrack( soundtracks.next, true );
+                } else {
+                    soundtracks.next.play();
+                }
+            }
+        },
+
+        _renderSoundtrack: function( st, autoplay ) {
+            var soundtrack = st || this.zeega.getSoundtrack();
+
+            autoplay = autoplay || false;
 
             if ( soundtrack ) {
-                this.soundtrackState = "loading";
                 this.emit("soundtrack soundtrack:loading", soundtrack );
-                soundtrack.once("layer:ready", this._onSoundtrackReady, this );
+                soundtrack.once("layer:ready", function() {
+                        this._onSoundtrackReady( soundtrack, autoplay );
+                    }, this );
                 soundtrack.set("_target", this.layout.$(".ZEEGA-soundtrack") );
                 soundtrack.render();
             }
         },
 
-        _onSoundtrackReady: function( soundtrack ) {
+        _onSoundtrackReady: function( soundtrack, autoplay ) {
             this.soundtrackState = "ready";
             this.emit("soundtrack soundtrack:ready", soundtrack );
 
-            if ( this.get("autoplay") ) this.zeega.getSoundtrack().play();
+            if ( this.get("autoplay") || autoplay ) this.zeega.getSoundtrack().play();
         },
 
         play: function() {
@@ -353,8 +367,9 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
                 this._fadeIn();
                 this.cuePage( page );
                 
-                if ( soundtrack ) this.zeega.getSoundtrack().play();
-
+                if ( soundtrack ) {
+                    this.zeega.getSoundtrack().play();
+                }
                 this.emit("player player:play", this );
             }
         },
