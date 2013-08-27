@@ -398,7 +398,7 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
                 this.state = "playing";
                 this.zeega.focusPage( page );
             } else {
-                this.playAndWaitForPageLoad( page )
+                this.playAndWaitForPageLoad( page );
             }
             this.preloadPage( page );
         },
