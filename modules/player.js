@@ -502,7 +502,6 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
                             this.cuePrev();
                             break;
                         case 39: // right arrow
-                        console.log("RIGHT")
                             this.cueNext();
                             break;
                         case 32: // spacebar
@@ -511,20 +510,6 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
                     }
                 }.bind( this ));
 
-
-                // app.$(window).keyup(function( event ) {
-                //     switch( event.which ) {
-                //         case 37: // left arrow
-                //             this.cuePrev();
-                //             break;
-                //         case 39: // right arrow
-                //             this.cueNext();
-                //             break;
-                //         case 32: // spacebar
-                //             this.playPause();
-                //             break;
-                //     }
-                // }.bind( this ));
             }
         },
 
@@ -535,23 +520,17 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
 
             this.zeega.off("all");
 
-            // this.off("cue_frame");
-            // this.off("size_toggle");
-            // relays
+            this.off("cue_frame");
+            this.off("size_toggle");
         },
-
-
 
 
 /////
 
 
 
-
-
         // attach listeners
         _listen: function() {
-            console.log("**************_listen")
             this.on("cue_frame", this.cueFrame, this );
             this.on("size_toggle", this.toggleSize, this );
         },
