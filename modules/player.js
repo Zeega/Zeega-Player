@@ -404,7 +404,6 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
         },
 
         playAndWaitForPageLoad: function( page ) {
-            console.log("play & wait", page);
             this.state = "playing";
             this.zeega.focusPage( page );
         },
@@ -478,35 +477,67 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
         cueNext: function() {
             var nextPage = this.zeega.getNextPage();
 
-            if ( nextPage ) this.cuePage( this.zeega.getNextPage() );
+            if ( nextPage ) {
+                this.cuePage( this.zeega.getNextPage() );
+            }
         },
 
         // goes to the prev frame after n ms
         cuePrev: function( ms ) {
             var prevPage = this.zeega.getPreviousPage();
 
-            if ( prevPage ) this.cuePage( this.zeega.getPreviousPage() );
+            if ( prevPage ) {
+                this.cuePage( this.zeega.getPreviousPage() );
+            }
         },
 
         // move this to layout
         _initEvents: function() {
-            var _this = this;
 
             if ( this.get("keyboard") ) {
-                app.$(window).keyup(function( event ) {
+
+                app.$(window).bind("keyup.preview",function( event ) {
                     switch( event.which ) {
                         case 37: // left arrow
-                            _this.cuePrev();
+                            this.cuePrev();
                             break;
                         case 39: // right arrow
-                            _this.cueNext();
+                        console.log("RIGHT")
+                            this.cueNext();
                             break;
                         case 32: // spacebar
-                            _this.playPause();
+                            this.playPause();
                             break;
                     }
                 }.bind( this ));
+
+
+                // app.$(window).keyup(function( event ) {
+                //     switch( event.which ) {
+                //         case 37: // left arrow
+                //             this.cuePrev();
+                //             break;
+                //         case 39: // right arrow
+                //             this.cueNext();
+                //             break;
+                //         case 32: // spacebar
+                //             this.playPause();
+                //             break;
+                //     }
+                // }.bind( this ));
             }
+        },
+
+        _removeListeners: function() {
+            if ( this.get("keyboard") ) {
+                app.$(window).unbind("keyup.preview");
+            }
+
+            this.zeega.off("all");
+
+            // this.off("cue_frame");
+            // this.off("size_toggle");
+            // relays
         },
 
 
@@ -520,10 +551,9 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
 
         // attach listeners
         _listen: function() {
+            console.log("**************_listen")
             this.on("cue_frame", this.cueFrame, this );
             this.on("size_toggle", this.toggleSize, this );
-            // relays
-            this.relay.on("change:current_frame", this._remote_cueFrame, this );
         },
 
         toggleSize: function() {
@@ -576,11 +606,12 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
 
         // completely obliterate the player. triggers event
         destroy: function() {
-
+            this._removeListeners();
             this.layout.$el.fadeOut( this.get("fadeOut"), function() {
                 this.zeega.destroy();
                 this.layout.remove();
                 this.emit("player_destroyed");
+                this.clear();
             }.bind( this ));
         },
 

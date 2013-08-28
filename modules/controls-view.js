@@ -114,6 +114,7 @@ function( app, ArrowView, CloseView, PlayPauseView, SizeToggle ) {
 
         cleanup: function() {
             $(".tipsy").remove();
+            this.undelegateEvents();
         }
 
     });
