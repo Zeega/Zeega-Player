@@ -344,6 +344,7 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
                 this.emit("soundtrack soundtrack:loading", soundtrack );
                 soundtrack.once("layer:ready", function() {
                         this._onSoundtrackReady( soundtrack, autoplay );
+                        this.emit("soundtrack soundtrack:ready", soundtrack );
                     }, this );
                 soundtrack.set("_target", this.layout.$(".ZEEGA-soundtrack") );
                 soundtrack.render();
