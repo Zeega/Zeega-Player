@@ -250,7 +250,6 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
 
         // prefers 'fresh' data from url
         getData: function() {
-            console.log("GET DATA:", this, projectJSON)
             if ( this.get("url") ) {
                 $.getJSON( this.get("url"), function( data ) {
                     this.initialParse( data );
