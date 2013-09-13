@@ -94,6 +94,8 @@ function( app, Engine, Relay, Status, PlayerLayout ) {
 
             layerOptions: {},
 
+            loop: false,
+
             /**
             Sets the player to operate in a mobile browser environment
 
